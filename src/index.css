@@ -4,7 +4,6 @@
 /* @custom-variant dark (&:is(.dark *)); */
 @custom-variant dark (&:where(.dark, .dark *));
 
-
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -39,7 +38,7 @@
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
 
-/* custom collor */
+  /* custom collor */
   --trading-dark: oklch(0.257 0.0257 268.23); /* ≈ #1E2330 */
   --trading-darker: oklch(0.227 0.0228 265.6); /* ≈ #171C27 */
   --trading-green: oklch(0.738 0.1833 150.49); /* ≈ #33C969 */
@@ -81,7 +80,7 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
 
-/* custom collor */
+  /* custom collor */
   --trading-dark: oklch(0.257 0.0257 268.23); /* ≈ #1E2330 */
   --trading-darker: oklch(0.227 0.0228 265.6); /* ≈ #171C27 */
   --trading-green: oklch(0.738 0.1833 150.49); /* ≈ #33C969 */
@@ -134,15 +133,34 @@
   --color-trading-accent: var(--trading-accent);
   --color-trading-muted: var(--trading-muted);
   --color-trading-accent-foreground: var(--trading-accent);
-
-
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-trading-darker text-foreground antialiased;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted/30 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted/50;
   }
 }
+
+
