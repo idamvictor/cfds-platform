@@ -56,7 +56,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userInfo }) => {
         <div className="grid grid-cols-2 gap-2 w-full mt-4">
           <Link
             to="/deposit"
-            className="bg-trading-green text-white font-medium py-2 px-6 rounded-md transition-all text-sm py-3"
+            className="bg-trading-green text-white font-medium px-6 rounded-md transition-all text-sm py-3"
           >
             Deposit
           </Link>

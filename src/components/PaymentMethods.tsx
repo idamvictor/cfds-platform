@@ -26,49 +26,49 @@ const PaymentMethods: React.FC = () => {
       name: "Litecoin Wallet",
       icon: <Cloud className="h-5 w-5 opacity-70" />,
       processingTime: "5-10 minutes",
-      path: "/deposit/crypto?coin=litecoin",
+      path: "/deposit/litecoin",
     },
     {
       id: "polyswarm",
       name: "Polyswarm Wallet",
       icon: <Cloud className="h-5 w-5 opacity-70" />,
       processingTime: "5-10 minutes",
-      path: "/deposit/crypto?coin=polyswarm",
+      path: "/deposit/polyswarm",
     },
     {
       id: "dogecoin",
       name: "DogeCoin Wallet",
       icon: <Cloud className="h-5 w-5 opacity-70" />,
       processingTime: "5-10 minutes",
-      path: "/deposit/crypto?coin=dogecoin",
+      path: "/deposit/dogecoin",
     },
     {
       id: "binance",
       name: "Binance Coin Wallet",
       icon: <Cloud className="h-5 w-5 opacity-70" />,
       processingTime: "5-10 minutes",
-      path: "/deposit/crypto?coin=binance",
+      path: "/deposit/binance",
     },
     {
       id: "ethereum",
       name: "Ethereum Wallet",
       icon: <Cloud className="h-5 w-5 opacity-70" />,
       processingTime: "5-10 minutes",
-      path: "/deposit/crypto?coin=ethereum",
+      path: "/deposit/ethereum",
     },
     {
       id: "usdt-erc20",
       name: "USDT ERC20 Wallet",
       icon: <Cloud className="h-5 w-5 opacity-70" />,
       processingTime: "5-10 minutes",
-      path: "/deposit/crypto?coin=usdt-erc20",
+      path: "/deposit/erc20",
     },
     {
       id: "usdt-trc20",
       name: "USDT TRC20 Wallet",
       icon: <Cloud className="h-5 w-5 opacity-70" />,
       processingTime: "5-10 minutes",
-      path: "/deposit/crypto?coin=usdt-trc20",
+      path: "/deposit/trc20",
     },
     {
       id: "credit-card",
@@ -110,15 +110,6 @@ const PaymentMethods: React.FC = () => {
   // Function to check if a method is active
   const isMethodActive = (path: string) => {
     const currentPath = location.pathname;
-    const currentSearch = location.search;
-
-    // For crypto with specific coins
-    if (path.includes("?coin=")) {
-      return (
-        currentPath === "/deposit/crypto" &&
-        currentSearch === path.substring(path.indexOf("?"))
-      );
-    }
 
     // For main categories
     return currentPath === path;
@@ -126,7 +117,7 @@ const PaymentMethods: React.FC = () => {
 
   return (
     <div>
-      <h3 className="text-sm uppercase tracking-wider text-muted mb-2 px-2">
+      <h3 className="text-sm uppercase tracking-wider text-muted-foreground mb-2 px-2">
         METHODS
       </h3>
 
