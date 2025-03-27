@@ -1,7 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/* @custom-variant dark (&:is(.dark *)); */
+@custom-variant dark (&:where(.dark, .dark *));
+
 
 :root {
   --radius: 0.625rem;
@@ -36,6 +38,14 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+
+/* custom collor */
+  --trading-dark: oklch(0.257 0.0257 268.23); /* ≈ #1E2330 */
+  --trading-darker: oklch(0.227 0.0228 265.6); /* ≈ #171C27 */
+  --trading-green: oklch(0.738 0.1833 150.49); /* ≈ #33C969 */
+  --trading-light: oklch(0.984 0.003 247.858); /* ≈ #F5F5F7 */
+  --trading-accent: oklch(0.755 0.142387 174.902); /* ≈ #00CCAA */
+  --trading-muted: oklch(0.656 0.0082 260.73); /* ≈ #8E9196 */
 }
 
 .dark {
@@ -70,6 +80,14 @@
   --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
+
+/* custom collor */
+  --trading-dark: oklch(0.257 0.0257 268.23); /* ≈ #1E2330 */
+  --trading-darker: oklch(0.227 0.0228 265.6); /* ≈ #171C27 */
+  --trading-green: oklch(0.738 0.1833 150.49); /* ≈ #33C969 */
+  --trading-light: oklch(0.984 0.003 247.858); /* ≈ #F5F5F7 */
+  --trading-accent: oklch(0.755 0.142387 174.902); /* ≈ #00CCAA */
+  --trading-muted: oklch(0.656 0.0082 260.73); /* ≈ #8E9196 */
 }
 
 @theme inline {
@@ -108,6 +126,16 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-trading-dark: var(--trading-dark);
+  --color-trading-darker: var(--trading-darker);
+  --color-trading-green: var(--trading-green);
+  --color-trading-light: var(--trading-light);
+  --color-trading-accent: var(--trading-accent);
+  --color-trading-muted: var(--trading-muted);
+  --color-trading-accent-foreground: var(--trading-accent);
+
+
 }
 
 @layer base {
