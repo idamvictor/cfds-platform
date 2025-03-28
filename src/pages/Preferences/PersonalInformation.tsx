@@ -1,4 +1,3 @@
-"use client";
 import { PhotoGuidelines } from "@/components/personal-info/photo-guidelines";
 import { ProfilePhotoUploader } from "@/components/personal-info/profile-photo-uploader";
 import { Button } from "@/components/ui/button";

@@ -1,4 +1,3 @@
-"use client";
 
 import * as React from "react";
 import { Progress } from "@/components/ui/progress";
@@ -75,7 +74,7 @@ export default function Verification() {
 
   // Handle document upload
   const handleUpload = (type: DocumentType, file: File) => {
-    console.log("uploading:", type, file)
+    console.log("uploading:", type, file);
     const newDocument: Document = {
       id: `doc-${Date.now()}`,
       type,

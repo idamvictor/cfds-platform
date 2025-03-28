@@ -1,9 +1,7 @@
-"use client";
 
 import { AccountsTable } from "@/components/account/accounts-table";
 import { TransferForm } from "@/components/account/transfer-form";
 import * as React from "react";
-
 
 // Account interface
 interface Account {
@@ -28,7 +26,7 @@ export default function AccountsPage() {
     },
   ]);
 
-  console.log(setAccounts)
+  console.log(setAccounts);
 
   return (
     <div className="flex flex-col gap-8 p-6 bg-background text-foreground min-h-screen">
