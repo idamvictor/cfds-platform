@@ -1,7 +1,7 @@
-import { StatCard } from "../components/dashboard/StatCard";
-import { SuccessRateCard } from "../components/dashboard/SuccessRateCard";
-import { TradingResultsChart } from "../components/dashboard/TradingResultsChart";
-import { AccountSection } from "../components/dashboard/AccountSection";
+import { StatCard } from "../../components/dashboard/StatCard";
+import { SuccessRateCard } from "../../components/dashboard/SuccessRateCard";
+import { TradingResultsChart } from "../../components/dashboard/TradingResultsChart";
+import { AccountSection } from "../../components/dashboard/AccountSection";
 import { Wallet, Coins, PiggyBank, Building2 } from "lucide-react";
 
 export default function TradingDashboard() {

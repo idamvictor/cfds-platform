@@ -5,14 +5,14 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import DepositLayout from "./layouts/DepositLayout";
-import PersonalInformation from "./pages/PersonalInformation";
+import PersonalInformation from "./pages/Preferences/PersonalInformation";
 import CryptoDeposit from "./pages/deposit/CryptoDeposit";
 import BankDeposit from "./pages/deposit/BankDeposit";
 import CardDeposit from "./pages/deposit/CardDeposit";
 import PaypalDeposit from "./pages/deposit/PaypalDeposit";
 import OtherDeposit from "./pages/deposit/OtherDeposit";
 import NotFound from "./pages/NotFound";
-import TradingDashboard from "./pages/TradingDashboard";
+import TradingDashboard from "./pages/Preferences/TradingDashboard";
 
 const queryClient = new QueryClient();
 
