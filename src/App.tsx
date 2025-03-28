@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import TradingDashboard from "./pages/Preferences/TradingDashboard";
 import WithdrawalForm from "./pages/Preferences/withdrawal-form";
 import Verification from "./pages/Preferences/verification";
+import AccountsPage from "./pages/Preferences/accounts-page";
 
 const queryClient = new QueryClient();
 
@@ -134,12 +135,7 @@ const App = () => (
           <Route
             path="accounts"
             element={
-              <div className="p-6 bg-trading-dark rounded-lg border border-border/20">
-                <h1 className="text-xl font-medium">Accounts</h1>
-                <p className="mt-2 text-muted-foreground">
-                  Accounts functionality coming soon.
-                </p>
-              </div>
+              <AccountsPage />
             }
           />
           <Route
