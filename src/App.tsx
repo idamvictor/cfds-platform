@@ -14,6 +14,7 @@ import OtherDeposit from "./pages/deposit/OtherDeposit";
 import NotFound from "./pages/NotFound";
 import TradingDashboard from "./pages/Preferences/TradingDashboard";
 import WithdrawalForm from "./pages/Preferences/withdrawal-form";
+import Verification from "./pages/Preferences/verification";
 
 const queryClient = new QueryClient();
 
@@ -127,12 +128,7 @@ const App = () => (
           <Route
             path="verification"
             element={
-              <div className="p-6 bg-trading-dark rounded-lg border border-border/20">
-                <h1 className="text-xl font-medium">Verification</h1>
-                <p className="mt-2 text-muted-foreground">
-                  Verification functionality coming soon.
-                </p>
-              </div>
+              <Verification />
             }
           />
           <Route
