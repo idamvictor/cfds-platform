@@ -26,7 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userInfo }) => {
   const navItems = [
     { title: "Dashboard", icon: LayoutDashboard, path: "/" },
     { title: "Personal Information", icon: User, path: "/personal" },
-    { title: "Deposit", icon: PiggyBank, path: "/deposit" },
+    // { title: "Deposit", icon: PiggyBank, path: "/deposit" },
     { title: "Withdrawal", icon: ArrowUpDown, path: "/withdrawal" },
     { title: "Verification", icon: FileCheck, path: "/verification" },
     { title: "Accounts", icon: Folders, path: "/accounts" },
