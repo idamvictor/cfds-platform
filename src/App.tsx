@@ -18,6 +18,7 @@ import Verification from "./pages/Preferences/verification";
 import AccountsPage from "./pages/Preferences/accounts-page";
 import LiveChat from "./pages/Preferences/live-chat";
 import SettingsPage from "./pages/Preferences/settings-page";
+import SavingsPage from "./pages/Preferences/savings-page";
 
 const queryClient = new QueryClient();
 
@@ -122,47 +123,12 @@ const App = () => (
           </Route>
 
           {/* Placeholder routes for other sections */}
-          <Route
-            path="withdrawal"
-            element={
-              <WithdrawalForm />
-            }
-          />
-          <Route
-            path="verification"
-            element={
-              <Verification />
-            }
-          />
-          <Route
-            path="accounts"
-            element={
-              <AccountsPage />
-            }
-          />
-          <Route
-            path="chat"
-            element={
-              <LiveChat />
-            }
-          />
-          <Route
-            path="savings"
-            element={
-              <SettingsPage />
-            }
-          />
-          <Route
-            path="settings"
-            element={
-              <div className="p-6 bg-trading-dark rounded-lg border border-border/20">
-                <h1 className="text-xl font-medium">Settings</h1>
-                <p className="mt-2 text-muted-foreground">
-                  Settings functionality coming soon.
-                </p>
-              </div>
-            }
-          />
+          <Route path="withdrawal" element={<WithdrawalForm />} />
+          <Route path="verification" element={<Verification />} />
+          <Route path="accounts" element={<AccountsPage />} />
+          <Route path="chat" element={<LiveChat />} />
+          <Route path="savings" element={<SavingsPage />} />
+          <Route path="settings" element={<SettingsPage />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
