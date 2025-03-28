@@ -23,6 +23,7 @@ export default function CardDeposit() {
   });
 
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  console.log(focusedField)
 
   const handleInputChange = (field: string, value: string) => {
     setCardDetails({

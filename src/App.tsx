@@ -19,6 +19,7 @@ import AccountsPage from "./pages/Preferences/accounts-page";
 import LiveChat from "./pages/Preferences/live-chat";
 import SettingsPage from "./pages/Preferences/settings-page";
 import SavingsPage from "./pages/Preferences/savings-page";
+import QRCodeDeposit from "./pages/deposit/qr-code-deposit";
 
 const queryClient = new QueryClient();
 
@@ -46,78 +47,78 @@ const App = () => (
             <Route
               path="litecoin"
               element={
-                <div className="p-6 bg-trading-dark rounded-lg border border-border/20">
-                  <h1 className="text-xl font-medium">Litecoin</h1>
-                  <p className="mt-2 text-muted-foreground">
-                    Litecoin functionality coming soon.
-                  </p>
-                </div>
+                <QRCodeDeposit
+                  address="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+                  title="litecoin Deposit"
+                  qrTitle="LTC QR CODE"
+                  addressTitle="LTC ADDRESS"
+                />
               }
             />
             <Route
               path="polyswarm"
               element={
-                <div className="p-6 bg-trading-dark rounded-lg border border-border/20">
-                  <h1 className="text-xl font-medium">polyswarm</h1>
-                  <p className="mt-2 text-muted-foreground">
-                    polyswarm functionality coming soon.
-                  </p>
-                </div>
+                <QRCodeDeposit
+                  address="0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+                  title="polyswarm Deposit"
+                  qrTitle="polyswarm QR CODE"
+                  addressTitle="polyswarm ADDRESS"
+                />
               }
             />
             <Route
               path="dogecoin"
               element={
-                <div className="p-6 bg-trading-dark rounded-lg border border-border/20">
-                  <h1 className="text-xl font-medium">dogecoin</h1>
-                  <p className="mt-2 text-muted-foreground">
-                    dogecoin functionality coming soon.
-                  </p>
-                </div>
+                <QRCodeDeposit
+                  address="DJHXpkQGcRydAZ7KyXmkRNHdRvMVXwMYAE"
+                  title="Dogecoin"
+                  qrTitle="SCAN ME"
+                  addressTitle="YOUR DOGE ADDRESS"
+                />
               }
             />
             <Route
               path="binance"
               element={
-                <div className="p-6 bg-trading-dark rounded-lg border border-border/20">
-                  <h1 className="text-xl font-medium">binance</h1>
-                  <p className="mt-2 text-muted-foreground">
-                    binance functionality coming soon.
-                  </p>
-                </div>
+                <QRCodeDeposit
+                  address="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+                  title="binance Deposit"
+                  qrTitle="Binance QR CODE"
+                  addressTitle="Binance ADDRESS"
+                />
               }
             />
             <Route
               path="ethereum"
               element={
-                <div className="p-6 bg-trading-dark rounded-lg border border-border/20">
-                  <h1 className="text-xl font-medium">ethereum</h1>
-                  <p className="mt-2 text-muted-foreground">
-                    ethereum functionality coming soon.
-                  </p>
-                </div>
+                <QRCodeDeposit
+                  address="0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+                  title="Ethereum Deposit"
+                  qrTitle="ETH QR CODE"
+                  addressTitle="ETH ADDRESS"
+                />
               }
             />
             <Route
               path="erc20"
               element={
-                <div className="p-6 bg-trading-dark rounded-lg border border-border/20">
-                  <h1 className="text-xl font-medium">erc20</h1>
-                  <p className="mt-2 text-muted-foreground">
-                    erc20 functionality coming soon.
-                  </p>
-                </div>
+                <QRCodeDeposit
+                  address="DJHXpkQGcRydAZ7KyXmkRNHdRvMVXwMYAE"
+                  title="ERC20"
+                  qrTitle="SCAN ME"
+                  addressTitle="YOUR ERC20 ADDRESS"
+                />
               }
             />
             <Route
               path="trc20"
               element={
-                <div className="p-6 bg-trading-dark rounded-lg border border-border/20">
-                  <h1 className="text-xl font-medium">trc20</h1>
-                  <p className="mt-2 text-muted-foreground">
-                    trc20 functionality coming soon.
-                  </p>
-                </div>
+                <QRCodeDeposit
+                  address="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+                  title="TRC20 Deposit"
+                  qrTitle="TRC20 QR CODE"
+                  addressTitle="TRC20 ADDRESS"
+                />
               }
             />
           </Route>
