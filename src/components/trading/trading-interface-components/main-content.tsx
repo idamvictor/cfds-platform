@@ -17,6 +17,7 @@ import ActiveOrdersPanel from "./panels/active-orders-panel";
 import TradingHistoryPanel from "./panels/trading-history-panel";
 import CalendarPanel from "./panels/calendar-panel";
 import MarketNewsPanel from "./panels/market-news-panel";
+import TradingChart from "../trading-chart";
 
 interface MainContentProps {
   sidebarExpanded: boolean;
@@ -86,7 +87,7 @@ export default function MainContent({
 
             {/* Chart placeholder */}
             <div className="w-full h-[calc(100%-40px)] flex items-center justify-center bg-background">
-              <div className="text-muted-foreground">Chart Placeholder</div>
+              <TradingChart />
             </div>
 
             {/* Resize handle */}
