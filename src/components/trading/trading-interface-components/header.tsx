@@ -19,6 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import TickerTape from "../ticker-tape";
 
 interface HeaderProps {
   activePairs: string[];
@@ -45,130 +46,136 @@ export default function Header({
   const showScrollButtons = activePairs.length > 3;
 
   return (
-    <header className="flex items-center justify-between h-16 px-4 border-b border-border bg-background">
-      <div className="flex items-center">
-        <div className="mr-6">
-          <Logo />
-        </div>
+    <>
+      <header className="flex items-center justify-between h-16 px-4 border-b border-border bg-background">
         <div className="flex items-center">
-          {showScrollButtons && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
-              onClick={() => scrollTabs("left")}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-          )}
-          <div className="overflow-hidden max-w-[500px]">
-            <Tabs
-              value={activePair}
-              onValueChange={setActivePair}
-              className="mr-2"
-            >
-              <TabsList
-                ref={tabsListRef}
-                className="bg-muted/50 overflow-x-auto flex-nowrap whitespace-nowrap scrollbar-hide"
-                style={{ scrollbarWidth: "none" }}
+          <div className="mr-6">
+            <Logo />
+          </div>
+          <div className="flex items-center">
+            {showScrollButtons && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => scrollTabs("left")}
               >
-                {activePairs.map((pair) => (
-                  <TabsTrigger
-                    key={pair}
-                    value={pair}
-                    className="flex items-center gap-2 data-[state=active]:bg-primary/10"
-                  >
-                    <CurrencyFlag pair={pair} />
-                    <span>{pair}</span>
-                    <span className="text-xs text-muted-foreground">forex</span>
-                    <button
-                      className="ml-2 rounded-full hover:bg-muted p-0.5"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeCurrencyPair(pair);
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                      </svg>
-                    </button>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
-          </div>
-          {showScrollButtons && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
-              onClick={() => scrollTabs("right")}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          )}
-          <Button variant="outline" size="icon" className="rounded-md ml-2">
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          className="gap-2 text-green-500 border-green-500/20 hover:bg-green-500/10"
-        >
-          <Robot className="h-4 w-4" />
-          <span>Auto Trader</span>
-        </Button>
-        <Button
-          variant="outline"
-          className="gap-2 text-green-500 border-green-500/20 hover:bg-green-500/10"
-        >
-          <Wallet className="h-4 w-4" />
-          <span>Deposit</span>
-        </Button>
-        <div className="flex items-center ml-4">
-          <div className="mr-2">
-            <div className="text-xs text-muted-foreground">
-              STANDARD ACCOUNT
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="link"
-                  className="h-auto p-0 text-green-500 font-bold"
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+            )}
+            <div className="overflow-hidden max-w-[500px]">
+              <Tabs
+                value={activePair}
+                onValueChange={setActivePair}
+                className="mr-2"
+              >
+                <TabsList
+                  ref={tabsListRef}
+                  className="bg-muted/50 overflow-x-auto flex-nowrap whitespace-nowrap scrollbar-hide"
+                  style={{ scrollbarWidth: "none" }}
                 >
-                  $610.05 <ChevronDown className="h-4 w-4 ml-1" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>Account Details</DropdownMenuItem>
-                <DropdownMenuItem>Transaction History</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  {activePairs.map((pair) => (
+                    <TabsTrigger
+                      key={pair}
+                      value={pair}
+                      className="flex items-center gap-2 data-[state=active]:bg-primary/10"
+                    >
+                      <CurrencyFlag pair={pair} />
+                      <span>{pair}</span>
+                      <span className="text-xs text-muted-foreground">
+                        forex
+                      </span>
+                      <button
+                        className="ml-2 rounded-full hover:bg-muted p-0.5"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeCurrencyPair(pair);
+                        }}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </button>
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </Tabs>
+            </div>
+            {showScrollButtons && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => scrollTabs("right")}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            )}
+            <Button variant="outline" size="icon" className="rounded-md ml-2">
+              <Plus className="h-4 w-4" />
+            </Button>
           </div>
-          <Avatar className="h-8 w-8 border border-border">
-            <AvatarFallback>M</AvatarFallback>
-          </Avatar>
-          <Button variant="ghost" size="icon" className="ml-1">
-            <User className="h-5 w-5" />
-          </Button>
         </div>
-      </div>
-    </header>
+
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            className="gap-2 text-green-500 border-green-500/20 hover:bg-green-500/10"
+          >
+            <Robot className="h-4 w-4" />
+            <span>Auto Trader</span>
+          </Button>
+          <Button
+            variant="outline"
+            className="gap-2 text-green-500 border-green-500/20 hover:bg-green-500/10"
+          >
+            <Wallet className="h-4 w-4" />
+            <span>Deposit</span>
+          </Button>
+          <div className="flex items-center ml-4">
+            <div className="mr-2">
+              <div className="text-xs text-muted-foreground">
+                STANDARD ACCOUNT
+              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="link"
+                    className="h-auto p-0 text-green-500 font-bold"
+                  >
+                    $610.05 <ChevronDown className="h-4 w-4 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>Account Details</DropdownMenuItem>
+                  <DropdownMenuItem>Transaction History</DropdownMenuItem>
+                  <DropdownMenuItem>Settings</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            <Avatar className="h-8 w-8 border border-border">
+              <AvatarFallback>M</AvatarFallback>
+            </Avatar>
+            <Button variant="ghost" size="icon" className="ml-1">
+              <User className="h-5 w-5" />
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      <TickerTape />
+    </>
   );
 }
 
