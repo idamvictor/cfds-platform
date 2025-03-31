@@ -1,15 +1,9 @@
-"use client";
-
 import { useState } from "react";
 import {
-  Maximize2,
-  Camera,
-  Settings,
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import type { ActiveView } from "./trading-platform";
 import MarketWatchPanel from "./panels/market-watch-panel";
 import ActiveOrdersPanel from "./panels/active-orders-panel";
@@ -35,6 +29,7 @@ export default function MainContent({
 }: MainContentProps) {
   const [chartHeight, setChartHeight] = useState(60); // Percentage of the container height
   console.log(sidebarExpanded)
+  console.log(activePair)
 
   const handleResizeChart = (increase: boolean) => {
     setChartHeight((prev) => {
@@ -67,27 +62,10 @@ export default function MainContent({
             className="relative border-b border-border bg-background"
             style={{ height: `${chartHeight}%` }}
           >
-            {/* Chart header */}
-            <div className="flex items-center justify-between h-10 px-4 border-b border-border">
-              <div className="flex items-center">
-                <span className="text-sm font-medium">{activePair}</span>
-                <span className="text-xs text-muted-foreground ml-2">1m</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Button variant="ghost" size="icon" className="h-7 w-7">
-                  <Settings className="h-4 w-4" />
-                </Button>
-                <Button variant="ghost" size="icon" className="h-7 w-7">
-                  <Maximize2 className="h-4 w-4" />
-                </Button>
-                <Button variant="ghost" size="icon" className="h-7 w-7">
-                  <Camera className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
 
             {/* Chart placeholder */}
-            <div className="w-full h-[calc(100%-40px)] flex items-center justify-center bg-background">
+            {/* <div className="w-full h-[calc(100%-40px)] flex items-center justify-center bg-background"> */}
+            <div className="w-full h-full flex items-center justify-center bg-background">
               <TradingChart />
             </div>
 
@@ -121,7 +99,7 @@ export default function MainContent({
         </div>
 
         {/* Right panel - Trading interface */}
-        <div className="w-[300px] border-l border-border overflow-y-auto hidden lg:block">
+        <div className="w-[300px] border-l border-border overflow-y-auto hidden lg:block px-3">
 
           <TradingInterface />
         </div>

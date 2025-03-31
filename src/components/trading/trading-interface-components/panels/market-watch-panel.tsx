@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { Search, ChevronDown, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";

@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -17,7 +15,7 @@ export default function TradingInterface() {
   const [activeTab, setActiveTab] = useState("lots");
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
+    <div className="flex items-center justify-center  bg-background">
       <Sonner />
       <Card className="w-full max-w-[300px] bg-muted/50 border-muted">
         <CardContent className="p-0">
