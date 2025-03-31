@@ -1,18 +1,25 @@
 import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Test from "./pages/test";
 
 const MainLayout = lazy(() => import("./layouts/MainLayout"));
 const DepositLayout = lazy(() => import("./layouts/DepositLayout"));
-const PersonalInformation = lazy(() => import("./pages/Preferences/PersonalInformation"));
+const PersonalInformation = lazy(
+  () => import("./pages/Preferences/PersonalInformation")
+);
 const CryptoDeposit = lazy(() => import("./pages/deposit/CryptoDeposit"));
 const BankDeposit = lazy(() => import("./pages/deposit/BankDeposit"));
 const CardDeposit = lazy(() => import("./pages/deposit/CardDeposit"));
 const PaypalDeposit = lazy(() => import("./pages/deposit/PaypalDeposit"));
 const OtherDeposit = lazy(() => import("./pages/deposit/OtherDeposit"));
 const NotFound = lazy(() => import("./pages/NotFound"));
-const TradingDashboard = lazy(() => import("./pages/Preferences/TradingDashboard"));
-const WithdrawalForm = lazy(() => import("./pages/Preferences/withdrawal-form"));
+const TradingDashboard = lazy(
+  () => import("./pages/Preferences/TradingDashboard")
+);
+const WithdrawalForm = lazy(
+  () => import("./pages/Preferences/withdrawal-form")
+);
 const Verification = lazy(() => import("./pages/Preferences/verification"));
 const AccountsPage = lazy(() => import("./pages/Preferences/accounts-page"));
 const LiveChat = lazy(() => import("./pages/Preferences/live-chat"));
@@ -33,7 +40,10 @@ const App = () => (
             <Route path="personal" element={<PersonalInformation />} />
 
             <Route path="deposit" element={<DepositLayout />}>
-              <Route index element={<Navigate to="/deposit/crypto" replace />} />
+              <Route
+                index
+                element={<Navigate to="/deposit/crypto" replace />}
+              />
               <Route path="crypto" element={<CryptoDeposit />} />
               <Route path="bank" element={<BankDeposit />} />
               <Route path="card" element={<CardDeposit />} />
@@ -127,6 +137,7 @@ const App = () => (
             <Route path="chat" element={<LiveChat />} />
             <Route path="savings" element={<SavingsPage />} />
             <Route path="settings" element={<SettingsPage />} />
+            <Route path="test" element={<Test />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
