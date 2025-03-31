@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Test from "./pages/test";
+import Trading from "./pages/trading";
 
 const MainLayout = lazy(() => import("./layouts/MainLayout"));
 const DepositLayout = lazy(() => import("./layouts/DepositLayout"));
@@ -139,6 +140,8 @@ const App = () => (
             <Route path="settings" element={<SettingsPage />} />
             <Route path="test" element={<Test />} />
           </Route>
+          <Route path="trading" element={<Trading />} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
