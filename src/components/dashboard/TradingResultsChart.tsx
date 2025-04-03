@@ -1,10 +1,9 @@
-
 import * as React from "react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -57,33 +56,30 @@ export function TradingResultsChart() {
       <Card className="bg-card text-card-foreground p-4">
         <div className="h-[200px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={activeTab === "week" ? weekData : monthData}>
+            <AreaChart
+              data={activeTab === "week" ? weekData : monthData}
+              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+            >
               <CartesianGrid
                 strokeDasharray="3 3"
-                stroke="rgba(255,255,255,0.1)"
+                stroke="var(--color-border)"
               />
-              <XAxis dataKey="name" stroke="rgba(255,255,255,0.5)" />
-              <YAxis stroke="rgba(255,255,255,0.5)" />
+              <XAxis dataKey="name" stroke="var(--color-muted-foreground)" />
+              <YAxis stroke="var(--color-muted-foreground)" />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "hsl(var(--card))",
-                  borderColor: "hsl(var(--border))",
+                  backgroundColor: "var(--color-card)",
+                  borderColor: "var(--color-border)",
                 }}
               />
-              <Line
+              <Area
                 type="monotone"
                 dataKey="value"
-                stroke="hsl(var(--primary))"
-                strokeWidth={2}
-                dot={{
-                  stroke: "hsl(var(--primary))",
-                  strokeWidth: 2,
-                  r: 4,
-                  fill: "hsl(var(--card))",
-                }}
-                activeDot={{ r: 6, fill: "hsl(var(--primary))" }}
+                stroke="var(--color-primary)"
+                fill="var(--color-primary)"
+                fillOpacity={0.4}
               />
-            </LineChart>
+            </AreaChart>
           </ResponsiveContainer>
         </div>
       </Card>

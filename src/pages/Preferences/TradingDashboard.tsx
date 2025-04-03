@@ -22,7 +22,7 @@ export default function TradingDashboard() {
           footnote="* using current exchange rate"
         />
 
-        <SuccessRateCard successRate={93.9} />
+        <SuccessRateCard />
 
         {/* Second row */}
         <StatCard
