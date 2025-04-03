@@ -45,7 +45,17 @@ const App = () => (
                 index
                 element={<Navigate to="/deposit/crypto" replace />}
               />
-              <Route path="crypto" element={<CryptoDeposit />} />
+              <Route
+                path="crypto"
+                element={
+                  <QRCodeDeposit
+                    address="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+                    title="Bitcoin Deposit"
+                    qrTitle="BTC QR CODE"
+                    addressTitle="BTC ADDRESS"
+                  />
+                }
+              />
               <Route path="bank" element={<BankDeposit />} />
               <Route path="card" element={<CardDeposit />} />
               <Route path="paypal" element={<PaypalDeposit />} />

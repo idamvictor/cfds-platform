@@ -4,8 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const DepositLayout = () => {
   return (
-    <div className="animate-fade-in">
-      <h1 className="text-2xl font-semibold tracking-tight text-white mb-6">
+    <div className="animate-fade-in pt-3">
+      <h1 className="text-2xl font-semibold tracking-tight mb-6">
         DEPOSIT
       </h1>
 
@@ -16,7 +16,7 @@ const DepositLayout = () => {
         </div>
 
         {/* Right content area */}
-        <Card className="flex-1 bg-trading-dark border-border/20">
+        <Card className="flex-1 items-start">
           <CardContent className="p-6">
             <Outlet />
           </CardContent>
