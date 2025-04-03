@@ -9,7 +9,6 @@ const DepositLayout = lazy(() => import("./layouts/DepositLayout"));
 const PersonalInformation = lazy(
   () => import("./pages/Preferences/PersonalInformation")
 );
-const CryptoDeposit = lazy(() => import("./pages/deposit/CryptoDeposit"));
 const BankDeposit = lazy(() => import("./pages/deposit/BankDeposit"));
 const CardDeposit = lazy(() => import("./pages/deposit/CardDeposit"));
 const PaypalDeposit = lazy(() => import("./pages/deposit/PaypalDeposit"));

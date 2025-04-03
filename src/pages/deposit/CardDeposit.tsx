@@ -35,7 +35,7 @@ export default function CardDeposit() {
   const currencies = ["USD", "EUR", "GBP", "BTC", "ETH"];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#121826] p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-4xl grid grid-cols-1 xl:grid-cols-2 gap-8">
         {/* Credit Card Preview */}
         <div className="flex items-center justify-center">
@@ -44,7 +44,7 @@ export default function CardDeposit() {
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="absolute inset-0 bg-gradient-to-b from-gray-300 to-gray-400 rounded-2xl">
+            <div className="absolute inset-0 bg-gradient-to-b from-muted to-gray-400 rounded-2xl">
               <div className="absolute bottom-0 w-full h-1/2 bg-gray-600 rounded-b-2xl" />
             </div>
 
@@ -88,24 +88,24 @@ export default function CardDeposit() {
 
             {/* Card Number */}
             <div className="absolute top-24 left-8 right-8">
-              <p className="text-xs text-white/70 mb-1">card number</p>
-              <p className="text-xl md:text-2xl font-mono text-white tracking-wider">
+              <p className="text-xs text-muted-foreground mb-1">card number</p>
+              <p className="text-xl md:text-2xl font-mono tracking-wider">
                 {cardDetails.number}
               </p>
             </div>
 
             {/* Cardholder Name */}
             <div className="absolute bottom-8 left-8">
-              <p className="text-xs text-white/70 mb-1">cardholder name</p>
-              <p className="text-md font-mono text-white">{cardDetails.name}</p>
+              <p className="text-xs text-muted-foreground mb-1">cardholder name</p>
+              <p className="text-md font-mono">{cardDetails.name}</p>
             </div>
 
             {/* Expiration */}
             <div className="absolute bottom-8 right-8">
-              <p className="text-xs text-white/70 mb-1">expiration</p>
+              <p className="text-xs text-muted-foreground mb-1">expiration</p>
               <div className="flex items-center">
-                <p className="text-[10px] text-white mr-1">VALID THRU</p>
-                <p className="text-md font-mono text-white">
+                <p className="text-[10px] mr-1">VALID THRU</p>
+                <p className="text-md font-mono">
                   {cardDetails.expiry}
                 </p>
               </div>
@@ -116,13 +116,13 @@ export default function CardDeposit() {
         {/* Payment Form */}
         <div className="flex flex-col justify-center space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-primary-foreground/70">
+            <Label htmlFor="name" >
               Name
             </Label>
             <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
               <Input
                 id="name"
-                className="bg-background/10 border-primary/20 text-primary-foreground focus:border-primary/50 transition-all"
+                className="bg-background/10 border-primary/20 text-muted-foreground focus:border-primary/50 transition-all"
                 value={cardDetails.name}
                 onChange={(e) => handleInputChange("name", e.target.value)}
                 onFocus={() => setFocusedField("name")}
@@ -132,13 +132,13 @@ export default function CardDeposit() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="cardNumber" className="text-primary-foreground/70">
+            <Label htmlFor="cardNumber">
               Card Number
             </Label>
             <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
               <Input
                 id="cardNumber"
-                className="bg-background/10 border-primary/20 text-primary-foreground focus:border-primary/50 transition-all"
+                className="bg-background/10 border-primary/20 text-muted-foreground focus:border-primary/50 transition-all"
                 value={cardDetails.number}
                 onChange={(e) => handleInputChange("number", e.target.value)}
                 onFocus={() => setFocusedField("number")}
@@ -149,7 +149,7 @@ export default function CardDeposit() {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="expiry" className="text-primary-foreground/70">
+              <Label htmlFor="expiry" >
                 Expiration (mm/yy)
               </Label>
               <motion.div
@@ -158,7 +158,7 @@ export default function CardDeposit() {
               >
                 <Input
                   id="expiry"
-                  className="bg-background/10 border-primary/20 text-primary-foreground focus:border-primary/50 transition-all"
+                  className="bg-background/10 border-primary/20 text-muted-foreground focus:border-primary/50 transition-all"
                   value={cardDetails.expiry}
                   onChange={(e) => handleInputChange("expiry", e.target.value)}
                   onFocus={() => setFocusedField("expiry")}
@@ -168,7 +168,7 @@ export default function CardDeposit() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="cvv" className="text-primary-foreground/70">
+              <Label htmlFor="cvv" >
                 CVV
               </Label>
               <motion.div
@@ -178,7 +178,7 @@ export default function CardDeposit() {
                 <Input
                   id="cvv"
                   type="password"
-                  className="bg-background/10 border-primary/20 text-primary-foreground focus:border-primary/50 transition-all"
+                  className="bg-background/10 border-primary/20 text-muted-foreground focus:border-primary/50 transition-all"
                   value={cardDetails.cvv}
                   onChange={(e) => handleInputChange("cvv", e.target.value)}
                   onFocus={() => setFocusedField("cvv")}
@@ -189,7 +189,7 @@ export default function CardDeposit() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="amount" className="text-primary-foreground/70">
+            <Label htmlFor="amount" >
               Amount
             </Label>
             <div className="flex space-x-4">
@@ -203,7 +203,7 @@ export default function CardDeposit() {
                   <Input
                     id="amount"
                     type="number"
-                    className="bg-background/10 border-primary/20 text-primary-foreground focus:border-primary/50 transition-all pl-10"
+                    className="bg-background/10 border-primary/20 text-muted-foreground focus:border-primary/50 transition-all pl-10"
                     placeholder="0.00"
                     value={cardDetails.amount}
                     onChange={(e) =>
@@ -223,7 +223,7 @@ export default function CardDeposit() {
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.99 }}
                 >
-                  <SelectTrigger className="w-24 bg-background/10 border-primary/20 text-primary-foreground focus:border-primary/50 transition-all">
+                  <SelectTrigger className="w-24 bg-background/10 border-primary/20 text-muted-foreground focus:border-primary/50 transition-all">
                     <SelectValue placeholder="Currency" />
                   </SelectTrigger>
                 </motion.div>
@@ -243,7 +243,7 @@ export default function CardDeposit() {
             whileTap={{ scale: 0.97 }}
             className="pt-4"
           >
-            <Button className="w-full bg-green-500 hover:bg-green-600 text-white">
+            <Button className="w-full">
               Continue
             </Button>
           </motion.div>
