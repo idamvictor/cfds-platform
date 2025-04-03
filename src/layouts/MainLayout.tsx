@@ -11,7 +11,7 @@ const MainLayout = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <div className="fixed top-0 left-0 right-0 z-10">
+      <div className="fixed top-0 left-0 right-0 z-20">
         <Header />
       </div>
 
