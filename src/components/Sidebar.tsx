@@ -44,7 +44,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userInfo }) => {
   };
 
   return (
-    <aside className="bg-trading-dark h-full w-60 flex flex-col border-r border-border/20">
+    <aside className="bg-trading-dark h-full w-60 flex flex-col border-r border-border/20 ">
       <div className="flex flex-col items-center text-center p-6 border-b border-border/20">
         <div className="h-20 w-20 rounded-full bg-sidebar-accent flex items-center justify-center mb-3">
           <User className="h-10 w-10 text-muted" />
