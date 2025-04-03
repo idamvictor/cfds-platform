@@ -10,7 +10,7 @@ const MainLayout = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-trading-darker">
+    <div className="min-h-screen flex flex-col bg-background">
       <div className="fixed top-0 left-0 right-0 z-10">
         <Header />
       </div>
@@ -19,7 +19,7 @@ const MainLayout = () => {
         <div className="fixed top-[64px] left-0 bottom-0 w-[250px] z-10">
           <Sidebar userInfo={userInfo} />
         </div>
-        <main className="flex-1 ml-[250px] p-8 overflow-y-auto">
+        <main className="flex-1 ml-[250px] overflow-y-auto">
           <Outlet />
         </main>
       </div>
