@@ -23,7 +23,7 @@ export default function CardDeposit() {
   });
 
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  console.log(focusedField)
+  console.log(focusedField);
 
   const handleInputChange = (field: string, value: string) => {
     setCardDetails({
@@ -49,7 +49,7 @@ export default function CardDeposit() {
             </div>
 
             {/* Card Chip */}
-            <div className="absolute top-8 left-8">
+            <div className="absolute top-[10%] left-[10%]">
               <svg
                 width="50"
                 height="40"
@@ -87,25 +87,29 @@ export default function CardDeposit() {
             </div>
 
             {/* Card Number */}
-            <div className="absolute top-24 left-8 right-8">
+            <div className="absolute top-[40%] left-[10%] right-[10%]">
               <p className="text-xs text-muted-foreground mb-1">card number</p>
-              <p className="text-xl md:text-2xl font-mono tracking-wider">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-mono tracking-wider truncate">
                 {cardDetails.number}
               </p>
             </div>
 
             {/* Cardholder Name */}
-            <div className="absolute bottom-8 left-8">
-              <p className="text-xs text-muted-foreground mb-1">cardholder name</p>
-              <p className="text-md font-mono">{cardDetails.name}</p>
+            <div className="absolute bottom-[10%] left-[10%] max-w-[50%]">
+              <p className="text-xs text-muted-foreground mb-1">
+                cardholder name
+              </p>
+              <p className="text-xs sm:text-sm md:text-md font-mono truncate">
+                {cardDetails.name}
+              </p>
             </div>
 
             {/* Expiration */}
-            <div className="absolute bottom-8 right-8">
+            <div className="absolute bottom-[10%] right-[10%] text-right">
               <p className="text-xs text-muted-foreground mb-1">expiration</p>
-              <div className="flex items-center">
-                <p className="text-[10px] mr-1">VALID THRU</p>
-                <p className="text-md font-mono">
+              <div className="flex items-center justify-end">
+                <p className="text-[8px] sm:text-[10px] mr-1">VALID THRU</p>
+                <p className="text-xs sm:text-sm md:text-md font-mono">
                   {cardDetails.expiry}
                 </p>
               </div>
@@ -114,11 +118,9 @@ export default function CardDeposit() {
         </div>
 
         {/* Payment Form */}
-        <div className="flex flex-col justify-center space-y-6">
+        <div className="flex flex-col justify-center space-y-4 sm:space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="name" >
-              Name
-            </Label>
+            <Label htmlFor="name">Name</Label>
             <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
               <Input
                 id="name"
@@ -132,9 +134,7 @@ export default function CardDeposit() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="cardNumber">
-              Card Number
-            </Label>
+            <Label htmlFor="cardNumber">Card Number</Label>
             <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
               <Input
                 id="cardNumber"
@@ -147,11 +147,9 @@ export default function CardDeposit() {
             </motion.div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-2 sm:gap-4">
             <div className="space-y-2">
-              <Label htmlFor="expiry" >
-                Expiration (mm/yy)
-              </Label>
+              <Label htmlFor="expiry">Expiration (mm/yy)</Label>
               <motion.div
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
@@ -168,9 +166,7 @@ export default function CardDeposit() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="cvv" >
-                CVV
-              </Label>
+              <Label htmlFor="cvv">CVV</Label>
               <motion.div
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
@@ -189,9 +185,7 @@ export default function CardDeposit() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="amount" >
-              Amount
-            </Label>
+            <Label htmlFor="amount">Amount</Label>
             <div className="flex space-x-4">
               <div className="relative flex-1">
                 <motion.div
@@ -243,12 +237,11 @@ export default function CardDeposit() {
             whileTap={{ scale: 0.97 }}
             className="pt-4"
           >
-            <Button className="w-full">
-              Continue
-            </Button>
+            <Button className="w-full">Continue</Button>
           </motion.div>
         </div>
       </div>
     </div>
   );
 }
+
