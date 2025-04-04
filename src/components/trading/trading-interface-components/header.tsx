@@ -17,7 +17,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import TickerTape from "../ticker-tape";
 
 interface HeaderProps {
   activePairs: string[];
