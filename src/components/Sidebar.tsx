@@ -19,9 +19,10 @@ interface SidebarProps {
     id: string;
     email: string;
   };
+  onLinkClick: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ userInfo }) => {
+const Sidebar: React.FC<SidebarProps> = ({ userInfo, onLinkClick }) => {
   const location = useLocation();
 
   const navItems = [
@@ -62,6 +63,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userInfo }) => {
           <Link
             to="/deposit"
             className="bg-sidebar-primary text-sidebar-primary-foreground font-medium px-6 rounded-md transition-all text-sm py-3"
+            onClick={onLinkClick}
           >
             Deposit
           </Link>
@@ -83,6 +85,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userInfo }) => {
                       ? "bg-sidebar-accent text-sidebar-accent-foreground"
                       : ""
                   }`}
+                  onClick={onLinkClick}
                 >
                   <item.icon className="h-5 w-5 opacity-70 group-hover:opacity-100 transition-opacity" />
                   <span>{item.title}</span>
