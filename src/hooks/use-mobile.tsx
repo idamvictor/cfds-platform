@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 
 export function useMobile(breakpoint = 768): boolean {

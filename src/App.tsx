@@ -3,6 +3,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Test from "./pages/test";
 import Trading from "./pages/trading";
+import RegisterPage from "./pages/auth/register-page";
+import LoginPage from "./pages/auth/login-page";
+import ForgotPasswordPage from "./pages/auth/forgot-password-page";
 
 const MainLayout = lazy(() => import("./layouts/MainLayout"));
 const DepositLayout = lazy(() => import("./layouts/DepositLayout"));
@@ -150,6 +153,11 @@ const App = () => (
             <Route path="test" element={<Test />} />
           </Route>
           <Route path="trading" element={<Trading />} />
+
+          {/* Authentication Routes */}
+          <Route path="register" element={<RegisterPage />} />
+          <Route path="login" element={<LoginPage />} />
+          <Route path="forgot-password" element={<ForgotPasswordPage />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
