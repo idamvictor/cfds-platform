@@ -7,7 +7,6 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import type { ActiveView } from "./trading-platform";
 import MarketWatchPanel from "./panels/market-watch-panel";
 import ActiveOrdersPanel from "./panels/active-orders-panel";
@@ -16,6 +15,7 @@ import CalendarPanel from "./panels/calendar-panel";
 import MarketNewsPanel from "./panels/market-news-panel";
 import { useMobile } from "@/hooks/use-mobile";
 import OrderTable from "../order-table";
+import TradingInterface from "../trading-interface";
 
 interface MainContentProps {
   sidebarExpanded: boolean;
@@ -32,6 +32,7 @@ export default function MainContent({
 }: MainContentProps) {
   const [chartHeight, setChartHeight] = useState(60); // Percentage of the container height
   const isMobile = useMobile();
+  const isLargeScreen = useMobile(1024);
 
   const handleResizeChart = (increase: boolean) => {
     setChartHeight((prev) => {
@@ -111,89 +112,16 @@ export default function MainContent({
             </div>
           </div>
 
-          {/* Orders table - now using your custom component */}
+          {/* Orders table */}
           <OrderTable />
         </div>
 
-        {/* Right panel - Trading interface */}
-        <div className="w-[300px] border-l border-border overflow-y-auto hidden lg:block">
-          <div className="p-4">
-            <div className="space-y-4">
-              <div className="grid grid-cols-3 gap-2">
-                <div className="col-span-3">
-                  <div className="text-xs text-muted-foreground mb-1">
-                    Contract size
-                  </div>
-                  <Input value="100,000" className="h-8 text-right" readOnly />
-                </div>
-                <div className="col-span-3">
-                  <div className="text-xs text-muted-foreground mb-1">
-                    Position
-                  </div>
-                  <Input
-                    value="1,000"
-                    className="h-8 text-right text-green-500"
-                    readOnly
-                  />
-                </div>
-                <div className="col-span-3">
-                  <div className="text-xs text-muted-foreground mb-1">
-                    Margin
-                  </div>
-                  <Input value="$31.24" className="h-8 text-right" readOnly />
-                </div>
-                <div className="col-span-3">
-                  <div className="text-xs text-muted-foreground mb-1">
-                    Free Margin
-                  </div>
-                  <Input
-                    value="$610.05"
-                    className="h-8 text-right text-green-500"
-                    readOnly
-                  />
-                </div>
-                <div className="col-span-3">
-                  <div className="text-xs text-muted-foreground mb-1">
-                    Spread
-                  </div>
-                  <Input
-                    value="0.00006"
-                    className="h-8 text-right text-green-500"
-                    readOnly
-                  />
-                </div>
-                <div className="col-span-3">
-                  <div className="text-xs text-muted-foreground mb-1">
-                    Leverage
-                  </div>
-                  <Input value="1:20" className="h-8 text-right" readOnly />
-                </div>
-              </div>
-
-              <div className="pt-4">
-                <div className="flex justify-between mb-4">
-                  <Button variant="outline" className="w-full">
-                    Profit Calculator
-                  </Button>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 mt-6">
-                  <Button className="bg-green-500 hover:bg-green-600 text-white">
-                    BUY
-                    <br />
-                    0.55259
-                  </Button>
-                  <Button className="bg-red-500 hover:bg-red-600 text-white">
-                    SELL
-                    <br />
-                    0.55253
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Right panel - Trading interface (only visible on large screens) */}
+        {!isLargeScreen && <TradingInterface />}
       </div>
+
+      {/* Floating trading interface for small screens */}
+      {isLargeScreen && <TradingInterface />}
     </div>
   );
 }
