@@ -36,6 +36,7 @@ export default function MainContent({
   const [chartHeight, setChartHeight] = useState(60); // Percentage of the container height
   const isMobile = useMobile();
   const isLargeScreen = useMobile(1024);
+  console.log(sidebarExpanded)
 
   const handleResizeChart = (increase: boolean) => {
     setChartHeight((prev) => {
