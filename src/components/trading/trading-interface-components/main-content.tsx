@@ -16,6 +16,7 @@ import MarketNewsPanel from "./panels/market-news-panel";
 import { useMobile } from "@/hooks/use-mobile";
 import OrderTable from "../order-table";
 import TradingInterface from "../trading-interface";
+import TradingChart from "../trading-chart";
 
 interface MainContentProps {
   sidebarExpanded: boolean;
@@ -85,8 +86,8 @@ export default function MainContent({
             </div>
 
             {/* Chart placeholder */}
-            <div className="w-full h-[calc(100%-40px)] flex items-center justify-center bg-background">
-              <div className="text-muted-foreground">Chart Placeholder</div>
+            <div className="w-full h-full flex items-center justify-center bg-background">
+              <TradingChart />
             </div>
 
             {/* Resize handle */}
