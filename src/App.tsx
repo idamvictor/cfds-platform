@@ -155,9 +155,9 @@ const App = () => (
           <Route path="trading" element={<Trading />} />
 
           {/* Authentication Routes */}
-          <Route path="register" element={<RegisterPage />} />
-          <Route path="login" element={<LoginPage />} />
-          <Route path="forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
