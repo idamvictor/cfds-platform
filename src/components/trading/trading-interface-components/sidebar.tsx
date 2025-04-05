@@ -129,7 +129,8 @@ export default function Sidebar({
 }: SidebarProps) {
   const isMobile = useMobile();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
+  console.log("isMobile", isMobileMenuOpen);
+  
   // Close mobile menu when switching to desktop
   useEffect(() => {
     if (!isMobile) {
