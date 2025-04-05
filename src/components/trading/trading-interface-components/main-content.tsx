@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import {
   Maximize2,
@@ -14,8 +16,8 @@ import TradingHistoryPanel from "./panels/trading-history-panel";
 import CalendarPanel from "./panels/calendar-panel";
 import MarketNewsPanel from "./panels/market-news-panel";
 import { useMobile } from "@/hooks/use-mobile";
-import OrderTable from "../order-table";
 import TradingInterface from "../trading-interface";
+import OrderTable from "../order-table";
 import TradingChart from "../trading-chart";
 
 interface MainContentProps {
@@ -34,7 +36,6 @@ export default function MainContent({
   const [chartHeight, setChartHeight] = useState(60); // Percentage of the container height
   const isMobile = useMobile();
   const isLargeScreen = useMobile(1024);
-  console.log(sidebarExpanded)
 
   const handleResizeChart = (increase: boolean) => {
     setChartHeight((prev) => {
@@ -87,7 +88,7 @@ export default function MainContent({
             </div>
 
             {/* Chart placeholder */}
-            <div className="w-full h-full flex items-center justify-center bg-background">
+            <div className="w-full h-[calc(100%-40px)] flex items-center justify-center bg-background">
               <TradingChart />
             </div>
 
@@ -127,4 +128,3 @@ export default function MainContent({
     </div>
   );
 }
-

@@ -1,10 +1,16 @@
-
 // "use client";
 
 // import { useState } from "react";
 // import { Button } from "@/components/ui/button";
 // import { Dialog, DialogContent } from "@/components/ui/dialog";
-// import { ChevronDown, ChevronUp, Filter } from "lucide-react";
+// import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+// import {
+//   ChevronDown,
+//   ChevronUp,
+//   Filter,
+//   ChevronRight,
+//   Info,
+// } from "lucide-react";
 // import { cn } from "@/lib/utils";
 // import {
 //   Table,
@@ -16,6 +22,11 @@
 // } from "@/components/ui/table";
 // import { Badge } from "@/components/ui/badge";
 // import { useMobile } from "@/hooks/use-mobile";
+// import {
+//   Collapsible,
+//   CollapsibleContent,
+//   CollapsibleTrigger,
+// } from "@/components/ui/collapsible";
 
 // export default function OrderTable() {
 //   const [activeTab, setActiveTab] = useState<"active" | "history">("active");
@@ -24,6 +35,7 @@
 //   const [selectedOrder, setSelectedOrder] = useState<any>(null);
 //   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
 //   const [showFilters, setShowFilters] = useState(false);
+//   const [showAccountDetails, setShowAccountDetails] = useState(false);
 
 //   const isMobile = useMobile(768); // Use 768px as the breakpoint for mobile view
 
@@ -410,22 +422,28 @@
 //                     <TableCell>{order.volume}</TableCell>
 //                     <TableCell>{order.openPrice}</TableCell>
 //                     {activeTab === "active" && (
-//                         <TableCell>
-//                           {activeTab === "active" && "timedOrder" in order
-//                             ? order.timedOrder || "-"
-//                             : "-"}
-//                         </TableCell>
+//                       <TableCell>
+//                         {activeTab === "active" && "timedOrder" in order
+//                           ? order.timedOrder || "-"
+//                           : "-"}
+//                       </TableCell>
 //                     )}
 //                     <TableCell>{order.openTime}</TableCell>
 //                     {activeTab === "active" && (
 //                       <>
-//                         <TableCell>{"sl" in order ? order.sl || "-" : "-"}</TableCell>
-//                         <TableCell>{"tp" in order ? order.tp || "-" : "-"}</TableCell>
+//                         <TableCell>
+//                           {"sl" in order ? order.sl || "-" : "-"}
+//                         </TableCell>
+//                         <TableCell>
+//                           {"tp" in order ? order.tp || "-" : "-"}
+//                         </TableCell>
 //                       </>
 //                     )}
 //                     <TableCell>
 //                       {activeTab === "active"
-//                         ? "price" in order ? order.price : "-"
+//                         ? "price" in order
+//                           ? order.price
+//                           : "-"
 //                         : "closePrice" in order
 //                         ? order.closePrice
 //                         : "-"}
@@ -545,9 +563,262 @@
 //     );
 //   };
 
+//   // Mobile sheet for full table view
+//   const renderMobileSheet = () => {
+//     return (
+//       <Sheet>
+//         <SheetTrigger asChild>
+//           <Button
+//             variant="ghost"
+//             size="sm"
+//             className="text-xs text-muted-foreground flex items-center gap-1"
+//           >
+//             View all <ChevronRight className="h-3 w-3" />
+//           </Button>
+//         </SheetTrigger>
+//         <SheetContent side="bottom" className="h-[80vh] p-0">
+//           <div className="flex flex-col h-full">
+//             <div className="p-4 border-b border-border flex justify-between items-center">
+//               <h3 className="font-medium">
+//                 {activeTab === "active" ? "Active Orders" : "Order History"}
+//               </h3>
+//               <div className="flex items-center gap-2">
+//                 <Button
+//                   variant="ghost"
+//                   size="icon"
+//                   className="h-8 w-8"
+//                   onClick={() => setShowFilters(true)}
+//                 >
+//                   <Filter className="h-4 w-4" />
+//                 </Button>
+//               </div>
+//             </div>
+//             <div className="flex border-b border-border">
+//               <button
+//                 className={cn(
+//                   "flex-1 py-2 text-center text-sm",
+//                   activeTab === "active"
+//                     ? "border-b-2 border-primary text-primary"
+//                     : "text-muted-foreground"
+//                 )}
+//                 onClick={() => setActiveTab("active")}
+//               >
+//                 ACTIVE ORDERS
+//               </button>
+//               <button
+//                 className={cn(
+//                   "flex-1 py-2 text-center text-sm",
+//                   activeTab === "history"
+//                     ? "border-b-2 border-primary text-primary"
+//                     : "text-muted-foreground"
+//                 )}
+//                 onClick={() => setActiveTab("history")}
+//               >
+//                 ORDERS HISTORY
+//               </button>
+//             </div>
+//             <div className="flex-1 overflow-auto p-4">
+//               {(activeTab === "active" ? activeOrders : orderHistory).map(
+//                 (order) => renderMobileOrderCard(order, activeTab === "history")
+//               )}
+//             </div>
+//           </div>
+//         </SheetContent>
+//       </Sheet>
+//     );
+//   };
+
+//   // Compact account summary for mobile
+//   const renderMobileAccountSummary = () => {
+//     return (
+//       <div className="p-2 bg-muted/30 border-t border-muted">
+//         <div className="flex justify-between items-center">
+//           <div className="flex items-center gap-2">
+//             <div className="flex items-center gap-1">
+//               <span className="text-xs text-muted-foreground">Balance:</span>
+//               <span className="text-xs font-medium">
+//                 ${accountData.balance.toFixed(2)}
+//               </span>
+//             </div>
+//             <div className="flex items-center gap-1">
+//               <span className="text-xs text-muted-foreground">PnL:</span>
+//               <span
+//                 className={cn(
+//                   "text-xs font-medium",
+//                   accountData.pnl >= 0 ? "text-green-500" : "text-red-500"
+//                 )}
+//               >
+//                 {accountData.pnl >= 0 ? "$" : "-$"}
+//                 {Math.abs(accountData.pnl).toFixed(2)}
+//               </span>
+//             </div>
+//           </div>
+
+//           <div className="flex items-center gap-1">
+//             {renderMobileSheet()}
+//             <Collapsible
+//               open={showAccountDetails}
+//               onOpenChange={setShowAccountDetails}
+//             >
+//               <div className="flex items-center">
+//                 <CollapsibleTrigger asChild>
+//                   <Button
+//                     variant="ghost"
+//                     size="icon"
+//                     className="h-6 w-6 rounded-full"
+//                   >
+//                     <Info className="h-3.5 w-3.5" />
+//                   </Button>
+//                 </CollapsibleTrigger>
+//               </div>
+//               <CollapsibleContent className="mt-2 space-y-1 border-t border-border pt-2 absolute left-0 right-0 bg-muted/30">
+//                 <div className="flex justify-between">
+//                   <span className="text-xs text-muted-foreground">Credit:</span>
+//                   <span className="text-xs">
+//                     ${accountData.credit.toFixed(2)}
+//                   </span>
+//                 </div>
+//                 <div className="flex justify-between">
+//                   <span className="text-xs text-muted-foreground">Equity:</span>
+//                   <span className="text-xs">
+//                     ${accountData.equity.toFixed(2)}
+//                   </span>
+//                 </div>
+//                 <div className="flex justify-between">
+//                   <span className="text-xs text-muted-foreground">Margin:</span>
+//                   <span className="text-xs">
+//                     ${accountData.margin.toFixed(2)}
+//                   </span>
+//                 </div>
+//                 <div className="flex justify-between">
+//                   <span className="text-xs text-muted-foreground">
+//                     Margin level:
+//                   </span>
+//                   <span className="text-xs">{accountData.marginLevel}</span>
+//                 </div>
+//                 <div className="flex justify-between">
+//                   <span className="text-xs text-muted-foreground">
+//                     Free Margin:
+//                   </span>
+//                   <span className="text-xs">
+//                     ${accountData.freeMargin.toFixed(2)}
+//                   </span>
+//                 </div>
+//                 <div className="flex justify-between">
+//                   <span className="text-xs text-muted-foreground">
+//                     Lifetime PnL:
+//                   </span>
+//                   <span
+//                     className={cn(
+//                       "text-xs",
+//                       accountData.lifetimePnl >= 0
+//                         ? "text-green-500"
+//                         : "text-red-500"
+//                     )}
+//                   >
+//                     ${accountData.lifetimePnl.toFixed(2)}
+//                   </span>
+//                 </div>
+//               </CollapsibleContent>
+//             </Collapsible>
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   };
+
+//   // Desktop account summary
+//   const renderDesktopAccountSummary = () => {
+//     return (
+//       <div className="w-full bg-muted/30 border-t border-muted p-2">
+//         <div className="flex flex-wrap gap-4 justify-between">
+//           <div className="flex flex-wrap gap-4">
+//             <div className="flex items-center gap-2">
+//               <span className="text-muted-foreground text-sm">Balance:</span>
+//               <span className="text-sm">${accountData.balance.toFixed(2)}</span>
+//             </div>
+
+//             <div className="flex items-center gap-2">
+//               <span className="text-muted-foreground text-sm">Credit:</span>
+//               <span className="text-sm">${accountData.credit.toFixed(2)}</span>
+//             </div>
+
+//             <div className="flex items-center gap-2">
+//               <span className="text-muted-foreground text-sm">Equity:</span>
+//               <span className="text-sm">${accountData.equity.toFixed(2)}</span>
+//             </div>
+
+//             <div className="flex items-center gap-2">
+//               <span className="text-muted-foreground text-sm">Margin:</span>
+//               <span className="text-sm">${accountData.margin.toFixed(2)}</span>
+//             </div>
+
+//             <div className="flex items-center gap-2">
+//               <span className="text-muted-foreground text-sm">
+//                 Margin level:
+//               </span>
+//               <span className="text-sm">{accountData.marginLevel}</span>
+//             </div>
+
+//             <div className="flex items-center gap-2">
+//               <span className="text-muted-foreground text-sm">
+//                 Free Margin:
+//               </span>
+//               <span className="text-sm">
+//                 ${accountData.freeMargin.toFixed(2)}
+//               </span>
+//             </div>
+
+//             <div className="flex items-center gap-2">
+//               <span className="text-muted-foreground text-sm">PnL:</span>
+//               <span
+//                 className={cn(
+//                   "text-sm",
+//                   accountData.pnl >= 0 ? "text-green-500" : "text-red-500"
+//                 )}
+//               >
+//                 {accountData.pnl >= 0 ? "$" : "-$"}
+//                 {Math.abs(accountData.pnl).toFixed(2)}
+//               </span>
+//             </div>
+//           </div>
+
+//           {!isCollapsed && (
+//             <div className="flex items-center gap-2">
+//               <span className="text-muted-foreground text-sm">
+//                 Lifetime PnL:
+//               </span>
+//               <span
+//                 className={cn(
+//                   "text-sm",
+//                   accountData.lifetimePnl >= 0
+//                     ? "text-green-500"
+//                     : "text-red-500"
+//                 )}
+//               >
+//                 ${accountData.lifetimePnl.toFixed(2)}
+//               </span>
+//             </div>
+//           )}
+
+//           {isCollapsed && (
+//             <Button
+//               variant="ghost"
+//               size="icon"
+//               className="h-6 w-6"
+//               onClick={() => setIsCollapsed(false)}
+//             >
+//               <ChevronUp className="h-4 w-4" />
+//             </Button>
+//           )}
+//         </div>
+//       </div>
+//     );
+//   };
+
 //   return (
 //     <div className="flex flex-col bg-background text-foreground border border-muted rounded-md shadow-sm w-full max-w-[1200px] mx-auto">
-//       {!isCollapsed && (
+//       {!isCollapsed && !isMobile && (
 //         <div className="flex-1">
 //           <div className="border-b border-muted flex justify-between items-center">
 //             <div className="flex overflow-x-auto scrollbar-hide">
@@ -575,16 +846,6 @@
 //               </button>
 //             </div>
 //             <div className="flex items-center">
-//               {isMobile && (
-//                 <Button
-//                   variant="ghost"
-//                   size="icon"
-//                   className="h-8 w-8 mr-1"
-//                   onClick={() => setShowFilters(true)}
-//                 >
-//                   <Filter className="h-4 w-4" />
-//                 </Button>
-//               )}
 //               <Button
 //                 variant="ghost"
 //                 size="icon"
@@ -596,164 +857,13 @@
 //             </div>
 //           </div>
 
-//           {isMobile ? (
-//             // Mobile card view
-//             <div className="p-2">
-//               {(activeTab === "active" ? activeOrders : orderHistory).map(
-//                 (order) => renderMobileOrderCard(order, activeTab === "history")
-//               )}
-//             </div>
-//           ) : (
-//             // Desktop table view
-//             renderDesktopTable()
-//           )}
+//           {/* Desktop table view */}
+//           {renderDesktopTable()}
 //         </div>
 //       )}
 
-//       <div className="w-full bg-muted/30 border-t border-muted p-2">
-//         <div
-//           className={cn(
-//             "flex flex-wrap gap-4",
-//             isMobile ? "flex-col" : "justify-between"
-//           )}
-//         >
-//           <div className={cn("flex flex-wrap gap-4", isMobile && "flex-col")}>
-//             <div
-//               className={cn(
-//                 "flex",
-//                 isMobile ? "justify-between" : "items-center gap-2"
-//               )}
-//             >
-//               <span className="text-muted-foreground text-sm">Balance:</span>
-//               <span className="text-sm">${accountData.balance.toFixed(2)}</span>
-//             </div>
-
-//             <div
-//               className={cn(
-//                 "flex",
-//                 isMobile ? "justify-between" : "items-center gap-2"
-//               )}
-//             >
-//               <span className="text-muted-foreground text-sm">Credit:</span>
-//               <span className="text-sm">${accountData.credit.toFixed(2)}</span>
-//             </div>
-
-//             <div
-//               className={cn(
-//                 "flex",
-//                 isMobile ? "justify-between" : "items-center gap-2"
-//               )}
-//             >
-//               <span className="text-muted-foreground text-sm">Equity:</span>
-//               <span className="text-sm">${accountData.equity.toFixed(2)}</span>
-//             </div>
-
-//             <div
-//               className={cn(
-//                 "flex",
-//                 isMobile ? "justify-between" : "items-center gap-2"
-//               )}
-//             >
-//               <span className="text-muted-foreground text-sm">Margin:</span>
-//               <span className="text-sm">${accountData.margin.toFixed(2)}</span>
-//             </div>
-
-//             <div
-//               className={cn(
-//                 "flex",
-//                 isMobile ? "justify-between" : "items-center gap-2"
-//               )}
-//             >
-//               <span className="text-muted-foreground text-sm">
-//                 Margin level:
-//               </span>
-//               <span className="text-sm">{accountData.marginLevel}</span>
-//             </div>
-
-//             <div
-//               className={cn(
-//                 "flex",
-//                 isMobile ? "justify-between" : "items-center gap-2"
-//               )}
-//             >
-//               <span className="text-muted-foreground text-sm">
-//                 Free Margin:
-//               </span>
-//               <span className="text-sm">
-//                 ${accountData.freeMargin.toFixed(2)}
-//               </span>
-//             </div>
-
-//             <div
-//               className={cn(
-//                 "flex",
-//                 isMobile ? "justify-between" : "items-center gap-2"
-//               )}
-//             >
-//               <span className="text-muted-foreground text-sm">PnL:</span>
-//               <span
-//                 className={cn(
-//                   "text-sm",
-//                   accountData.pnl >= 0 ? "text-green-500" : "text-red-500"
-//                 )}
-//               >
-//                 {accountData.pnl >= 0 ? "$" : "-$"}
-//                 {Math.abs(accountData.pnl).toFixed(2)}
-//               </span>
-//             </div>
-//           </div>
-
-//           <div
-//             className={cn(
-//               "flex",
-//               isMobile ? "justify-between mt-2" : "items-center gap-2"
-//             )}
-//           >
-//             {!isCollapsed && (
-//               <span
-//                 className={cn(
-//                   "text-muted-foreground text-sm",
-//                   isMobile && "flex-1"
-//                 )}
-//               >
-//                 Lifetime PnL:
-//               </span>
-//             )}
-//             {!isCollapsed && (
-//               <span
-//                 className={cn(
-//                   "text-sm",
-//                   accountData.lifetimePnl >= 0
-//                     ? "text-green-500"
-//                     : "text-red-500"
-//                 )}
-//               >
-//                 ${accountData.lifetimePnl.toFixed(2)}
-//               </span>
-//             )}
-//             {isCollapsed && (
-//               <Button
-//                 variant="ghost"
-//                 size="icon"
-//                 className="h-6 w-6 ml-auto"
-//                 onClick={() => setIsCollapsed(false)}
-//               >
-//                 <ChevronUp className="h-4 w-4" />
-//               </Button>
-//             )}
-//             {isMobile && !isCollapsed && (
-//               <Button
-//                 variant="ghost"
-//                 size="icon"
-//                 className="h-6 w-6"
-//                 onClick={() => setIsCollapsed(true)}
-//               >
-//                 <ChevronUp className="h-4 w-4" />
-//               </Button>
-//             )}
-//           </div>
-//         </div>
-//       </div>
+//       {/* Mobile view - just show the compact summary */}
+//       {isMobile ? renderMobileAccountSummary() : renderDesktopAccountSummary()}
 
 //       {renderMobileFilters()}
 
@@ -791,7 +901,6 @@
 //     </div>
 //   );
 // }
-
 
 
 "use client";
