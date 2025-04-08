@@ -1,12 +1,13 @@
 import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Test from "./pages/test";
-import Trading from "./pages/trading";
-import RegisterPage from "./pages/auth/register-page";
-import LoginPage from "./pages/auth/login-page";
-import ForgotPasswordPage from "./pages/auth/forgot-password-page";
-import ProtectedRoute from "./components/ProtectedRoute";
+
+const Test = lazy(() => import("./pages/test"));
+const Trading = lazy(() => import("./pages/trading"));
+const RegisterPage = lazy(() => import("./pages/auth/register-page"));
+const LoginPage = lazy(() => import("./pages/auth/login-page"));
+const ForgotPasswordPage = lazy(() => import("./pages/auth/forgot-password-page"));
+const ProtectedRoute = lazy(() => import("./components/ProtectedRoute"));
 
 const MainLayout = lazy(() => import("./layouts/MainLayout"));
 const DepositLayout = lazy(() => import("./layouts/DepositLayout"));
