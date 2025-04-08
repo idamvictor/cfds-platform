@@ -21,6 +21,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useMobile } from "@/hooks/use-mobile";
 import useUserStore from "@/store/userStore";
+import useAssetStore from "@/store/assetStore";
 
 interface HeaderProps {
   activePairs: string[];
@@ -39,6 +40,9 @@ export default function Header({
   const [showScrollButtons, setShowScrollButtons] = useState(false);
   const isMobile = useMobile();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { activeAsset, setActiveAsset } = useAssetStore();
+
+  console.log("Header - Active pairs:", setActiveAsset);
 
   // Check if scroll buttons should be shown
   useEffect(() => {
@@ -63,6 +67,11 @@ export default function Header({
       tabsListRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   };
+
+  // const handleAssetClick = (asset) => {
+  //   setActiveAsset(asset);
+  //   // Other existing code
+  // };
 
   return (
     <header className="flex items-center justify-between h-16 px-2 sm:px-4 border-b border-border bg-background">
@@ -183,8 +192,10 @@ export default function Header({
               className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-md"
               onClick={() => setIsSearchOpen(!isSearchOpen)}
             >
-              <CurrencyFlag pair={activePair} />
-              <span className="text-sm font-medium">{activePair}</span>
+              <CurrencyFlag pair={activeAsset?.symbol_display || activePair} />
+              <span className="text-sm font-medium">
+                {activeAsset?.symbol_display || activePair}
+              </span>
               <ChevronDown className="h-4 w-4 ml-1" />
             </div>
           </div>

@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "./header";
 import Sidebar from "./sidebar";
 import MainContent from "./main-content";
+import useAssetStore from "@/store/assetStore";
 
 export type ActiveView =
   | "market-watch"
@@ -14,7 +15,7 @@ export type ActiveView =
 export default function TradingPlatform() {
   // Add more currency pairs for testing horizontal scrolling
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
-  const [activeView, setActiveView] = useState<ActiveView>(null);
+  const [activeView, setActiveView] = useState<ActiveView>("market-watch"); // Set market-watch as default view
   const [activePairs, setActivePairs] = useState<string[]>([
     "AUD/JPY",
     "AUD/CHF",
@@ -26,6 +27,19 @@ export default function TradingPlatform() {
   ]);
   const [activePair, setActivePair] = useState("AUD/CHF");
 
+  const { setActiveAsset, assets, fetchAssets } = useAssetStore();
+
+  // Fetch assets when component mounts
+  useEffect(() => {
+    console.log("TradingPlatform - Fetching assets");
+    fetchAssets();
+  }, [fetchAssets]);
+
+  // Log assets when they change
+  useEffect(() => {
+    console.log("TradingPlatform - Assets loaded:", assets.length);
+  }, [assets]);
+
   const toggleSidebar = () => {
     setSidebarExpanded(!sidebarExpanded);
   };
@@ -35,6 +49,14 @@ export default function TradingPlatform() {
   };
 
   const addCurrencyPair = (pair: string) => {
+    // Find the asset by symbol_display
+    const asset = assets.find((a) => a.symbol_display === pair);
+    console.log("Adding currency pair:", pair, "Found asset:", asset);
+
+    if (asset) {
+      setActiveAsset(asset);
+    }
+
     if (!activePairs.includes(pair)) {
       setActivePairs([...activePairs, pair]);
       setActivePair(pair);
@@ -81,4 +103,3 @@ export default function TradingPlatform() {
     </div>
   );
 }
-

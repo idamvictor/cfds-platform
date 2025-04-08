@@ -16,7 +16,8 @@ import MarketNewsPanel from "./panels/market-news-panel";
 import { useMobile } from "@/hooks/use-mobile";
 import TradingInterface from "../trading-interface";
 import OrderTable from "../order-table";
-import TradingChart from "../trading-chart";
+import useAssetStore from "@/store/assetStore";
+import TradingViewWidget from "./trading-view-widget";
 
 interface MainContentProps {
   sidebarExpanded: boolean;
@@ -35,6 +36,8 @@ export default function MainContent({
   const isMobile = useMobile();
   const isLargeScreen = useMobile(1024);
   console.log(sidebarExpanded)
+
+  const { activeAsset } = useAssetStore();
 
   const handleResizeChart = (increase: boolean) => {
     setChartHeight((prev) => {
@@ -70,7 +73,9 @@ export default function MainContent({
             {/* Chart header */}
             <div className="flex items-center justify-between h-10 px-4 border-b border-border">
               <div className="flex items-center">
-                <span className="text-sm font-medium">{activePair}</span>
+                <span className="text-sm font-medium">
+                  {activeAsset?.symbol_display || activePair}
+                </span>
                 <span className="text-xs text-muted-foreground ml-2">1m</span>
               </div>
               <div className="flex items-center space-x-2">
@@ -88,7 +93,8 @@ export default function MainContent({
 
             {/* Chart placeholder */}
             <div className="w-full h-[calc(100%-40px)] flex items-center justify-center bg-background">
-              <TradingChart />
+              {/* <TradingChart /> */}
+              <TradingViewWidget />
             </div>
 
             {/* Resize handle */}
