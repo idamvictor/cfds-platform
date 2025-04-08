@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { Eye, EyeOff, Pencil } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,10 +20,84 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import AnimatedBackground from "./animated-background";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Link } from "react-router-dom";
+
+// Define the form schema with validation
+const formSchema = z
+  .object({
+    first_name: z
+      .string()
+      .min(2, { message: "First name must be at least 2 characters" }),
+    last_name: z
+      .string()
+      .min(2, { message: "Last name must be at least 2 characters" }),
+    username: z
+      .string()
+      .min(3, { message: "Username must be at least 3 characters" }),
+    email: z.string().email({ message: "Please enter a valid email address" }),
+    phone: z.string().min(6, { message: "Please enter a valid phone number" }),
+    country_code: z.string(),
+    country: z.string(),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" }),
+    confirm_password: z.string(),
+  })
+  .refine((data) => data.password === data.confirm_password, {
+    message: "Passwords do not match",
+    path: ["confirm_password"],
+  });
+
+// Country options
+const countries = [
+  { value: "nigeria", label: "Nigeria" },
+  { value: "uk", label: "United Kingdom" },
+  { value: "us", label: "United States" },
+  { value: "ca", label: "Canada" },
+  { value: "au", label: "Australia" },
+];
+
+// Country code options
+const countryCodes = [
+  { value: "+234", label: "+234" },
+  { value: "+44", label: "+44" },
+  { value: "+1", label: "+1" },
+  { value: "+61", label: "+61" },
+];
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Initialize form
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      first_name: "",
+      last_name: "",
+      username: "",
+      email: "",
+      phone: "",
+      country_code: "+234",
+      country: "",
+      password: "",
+      confirm_password: "",
+    },
+  });
+
+  // Form submission handler
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
+    // Here you would typically send the data to your API
+  }
 
   return (
     <div className="relative min-h-screen flex items-center justify-center p-4">
@@ -36,145 +113,258 @@ export default function RegisterPage() {
           </div>
         </CardHeader>
         <CardContent className="space-y-4 pt-4">
-          <div className="space-y-2">
-            <label
-              htmlFor="email"
-              className="text-sm font-medium text-card-foreground"
-            >
-              Email address
-            </label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="name@example.com"
-              className="bg-muted/70 border-border text-card-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary"
-            />
-          </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="first_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium text-card-foreground">
+                        First Name
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="First name"
+                          {...field}
+                          className="bg-muted/70 border-border text-card-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          <div className="space-y-2">
-            <label
-              htmlFor="fullname"
-              className="text-sm font-medium text-card-foreground"
-            >
-              Full Name
-            </label>
-            <Input
-              id="fullname"
-              type="text"
-              placeholder="John Doe"
-              className="bg-muted/70 border-border text-card-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label
-              htmlFor="country"
-              className="text-sm font-medium text-card-foreground"
-            >
-              Country
-            </label>
-            <Select>
-              <SelectTrigger className="bg-muted/70 border-border text-card-foreground focus:ring-primary">
-                <SelectValue placeholder="Country" />
-              </SelectTrigger>
-              <SelectContent className="bg-card border-border text-card-foreground">
-                <SelectItem value="uk">United Kingdom</SelectItem>
-                <SelectItem value="us">United States</SelectItem>
-                <SelectItem value="ca">Canada</SelectItem>
-                <SelectItem value="au">Australia</SelectItem>
-                <SelectItem value="eu">European Union</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <label
-              htmlFor="phone"
-              className="text-sm font-medium text-card-foreground"
-            >
-              Phone
-            </label>
-            <div className="flex">
-              <div className="flex items-center px-3 bg-muted border border-r-0 border-border rounded-l-md">
-                <span className="text-card-foreground flex items-center gap-1">
-                  <span className="inline-block w-5 h-3 bg-destructive relative overflow-hidden rounded-sm">
-                    <span className="absolute inset-0 flex items-center justify-center">
-                      <span className="w-5 h-0.5 bg-white absolute"></span>
-                      <span className="w-0.5 h-3 bg-white absolute"></span>
-                    </span>
-                  </span>
-                  +44
-                </span>
+                <FormField
+                  control={form.control}
+                  name="last_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium text-card-foreground">
+                        Last Name
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Last name"
+                          {...field}
+                          className="bg-muted/70 border-border text-card-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="7911 123456"
-                className="rounded-l-none bg-muted/70 border-border text-card-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary"
-              />
-            </div>
-          </div>
 
-          <div className="space-y-2">
-            <label
-              htmlFor="password"
-              className="text-sm font-medium text-card-foreground"
-            >
-              Password
-            </label>
-            <div className="relative">
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
-                className="bg-muted/70 border-border text-card-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary pr-10"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-card-foreground"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? (
-                  <EyeOff className="h-5 w-5" />
-                ) : (
-                  <Eye className="h-5 w-5" />
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium text-card-foreground">
+                      Username
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Username"
+                        {...field}
+                        className="bg-muted/70 border-border text-card-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
-              </button>
-            </div>
-          </div>
+              />
 
-          <div className="space-y-2">
-            <label
-              htmlFor="currency"
-              className="text-sm font-medium text-card-foreground"
-            >
-              Currency
-            </label>
-            <Select defaultValue="usd">
-              <SelectTrigger className="bg-muted/70 border-border text-card-foreground focus:ring-primary">
-                <div className="flex items-center gap-2">
-                  <span className="inline-block w-5 h-3 bg-accent relative overflow-hidden rounded-sm">
-                    <span className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-white text-[8px]">$</span>
-                    </span>
-                  </span>
-                  <SelectValue />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium text-card-foreground">
+                      Email
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="name@example.com"
+                        {...field}
+                        className="bg-muted/70 border-border text-card-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="space-y-2">
+                <div className="text-sm font-medium text-card-foreground">
+                  Phone
                 </div>
-              </SelectTrigger>
-              <SelectContent className="bg-card border-border text-card-foreground">
-                <SelectItem value="usd">USD</SelectItem>
-                <SelectItem value="eur">EUR</SelectItem>
-                <SelectItem value="gbp">GBP</SelectItem>
-                <SelectItem value="jpy">JPY</SelectItem>
-                <SelectItem value="cad">CAD</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+                <div className="flex gap-2">
+                  <FormField
+                    control={form.control}
+                    name="country_code"
+                    render={({ field }) => (
+                      <FormItem className="w-[100px] flex-shrink-0">
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="bg-muted border border-border text-card-foreground focus:ring-primary">
+                              <SelectValue placeholder="Code" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="bg-card border-border text-card-foreground">
+                            {countryCodes.map((code) => (
+                              <SelectItem key={code.value} value={code.value}>
+                                {code.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-          <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-6 mt-2">
-            CREATE ACCOUNT
-          </Button>
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormControl>
+                          <Input
+                            placeholder="Phone number"
+                            {...field}
+                            className="bg-muted/70 border-border text-card-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <FormField
+                control={form.control}
+                name="country"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium text-card-foreground">
+                      Country
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="bg-muted/70 border-border text-card-foreground focus:ring-primary">
+                          <SelectValue placeholder="Select your country" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="bg-card border-border text-card-foreground">
+                        {countries.map((country) => (
+                          <SelectItem key={country.value} value={country.value}>
+                            {country.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium text-card-foreground">
+                      Password
+                    </FormLabel>
+                    <div className="relative">
+                      <FormControl>
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          {...field}
+                          className="bg-muted/70 border-border text-card-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary pr-10"
+                        />
+                      </FormControl>
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-card-foreground"
+                        aria-label={
+                          showPassword ? "Hide password" : "Show password"
+                        }
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-5 w-5" />
+                        ) : (
+                          <Eye className="h-5 w-5" />
+                        )}
+                      </button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="confirm_password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium text-card-foreground">
+                      Confirm Password
+                    </FormLabel>
+                    <div className="relative">
+                      <FormControl>
+                        <Input
+                          type={showConfirmPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          {...field}
+                          className="bg-muted/70 border-border text-card-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary pr-10"
+                        />
+                      </FormControl>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-card-foreground"
+                        aria-label={
+                          showConfirmPassword
+                            ? "Hide password"
+                            : "Show password"
+                        }
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff className="h-5 w-5" />
+                        ) : (
+                          <Eye className="h-5 w-5" />
+                        )}
+                      </button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                type="submit"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-6 mt-2"
+              >
+                CREATE ACCOUNT
+              </Button>
+            </form>
+          </Form>
         </CardContent>
         <CardFooter className="flex flex-col space-y-3 pt-0">
           <div className="flex items-center justify-center space-x-2 text-sm text-card-foreground/80">
@@ -188,7 +378,7 @@ export default function RegisterPage() {
           </div>
           <div className="flex items-center justify-center text-sm">
             <Link
-              to="/register"
+              to=""
               className="text-primary hover:text-primary/90 font-medium"
             >
               I have a promo-code
