@@ -6,6 +6,7 @@ import Trading from "./pages/trading";
 import RegisterPage from "./pages/auth/register-page";
 import LoginPage from "./pages/auth/login-page";
 import ForgotPasswordPage from "./pages/auth/forgot-password-page";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const MainLayout = lazy(() => import("./layouts/MainLayout"));
 const DepositLayout = lazy(() => import("./layouts/DepositLayout"));
@@ -37,7 +38,14 @@ const App = () => (
     <Suspense fallback={<div>Loading...</div>}>
       <BrowserRouter>
         <Routes>
-          <Route path="/main" element={<MainLayout />}>
+          <Route
+            path="/main"
+            element={
+              <ProtectedRoute>
+                <MainLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route index element={<Navigate to="/main/dashboard" replace />} />
             <Route path="/main/dashboard" element={<TradingDashboard />} />
             <Route path="/main/personal" element={<PersonalInformation />} />
@@ -152,7 +160,14 @@ const App = () => (
             <Route path="/main/settings" element={<SettingsPage />} />
             <Route path="/main/test" element={<Test />} />
           </Route>
-          <Route path="trading" element={<Trading />} />
+          <Route
+            path="trading"
+            element={
+              <ProtectedRoute>
+                <Trading />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Authentication Routes */}
           <Route path="/" element={<LoginPage />} />
