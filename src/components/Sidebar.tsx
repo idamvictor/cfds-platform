@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   User,
@@ -12,6 +12,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import useUserStore from "@/store/userStore";
 
 interface SidebarProps {
   userInfo: {
@@ -24,6 +25,13 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ userInfo, onLinkClick }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const clearUser = useUserStore((state) => state.clearUser);
+
+  const handleLogout = () => {
+    clearUser();
+    navigate("/");
+  };
 
   const navItems = [
     { title: "Dashboard", icon: LayoutDashboard, path: "/main/dashboard" },
@@ -98,7 +106,10 @@ const Sidebar: React.FC<SidebarProps> = ({ userInfo, onLinkClick }) => {
       </nav>
 
       <div className="p-4 border-t border-sidebar-border">
-        <button className="flex items-center gap-3 px-4 py-3 rounded-md text-sidebar-foreground/80 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-all duration-200 w-full justify-start group">
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 px-4 py-3 rounded-md text-sidebar-foreground/80 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-all duration-200 w-full justify-start group"
+        >
           <LogOut className="h-5 w-5 opacity-70 group-hover:opacity-100 transition-opacity" />
           <span>Log Out</span>
         </button>
