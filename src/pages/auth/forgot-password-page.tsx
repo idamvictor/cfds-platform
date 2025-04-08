@@ -1,7 +1,10 @@
+import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useNavigate } from "react-router-dom";
+import useUserStore from "@/store/userStore";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +25,17 @@ const formSchema = z.object({
 });
 
 export default function ForgotPasswordPage() {
+  const navigate = useNavigate();
+  const user = useUserStore((state) => state.user);
+  const token = useUserStore((state) => state.token);
+
+  // Check for existing auth and redirect if found
+  useEffect(() => {
+    if (user && token) {
+      navigate("/main");
+    }
+  }, [user, token, navigate]);
+
   // Initialize form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

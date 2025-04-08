@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eye, EyeOff, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,6 +37,15 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const setUser = useUserStore((state) => state.setUser);
+  const user = useUserStore((state) => state.user);
+  const token = useUserStore((state) => state.token);
+
+  // Check for existing auth and redirect if found
+  useEffect(() => {
+    if (user && token) {
+      navigate("/main");
+    }
+  }, [user, token, navigate]);
 
   // Initialize form
   const form = useForm<z.infer<typeof formSchema>>({
