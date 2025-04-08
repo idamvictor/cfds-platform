@@ -78,6 +78,7 @@ const countryCodes = [
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   // Initialize form
@@ -98,12 +99,15 @@ export default function RegisterPage() {
 
   // Form submission handler
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
     try {
       const response = await axiosInstance.post("/auth/register", values);
       console.log("Registration successful:", response.data);
       navigate("/login");
     } catch (error) {
       console.error("Registration failed:", error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -368,8 +372,16 @@ export default function RegisterPage() {
               <Button
                 type="submit"
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-6 mt-2"
+                disabled={isLoading}
               >
-                CREATE ACCOUNT
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                    Creating account...
+                  </div>
+                ) : (
+                  "CREATE ACCOUNT"
+                )}
               </Button>
             </form>
           </Form>

@@ -34,6 +34,7 @@ const formSchema = z.object({
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const setUser = useUserStore((state) => state.setUser);
 
@@ -48,6 +49,7 @@ export default function LoginPage() {
 
   // Form submission handler
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
     try {
       const response = await axiosInstance.post("/auth/login", values);
       console.log("Login successful:", response.data);
@@ -60,6 +62,8 @@ export default function LoginPage() {
       navigate("/main");
     } catch (error) {
       console.error("Login failed:", error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -143,8 +147,16 @@ export default function LoginPage() {
               <Button
                 type="submit"
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-6"
+                disabled={isLoading}
               >
-                SIGN IN
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                    Signing in...
+                  </div>
+                ) : (
+                  "SIGN IN"
+                )}
               </Button>
             </form>
           </Form>
