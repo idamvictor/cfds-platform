@@ -20,6 +20,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useMobile } from "@/hooks/use-mobile";
+import useUserStore from "@/store/userStore";
 
 interface HeaderProps {
   activePairs: string[];
@@ -362,7 +363,13 @@ export default function Header({
               <DropdownMenuItem>Account Details</DropdownMenuItem>
               <DropdownMenuItem>Transaction History</DropdownMenuItem>
               <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem className="text-red-500">
+              <DropdownMenuItem
+                className="text-red-500"
+                onClick={() => {
+                  useUserStore.getState().clearUser();
+                  window.location.href = "/login";
+                }}
+              >
                 Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
