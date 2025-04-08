@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "@/lib/axios";
+import useUserStore from "@/store/userStore";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,6 +35,7 @@ const formSchema = z.object({
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const setUser = useUserStore((state) => state.setUser);
 
   // Initialize form
   const form = useForm<z.infer<typeof formSchema>>({
@@ -49,6 +51,12 @@ export default function LoginPage() {
     try {
       const response = await axiosInstance.post("/auth/login", values);
       console.log("Login successful:", response.data);
+
+      // Store the user object and token in Zustand store
+      const { user, token } = response.data.data;
+      setUser(user, token);
+      console.log("User data stored in Zustand:", user, token);
+
       navigate("/main");
     } catch (error) {
       console.error("Login failed:", error);
