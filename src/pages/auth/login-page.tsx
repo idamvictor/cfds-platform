@@ -3,6 +3,8 @@ import { Eye, EyeOff, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "@/lib/axios";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +33,7 @@ const formSchema = z.object({
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   // Initialize form
   const form = useForm<z.infer<typeof formSchema>>({
@@ -42,9 +45,14 @@ export default function LoginPage() {
   });
 
   // Form submission handler
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    // Here you would typically authenticate the user
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const response = await axiosInstance.post("/auth/login", values);
+      console.log("Login successful:", response.data);
+      navigate("/main");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   }
 
   return (

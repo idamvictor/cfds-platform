@@ -3,6 +3,8 @@ import { Eye, EyeOff, Pencil } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "@/lib/axios";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -76,6 +78,7 @@ const countryCodes = [
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
 
   // Initialize form
   const form = useForm<z.infer<typeof formSchema>>({
@@ -94,9 +97,14 @@ export default function RegisterPage() {
   });
 
   // Form submission handler
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    // Here you would typically send the data to your API
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const response = await axiosInstance.post("/auth/register", values);
+      console.log("Registration successful:", response.data);
+      navigate("/login");
+    } catch (error) {
+      console.error("Registration failed:", error);
+    }
   }
 
   return (

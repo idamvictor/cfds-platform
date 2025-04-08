@@ -37,12 +37,12 @@ const App = () => (
     <Suspense fallback={<div>Loading...</div>}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<MainLayout />}>
-            <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route path="dashboard" element={<TradingDashboard />} />
-            <Route path="personal" element={<PersonalInformation />} />
+          <Route path="/main" element={<MainLayout />}>
+            <Route index element={<Navigate to="/main/dashboard" replace />} />
+            <Route path="/main/dashboard" element={<TradingDashboard />} />
+            <Route path="/main/personal" element={<PersonalInformation />} />
 
-            <Route path="deposit" element={<DepositLayout />}>
+            <Route path="/main/deposit" element={<DepositLayout />}>
               <Route
                 index
                 element={<Navigate to="/deposit/crypto" replace />}
@@ -144,19 +144,19 @@ const App = () => (
             </Route>
 
             {/* Placeholder routes for other sections */}
-            <Route path="withdrawal" element={<WithdrawalForm />} />
-            <Route path="verification" element={<Verification />} />
-            <Route path="accounts" element={<AccountsPage />} />
-            <Route path="chat" element={<LiveChat />} />
-            <Route path="savings" element={<SavingsPage />} />
-            <Route path="settings" element={<SettingsPage />} />
-            <Route path="test" element={<Test />} />
+            <Route path="/main/withdrawal" element={<WithdrawalForm />} />
+            <Route path="/main/verification" element={<Verification />} />
+            <Route path="/main/accounts" element={<AccountsPage />} />
+            <Route path="/main/chat" element={<LiveChat />} />
+            <Route path="/main/savings" element={<SavingsPage />} />
+            <Route path="/main/settings" element={<SettingsPage />} />
+            <Route path="/main/test" element={<Test />} />
           </Route>
           <Route path="trading" element={<Trading />} />
 
           {/* Authentication Routes */}
+          <Route path="/" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
           <Route path="*" element={<NotFound />} />

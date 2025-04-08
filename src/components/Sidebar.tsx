@@ -26,15 +26,15 @@ const Sidebar: React.FC<SidebarProps> = ({ userInfo, onLinkClick }) => {
   const location = useLocation();
 
   const navItems = [
-    { title: "Dashboard", icon: LayoutDashboard, path: "/" },
-    { title: "Personal Information", icon: User, path: "/personal" },
+    { title: "Dashboard", icon: LayoutDashboard, path: "/main/dashboard" },
+    { title: "Personal Information", icon: User, path: "/main/personal" },
     // { title: "Deposit", icon: PiggyBank, path: "/deposit" },
-    { title: "Withdrawal", icon: ArrowUpDown, path: "/withdrawal" },
-    { title: "Verification", icon: FileCheck, path: "/verification" },
-    { title: "Accounts", icon: Folders, path: "/accounts" },
-    { title: "Live Chat", icon: MessageSquare, path: "/chat" },
-    { title: "Savings", icon: PiggyBank, path: "/savings" },
-    { title: "Settings", icon: Settings, path: "/settings" },
+    { title: "Withdrawal", icon: ArrowUpDown, path: "/main/withdrawal" },
+    { title: "Verification", icon: FileCheck, path: "/main/verification" },
+    { title: "Accounts", icon: Folders, path: "/main/accounts" },
+    { title: "Live Chat", icon: MessageSquare, path: "/main/chat" },
+    { title: "Savings", icon: PiggyBank, path: "/main/savings" },
+    { title: "Settings", icon: Settings, path: "/main/settings" },
   ];
 
   // Function to check if a nav item is active
