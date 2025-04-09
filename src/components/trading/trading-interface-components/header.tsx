@@ -37,12 +37,11 @@ export default function Header({
   removeCurrencyPair,
 }: HeaderProps) {
   const tabsListRef = useRef<HTMLDivElement>(null);
+  const activeTabRef = useRef<HTMLDivElement>(null);
   const [showScrollButtons, setShowScrollButtons] = useState(false);
   const isMobile = useMobile();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const { activeAsset, setActiveAsset } = useAssetStore();
-
-  console.log("Header - Active pairs:", setActiveAsset);
+  const { activeAsset, setActiveAsset, assets } = useAssetStore();
 
   // Check if scroll buttons should be shown
   useEffect(() => {
@@ -61,6 +60,32 @@ export default function Header({
     };
   }, [activePairs]);
 
+  // Scroll active tab into view when it changes
+  useEffect(() => {
+    if (activeTabRef.current && tabsListRef.current) {
+      const tabElement = activeTabRef.current;
+      const container = tabsListRef.current;
+
+      // Calculate position to scroll to
+      const tabLeft = tabElement.offsetLeft;
+      const tabRight = tabLeft + tabElement.offsetWidth;
+      const containerLeft = container.scrollLeft;
+      const containerRight = containerLeft + container.offsetWidth;
+
+      // If tab is not fully visible, scroll to make it visible
+      if (tabLeft < containerLeft) {
+        // Tab is to the left of the visible area
+        container.scrollTo({ left: tabLeft - 10, behavior: "smooth" });
+      } else if (tabRight > containerRight) {
+        // Tab is to the right of the visible area
+        container.scrollTo({
+          left: tabRight - container.offsetWidth + 10,
+          behavior: "smooth",
+        });
+      }
+    }
+  }, [activePair]);
+
   const scrollTabs = (direction: "left" | "right") => {
     if (tabsListRef.current) {
       const scrollAmount = direction === "left" ? -200 : 200;
@@ -68,10 +93,15 @@ export default function Header({
     }
   };
 
-  // const handleAssetClick = (asset) => {
-  //   setActiveAsset(asset);
-  //   // Other existing code
-  // };
+  const handlePairClick = (pair: string) => {
+    setActivePair(pair);
+
+    // Find and set the corresponding asset
+    const asset = assets.find((a) => a.symbol_display === pair);
+    if (asset) {
+      setActiveAsset(asset);
+    }
+  };
 
   return (
     <header className="flex items-center justify-between h-16 px-2 sm:px-4 border-b border-border bg-background">
@@ -144,7 +174,7 @@ export default function Header({
                                 ? "bg-primary/10"
                                 : "hover:bg-muted/50"
                             }`}
-                            onClick={() => setActivePair(pair)}
+                            onClick={() => handlePairClick(pair)}
                           >
                             <div className="flex items-center gap-2">
                               <CurrencyFlag pair={pair} />
@@ -214,7 +244,7 @@ export default function Header({
                 <ChevronLeft className="h-4 w-4" />
               </Button>
             )}
-            <div className="overflow-hidden max-w-[300px] sm:max-w-[400px] md:max-w-[400px]">
+            <div className="overflow-hidden max-w-[300px] sm:max-w-[400px] md:max-w-[500px]">
               <div className="w-full">
                 <div
                   ref={tabsListRef}
@@ -224,12 +254,13 @@ export default function Header({
                   {activePairs.map((pair) => (
                     <div
                       key={pair}
+                      ref={activePair === pair ? activeTabRef : null}
                       className={`flex items-center gap-2 px-3 py-2 cursor-pointer ${
                         activePair === pair
                           ? "bg-primary/10"
                           : "hover:bg-muted/50"
                       }`}
-                      onClick={() => setActivePair(pair)}
+                      onClick={() => handlePairClick(pair)}
                     >
                       <CurrencyFlag pair={pair} />
                       <span>{pair}</span>
@@ -285,7 +316,7 @@ export default function Header({
                   activePair === pair ? "bg-primary/10" : "hover:bg-muted/50"
                 }`}
                 onClick={() => {
-                  setActivePair(pair);
+                  handlePairClick(pair);
                   setIsSearchOpen(false);
                 }}
               >
@@ -478,4 +509,3 @@ function ChevronRight(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
-

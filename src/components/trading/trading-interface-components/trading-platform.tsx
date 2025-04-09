@@ -3,6 +3,7 @@ import Header from "./header";
 import Sidebar from "./sidebar";
 import MainContent from "./main-content";
 import useAssetStore from "@/store/assetStore";
+import AssetInitializer from "../asset-initializer";
 
 export type ActiveView =
   | "market-watch"
@@ -13,21 +14,13 @@ export type ActiveView =
   | null;
 
 export default function TradingPlatform() {
-  // Add more currency pairs for testing horizontal scrolling
+  // Start with just one default currency pair
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
   const [activeView, setActiveView] = useState<ActiveView>("market-watch"); // Set market-watch as default view
-  const [activePairs, setActivePairs] = useState<string[]>([
-    "AUD/JPY",
-    "AUD/CHF",
-    "EUR/USD",
-    "GBP/USD",
-    "USD/CAD",
-    "USD/JPY",
-    "EUR/GBP",
-  ]);
-  const [activePair, setActivePair] = useState("AUD/CHF");
+  const [activePairs, setActivePairs] = useState<string[]>(["AUD/JPY"]);
+  const [activePair, setActivePair] = useState("AUD/JPY");
 
-  const { setActiveAsset, assets, fetchAssets } = useAssetStore();
+  const { setActiveAsset, assets, fetchAssets, activeAsset } = useAssetStore();
 
   // Fetch assets when component mounts
   useEffect(() => {
@@ -39,6 +32,19 @@ export default function TradingPlatform() {
   useEffect(() => {
     console.log("TradingPlatform - Assets loaded:", assets.length);
   }, [assets]);
+
+  // Update active pair when active asset changes
+  useEffect(() => {
+    if (activeAsset && activeAsset.symbol_display) {
+      // Update the active pair to match the active asset
+      setActivePair(activeAsset.symbol_display);
+
+      // Make sure this pair is in the activePairs list
+      if (!activePairs.includes(activeAsset.symbol_display)) {
+        setActivePairs((prev) => [...prev, activeAsset.symbol_display]);
+      }
+    }
+  }, [activeAsset, activePairs]);
 
   const toggleSidebar = () => {
     setSidebarExpanded(!sidebarExpanded);
@@ -59,10 +65,9 @@ export default function TradingPlatform() {
 
     if (!activePairs.includes(pair)) {
       setActivePairs([...activePairs, pair]);
-      setActivePair(pair);
-    } else {
-      setActivePair(pair);
     }
+
+    setActivePair(pair);
   };
 
   const removeCurrencyPair = (pair: string) => {
@@ -73,12 +78,19 @@ export default function TradingPlatform() {
       // If the removed pair was active, set the first pair as active
       if (activePair === pair) {
         setActivePair(newPairs[0]);
+
+        // Also update the active asset
+        const newAsset = assets.find((a) => a.symbol_display === newPairs[0]);
+        if (newAsset) {
+          setActiveAsset(newAsset);
+        }
       }
     }
   };
 
   return (
     <div className="flex flex-col h-screen bg-background text-foreground">
+      <AssetInitializer />
       <Header
         activePairs={activePairs}
         activePair={activePair}

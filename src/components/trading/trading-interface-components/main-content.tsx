@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Maximize2,
   Camera,
@@ -38,6 +38,10 @@ export default function MainContent({
   console.log(sidebarExpanded)
 
   const { activeAsset } = useAssetStore();
+
+  useEffect(() => {
+    console.log("MainContent - Active asset changed:", activeAsset);
+  }, [activeAsset]);
 
   const handleResizeChart = (increase: boolean) => {
     setChartHeight((prev) => {

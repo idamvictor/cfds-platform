@@ -43,7 +43,8 @@ interface AssetStore {
   getAssetBySymbol: (symbol: string) => Asset | undefined;
 }
 
-const DEFAULT_ASSET_SYMBOL = "BITSTAMP:BTCUSD"; // Default to BTC/USD if no active asset
+// Default to BTC/USD if no active asset
+const DEFAULT_ASSET_SYMBOL = "BITSTAMP:BTCUSD";
 
 const useAssetStore = create<AssetStore>()(
   persist(
@@ -75,17 +76,30 @@ const useAssetStore = create<AssetStore>()(
 
           // Set default active asset if none is selected
           const currentActive = get().activeAsset;
-          const defaultAsset =
-            currentActive ||
-            assets.find((a) => a.tv_symbol === DEFAULT_ASSET_SYMBOL) ||
-            assets[0];
-          console.log("Setting active asset:", defaultAsset);
+
+          // Find a Bitcoin asset first (for default)
+          let defaultAsset = assets.find(
+            (a) => a.tv_symbol === DEFAULT_ASSET_SYMBOL
+          );
+
+          // If no Bitcoin asset, try to find a forex asset that matches AUD/JPY
+          if (!defaultAsset) {
+            defaultAsset = assets.find((a) => a.symbol_display === "AUD/JPY");
+          }
+
+          // If still no match, just use the first asset
+          if (!defaultAsset && assets.length > 0) {
+            defaultAsset = assets[0];
+          }
+
+          const finalAsset = currentActive || defaultAsset;
+          console.log("Setting active asset:", finalAsset);
 
           set({
             assets,
             groupedAssets,
             isLoading: false,
-            activeAsset: defaultAsset,
+            activeAsset: finalAsset,
           });
         } catch (error) {
           console.error("Failed to fetch assets:", error);
@@ -97,6 +111,7 @@ const useAssetStore = create<AssetStore>()(
       },
 
       setActiveAsset: (asset) => {
+        console.log("Setting active asset:", asset);
         set({ activeAsset: asset });
       },
 

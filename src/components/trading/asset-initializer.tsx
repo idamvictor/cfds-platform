@@ -8,7 +8,9 @@ export default function AssetInitializer() {
 
   useEffect(() => {
     console.log("AssetInitializer - Fetching assets");
-    fetchAssets();
+    fetchAssets().catch((err) => {
+      console.error("Error fetching assets:", err);
+    });
   }, [fetchAssets]);
 
   useEffect(() => {
