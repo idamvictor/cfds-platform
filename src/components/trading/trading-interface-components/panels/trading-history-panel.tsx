@@ -1,92 +1,46 @@
-import { ChevronDown, X } from "lucide-react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { ChevronDown, X, Loader2 } from "lucide-react";
+import useTradeStore from "@/store/tradeStore";
+import type { Trade } from "@/store/tradeStore";
 
 export default function TradingHistoryPanel() {
-  const tradingHistory = [
-    {
-      id: 1,
-      time: "09:00",
-      date: "Mar 26",
-      pair: "AUD/CAD",
-      type: "Forex",
-      profit: "-$0.08",
-      isPositive: false,
-      amount: "1000.00 AUDCAD",
-      fromPrice: "0.90395",
-      toPrice: "0.90384",
-    },
-    {
-      id: 2,
-      time: "12:52",
-      date: "Oct 20",
-      pair: "Bitcoin",
-      type: "Crypto",
-      profit: "-$0.16",
-      isPositive: false,
-      amount: "0.01 BTCUSD",
-      fromPrice: "68,436.0",
-      toPrice: "68,419.9",
-    },
-    {
-      id: 3,
-      time: "16:16",
-      date: "Sep 04",
-      pair: "AUD/CHF",
-      type: "Forex",
-      profit: "+$70.33",
-      isPositive: true,
-      amount: "3000 AUDCHF",
-      fromPrice: "0.59117",
-      toPrice: "0.57127",
-    },
-    {
-      id: 4,
-      time: "16:16",
-      date: "Sep 04",
-      pair: "CAD/JPY",
-      type: "Forex",
-      profit: "+$9.32",
-      isPositive: true,
-      amount: "2000 CADJPY",
-      fromPrice: "106.060",
-      toPrice: "106.732",
-    },
-    {
-      id: 5,
-      time: "16:16",
-      date: "Sep 04",
-      pair: "EUR/SGD",
-      type: "Forex",
-      profit: "+$10.88",
-      isPositive: true,
-      amount: "3000 EURSGD",
-      fromPrice: "1.44980",
-      toPrice: "1.44507",
-    },
-    {
-      id: 6,
-      time: "16:07",
-      date: "Sep 04",
-      pair: "AUD/USD",
-      type: "Forex",
-      profit: "+$1.74",
-      isPositive: true,
-      amount: "3000 AUDUSD",
-      fromPrice: "0.67798",
-      toPrice: "0.67740",
-    },
-    {
-      id: 7,
-      time: "13:02",
-      date: "Aug 22",
-      pair: "Gold",
-      type: "Metals",
-      profit: "+$40.58",
-      isPositive: true,
-      amount: "2.00 XAUUSD",
-      fromPrice: "2,519.92",
-      toPrice: "2,499.63",
-    },
-  ];
+  const {
+    closedTrades,
+    isLoadingClosed,
+    errorClosed,
+    fetchMoreClosedTrades,
+    hasMoreClosedTrades,
+  } = useTradeStore();
+
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  // Setup intersection observer for infinite scrolling
+  const lastElementRef = useCallback(() => {
+    if (isLoadingClosed) return;
+
+    if (observerRef.current) observerRef.current.disconnect();
+
+    observerRef.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasMoreClosedTrades()) {
+        fetchMoreClosedTrades();
+      }
+    });
+
+    if (loadMoreRef.current) {
+      observerRef.current.observe(loadMoreRef.current);
+    }
+  }, [isLoadingClosed, fetchMoreClosedTrades, hasMoreClosedTrades]);
+
+  // Set up the observer when component mounts
+  useEffect(() => {
+    lastElementRef();
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [lastElementRef, closedTrades]);
 
   return (
     <div className="h-full bg-background flex flex-col">
@@ -98,58 +52,150 @@ export default function TradingHistoryPanel() {
       </div>
 
       <div className="flex-1 overflow-auto">
-        <div className="space-y-px">
-          {tradingHistory.map((trade) => (
-            <div
-              key={trade.id}
-              className="p-3 border-b border-border hover:bg-muted/30"
-            >
-              <div className="flex justify-between items-start">
-                <div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-sm font-medium">{trade.time}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {trade.date}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 mt-1">
-                    <CurrencyFlag pair={trade.pair} />
-                    <span className="text-sm">{trade.pair}</span>
-                  </div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {trade.type}
-                  </div>
-                  <button className="text-xs text-muted-foreground flex items-center mt-1">
-                    More <ChevronDown className="h-3 w-3 ml-1" />
-                  </button>
-                </div>
+        {errorClosed && (
+          <div className="text-red-500 text-center p-2">{errorClosed}</div>
+        )}
 
-                <div className="text-right">
-                  <div
-                    className={`text-sm font-medium ${
-                      trade.isPositive ? "text-green-500" : "text-red-500"
-                    }`}
-                  >
-                    {trade.profit}
-                  </div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {trade.amount}
-                  </div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {trade.fromPrice} → {trade.toPrice}
-                  </div>
+        {closedTrades.length === 0 && !isLoadingClosed ? (
+          <div className="text-center text-muted-foreground py-4">
+            No trading history found
+          </div>
+        ) : (
+          <div className="space-y-px">
+            {closedTrades.map((trade) => (
+              <TradeHistoryItem key={trade.id} trade={trade} />
+            ))}
+
+            {/* Loading indicator and intersection observer target */}
+            <div ref={loadMoreRef} className="py-2 text-center">
+              {isLoadingClosed && (
+                <div className="flex justify-center items-center py-2">
+                  <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
                 </div>
-              </div>
+              )}
             </div>
-          ))}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-function CurrencyFlag({ pair }: { pair: string }) {
-  if (pair === "Bitcoin") {
+function TradeHistoryItem({ trade }: { trade: Trade }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const formattedPnl = trade.pnl.toFixed(2);
+  const isPnlPositive = trade.pnl >= 0;
+
+  // Format date for display
+  const openDate = new Date(trade.open_time);
+  const time = openDate.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const date = openDate.toLocaleDateString([], {
+    month: "short",
+    day: "numeric",
+  });
+
+  return (
+    <div className="p-3 border-b border-border hover:bg-muted/30">
+      <div className="flex justify-between items-start">
+        <div>
+          <div className="flex items-center gap-1">
+            <span className="text-sm font-medium">{time}</span>
+            <span className="text-xs text-muted-foreground">{date}</span>
+          </div>
+          <div className="flex items-center gap-2 mt-1">
+            <CurrencyFlag
+              assetId={trade.asset_id}
+              symbol={trade.asset_symbol}
+            />
+            <span className="text-sm">{trade.asset_symbol}</span>
+          </div>
+          <div className="text-xs text-muted-foreground mt-1">
+            {trade.asset_id.split("-")[0].toUpperCase()}
+          </div>
+          <button
+            className="text-xs text-muted-foreground flex items-center mt-1"
+            onClick={() => setIsExpanded(!isExpanded)}
+          >
+            More{" "}
+            <ChevronDown
+              className={`h-3 w-3 ml-1 transition-transform ${
+                isExpanded ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+        </div>
+
+        <div className="text-right">
+          <div
+            className={`text-sm font-medium ${
+              isPnlPositive ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            {isPnlPositive
+              ? `+$${formattedPnl}`
+              : `-$${Math.abs(Number.parseFloat(formattedPnl))}`}
+          </div>
+          <div className="text-xs text-muted-foreground mt-1">
+            {trade.volume.toFixed(2)} {trade.asset_name}
+          </div>
+          <div className="text-xs text-muted-foreground mt-1">
+            {trade.opening_price} → {trade.closing_price}
+          </div>
+        </div>
+      </div>
+
+      {isExpanded && (
+        <div className="mt-2 pt-2 border-t border-border/50 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">ID:</span>
+            <span className="font-mono">{trade.id.substring(0, 8)}...</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Type:</span>
+            <span
+              className={
+                trade.trade_type === "buy" ? "text-green-500" : "text-red-500"
+              }
+            >
+              {trade.trade_type.toUpperCase()}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Amount:</span>
+            <span>${trade.amount.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Leverage:</span>
+            <span>x{trade.leverage}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Take Profit:</span>
+            <span>{trade.take_profit > 0 ? trade.take_profit : "-"}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Stop Loss:</span>
+            <span>{trade.stop_loss > 0 ? trade.stop_loss : "-"}</span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CurrencyFlag({
+  assetId,
+  symbol,
+}: {
+  assetId: string;
+  symbol: string;
+}) {
+  const type = assetId.split("-")[0];
+
+  if (type === "crypto") {
     return (
       <div className="h-5 w-5 rounded-full bg-[#F7931A] flex items-center justify-center">
         <svg
@@ -190,7 +236,7 @@ function CurrencyFlag({ pair }: { pair: string }) {
         </svg>
       </div>
     );
-  } else if (pair === "Gold") {
+  } else if (symbol.includes("Gold") || symbol.includes("XAU")) {
     return (
       <div className="h-5 w-5 rounded-full bg-[#FFD700] flex items-center justify-center text-black text-xs font-bold">
         Au
@@ -198,13 +244,14 @@ function CurrencyFlag({ pair }: { pair: string }) {
     );
   } else {
     // For forex pairs
-    const firstCurrency = pair.split("/")[0];
+    const firstCurrency = symbol.split("/")[0];
     let color = "bg-blue-500";
 
     if (firstCurrency === "AUD") color = "bg-blue-500";
     else if (firstCurrency === "CAD") color = "bg-red-500";
     else if (firstCurrency === "EUR") color = "bg-blue-600";
     else if (firstCurrency === "USD") color = "bg-green-500";
+    else if (firstCurrency === "GBP") color = "bg-purple-500";
 
     return (
       <div

@@ -3,6 +3,7 @@ import Header from "./header";
 import Sidebar from "./sidebar";
 import MainContent from "./main-content";
 import useAssetStore from "@/store/assetStore";
+import useTradeStore from "@/store/tradeStore";
 import AssetInitializer from "../asset-initializer";
 
 export type ActiveView =
@@ -16,17 +17,20 @@ export type ActiveView =
 export default function TradingPlatform() {
   // Start with just one default currency pair
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
-  const [activeView, setActiveView] = useState<ActiveView>("market-watch"); // Set market-watch as default view
+  const [activeView, setActiveView] = useState<ActiveView>(null); // Set to null by default (panels closed)
   const [activePairs, setActivePairs] = useState<string[]>(["AUD/JPY"]);
   const [activePair, setActivePair] = useState("AUD/JPY");
 
   const { setActiveAsset, assets, fetchAssets, activeAsset } = useAssetStore();
+  const { fetchOpenTrades, fetchClosedTrades } = useTradeStore();
 
-  // Fetch assets when component mounts
+  // Fetch assets and trades when component mounts
   useEffect(() => {
-    console.log("TradingPlatform - Fetching assets");
+    console.log("TradingPlatform - Fetching assets and trades");
     fetchAssets();
-  }, [fetchAssets]);
+    fetchOpenTrades();
+    fetchClosedTrades();
+  }, [fetchAssets, fetchOpenTrades, fetchClosedTrades]);
 
   // Log assets when they change
   useEffect(() => {
@@ -96,6 +100,7 @@ export default function TradingPlatform() {
         activePair={activePair}
         setActivePair={setActivePair}
         removeCurrencyPair={removeCurrencyPair}
+        toggleView={toggleView}
       />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar

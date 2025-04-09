@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -8,6 +8,7 @@ import {
   Filter,
   ChevronRight,
   Info,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -25,193 +26,76 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import useTradeStore from "@/store/tradeStore";
+import type { Trade } from "@/store/tradeStore";
 
 export default function OrderTable() {
   const [activeTab, setActiveTab] = useState<"active" | "history">("active");
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showCloseDialog, setShowCloseDialog] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [selectedOrder, setSelectedOrder] = useState<Trade | null>(null);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [showAccountDetails, setShowAccountDetails] = useState(false);
 
   const isMobile = useMobile(768); // Use 768px as the breakpoint for mobile view
 
-  // Sample data for active orders
-  const activeOrders = [
-    {
-      id: "50151584",
-      symbol: "Ethereum Classic",
-      type: "Sell" as const,
-      volume: 0.01,
-      openPrice: 18.3075,
-      timedOrder: "-",
-      openTime: "3/26/2025, 2:57:56 PM",
-      sl: "-",
-      tp: "-",
-      price: 16.3025,
-      commission: 0.0,
-      swap: 0.0,
-      pnl: 0.02,
-    },
-    {
-      id: "50151582",
-      symbol: "Ethereum Classic",
-      type: "Buy" as const,
-      volume: 0.01,
-      openPrice: 18.3225,
-      timedOrder: "-",
-      openTime: "3/26/2025, 2:57:10 PM",
-      sl: "-",
-      tp: "-",
-      price: 16.2875,
-      commission: 0.0,
-      swap: 0.0,
-      pnl: -0.02,
-    },
-    {
-      id: "50151498",
-      symbol: "Tron",
-      type: "Buy" as const,
-      volume: 0.17,
-      openPrice: 0.2302,
-      timedOrder: "-",
-      openTime: "3/26/2025, 9:02:40 AM",
-      sl: "-",
-      tp: "-",
-      price: 0.2317,
-      commission: 0.0,
-      swap: 0.0,
-      pnl: 0.0,
-    },
-    {
-      id: "50151497",
-      symbol: "AUD/CAD",
-      type: "Buy" as const,
-      volume: 1.0,
-      openPrice: 0.9,
-      timedOrder: "-",
-      openTime: "3/26/2025, 8:59:28 AM",
-      sl: "-",
-      tp: "-",
-      price: 0.9,
-      commission: 0.0,
-      swap: 0.0,
-      pnl: -0.08,
-    },
-    {
-      id: "50109419",
-      symbol: "Bitcoin",
-      type: "Buy" as const,
-      volume: 0.01,
-      openPrice: 68436.0,
-      timedOrder: "-",
-      openTime: "10/20/2024, 12:44:28 PM",
-      sl: "-",
-      tp: "-",
-      price: 68419.9,
-      commission: 0.0,
-      swap: 0.0,
-      pnl: -0.16,
-    },
-    {
-      id: "50089827",
-      symbol: "AUD/CHF",
-      type: "Sell" as const,
-      volume: 3.0,
-      openPrice: 0.59,
-      timedOrder: "-",
-      openTime: "9/4/2024, 3:52:01 PM",
-      sl: "-",
-      tp: "-",
-      price: 0.57,
-      commission: 0.0,
-      swap: 0.0,
-      pnl: 70.33,
-    },
-  ];
+  const {
+    openTrades,
+    closedTrades,
+    isLoadingOpen,
+    isLoadingClosed,
+    errorOpen,
+    errorClosed,
+    fetchMoreOpenTrades,
+    fetchMoreClosedTrades,
+    hasMoreOpenTrades,
+    hasMoreClosedTrades,
+  } = useTradeStore();
 
-  // Sample data for order history
-  const orderHistory = [
-    {
-      id: "50151497",
-      symbol: "AUD/CAD",
-      type: "Buy" as const,
-      volume: 1.0,
-      openPrice: 0.9,
-      openTime: "3/26/2025, 8:59:28 AM",
-      closePrice: 0.9,
-      closeTime: "3/26/2025, 9:00:38 AM",
-      commission: 0.0,
-      swap: 0.0,
-      pnl: -0.08,
-    },
-    {
-      id: "50109419",
-      symbol: "Bitcoin",
-      type: "Buy" as const,
-      volume: 0.01,
-      openPrice: 68436.0,
-      openTime: "10/20/2024, 12:44:28 PM",
-      closePrice: 68419.9,
-      closeTime: "10/20/2024, 12:52:16 PM",
-      commission: 0.0,
-      swap: 0.0,
-      pnl: -0.16,
-    },
-    {
-      id: "50089827",
-      symbol: "AUD/CHF",
-      type: "Sell" as const,
-      volume: 3.0,
-      openPrice: 0.59,
-      openTime: "9/4/2024, 3:52:01 PM",
-      closePrice: 0.57,
-      closeTime: "9/4/2024, 4:16:22 PM",
-      commission: 0.0,
-      swap: 0.0,
-      pnl: 70.33,
-    },
-    {
-      id: "50089829",
-      symbol: "CAD/JPY",
-      type: "Buy" as const,
-      volume: 2.0,
-      openPrice: 106.06,
-      openTime: "9/4/2024, 3:52:18 PM",
-      closePrice: 106.73,
-      closeTime: "9/4/2024, 4:16:04 PM",
-      commission: 0.0,
-      swap: 0.0,
-      pnl: 9.32,
-    },
-    {
-      id: "50089830",
-      symbol: "EUR/USD",
-      type: "Sell" as const,
-      volume: 1.5,
-      openPrice: 1.0825,
-      openTime: "9/4/2024, 4:10:18 PM",
-      closePrice: 1.081,
-      closeTime: "9/4/2024, 4:45:04 PM",
-      commission: 0.0,
-      swap: 0.0,
-      pnl: 22.5,
-    },
-    {
-      id: "50089831",
-      symbol: "GBP/JPY",
-      type: "Buy" as const,
-      volume: 0.5,
-      openPrice: 186.25,
-      openTime: "9/5/2024, 9:15:18 AM",
-      closePrice: 186.75,
-      closeTime: "9/5/2024, 10:30:04 AM",
-      commission: 0.0,
-      swap: 0.0,
-      pnl: 3.75,
-    },
-  ];
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  // Setup intersection observer for infinite scrolling
+  const lastElementRef = useCallback(() => {
+    const isLoading = activeTab === "active" ? isLoadingOpen : isLoadingClosed;
+    const hasMore =
+      activeTab === "active" ? hasMoreOpenTrades() : hasMoreClosedTrades();
+    const fetchMore =
+      activeTab === "active" ? fetchMoreOpenTrades : fetchMoreClosedTrades;
+
+    if (isLoading) return;
+
+    if (observerRef.current) observerRef.current.disconnect();
+
+    observerRef.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasMore) {
+        fetchMore();
+      }
+    });
+
+    if (loadMoreRef.current) {
+      observerRef.current.observe(loadMoreRef.current);
+    }
+  }, [
+    activeTab,
+    isLoadingOpen,
+    isLoadingClosed,
+    hasMoreOpenTrades,
+    hasMoreClosedTrades,
+    fetchMoreOpenTrades,
+    fetchMoreClosedTrades,
+  ]);
+
+  // Set up the observer when component mounts or tab changes
+  useEffect(() => {
+    lastElementRef();
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [lastElementRef, activeTab, openTrades, closedTrades]);
 
   // Account summary data
   const accountData = {
@@ -221,11 +105,11 @@ export default function OrderTable() {
     margin: 0.0,
     marginLevel: "31381102.23%",
     freeMargin: 610.05,
-    pnl: 0.0,
+    pnl: openTrades.reduce((sum, trade) => sum + trade.pnl, 0),
     lifetimePnl: 460.05,
   };
 
-  const handleClosePosition = (order: any) => {
+  const handleClosePosition = (order: Trade) => {
     setSelectedOrder(order);
     setShowCloseDialog(true);
   };
@@ -240,7 +124,7 @@ export default function OrderTable() {
   };
 
   // Mobile card view for orders
-  const renderMobileOrderCard = (order: any, isHistory = false) => {
+  const renderMobileOrderCard = (order: Trade, isHistory = false) => {
     const isExpanded = expandedOrderId === order.id;
 
     return (
@@ -251,12 +135,14 @@ export default function OrderTable() {
         <div className="p-3 bg-muted/30 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Badge
-              variant={order.type === "Buy" ? "default" : "secondary"}
-              className={order.type === "Buy" ? "bg-green-500" : "bg-red-500"}
+              variant={order.trade_type === "buy" ? "default" : "secondary"}
+              className={
+                order.trade_type === "buy" ? "bg-green-500" : "bg-red-500"
+              }
             >
-              {order.type}
+              {order.trade_type.toUpperCase()}
             </Badge>
-            <span className="font-medium">{order.symbol}</span>
+            <span className="font-medium">{order.asset_symbol}</span>
           </div>
           <div className="flex items-center gap-2">
             <span
@@ -290,62 +176,47 @@ export default function OrderTable() {
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <div className="text-xs text-muted-foreground">ID</div>
-                <div className="text-sm">{order.id}</div>
+                <div className="text-sm">{order.id.substring(0, 8)}...</div>
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">Volume</div>
-                <div className="text-sm">{order.volume}</div>
+                <div className="text-sm">{order.volume.toFixed(2)}</div>
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">Open Price</div>
-                <div className="text-sm">{order.openPrice}</div>
+                <div className="text-sm">{order.opening_price}</div>
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">
                   {isHistory ? "Close Price" : "Current Price"}
                 </div>
-                <div className="text-sm">
-                  {isHistory ? order.closePrice : order.price}
-                </div>
+                <div className="text-sm">{order.closing_price}</div>
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">Open Time</div>
-                <div className="text-sm">{order.openTime}</div>
-              </div>
-              {isHistory ? (
-                <div>
-                  <div className="text-xs text-muted-foreground">
-                    Close Time
-                  </div>
-                  <div className="text-sm">{order.closeTime}</div>
+                <div className="text-sm">
+                  {new Date(order.open_time).toLocaleString()}
                 </div>
-              ) : (
-                <div>
-                  <div className="text-xs text-muted-foreground">
-                    Timed Order
-                  </div>
-                  <div className="text-sm">{order.timedOrder}</div>
-                </div>
-              )}
-              {!isHistory && (
-                <>
-                  <div>
-                    <div className="text-xs text-muted-foreground">SL</div>
-                    <div className="text-sm">{order.sl}</div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-muted-foreground">TP</div>
-                    <div className="text-sm">{order.tp}</div>
-                  </div>
-                </>
-              )}
-              <div>
-                <div className="text-xs text-muted-foreground">Commission</div>
-                <div className="text-sm">${order.commission.toFixed(2)}</div>
               </div>
               <div>
-                <div className="text-xs text-muted-foreground">Swap</div>
-                <div className="text-sm">${order.swap.toFixed(2)}</div>
+                <div className="text-xs text-muted-foreground">Leverage</div>
+                <div className="text-sm">x{order.leverage}</div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground">Take Profit</div>
+                <div className="text-sm">
+                  {order.take_profit > 0 ? order.take_profit : "-"}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground">Stop Loss</div>
+                <div className="text-sm">
+                  {order.stop_loss > 0 ? order.stop_loss : "-"}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground">Amount</div>
+                <div className="text-sm">${order.amount.toFixed(2)}</div>
               </div>
             </div>
 
@@ -372,6 +243,22 @@ export default function OrderTable() {
 
   // Desktop table view
   const renderDesktopTable = () => {
+    const trades = activeTab === "active" ? openTrades : closedTrades;
+    const isLoading = activeTab === "active" ? isLoadingOpen : isLoadingClosed;
+    const error = activeTab === "active" ? errorOpen : errorClosed;
+
+    if (error) {
+      return <div className="w-full p-4 text-center text-red-500">{error}</div>;
+    }
+
+    if (trades.length === 0 && !isLoading) {
+      return (
+        <div className="w-full p-4 text-center text-muted-foreground">
+          No {activeTab === "active" ? "active" : "historical"} orders found
+        </div>
+      );
+    }
+
     return (
       <div className="w-full overflow-x-auto">
         <div className="max-h-[200px] overflow-y-auto border border-muted rounded-md shadow-sm">
@@ -383,106 +270,89 @@ export default function OrderTable() {
                 <TableHead>Type</TableHead>
                 <TableHead>Volume</TableHead>
                 <TableHead>Open Price</TableHead>
-                {activeTab === "active" && <TableHead>Timed Order</TableHead>}
                 <TableHead>Open Time</TableHead>
-                {activeTab === "active" && (
-                  <>
-                    <TableHead>SL</TableHead>
-                    <TableHead>TP</TableHead>
-                  </>
-                )}
+                <TableHead>Take Profit</TableHead>
+                <TableHead>Stop Loss</TableHead>
                 <TableHead>
-                  {activeTab === "active" ? "Price" : "Close Price"}
+                  {activeTab === "active" ? "Current Price" : "Close Price"}
                 </TableHead>
-                {activeTab === "history" && <TableHead>Close Time</TableHead>}
-                <TableHead>Commission</TableHead>
-                <TableHead>Swap</TableHead>
+                <TableHead>Leverage</TableHead>
+                <TableHead>Amount</TableHead>
                 <TableHead>PnL</TableHead>
                 {activeTab === "active" && <TableHead>Actions</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
-              {(activeTab === "active" ? activeOrders : orderHistory).map(
-                (order) => (
-                  <TableRow key={order.id}>
-                    <TableCell>{order.symbol}</TableCell>
-                    <TableCell>{order.id}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={order.type === "Buy" ? "default" : "secondary"}
-                        className={
-                          order.type === "Buy" ? "bg-green-500" : "bg-red-500"
-                        }
-                      >
-                        {order.type}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{order.volume}</TableCell>
-                    <TableCell>{order.openPrice}</TableCell>
-                    {activeTab === "active" && (
-                      <TableCell>
-                        {activeTab === "active" && "timedOrder" in order
-                          ? order.timedOrder || "-"
-                          : "-"}
-                      </TableCell>
-                    )}
-                    <TableCell>{order.openTime}</TableCell>
-                    {activeTab === "active" && (
-                      <>
-                        <TableCell>
-                          {"sl" in order ? order.sl || "-" : "-"}
-                        </TableCell>
-                        <TableCell>
-                          {"tp" in order ? order.tp || "-" : "-"}
-                        </TableCell>
-                      </>
-                    )}
-                    <TableCell>
-                      {activeTab === "active"
-                        ? "price" in order
-                          ? order.price
-                          : "-"
-                        : "closePrice" in order
-                        ? order.closePrice
-                        : "-"}
-                    </TableCell>
-                    {activeTab === "history" && (
-                      <TableCell>
-                        {"closeTime" in order ? order.closeTime : "-"}
-                      </TableCell>
-                    )}
-                    <TableCell>${order.commission.toFixed(2)}</TableCell>
-                    <TableCell>${order.swap.toFixed(2)}</TableCell>
-                    <TableCell
-                      className={cn(
-                        order.pnl >= 0 ? "text-green-500" : "text-red-500"
-                      )}
+              {trades.map((trade) => (
+                <TableRow key={trade.id}>
+                  <TableCell>{trade.asset_symbol}</TableCell>
+                  <TableCell>{trade.id.substring(0, 8)}...</TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={
+                        trade.trade_type === "buy" ? "default" : "secondary"
+                      }
+                      className={
+                        trade.trade_type === "buy"
+                          ? "bg-green-500"
+                          : "bg-red-500"
+                      }
                     >
-                      {order.pnl >= 0
-                        ? `$${order.pnl.toFixed(2)}`
-                        : `-$${Math.abs(order.pnl).toFixed(2)}`}
-                    </TableCell>
-                    {activeTab === "active" && (
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => handleClosePosition(order)}
-                          >
-                            Close
-                          </Button>
-                          <Button size="sm" variant="outline">
-                            Edit
-                          </Button>
-                        </div>
-                      </TableCell>
+                      {trade.trade_type.toUpperCase()}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{trade.volume.toFixed(2)}</TableCell>
+                  <TableCell>{trade.opening_price}</TableCell>
+                  <TableCell>
+                    {new Date(trade.open_time).toLocaleString()}
+                  </TableCell>
+                  <TableCell>
+                    {trade.take_profit > 0 ? trade.take_profit : "-"}
+                  </TableCell>
+                  <TableCell>
+                    {trade.stop_loss > 0 ? trade.stop_loss : "-"}
+                  </TableCell>
+                  <TableCell>{trade.closing_price}</TableCell>
+                  <TableCell>x{trade.leverage}</TableCell>
+                  <TableCell>${trade.amount.toFixed(2)}</TableCell>
+                  <TableCell
+                    className={cn(
+                      trade.pnl >= 0 ? "text-green-500" : "text-red-500"
                     )}
-                  </TableRow>
-                )
-              )}
+                  >
+                    {trade.pnl >= 0
+                      ? `$${trade.pnl.toFixed(2)}`
+                      : `-$${Math.abs(trade.pnl).toFixed(2)}`}
+                  </TableCell>
+                  {activeTab === "active" && (
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => handleClosePosition(trade)}
+                        >
+                          Close
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          Edit
+                        </Button>
+                      </div>
+                    </TableCell>
+                  )}
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
+
+          {/* Loading indicator and intersection observer target */}
+          <div ref={loadMoreRef} className="py-2 text-center">
+            {isLoading && (
+              <div className="flex justify-center items-center py-2">
+                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -616,9 +486,18 @@ export default function OrderTable() {
               </button>
             </div>
             <div className="flex-1 overflow-auto p-4">
-              {(activeTab === "active" ? activeOrders : orderHistory).map(
-                (order) => renderMobileOrderCard(order, activeTab === "history")
+              {(activeTab === "active" ? openTrades : closedTrades).map(
+                (trade) => renderMobileOrderCard(trade, activeTab === "history")
               )}
+
+              {/* Loading indicator and intersection observer target */}
+              <div ref={loadMoreRef} className="py-2 text-center">
+                {(activeTab === "active" ? isLoadingOpen : isLoadingClosed) && (
+                  <div className="flex justify-center items-center py-2">
+                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </SheetContent>
@@ -870,12 +749,14 @@ export default function OrderTable() {
           <div className="bg-muted/90 text-foreground rounded-md">
             <div className="p-4 space-y-4">
               <div className="text-center font-medium">
-                CLOSE POSITION #{selectedOrder?.id}
+                CLOSE POSITION #{selectedOrder?.id.substring(0, 8)}
               </div>
 
               <div className="text-center text-sm text-muted-foreground">
-                Are you sure to close the position {selectedOrder?.type}{" "}
-                {selectedOrder?.volume} {selectedOrder?.symbol}?
+                Are you sure to close the position{" "}
+                {selectedOrder?.trade_type.toUpperCase()}{" "}
+                {selectedOrder?.volume.toFixed(2)} {selectedOrder?.asset_symbol}
+                ?
               </div>
 
               <div className="grid grid-cols-2 gap-2">
@@ -899,4 +780,3 @@ export default function OrderTable() {
     </div>
   );
 }
-

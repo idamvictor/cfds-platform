@@ -9,6 +9,12 @@ import {
   Menu,
   X,
   Search,
+  LineChart,
+  Clock,
+  BarChart3,
+  Calendar,
+  Newspaper,
+  LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,11 +29,21 @@ import { useMobile } from "@/hooks/use-mobile";
 import useUserStore from "@/store/userStore";
 import useAssetStore from "@/store/assetStore";
 
+// Define the ActiveView type
+type ActiveView =
+  | "market-watch"
+  | "active-orders"
+  | "trading-history"
+  | "calendar"
+  | "market-news"
+  | null;
+
 interface HeaderProps {
   activePairs: string[];
   activePair: string;
   setActivePair: (pair: string) => void;
   removeCurrencyPair: (pair: string) => void;
+  toggleView: (view: ActiveView) => void;
 }
 
 export default function Header({
@@ -35,6 +51,7 @@ export default function Header({
   activePair,
   setActivePair,
   removeCurrencyPair,
+  toggleView,
 }: HeaderProps) {
   const tabsListRef = useRef<HTMLDivElement>(null);
   const activeTabRef = useRef<HTMLDivElement>(null);
@@ -119,12 +136,14 @@ export default function Header({
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[280px] sm:w-[350px]">
-                <div className="py-4">
-                  <h2 className="text-lg font-bold mb-4">Menu</h2>
+              <SheetContent side="left" className="w-[280px] sm:w-[350px] p-0">
+                <div className="flex flex-col h-full">
+                  <div className="p-4 border-b border-border">
+                    <h2 className="text-lg font-bold">Menu</h2>
+                  </div>
 
                   {/* Account info in mobile menu */}
-                  <div className="bg-muted/30 rounded-lg p-3 mb-4">
+                  <div className="bg-muted/30 rounded-lg p-3 mx-3 mb-4">
                     <div className="flex items-center gap-2 mb-2">
                       <Avatar className="h-8 w-8 border border-border">
                         <AvatarFallback>M</AvatarFallback>
@@ -146,22 +165,74 @@ export default function Header({
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start gap-2"
-                    >
-                      <Robot className="h-4 w-4" />
-                      <span>Auto Trader</span>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start gap-2"
-                    >
-                      <Wallet className="h-4 w-4" />
-                      <span>Deposit</span>
-                    </Button>
-                    <div className="pt-4 border-t border-border mt-4">
+                  {/* Side panels in mobile menu */}
+                  <div className="overflow-y-auto flex-1">
+                    <div className="px-3 py-2">
+                      <h3 className="text-sm font-medium mb-2">Panels</h3>
+                      <div className="space-y-1">
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start gap-2 text-sm"
+                          onClick={() => toggleView("market-watch")}
+                        >
+                          <LineChart className="h-4 w-4" />
+                          <span>Market Watch</span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start gap-2 text-sm"
+                          onClick={() => toggleView("active-orders")}
+                        >
+                          <BarChart3 className="h-4 w-4" />
+                          <span>Active Orders</span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start gap-2 text-sm"
+                          onClick={() => toggleView("trading-history")}
+                        >
+                          <Clock className="h-4 w-4" />
+                          <span>Trading History</span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start gap-2 text-sm"
+                          onClick={() => toggleView("calendar")}
+                        >
+                          <Calendar className="h-4 w-4" />
+                          <span>Calendar</span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start gap-2 text-sm"
+                          onClick={() => toggleView("market-news")}
+                        >
+                          <Newspaper className="h-4 w-4" />
+                          <span>Market News</span>
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-border mt-2 px-3 py-2">
+                      <div className="space-y-2">
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start gap-2"
+                        >
+                          <Robot className="h-4 w-4" />
+                          <span>Auto Trader</span>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start gap-2"
+                        >
+                          <Wallet className="h-4 w-4" />
+                          <span>Deposit</span>
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-border mt-2 px-3 py-2">
                       <h3 className="text-sm font-medium mb-2">
                         Currency Pairs
                       </h3>
@@ -202,6 +273,21 @@ export default function Header({
                         </Button>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Logout button */}
+                  <div className="border-t border-border p-3">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-red-500"
+                      onClick={() => {
+                        useUserStore.getState().clearUser();
+                        window.location.href = "/login";
+                      }}
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      <span>Logout</span>
+                    </Button>
                   </div>
                 </div>
               </SheetContent>

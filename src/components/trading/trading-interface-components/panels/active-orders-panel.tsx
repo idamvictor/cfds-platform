@@ -1,63 +1,60 @@
-import { useState } from "react";
-import { ChevronDown, X } from "lucide-react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { ChevronDown, X, Loader2 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import useTradeStore from "@/store/tradeStore";
+import type { Trade } from "@/store/tradeStore";
 
 export default function ActiveOrdersPanel() {
   const [activeTab, setActiveTab] = useState("active");
+  const {
+    openTrades,
+    isLoadingOpen,
+    errorOpen,
+    fetchMoreOpenTrades,
+    hasMoreOpenTrades,
+  } = useTradeStore();
 
-  const activeOrders = [
-    {
-      id: 1,
-      asset: "Ethereum Classic",
-      icon: "eth",
-      profit: "+$0.02",
-      percentage: "+8.44%",
-      isPositive: true,
-    },
-    {
-      id: 2,
-      asset: "Ethereum Classic",
-      icon: "eth",
-      profit: "-$0.02",
-      percentage: "-8.60%",
-      isPositive: false,
-    },
-    {
-      id: 3,
-      asset: "Tron",
-      icon: "trx",
-      profit: "+$0.00",
-      percentage: "+3.48%",
-      isPositive: true,
-    },
-  ];
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
-  const pendingOrders = [
-    {
-      id: 1,
-      asset: "Bitcoin",
-      icon: "btc",
-      type: "Buy Limit",
-      price: "$68,450.00",
-      amount: "0.015 BTC",
+  // Setup intersection observer for infinite scrolling
+  const lastElementRef = useCallback(() => {
+    if (isLoadingOpen) return;
+
+    if (observerRef.current) observerRef.current.disconnect();
+
+    observerRef.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasMoreOpenTrades()) {
+        fetchMoreOpenTrades();
+      }
+    });
+
+    if (loadMoreRef.current) {
+      observerRef.current.observe(loadMoreRef.current);
+    }
+  }, [isLoadingOpen, fetchMoreOpenTrades, hasMoreOpenTrades]);
+
+  // Set up the observer when component mounts
+  useEffect(() => {
+    lastElementRef();
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [lastElementRef, openTrades]);
+
+  // Group trades by asset for better organization
+  const groupedTrades = openTrades.reduce<Record<string, Trade[]>>(
+    (acc, trade) => {
+      if (!acc[trade.asset_symbol]) {
+        acc[trade.asset_symbol] = [];
+      }
+      acc[trade.asset_symbol].push(trade);
+      return acc;
     },
-    {
-      id: 2,
-      asset: "EUR/USD",
-      icon: "eur",
-      type: "Sell Stop",
-      price: "1.0725",
-      amount: "10,000 EUR",
-    },
-    {
-      id: 3,
-      asset: "Gold",
-      icon: "gold",
-      type: "Buy Stop",
-      price: "$2,520.75",
-      amount: "1.5 oz",
-    },
-  ];
+    {}
+  );
 
   return (
     <div className="h-full bg-background flex flex-col">
@@ -104,67 +101,45 @@ export default function ActiveOrdersPanel() {
           </TabsTrigger>
         </TabsList>
 
-        <div className="p-3">
-          <div className="bg-muted/50 rounded-md p-3 mb-3">
-            <span className="text-sm">All Positions</span>
-          </div>
-
+        <div className="p-3 overflow-y-auto">
           {activeTab === "active" ? (
             <div className="space-y-3">
-              {activeOrders.map((order) => (
-                <div key={order.id} className="border-b border-border pb-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <CryptoIcon type={order.icon} />
-                      <span className="text-sm">{order.asset}</span>
-                    </div>
-                    <span
-                      className={`text-sm font-medium ${
-                        order.isPositive ? "text-green-500" : "text-red-500"
-                      }`}
-                    >
-                      {order.profit}
-                    </span>
+              {errorOpen && (
+                <div className="text-red-500 text-center p-2">{errorOpen}</div>
+              )}
+
+              {Object.entries(groupedTrades).length === 0 && !isLoadingOpen && (
+                <div className="text-center text-muted-foreground py-4">
+                  No active orders found
+                </div>
+              )}
+
+              {Object.entries(groupedTrades).map(([assetSymbol, trades]) => (
+                <div key={assetSymbol} className="mb-4">
+                  <div className="bg-muted/50 rounded-md p-3 mb-2">
+                    <span className="text-sm font-medium">{assetSymbol}</span>
                   </div>
-                  <div className="flex items-center justify-between mt-1">
-                    <button className="text-xs text-muted-foreground flex items-center">
-                      Show more <ChevronDown className="h-3 w-3 ml-1" />
-                    </button>
-                    <span
-                      className={`text-xs ${
-                        order.isPositive ? "text-green-500" : "text-red-500"
-                      }`}
-                    >
-                      {order.percentage}
-                    </span>
+
+                  <div className="space-y-3">
+                    {trades.map((trade) => (
+                      <TradeItem key={trade.id} trade={trade} />
+                    ))}
                   </div>
                 </div>
               ))}
+
+              {/* Loading indicator and intersection observer target */}
+              <div ref={loadMoreRef} className="py-2 text-center">
+                {isLoadingOpen && (
+                  <div className="flex justify-center items-center py-2">
+                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                  </div>
+                )}
+              </div>
             </div>
           ) : (
-            <div className="space-y-3">
-              {pendingOrders.map((order) => (
-                <div key={order.id} className="border-b border-border pb-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <CryptoIcon type={order.icon} />
-                      <span className="text-sm">{order.asset}</span>
-                    </div>
-                    <span className="text-sm font-medium">{order.type}</span>
-                  </div>
-                  <div className="flex items-center justify-between mt-1">
-                    <button className="text-xs text-muted-foreground flex items-center">
-                      Show more <ChevronDown className="h-3 w-3 ml-1" />
-                    </button>
-                    <div className="text-right">
-                      <div className="text-xs">{order.price}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {order.amount}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <div className="text-center text-muted-foreground py-4">
+              No pending orders available
             </div>
           )}
         </div>
@@ -173,115 +148,121 @@ export default function ActiveOrdersPanel() {
   );
 }
 
-function CryptoIcon({ type }: { type: string }) {
-  if (type === "eth") {
-    return (
-      <div className="h-5 w-5 rounded-full bg-[#627EEA] flex items-center justify-center">
-        <svg
-          width="10"
-          height="16"
-          viewBox="0 0 10 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M4.99967 0L4.89648 0.351484V10.9451L4.99967 11.0483L9.99935 8.0217L4.99967 0Z"
-            fill="white"
-          />
-          <path
-            d="M4.99957 0L0 8.0217L4.99957 11.0483V5.91507V0Z"
-            fill="white"
-            fillOpacity="0.8"
-          />
-          <path
-            d="M4.99957 11.9717L4.94043 12.0431V15.8318L4.99957 15.9999L10.0009 8.94629L4.99957 11.9717Z"
-            fill="white"
-          />
-          <path
-            d="M4.99957 16.0001V11.9717L0 8.94629L4.99957 16.0001Z"
-            fill="white"
-            fillOpacity="0.8"
-          />
-          <path
-            d="M4.99957 11.0483L9.99925 8.02174L4.99957 5.91504V11.0483Z"
-            fill="white"
-            fillOpacity="0.5"
-          />
-          <path
-            d="M0 8.02174L4.99957 11.0483V5.91504L0 8.02174Z"
-            fill="white"
-            fillOpacity="0.3"
-          />
-        </svg>
-      </div>
-    );
-  } else if (type === "trx") {
-    return (
-      <div className="h-5 w-5 rounded-full bg-[#EF0027] flex items-center justify-center">
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 12 12"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M2.5 3L9.5 1L7.5 9L4 5.5L2.5 3Z"
-            fill="white"
-            stroke="white"
-            strokeWidth="0.5"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </div>
-    );
-  } else if (type === "btc") {
-    return (
-      <div className="h-5 w-5 rounded-full bg-[#F7931A] flex items-center justify-center">
-        <svg
-          width="10"
-          height="10"
-          viewBox="0 0 10 10"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M7.64 4.32C8.04 4.12 8.31 3.72 8.24 3.13C8.15 2.36 7.45 2.08 6.56 2.01L6.56 0.83H5.87L5.87 1.99C5.69 1.99 5.5 1.99 5.31 2L5.31 0.83H4.62L4.62 2.01L3.54 2.01V2.01L2.67 2.01L2.67 2.74C2.67 2.74 3.18 2.73 3.17 2.74C3.44 2.74 3.54 2.91 3.57 3.05L3.57 4.42V6.43C3.55 6.52 3.49 6.65 3.3 6.65C3.31 6.66 2.8 6.65 2.8 6.65L2.67 7.46H3.54C3.71 7.46 3.87 7.46 4.03 7.46L4.03 8.65H4.72L4.72 7.47C4.91 7.48 5.09 7.48 5.27 7.48L5.27 8.65H5.96L5.96 7.46C7.11 7.4 7.93 7.11 8.1 6.02C8.24 5.13 7.83 4.67 7.64 4.32Z"
-            fill="white"
-          />
-          <path
-            d="M6.02 6.02C5.75 6.29 5.13 6.2 4.7 6.2C4.27 6.2 3.64 6.28 3.37 6.02C3.1 5.75 3.19 5.13 3.19 4.7C3.19 4.27 3.11 3.64 3.37 3.37C3.64 3.1 4.26 3.19 4.7 3.19C5.13 3.19 5.76 3.11 6.02 3.37C6.29 3.64 6.2 4.26 6.2 4.7C6.2 5.13 6.29 5.75 6.02 6.02Z"
-            fill="#F7931A"
-          />
-          <path
-            d="M5.6 4.7C5.6 4.09 4.74 4.35 4.5 4.35L4.5 5.05C4.75 5.05 5.6 5.32 5.6 4.7Z"
-            fill="white"
-          />
-          <path
-            d="M4.5 3.85L4.5 4.48C4.7 4.48 5.4 4.27 5.4 3.75C5.4 3.22 4.7 3.85 4.5 3.85Z"
-            fill="white"
-          />
-        </svg>
-      </div>
-    );
-  } else if (type === "eur") {
-    return (
-      <div className="h-5 w-5 rounded-full bg-[#0052B4] flex items-center justify-center">
-        <span className="text-xs text-white font-semibold">€</span>
-      </div>
-    );
-  } else if (type === "gold") {
-    return (
-      <div className="h-5 w-5 rounded-full bg-[#FFD700] flex items-center justify-center text-black text-xs font-bold">
-        Au
-      </div>
-    );
-  }
+function TradeItem({ trade }: { trade: Trade }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const formattedPnl = trade.pnl.toFixed(2);
+  const isPnlPositive = trade.pnl >= 0;
 
   return (
-    <div className="h-5 w-5 rounded-full bg-gray-500 flex items-center justify-center text-xs text-white">
-      {type.charAt(0).toUpperCase()}
+    <div className="border-b border-border pb-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <CryptoIcon type={trade.asset_id.split("-")[0]} />
+          <span className="text-sm">{trade.asset_name}</span>
+        </div>
+        <span
+          className={`text-sm font-medium ${
+            isPnlPositive ? "text-green-500" : "text-red-500"
+          }`}
+        >
+          {isPnlPositive
+            ? `+$${formattedPnl}`
+            : `-$${Math.abs(Number.parseFloat(formattedPnl))}`}
+        </span>
+      </div>
+
+      <div className="flex items-center justify-between mt-1">
+        <button
+          className="text-xs text-muted-foreground flex items-center"
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
+          Show more{" "}
+          <ChevronDown
+            className={`h-3 w-3 ml-1 transition-transform ${
+              isExpanded ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+        <span className="text-xs text-muted-foreground">
+          {new Date(trade.open_time).toLocaleString()}
+        </span>
+      </div>
+
+      {isExpanded && (
+        <div className="mt-2 pt-2 border-t border-border/50 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">ID:</span>
+            <span className="font-mono">{trade.id.substring(0, 8)}...</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Type:</span>
+            <span
+              className={
+                trade.trade_type === "buy" ? "text-green-500" : "text-red-500"
+              }
+            >
+              {trade.trade_type.toUpperCase()}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Amount:</span>
+            <span>${trade.amount.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Volume:</span>
+            <span>{trade.volume.toFixed(3)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Open Price:</span>
+            <span>{trade.opening_price}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Current Price:</span>
+            <span>{trade.closing_price}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Leverage:</span>
+            <span>x{trade.leverage}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Take Profit:</span>
+            <span>{trade.take_profit > 0 ? trade.take_profit : "-"}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Stop Loss:</span>
+            <span>{trade.stop_loss > 0 ? trade.stop_loss : "-"}</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
+function CryptoIcon({ type }: { type: string }) {
+  let bgColor = "bg-gray-500";
+  let content = type.charAt(0).toUpperCase();
+
+  switch (type.toLowerCase()) {
+    case "crypto":
+      bgColor = "bg-orange-500";
+      content = "₿";
+      break;
+    case "forex":
+      bgColor = "bg-blue-500";
+      content = "F";
+      break;
+    case "stocks":
+      bgColor = "bg-green-500";
+      content = "S";
+      break;
+  }
+
+  return (
+    <div
+      className={`h-5 w-5 rounded-full ${bgColor} flex items-center justify-center text-xs text-white font-medium`}
+    >
+      {content}
+    </div>
+  );
+}
