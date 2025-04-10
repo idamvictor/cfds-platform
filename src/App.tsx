@@ -54,10 +54,10 @@ const App = () => (
             <Route path="/main/deposit" element={<DepositLayout />}>
               <Route
                 index
-                element={<Navigate to="/deposit/crypto" replace />}
+                element={<Navigate to="/main/deposit/crypto" replace />}
               />
               <Route
-                path="crypto"
+                path="/main/deposit/crypto"
                 element={
                   <QRCodeDeposit
                     address="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
@@ -67,14 +67,14 @@ const App = () => (
                   />
                 }
               />
-              <Route path="bank" element={<BankDeposit />} />
-              <Route path="card" element={<CardDeposit />} />
-              <Route path="paypal" element={<PaypalDeposit />} />
-              <Route path="other" element={<OtherDeposit />} />
+              <Route path="/main/deposit/bank" element={<BankDeposit />} />
+              <Route path="/main/deposit/card" element={<CardDeposit />} />
+              <Route path="/main/deposit/paypal" element={<PaypalDeposit />} />
+              <Route path="/main/deposit/other" element={<OtherDeposit />} />
 
               {/* Extras */}
               <Route
-                path="litecoin"
+                path="/main/deposit/litecoin"
                 element={
                   <QRCodeDeposit
                     address="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
@@ -85,7 +85,7 @@ const App = () => (
                 }
               />
               <Route
-                path="polyswarm"
+                path="/main/deposit/polyswarm"
                 element={
                   <QRCodeDeposit
                     address="0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
@@ -96,7 +96,7 @@ const App = () => (
                 }
               />
               <Route
-                path="dogecoin"
+                path="/main/deposit/dogecoin"
                 element={
                   <QRCodeDeposit
                     address="DJHXpkQGcRydAZ7KyXmkRNHdRvMVXwMYAE"
@@ -107,7 +107,7 @@ const App = () => (
                 }
               />
               <Route
-                path="binance"
+                path="/main/deposit/binance"
                 element={
                   <QRCodeDeposit
                     address="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
@@ -118,7 +118,7 @@ const App = () => (
                 }
               />
               <Route
-                path="ethereum"
+                path="/main/deposit/ethereum"
                 element={
                   <QRCodeDeposit
                     address="0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
@@ -129,7 +129,7 @@ const App = () => (
                 }
               />
               <Route
-                path="erc20"
+                path="/main/deposit/erc20"
                 element={
                   <QRCodeDeposit
                     address="DJHXpkQGcRydAZ7KyXmkRNHdRvMVXwMYAE"
@@ -140,7 +140,7 @@ const App = () => (
                 }
               />
               <Route
-                path="trc20"
+                path="/main/deposit/trc20"
                 element={
                   <QRCodeDeposit
                     address="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"

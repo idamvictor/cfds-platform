@@ -14,12 +14,6 @@ const MainLayout = () => {
     setSidebarVisible(false);
   };
 
-  const userInfo = {
-    name: "Jawad Ali",
-    id: "2076514",
-    email: "jeehan.4j@outlook.com",
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <div className="fixed top-0 left-0 right-0 z-20">
@@ -32,7 +26,7 @@ const MainLayout = () => {
             isSidebarVisible ? "translate-x-0" : "-translate-x-full"
           } md:translate-x-0`}
         >
-          <Sidebar userInfo={userInfo} onLinkClick={handleLinkClick} />
+          <Sidebar onLinkClick={handleLinkClick} />
         </div>
         <main className="flex-1 md:ml-[250px] overflow-y-auto">
           <Outlet />
