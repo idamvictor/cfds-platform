@@ -53,6 +53,7 @@ export default function WithdrawalForm() {
 
   const method = form.watch("method");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   async function onSubmit(values: z.infer<typeof withdrawalFormSchema>) {
     try {
@@ -60,6 +61,8 @@ export default function WithdrawalForm() {
       await axiosInstance.post("/user/withdrawal/store", values);
       toast.success("Withdrawal request submitted successfully");
       form.reset();
+      // Increment refresh trigger to force table update
+      setRefreshTrigger((prev) => prev + 1);
     } catch (error: any) {
       toast.error(
         error.response?.data?.message || "Failed to submit withdrawal request"
@@ -277,7 +280,7 @@ export default function WithdrawalForm() {
 
       <div>
         <h2 className="text-lg font-medium mb-6">Withdrawal History</h2>
-        <WithdrawalHistory />
+        <WithdrawalHistory refreshTrigger={refreshTrigger} />
       </div>
     </div>
   );
