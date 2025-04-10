@@ -8,6 +8,7 @@ import useAssetStore from "@/store/assetStore";
 import useTradeStore from "@/store/tradeStore";
 import AssetInitializer from "../asset-initializer";
 import { useMobile } from "@/hooks/use-mobile";
+import {addClickSound} from "@/lib/addClickSound.ts";
 
 export type ActiveView =
   | "market-watch"
@@ -27,6 +28,12 @@ export default function TradingPlatform() {
 
   const { setActiveAsset, assets, fetchAssets, activeAsset } = useAssetStore();
   const { fetchOpenTrades, fetchClosedTrades } = useTradeStore();
+
+
+  useEffect(() => {
+    addClickSound();
+  }, []);
+
 
   // Fetch assets and trades when component mounts
   useEffect(() => {
