@@ -52,13 +52,16 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   return (
     <aside className="bg-sidebar h-full w-60 flex flex-col border-r border-sidebar-border">
       <div className="flex flex-col items-center text-center p-6 border-b border-sidebar-border">
+        {" "}
         <Avatar className="h-20 w-20">
           <AvatarImage
             src={user?.avatar}
             alt={`${user?.first_name} ${user?.last_name}`}
           />
-          <AvatarFallback className="bg-sidebar-accent">
-            <User className="h-10 w-10 text-muted" />
+          <AvatarFallback className="bg-sidebar-accent text-2xl font-semibold">
+            {user
+              ? `${user.first_name[0]}${user.last_name[0]}`.toUpperCase()
+              : ""}
           </AvatarFallback>
         </Avatar>
         <h2 className="text-lg font-medium text-sidebar-foreground">
@@ -68,7 +71,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
         <p className="text-xs text-muted-foreground/70 mt-1">
           {user?.email || ""}
         </p>
-
         <div className="grid grid-cols-2 gap-2 w-full mt-4">
           <Link
             to="/main/deposit"

@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import axiosInstance from "@/lib/axios";
 import {
   Table,
   TableBody,
@@ -15,103 +17,141 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-type WithdrawalStatus = "pending" | "completed" | "rejected";
-
 interface WithdrawalRequest {
   id: string;
-  time: string;
   amount: string;
-  currency: string;
-  info: string;
-  status: WithdrawalStatus;
+  date: string;
+  type: string;
+  status: string;
+  details: string;
 }
 
-const withdrawalRequests: WithdrawalRequest[] = [
-  {
-    id: "wd-001",
-    time: "2025-03-27 14:32",
-    amount: "0.05",
-    currency: "BTC",
-    info: "Withdrawal to wallet address 3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5",
-    status: "completed",
-  },
-  {
-    id: "wd-002",
-    time: "2025-03-25 09:15",
-    amount: "1.2",
-    currency: "ETH",
-    info: "Withdrawal to wallet address 0x71C7656EC7ab88b098defB751B7401B5f6d8976F",
-    status: "completed",
-  },
-  {
-    id: "wd-003",
-    time: "2025-03-24 18:45",
-    amount: "500",
-    currency: "USDT",
-    info: "Withdrawal to wallet address TKrV3XpGgPcqCvJVvHmez8Hn5hcDTSQVJp",
-    status: "pending",
-  },
-  {
-    id: "wd-004",
-    time: "2025-03-20 11:22",
-    amount: "1000",
-    currency: "USD",
-    info: "Bank transfer to account ending in 4582",
-    status: "rejected",
-  },
-];
+interface ApiResponse {
+  status: string;
+  message: string;
+  data: {
+    current_page: number;
+    data: WithdrawalRequest[];
+    first_page_url: string;
+    from: number;
+    next_page_url: string | null;
+    path: string;
+    per_page: number;
+    prev_page_url: string | null;
+    to: number;
+  };
+}
 
-export function WithdrawalHistory() {
+interface WithdrawalHistoryProps {
+  refreshTrigger?: number;
+}
+
+export function WithdrawalHistory({ refreshTrigger = 0 }: WithdrawalHistoryProps) {
+  const [withdrawals, setWithdrawals] = useState<WithdrawalRequest[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchWithdrawals = async () => {
+      try {
+        const response = await axiosInstance.get<ApiResponse>('/user/withdrawals');
+        setWithdrawals(response.data.data.data);
+        setError(null);
+      } catch (err) {
+        setError('Failed to load withdrawal history');
+        console.error('Error fetching withdrawals:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchWithdrawals();
+  }, [refreshTrigger]);
+
+  if (isLoading) {
+    return <div className="p-4 text-center">Loading withdrawal history...</div>;
+  }
+
+  if (error) {
+    return <div className="p-4 text-center text-destructive">{error}</div>;
+  }
+
   return (
     <div className="rounded-md border border-border/40 overflow-hidden">
       <Table>
         <TableHeader>
           <TableRow className="bg-card hover:bg-card">
-            <TableHead className="text-foreground font-bold">TIME</TableHead>
+            <TableHead className="text-foreground font-bold">DATE</TableHead>
             <TableHead className="text-foreground font-bold">AMOUNT</TableHead>
-            <TableHead className="text-foreground font-bold">
-              CURRENCY
-            </TableHead>
-            <TableHead className="text-foreground font-bold">INFO</TableHead>
+            <TableHead className="text-foreground font-bold">TYPE</TableHead>
+            <TableHead className="text-foreground font-bold">DETAILS</TableHead>
             <TableHead className="text-foreground font-bold">STATUS</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {withdrawalRequests.map((request) => (
-            <TableRow key={request.id} className="bg-card/50 hover:bg-card">
-              <TableCell className="text-muted-foreground">
-                {request.time}
-              </TableCell>
-              <TableCell>{request.amount}</TableCell>
-              <TableCell>{request.currency}</TableCell>
-              <TableCell>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="flex items-center cursor-help">
-                        <Info className="h-4 w-4 text-muted-foreground mr-1" />
-                        <span className="text-muted-foreground">Details</span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className="max-w-xs">{request.info}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </TableCell>
-              <TableCell>
-                <StatusBadge status={request.status} />
+          {withdrawals.length === 0 ? (
+            <TableRow>
+              <TableCell
+                colSpan={5}
+                className="text-center text-muted-foreground"
+              >
+                No withdrawal history found
               </TableCell>
             </TableRow>
-          ))}
+          ) : (
+            withdrawals.map((request) => {
+              let details;
+              try {
+                details = JSON.parse(request.details);
+              } catch {
+                details = { error: "Unable to parse details" };
+              }
+
+              return (
+                <TableRow key={request.id} className="bg-card/50 hover:bg-card">
+                  <TableCell className="text-muted-foreground">
+                    {request.date}
+                  </TableCell>
+                  <TableCell>{request.amount}</TableCell>
+                  <TableCell className="capitalize">{request.type}</TableCell>
+                  <TableCell>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="flex items-center cursor-help">
+                            <Info className="h-4 w-4 text-muted-foreground mr-1" />
+                            <span className="text-muted-foreground">
+                              Details
+                            </span>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <div className="space-y-1">
+                            {Object.entries(details).map(([key, value]) => (
+                              <p key={key} className="capitalize">
+                                {key.replace("_", " ")}: {value as string}
+                              </p>
+                            ))}
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </TableCell>
+                  <TableCell>
+                    <StatusBadge status={request.status} />
+                  </TableCell>
+                </TableRow>
+              );
+            })
+          )}
         </TableBody>
       </Table>
     </div>
   );
 }
 
-function StatusBadge({ status }: { status: WithdrawalStatus }) {
-  switch (status) {
+function StatusBadge({ status }: { status: string }) {
+  switch (status.toLowerCase()) {
     case "pending":
       return (
         <Badge
@@ -140,6 +180,10 @@ function StatusBadge({ status }: { status: WithdrawalStatus }) {
         </Badge>
       );
     default:
-      return null;
+      return (
+        <Badge variant="outline">
+          {status.charAt(0).toUpperCase() + status.slice(1)}
+        </Badge>
+      );
   }
 }
