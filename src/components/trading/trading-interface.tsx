@@ -144,17 +144,17 @@ export function TradingInterface() {
   };
 
   return (
-    <div className="w-full bg-background rounded-lg text-trading-light">
+    <div className="w-full bg-background rounded-lg text-foreground">
       <Toaster position="top-right" />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="md:space-y-2">
           {/* Mobile layout - side by side sections */}
           <div className="md:hidden grid grid-cols-3 gap-1 w-full">
             {/* Section 1: Volume and Tabs */}
-            <div className="col-span-1 p-2 bg-trading-dark rounded-l">
+            <div className="col-span-1 p-2 rounded-l">
               <div className="flex items-center mb-1">
                 <div className="flex-1">
-                  <label className="text-xs text-trading-muted">Volume</label>
+                  <label className="text-xs">Volume</label>
                   <FormField
                     control={form.control}
                     name="volume"
@@ -168,7 +168,7 @@ export function TradingInterface() {
                               field.onChange(e);
                               handleInputChange(e);
                             }}
-                            className="h-6 bg-trading-darker border-0 text-trading-light text-sm font-medium p-1"
+                            className="h-6 bg-muted border-0 text-foreground text-sm font-medium p-1"
                           />
                         </FormControl>
                       </FormItem>
@@ -180,7 +180,7 @@ export function TradingInterface() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-4 w-4 text-trading-muted hover:text-trading-light p-0"
+                    className="h-4 w-4 text-muted-foreground hover:text-foreground p-0"
                     onClick={() => handleVolumeChange(true)}
                   >
                     <ChevronUp className="h-3 w-3" />
@@ -189,7 +189,7 @@ export function TradingInterface() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-4 w-4 text-trading-muted hover:text-trading-light p-0"
+                    className="h-4 w-4 text-muted-foreground hover:text-foreground p-0"
                     onClick={() => handleVolumeChange(false)}
                   >
                     <ChevronDown className="h-3 w-3" />
@@ -203,17 +203,14 @@ export function TradingInterface() {
                 onValueChange={handleTabChange}
                 className="w-full"
               >
-                <TabsList className="grid grid-cols-3 h-6 bg-trading-darker">
+                <TabsList className="grid grid-cols-3 h-6 bg-muted">
                   <TabsTrigger value="lots" className="text-[10px] h-5 px-1">
                     lots
                   </TabsTrigger>
                   <TabsTrigger value="units" className="text-[10px] h-5 px-1">
                     units
                   </TabsTrigger>
-                  <TabsTrigger
-                    value="currency"
-                    className="text-[10px] h-5 px-1"
-                  >
+                  <TabsTrigger value="currency" className="text-[10px] h-5 px-1">
                     currency
                   </TabsTrigger>
                 </TabsList>
@@ -221,41 +218,41 @@ export function TradingInterface() {
             </div>
 
             {/* Section 2: Trading Info */}
-            <div className="col-span-1 p-2 bg-trading-dark">
+            <div className="col-span-1 p-2">
               <div className="grid gap-y-[2px] text-[10px]">
                 <div className="flex justify-between">
-                  <span className="text-trading-muted">Contract:</span>
-                  <span className="text-trading-green">
+                  <span className="text-muted-foreground">Contract:</span>
+                  <span className="text-primary">
                     {tradingInfo.contractSize.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-trading-muted">Position:</span>
-                  <span className="text-trading-green">
+                  <span className="text-muted-foreground">Position:</span>
+                  <span className="text-primary">
                     {tradingInfo.position.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-trading-muted">Margin:</span>
-                  <span className="text-trading-green">
+                  <span className="text-muted-foreground">Margin:</span>
+                  <span className="text-primary">
                     ${tradingInfo.margin.toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-trading-muted">Free Margin:</span>
-                  <span className="text-trading-green">
+                  <span className="text-muted-foreground">Free Margin:</span>
+                  <span className="text-primary">
                     ${tradingInfo.freeMargin.toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-trading-muted">Spread:</span>
-                  <span className="text-trading-green">
+                  <span className="text-muted-foreground">Spread:</span>
+                  <span className="text-primary">
                     {tradingInfo.spread.toFixed(5)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-trading-muted">Leverage:</span>
-                  <span className="text-trading-green">
+                  <span className="text-muted-foreground">Leverage:</span>
+                  <span className="text-primary">
                     {tradingInfo.leverage}
                   </span>
                 </div>
@@ -263,32 +260,32 @@ export function TradingInterface() {
             </div>
 
             {/* Section 3: Profit Calculator and Buttons */}
-            <div className="col-span-1 p-2 bg-trading-dark rounded-r flex flex-col justify-between">
+            <div className="col-span-1 p-2 rounded-r flex flex-col justify-between">
               <div className="space-y-1">
                 <div className="flex items-center justify-center py-1">
-                  <BarChart2 className="h-3 w-3 mr-1 text-trading-accent" />
-                  <span className="text-[10px] font-medium text-trading-light">
+                  <BarChart2 className="h-3 w-3 mr-1 text-primary" />
+                  <span className="text-[10px] font-medium text-foreground">
                     Profit Calculator
                   </span>
                 </div>
 
                 <div>
-                  <div className="text-[8px] text-trading-muted">
+                  <div className="text-[8px] text-muted-foreground">
                     Take Profit & Stop Loss
                   </div>
-                  <div className="text-[10px] text-trading-light">Not set</div>
+                  <div className="text-[10px] text-foreground">Not set</div>
                 </div>
 
                 <div>
-                  <div className="text-[8px] text-trading-muted">Pending</div>
-                  <div className="text-[10px] text-trading-light">Market</div>
+                  <div className="text-[8px] text-muted-foreground">Pending</div>
+                  <div className="text-[10px] text-foreground">Market</div>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-1 mt-1">
                 <Button
                   type="submit"
-                  className="bg-trading-green hover:bg-trading-green/90 text-trading-light h-8 px-1"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground h-8 px-1"
                   onClick={() => {
                     form.setValue("type", "buy");
                     form.setValue("id", uuidv4());
@@ -307,7 +304,7 @@ export function TradingInterface() {
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-destructive hover:bg-destructive/90 text-trading-light h-8 px-1"
+                  className="bg-destructive hover:bg-destructive/90 text-destructive-foreground h-8 px-1"
                   onClick={() => {
                     form.setValue("type", "sell");
                     form.setValue("id", uuidv4());
@@ -334,7 +331,7 @@ export function TradingInterface() {
             <div className="p-3">
               <div className="flex items-center">
                 <div className="flex-1">
-                  <label className="text-xs text-trading-muted">Volume</label>
+                  <label className="text-xs text-muted-foreground">Volume</label>
                   <FormField
                     control={form.control}
                     name="volume"
@@ -348,7 +345,7 @@ export function TradingInterface() {
                               field.onChange(e);
                               handleInputChange(e);
                             }}
-                            className="h-8 bg-trading-darker border-0 text-trading-light text-lg font-medium"
+                            className="h-8 bg-muted border-0 text-foreground text-lg font-medium"
                           />
                         </FormControl>
                       </FormItem>
@@ -360,7 +357,7 @@ export function TradingInterface() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-6 w-6 text-trading-muted hover:text-trading-light"
+                    className="h-6 w-6 text-muted-foreground hover:text-foreground"
                     onClick={() => handleVolumeChange(true)}
                   >
                     <ChevronUp className="h-4 w-4" />
@@ -369,7 +366,7 @@ export function TradingInterface() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-6 w-6 text-trading-muted hover:text-trading-light"
+                    className="h-6 w-6 text-muted-foreground hover:text-foreground"
                     onClick={() => handleVolumeChange(false)}
                   >
                     <ChevronDown className="h-4 w-4" />
@@ -383,7 +380,7 @@ export function TradingInterface() {
                 onValueChange={handleTabChange}
                 className="w-full mt-3"
               >
-                <TabsList className="grid grid-cols-3 h-8 bg-trading-darker">
+                <TabsList className="grid grid-cols-3 h-8 bg-muted">
                   <TabsTrigger value="lots" className="text-xs">
                     lots
                   </TabsTrigger>
@@ -397,77 +394,77 @@ export function TradingInterface() {
               </Tabs>
             </div>
 
-            <Separator className="bg-trading-darker" />
+            <Separator className="bg-muted" />
 
             {/* Section 2: Trading Info */}
             <div className="p-3">
               <div className="space-y-1 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-trading-muted">Contract size:</span>
-                  <span className="text-trading-green">
+                  <span className="text-muted-foreground">Contract size:</span>
+                  <span className="text-primary">
                     {tradingInfo.contractSize.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-trading-muted">Position:</span>
-                  <span className="text-trading-green">
+                  <span className="text-muted-foreground">Position:</span>
+                  <span className="text-primary">
                     {tradingInfo.position.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-trading-muted">Margin:</span>
-                  <span className="text-trading-green">
+                  <span className="text-muted-foreground">Margin:</span>
+                  <span className="text-primary">
                     ${tradingInfo.margin.toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-trading-muted">Free Margin:</span>
-                  <span className="text-trading-green">
+                  <span className="text-muted-foreground">Free Margin:</span>
+                  <span className="text-primary">
                     ${tradingInfo.freeMargin.toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-trading-muted">Spread:</span>
-                  <span className="text-trading-green">
+                  <span className="text-muted-foreground">Spread:</span>
+                  <span className="text-primary">
                     {tradingInfo.spread.toFixed(5)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-trading-muted">Leverage:</span>
-                  <span className="text-trading-green">
+                  <span className="text-muted-foreground">Leverage:</span>
+                  <span className="text-primary">
                     {tradingInfo.leverage}
                   </span>
                 </div>
               </div>
             </div>
 
-            <Separator className="bg-trading-darker" />
+            <Separator className="bg-muted" />
 
             {/* Section 3: Profit Calculator and Buttons */}
             <div className="p-3 space-y-3">
               <div className="flex items-center justify-center py-1">
-                <BarChart2 className="h-4 w-4 mr-2 text-trading-accent" />
-                <span className="text-sm font-medium text-trading-light">
+                <BarChart2 className="h-4 w-4 mr-2 text-primary" />
+                <span className="text-sm font-medium text-foreground">
                   Profit Calculator
                 </span>
               </div>
 
               <div className="space-y-1">
-                <div className="text-xs text-trading-muted">
+                <div className="text-xs text-muted-foreground">
                   Take Profit & Stop Loss
                 </div>
-                <div className="text-sm text-trading-light">Not set</div>
+                <div className="text-sm text-foreground">Not set</div>
               </div>
 
               <div className="space-y-1">
-                <div className="text-xs text-trading-muted">Pending</div>
-                <div className="text-sm text-trading-light">Market</div>
+                <div className="text-xs text-muted-foreground">Pending</div>
+                <div className="text-sm text-foreground">Market</div>
               </div>
 
               <div className="grid grid-cols-2 gap-1 pt-2">
                 <Button
                   type="submit"
-                  className="bg-trading-green hover:bg-trading-green/90 text-trading-light h-14"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground h-14"
                   onClick={() => {
                     form.setValue("type", "buy");
                     form.setValue("id", uuidv4());
@@ -486,7 +483,7 @@ export function TradingInterface() {
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-destructive hover:bg-destructive/90 text-trading-light h-14"
+                  className="bg-destructive hover:bg-destructive/90 text-destructive-foreground h-14"
                   onClick={() => {
                     form.setValue("type", "sell");
                     form.setValue("id", uuidv4());
