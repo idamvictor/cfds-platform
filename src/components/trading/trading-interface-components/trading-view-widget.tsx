@@ -3,13 +3,18 @@ import useAssetStore from "@/store/assetStore";
 
 function TradingViewWidget() {
   const container = useRef<HTMLDivElement | null>(null);
-  const { activeAsset } = useAssetStore();
+  // Only use the tv_symbol property from activeAsset to prevent unnecessary re-renders
+  const tvSymbol = useAssetStore((state) => state.activeAsset?.tv_symbol);
 
   useEffect(() => {
-    if (!container.current) return;
+    if (!container.current || !tvSymbol) return;
+
+    // Store a reference to the container for cleanup
+    const currentContainer = container.current;
+    const currentSymbol = tvSymbol;
 
     // Clear any existing widgets
-    container.current.innerHTML = "";
+    currentContainer.innerHTML = "";
 
     // Create container elements
     const widgetContainer = document.createElement("div");
@@ -40,21 +45,18 @@ function TradingViewWidget() {
     // Append elements to container
     widgetContainer.appendChild(widgetElement);
     widgetContainer.appendChild(copyrightElement);
-    container.current.appendChild(widgetContainer);
+    currentContainer.appendChild(widgetContainer);
 
     // Create and load script
     const script = document.createElement("script");
-    script.src =
-      "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
     script.type = "text/javascript";
     script.async = true;
 
     // Set script content (widget configuration)
-    const symbol = activeAsset?.tv_symbol || "NASDAQ:AAPL";
-
     script.innerHTML = JSON.stringify({
       autosize: true,
-      symbol: symbol,
+      symbol: currentSymbol,
       interval: "D",
       timezone: "Etc/UTC",
       theme: "dark",
@@ -72,14 +74,14 @@ function TradingViewWidget() {
 
     // Cleanup function
     return () => {
-      if (container.current) {
-        container.current.innerHTML = "";
+      if (currentContainer) {
+        currentContainer.innerHTML = "";
       }
     };
-  }, [activeAsset]);
+  }, [tvSymbol]); // Only re-run when tvSymbol changes
 
   return <div ref={container} style={{ height: "100%", width: "100%" }} />;
 }
 
+// Memoize to prevent unnecessary rerenders
 export default memo(TradingViewWidget);
-
