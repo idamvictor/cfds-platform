@@ -1,12 +1,15 @@
 import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "@/components/ui/sonner";
 
 const Test = lazy(() => import("./pages/test"));
 const Trading = lazy(() => import("./pages/trading"));
 const RegisterPage = lazy(() => import("./pages/auth/register-page"));
 const LoginPage = lazy(() => import("./pages/auth/login-page"));
-const ForgotPasswordPage = lazy(() => import("./pages/auth/forgot-password-page"));
+const ForgotPasswordPage = lazy(
+  () => import("./pages/auth/forgot-password-page")
+);
 const ProtectedRoute = lazy(() => import("./components/ProtectedRoute"));
 
 const MainLayout = lazy(() => import("./layouts/MainLayout"));
@@ -37,6 +40,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <Suspense fallback={<div>Loading...</div>}>
+      <Toaster />
       <BrowserRouter>
         <Routes>
           <Route
