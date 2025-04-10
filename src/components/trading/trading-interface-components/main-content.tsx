@@ -33,12 +33,6 @@ export default function MainContent({ sidebarExpanded, activeView, activePair, a
     console.log("MainContent - Active asset changed:", activeAsset)
   }, [activeAsset])
 
-  const handleResizeChart = (increase: boolean) => {
-    setChartHeight((prev) => {
-      const newHeight = increase ? prev + 5 : prev - 5
-      return Math.min(Math.max(newHeight, 30), 80) // Keep between 30% and 80%
-    })
-  }
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
@@ -58,51 +52,10 @@ export default function MainContent({ sidebarExpanded, activeView, activePair, a
         {/* Center - Chart and Orders */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Chart area */}
-          <div className="relative border-b border-border bg-background" style={{ height: `${chartHeight}%` }}>
-            {/* Chart header */}
-            <div className="flex items-center justify-between h-10 px-4 border-b border-border">
-              <div className="flex items-center">
-                <span className="text-sm font-medium">{activeAsset?.symbol_display || activePair}</span>
-                <span className="text-xs text-muted-foreground ml-2">1m</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Button variant="ghost" size="icon" className="h-7 w-7">
-                  <Settings className="h-4 w-4" />
-                </Button>
-                <Button variant="ghost" size="icon" className="h-7 w-7">
-                  <Maximize2 className="h-4 w-4" />
-                </Button>
-                <Button variant="ghost" size="icon" className="h-7 w-7">
-                  <Camera className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-
+          <div className="relative border-b border-border bg-background h-full">
             {/* TradingView Chart */}
-            <div className="w-full h-[calc(100%-40px)] bg-background">
+            <div className="w-full h-full bg-background border-muted border-[3px]">
               <TradingViewWidget />
-            </div>
-
-            {/* Resize handle */}
-            <div className="absolute bottom-0 left-0 right-0 flex justify-center">
-              <div className="flex flex-col items-center">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-5 w-5 -mb-2.5 z-10 rounded-full bg-background border border-border"
-                  onClick={() => handleResizeChart(true)}
-                >
-                  <ChevronUp className="h-3 w-3" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-5 w-5 z-10 rounded-full bg-background border border-border"
-                  onClick={() => handleResizeChart(false)}
-                >
-                  <ChevronDown className="h-3 w-3" />
-                </Button>
-              </div>
             </div>
           </div>
 
@@ -114,7 +67,8 @@ export default function MainContent({ sidebarExpanded, activeView, activePair, a
           )}
 
           {/* Orders table */}
-          <div className={`${isLargeScreen ? "h-auto" : "h-[200px]"} overflow-auto`}>
+          {/* <div className={`${isLargeScreen ? "h-auto" : "h-[200px]"} overflow-auto`}> */}
+          <div className="h-auto overflow-auto">
             <OrderTable />
           </div>
         </div>

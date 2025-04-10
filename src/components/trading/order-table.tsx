@@ -130,24 +130,25 @@ export default function OrderTable() {
     return (
       <div
         key={order.id}
-        className="mb-2 border border-muted rounded-md overflow-hidden"
+        className="mb-1 border border-muted rounded-sm overflow-hidden"
       >
-        <div className="p-3 bg-muted/30 flex justify-between items-center">
-          <div className="flex items-center gap-2">
+        <div className="p-2 bg-muted/30 flex justify-between items-center">
+          <div className="flex items-center gap-1">
             <Badge
               variant={order.trade_type === "buy" ? "default" : "secondary"}
-              className={
+              className={cn(
+                "text-xs px-1.5 py-0.5",
                 order.trade_type === "buy" ? "bg-green-500" : "bg-red-500"
-              }
+              )}
             >
               {order.trade_type.toUpperCase()}
             </Badge>
-            <span className="font-medium">{order.asset_symbol}</span>
+            <span className="text-sm font-medium">{order.asset_symbol}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <span
               className={cn(
-                "font-medium",
+                "text-sm font-medium",
                 order.pnl >= 0 ? "text-green-500" : "text-red-500"
               )}
             >
@@ -158,12 +159,12 @@ export default function OrderTable() {
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8"
+              className="h-6 w-6"
               onClick={() => toggleOrderExpand(order.id)}
             >
               <ChevronDown
                 className={cn(
-                  "h-4 w-4 transition-transform",
+                  "h-3 w-3 transition-transform",
                   isExpanded ? "rotate-180" : ""
                 )}
               />
@@ -172,8 +173,8 @@ export default function OrderTable() {
         </div>
 
         {isExpanded && (
-          <div className="p-3 space-y-2 bg-background">
-            <div className="grid grid-cols-2 gap-2">
+          <div className="p-2 space-y-1.5 bg-background">
+            <div className="grid grid-cols-2 gap-1.5">
               <div>
                 <div className="text-xs text-muted-foreground">ID</div>
                 <div className="text-sm">{order.id.substring(0, 8)}...</div>
@@ -221,16 +222,20 @@ export default function OrderTable() {
             </div>
 
             {!isHistory && (
-              <div className="flex gap-2 mt-3">
+              <div className="flex gap-1.5 mt-2">
                 <Button
                   size="sm"
                   variant="destructive"
-                  className="flex-1"
+                  className="flex-1 text-xs h-7"
                   onClick={() => handleClosePosition(order)}
                 >
                   Close
                 </Button>
-                <Button size="sm" variant="outline" className="flex-1">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="flex-1 text-xs h-7"
+                >
                   Edit
                 </Button>
               </div>
@@ -260,63 +265,99 @@ export default function OrderTable() {
     }
 
     return (
-      <div className="w-full overflow-x-auto">
-        <div className="max-h-[200px] overflow-y-auto border border-muted rounded-md shadow-sm">
+      <div className="w-full overflow-hidden">
+        <div className="relative h-[400px]">
           <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Symbol</TableHead>
-                <TableHead>ID</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Volume</TableHead>
-                <TableHead>Open Price</TableHead>
-                <TableHead>Open Time</TableHead>
-                <TableHead>Take Profit</TableHead>
-                <TableHead>Stop Loss</TableHead>
-                <TableHead>
+            <TableHeader className="sticky top-0 z-10 bg-background border-b">
+              <TableRow className="hover:bg-muted/30">
+                <TableHead className="h-8 text-xs font-medium">
+                  Symbol
+                </TableHead>
+                <TableHead className="h-8 text-xs font-medium">ID</TableHead>
+                <TableHead className="h-8 text-xs font-medium">Type</TableHead>
+                <TableHead className="h-8 text-xs font-medium">
+                  Volume
+                </TableHead>
+                <TableHead className="h-8 text-xs font-medium">
+                  Open Price
+                </TableHead>
+                <TableHead className="h-8 text-xs font-medium">
+                  Open Time
+                </TableHead>
+                <TableHead className="h-8 text-xs font-medium">
+                  Take Profit
+                </TableHead>
+                <TableHead className="h-8 text-xs font-medium">
+                  Stop Loss
+                </TableHead>
+                <TableHead className="h-8 text-xs font-medium">
                   {activeTab === "active" ? "Current Price" : "Close Price"}
                 </TableHead>
-                <TableHead>Leverage</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>PnL</TableHead>
-                {activeTab === "active" && <TableHead>Actions</TableHead>}
+                <TableHead className="h-8 text-xs font-medium">
+                  Leverage
+                </TableHead>
+                <TableHead className="h-8 text-xs font-medium">
+                  Amount
+                </TableHead>
+                <TableHead className="h-8 text-xs font-medium">PnL</TableHead>
+                {activeTab === "active" && (
+                  <TableHead className="h-8 text-xs font-medium">
+                    Actions
+                  </TableHead>
+                )}
               </TableRow>
             </TableHeader>
-            <TableBody>
+            <TableBody className="overflow-y-auto">
               {trades.map((trade) => (
-                <TableRow key={trade.id}>
-                  <TableCell>{trade.asset_symbol}</TableCell>
-                  <TableCell>{trade.id.substring(0, 8)}...</TableCell>
-                  <TableCell>
+                <TableRow key={trade.id} className="h-8 hover:bg-muted/30">
+                  <TableCell className="py-1 text-xs">
+                    {trade.asset_symbol}
+                  </TableCell>
+                  <TableCell className="py-1 text-xs">
+                    {trade.id.substring(0, 8)}...
+                  </TableCell>
+                  <TableCell className="py-1">
                     <Badge
                       variant={
                         trade.trade_type === "buy" ? "default" : "secondary"
                       }
-                      className={
+                      className={cn(
+                        "text-xs px-1.5 py-0.5",
                         trade.trade_type === "buy"
                           ? "bg-green-500"
                           : "bg-red-500"
-                      }
+                      )}
                     >
                       {trade.trade_type.toUpperCase()}
                     </Badge>
                   </TableCell>
-                  <TableCell>{trade.volume.toFixed(2)}</TableCell>
-                  <TableCell>{trade.opening_price}</TableCell>
-                  <TableCell>
+                  <TableCell className="py-1 text-xs">
+                    {trade.volume.toFixed(2)}
+                  </TableCell>
+                  <TableCell className="py-1 text-xs">
+                    {trade.opening_price}
+                  </TableCell>
+                  <TableCell className="py-1 text-xs">
                     {new Date(trade.open_time).toLocaleString()}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="py-1 text-xs">
                     {trade.take_profit > 0 ? trade.take_profit : "-"}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="py-1 text-xs">
                     {trade.stop_loss > 0 ? trade.stop_loss : "-"}
                   </TableCell>
-                  <TableCell>{trade.closing_price}</TableCell>
-                  <TableCell>x{trade.leverage}</TableCell>
-                  <TableCell>${trade.amount.toFixed(2)}</TableCell>
+                  <TableCell className="py-1 text-xs">
+                    {trade.closing_price}
+                  </TableCell>
+                  <TableCell className="py-1 text-xs">
+                    x{trade.leverage}
+                  </TableCell>
+                  <TableCell className="py-1 text-xs">
+                    ${trade.amount.toFixed(2)}
+                  </TableCell>
                   <TableCell
                     className={cn(
+                      "py-1 text-xs",
                       trade.pnl >= 0 ? "text-green-500" : "text-red-500"
                     )}
                   >
@@ -325,16 +366,21 @@ export default function OrderTable() {
                       : `-$${Math.abs(trade.pnl).toFixed(2)}`}
                   </TableCell>
                   {activeTab === "active" && (
-                    <TableCell>
-                      <div className="flex gap-2">
+                    <TableCell className="py-1">
+                      <div className="flex gap-1">
                         <Button
                           size="sm"
                           variant="destructive"
+                          className="h-6 text-xs px-2"
                           onClick={() => handleClosePosition(trade)}
                         >
                           Close
                         </Button>
-                        <Button size="sm" variant="outline">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-6 text-xs px-2"
+                        >
                           Edit
                         </Button>
                       </div>
@@ -346,10 +392,13 @@ export default function OrderTable() {
           </Table>
 
           {/* Loading indicator and intersection observer target */}
-          <div ref={loadMoreRef} className="py-2 text-center">
+          <div
+            ref={loadMoreRef}
+            className="sticky bottom-0 py-1 text-center bg-background border-t"
+          >
             {isLoading && (
-              <div className="flex justify-center items-center py-2">
-                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+              <div className="flex justify-center items-center py-1">
+                <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
               </div>
             )}
           </div>
@@ -697,7 +746,7 @@ export default function OrderTable() {
     <div className="flex flex-col bg-background text-foreground border border-muted rounded-md shadow-sm w-full max-w-[1200px] mx-auto">
       {!isCollapsed && !isMobile && (
         <div className="flex-1">
-          <div className="border-b border-muted flex justify-between items-center">
+          <div className="border-b border-muted flex justify-between items-center sticky top-0 z-20 bg-background">
             <div className="flex overflow-x-auto scrollbar-hide">
               <button
                 className={cn(
@@ -740,7 +789,11 @@ export default function OrderTable() {
       )}
 
       {/* Mobile view - just show the compact summary */}
-      {isMobile ? renderMobileAccountSummary() : renderDesktopAccountSummary()}
+      <div className="sticky bottom-0 z-20 bg-background">
+        {isMobile
+          ? renderMobileAccountSummary()
+          : renderDesktopAccountSummary()}
+      </div>
 
       {renderMobileFilters()}
 
