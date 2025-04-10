@@ -210,7 +210,10 @@ export function TradingInterface() {
                   <TabsTrigger value="units" className="text-[10px] h-5 px-1">
                     units
                   </TabsTrigger>
-                  <TabsTrigger value="currency" className="text-[10px] h-5 px-1">
+                  <TabsTrigger
+                    value="currency"
+                    className="text-[10px] h-5 px-1"
+                  >
                     currency
                   </TabsTrigger>
                 </TabsList>
@@ -252,9 +255,7 @@ export function TradingInterface() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Leverage:</span>
-                  <span className="text-primary">
-                    {tradingInfo.leverage}
-                  </span>
+                  <span className="text-primary">{tradingInfo.leverage}</span>
                 </div>
               </div>
             </div>
@@ -277,7 +278,9 @@ export function TradingInterface() {
                 </div>
 
                 <div>
-                  <div className="text-[8px] text-muted-foreground">Pending</div>
+                  <div className="text-[8px] text-muted-foreground">
+                    Pending
+                  </div>
                   <div className="text-[10px] text-foreground">Market</div>
                 </div>
               </div>
@@ -331,7 +334,9 @@ export function TradingInterface() {
             <div className="p-3">
               <div className="flex items-center">
                 <div className="flex-1">
-                  <label className="text-xs text-muted-foreground">Volume</label>
+                  <label className="text-xs text-muted-foreground">
+                    Volume
+                  </label>
                   <FormField
                     control={form.control}
                     name="volume"
@@ -431,9 +436,7 @@ export function TradingInterface() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Leverage:</span>
-                  <span className="text-primary">
-                    {tradingInfo.leverage}
-                  </span>
+                  <span className="text-primary">{tradingInfo.leverage}</span>
                 </div>
               </div>
             </div>
