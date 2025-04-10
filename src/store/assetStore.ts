@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import axiosInstance from "@/lib/axios";
-import {AssetUpdate} from "@/hooks/useAssetWebsocket.ts";
+import { AssetUpdate } from "@/hooks/useAssetWebsocket";
 
 export interface Asset {
   id: string;
@@ -24,7 +24,7 @@ export interface Asset {
   is_active: number;
   image: string;
   sym_key: string;
-  type: "forex" | "crypto" | "stocks";
+  type: "forex" | "crypto" | "stocks" | "indices" | "commodities" | "metals";
   buy_price: number;
   sell_price: number;
   created_at: string;
@@ -42,10 +42,9 @@ interface AssetStore {
   setActiveAsset: (asset: Asset) => void;
   getAssetById: (id: string) => Asset | undefined;
   getAssetBySymbol: (symbol: string) => Asset | undefined;
-  updateAssetFromWebsocket: (update: AssetUpdate) => void;
+  updateAssetFromWebsocket: (updates: AssetUpdate | AssetUpdate[]) => void;
 }
 
-// Default to BTC/USD if no active asset
 const DEFAULT_ASSET_SYMBOL = "BITSTAMP:BTCUSD";
 
 const useAssetStore = create<AssetStore>()(
@@ -63,7 +62,6 @@ const useAssetStore = create<AssetStore>()(
               const response = await axiosInstance.get("/assets");
               const assets = response.data.data as Asset[];
 
-              // Group assets by type
               const groupedAssets: Record<string, Asset[]> = {};
               assets.forEach((asset) => {
                 if (!groupedAssets[asset.type]) {
@@ -72,34 +70,28 @@ const useAssetStore = create<AssetStore>()(
                 groupedAssets[asset.type].push(asset);
               });
 
-              // Set default active asset if none is selected
               const currentActive = get().activeAsset;
 
-              // Find a Bitcoin asset first (for default)
               let defaultAsset = assets.find(
                   (a) => a.tv_symbol === DEFAULT_ASSET_SYMBOL
               );
 
-              // If no Bitcoin asset, try to find a forex asset that matches AUD/JPY
               if (!defaultAsset) {
                 defaultAsset = assets.find((a) => a.sy === "AUD/JPY");
               }
 
-              // If still no match, just use the first asset
               if (!defaultAsset && assets.length > 0) {
                 defaultAsset = assets[0];
               }
-
-              const finalAsset = currentActive || defaultAsset;
 
               set({
                 assets,
                 groupedAssets,
                 isLoading: false,
-                activeAsset: finalAsset,
+                activeAsset: currentActive || defaultAsset,
               });
             } catch (error) {
-              console.error("Failed to fetch assets:", error);
+              console.log(error)
               set({
                 isLoading: false,
                 error: "Failed to fetch assets. Please try again later.",
@@ -121,34 +113,26 @@ const useAssetStore = create<AssetStore>()(
 
           updateAssetFromWebsocket: (updates) => {
             set(state => {
-              // If updates is not an array, convert it to an array for consistent handling
               const updateArray = Array.isArray(updates) ? updates : [updates];
 
               if (updateArray.length === 0) {
                 return state;
               }
 
-              // Create a copy of the assets array
+              const assetsMap = new Map(state.assets.map(asset => [asset.asset_id, asset]));
+
               const updatedAssets = [...state.assets];
               const updatedGroupedAssets = { ...state.groupedAssets };
-              let updatedActiveAsset = state.activeAsset;
+              let updatedActiveAsset = null;
 
-              // Process each update
               updateArray.forEach(update => {
-                // Find asset by asset_id
-                const assetIndex = updatedAssets.findIndex(
-                    asset => asset.asset_id === update.id
-                );
+                const asset = assetsMap.get(update.id);
 
-                if (assetIndex === -1) {
-                  console.log('not found asset', update.id);
+                if (!asset) {
                   return;
                 }
 
-                const asset = updatedAssets[assetIndex];
-
-                // Update the asset with available fields
-                updatedAssets[assetIndex] = {
+                const updatedAsset = {
                   ...asset,
                   rate: update.price.toString(),
                   ...(update.priceLow24h !== undefined && { price_low: update.priceLow24h.toString() }),
@@ -161,35 +145,32 @@ const useAssetStore = create<AssetStore>()(
                   sell_price: update.price * (1 - Number(asset.sell_spread))
                 };
 
-                // Update active asset if needed
-                if (state.activeAsset && state.activeAsset.id === asset.id) {
-                  updatedActiveAsset = updatedAssets[assetIndex];
-                }
+                const assetIndex = updatedAssets.findIndex(a => a.asset_id === update.id);
 
-                // Update grouped assets
-                const assetType = asset.type;
-                if (updatedGroupedAssets[assetType]) {
-                  const groupIndex = updatedGroupedAssets[assetType].findIndex(
-                      a => a.id === asset.id
-                  );
+                if (assetIndex !== -1) {
+                  updatedAssets[assetIndex] = updatedAsset;
 
-                  if (groupIndex !== -1) {
-                    updatedGroupedAssets[assetType][groupIndex] = updatedAssets[assetIndex];
+                  if (state.activeAsset && state.activeAsset.asset_id === update.id) {
+                    updatedActiveAsset = updatedAsset;
+                  }
+
+                  const assetType = asset.type;
+                  if (updatedGroupedAssets[assetType]) {
+                    const groupIndex = updatedGroupedAssets[assetType].findIndex(a => a.id === asset.id);
+                    if (groupIndex !== -1) {
+                      updatedGroupedAssets[assetType][groupIndex] = updatedAsset;
+                    }
                   }
                 }
               });
-
-              // Return the updated state
               return {
                 ...state,
                 assets: updatedAssets,
-                activeAsset: updatedActiveAsset,
-                groupedAssets: updatedGroupedAssets
+                groupedAssets: updatedGroupedAssets,
+                activeAsset: updatedActiveAsset || state.activeAsset
               };
             });
           }
-
-
         }),
         {
           name: "asset-storage",

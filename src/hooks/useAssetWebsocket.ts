@@ -11,7 +11,6 @@ export interface AssetUpdate {
     price: number;
     lastUpdated: string;
     tradingViewSymbol: string;
-    // Optional fields that might not be present in all asset types
     priceLow24h?: number;
     priceHigh24h?: number;
     change24h?: number;
@@ -64,81 +63,24 @@ export function useAssetWebSocket(options: WebSocketOptions = {}) {
             options.onError?.(error);
         });
 
-        // Handle data events
+        // Handle data events - simplified to only necessary events
         socketRef.current.on('data:all', (response: WebSocketResponse) => {
             if (response.success && response.data?.length) {
-                response.data.forEach(asset => {
-                    updateAssetFromWebsocket(asset);
-                });
+                updateAssetFromWebsocket(response.data);
             }
         });
 
-        // Standard updates
+        // Standard updates for individual assets
         socketRef.current.on('data:update', (asset: AssetUpdate) => {
             updateAssetFromWebsocket(asset);
         });
 
-        // Turbo mode (high frequency) updates
-        socketRef.current.on('turbo:update', (asset: AssetUpdate) => {
-            updateAssetFromWebsocket(asset);
-        });
-
-        // Category data
-        socketRef.current.on('data:category:forex', (response: WebSocketResponse) => {
-            if (response.success && response.data?.length) {
-                response.data.forEach(asset => {
-                    updateAssetFromWebsocket(asset);
-                });
-            }
-        });
-
-        socketRef.current.on('data:category:crypto', (response: WebSocketResponse) => {
-            if (response.success && response.data?.length) {
-                response.data.forEach(asset => {
-                    updateAssetFromWebsocket(asset);
-                });
-            }
-        });
-
-        socketRef.current.on('data:category:stocks', (response: WebSocketResponse) => {
-            if (response.success && response.data?.length) {
-                response.data.forEach(asset => {
-                    updateAssetFromWebsocket(asset);
-                });
-            }
-        });
-
-        socketRef.current.on('data:category:metals', (response: WebSocketResponse) => {
-            if (response.success && response.data?.length) {
-                response.data.forEach(asset => {
-                    updateAssetFromWebsocket(asset);
-                });
-            }
-        });
-
     }, [options, updateAssetFromWebsocket]);
 
-    // Subscribe to all assets
+    // Subscribe to all assets - this is all we need
     const subscribeToAll = useCallback(() => {
         if (socketRef.current) {
             socketRef.current.emit('subscribe:all');
-        }
-    }, []);
-
-    // Subscribe to a category
-    const subscribeToCategory = useCallback((category: string) => {
-        if (socketRef.current) {
-            socketRef.current.emit('subscribe:category', category);
-        }
-    }, []);
-
-    // Subscribe to specific symbols
-    const subscribeToSymbols = useCallback((symbols: string[], turboMode = false) => {
-        if (socketRef.current) {
-            socketRef.current.emit('subscribe:symbols', {
-                symbols,
-                mode: turboMode ? 'turbo' : undefined
-            });
         }
     }, []);
 
@@ -161,8 +103,6 @@ export function useAssetWebSocket(options: WebSocketOptions = {}) {
 
     return {
         subscribeToAll,
-        subscribeToCategory,
-        subscribeToSymbols,
         disconnect
     };
 }
