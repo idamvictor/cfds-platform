@@ -13,20 +13,17 @@ import {
 } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import useUserStore from "@/store/userStore";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface SidebarProps {
-  userInfo: {
-    name: string;
-    id: string;
-    email: string;
-  };
   onLinkClick: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ userInfo, onLinkClick }) => {
+const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const clearUser = useUserStore((state) => state.clearUser);
+  const user = useUserStore((state) => state.user);
 
   const handleLogout = () => {
     clearUser();
@@ -36,7 +33,6 @@ const Sidebar: React.FC<SidebarProps> = ({ userInfo, onLinkClick }) => {
   const navItems = [
     { title: "Dashboard", icon: LayoutDashboard, path: "/main/dashboard" },
     { title: "Personal Information", icon: User, path: "/main/personal" },
-    // { title: "Deposit", icon: PiggyBank, path: "/deposit" },
     { title: "Withdrawal", icon: ArrowUpDown, path: "/main/withdrawal" },
     { title: "Verification", icon: FileCheck, path: "/main/verification" },
     { title: "Accounts", icon: Folders, path: "/main/accounts" },
@@ -56,20 +52,26 @@ const Sidebar: React.FC<SidebarProps> = ({ userInfo, onLinkClick }) => {
   return (
     <aside className="bg-sidebar h-full w-60 flex flex-col border-r border-sidebar-border">
       <div className="flex flex-col items-center text-center p-6 border-b border-sidebar-border">
-        <div className="h-20 w-20 rounded-full bg-sidebar-accent flex items-center justify-center mb-3">
-          <User className="h-10 w-10 text-muted" />
-        </div>
+        <Avatar className="h-20 w-20">
+          <AvatarImage
+            src={user?.avatar}
+            alt={`${user?.first_name} ${user?.last_name}`}
+          />
+          <AvatarFallback className="bg-sidebar-accent">
+            <User className="h-10 w-10 text-muted" />
+          </AvatarFallback>
+        </Avatar>
         <h2 className="text-lg font-medium text-sidebar-foreground">
-          {userInfo.name}
+          {user ? `${user.first_name} ${user.last_name}` : ""}
         </h2>
-        <p className="text-sm text-muted-foreground mt-1">#{userInfo.id}</p>
+        <p className="text-sm text-muted-foreground mt-1">#{user?.id || ""}</p>
         <p className="text-xs text-muted-foreground/70 mt-1">
-          {userInfo.email}
+          {user?.email || ""}
         </p>
 
         <div className="grid grid-cols-2 gap-2 w-full mt-4">
           <Link
-            to="/deposit"
+            to="/main/deposit"
             className="bg-sidebar-primary text-sidebar-primary-foreground font-medium px-6 rounded-md transition-all text-sm py-3"
             onClick={onLinkClick}
           >
