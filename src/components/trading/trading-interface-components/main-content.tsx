@@ -1,54 +1,44 @@
-import { useState, useEffect } from "react";
-import {
-  Maximize2,
-  Camera,
-  Settings,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import type { ActiveView } from "./trading-platform";
-import MarketWatchPanel from "./panels/market-watch-panel";
-import ActiveOrdersPanel from "./panels/active-orders-panel";
-import TradingHistoryPanel from "./panels/trading-history-panel";
-import CalendarPanel from "./panels/calendar-panel";
-import MarketNewsPanel from "./panels/market-news-panel";
-import { useMobile } from "@/hooks/use-mobile";
-import TradingInterface from "../trading-interface";
-import OrderTable from "../order-table";
-import useAssetStore from "@/store/assetStore";
-import TradingViewWidget from "./trading-view-widget";
+import { useState, useEffect } from "react"
+import { Maximize2, Camera, Settings, ChevronDown, ChevronUp } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import type { ActiveView } from "./trading-platform"
+import MarketWatchPanel from "./panels/market-watch-panel"
+import ActiveOrdersPanel from "./panels/active-orders-panel"
+import TradingHistoryPanel from "./panels/trading-history-panel"
+import CalendarPanel from "./panels/calendar-panel"
+import MarketNewsPanel from "./panels/market-news-panel"
+import { useMobile } from "@/hooks/use-mobile"
+import TradingViewWidget from "./trading-view-widget"
+import useAssetStore from "@/store/assetStore"
+import TradingInterface from "../trading-interface"
+import OrderTable from "../order-table"
 
 interface MainContentProps {
-  sidebarExpanded: boolean;
-  activeView: ActiveView;
-  activePair: string;
-  addCurrencyPair: (pair: string) => void;
+  sidebarExpanded: boolean
+  activeView: ActiveView
+  activePair: string
+  addCurrencyPair: (pair: string) => void
 }
 
-export default function MainContent({
-  sidebarExpanded,
-  activeView,
-  activePair,
-  addCurrencyPair,
-}: MainContentProps) {
-  const [chartHeight, setChartHeight] = useState(60); // Percentage of the container height
-  const isMobile = useMobile();
-  const isLargeScreen = useMobile(1024);
+export default function MainContent({ sidebarExpanded, activeView, activePair, addCurrencyPair }: MainContentProps) {
+  const [chartHeight, setChartHeight] = useState(60) // Percentage of the container height
+  const isMobile = useMobile()
+  const isLargeScreen = useMobile(1024)
+
+  const { activeAsset } = useAssetStore()
   console.log(sidebarExpanded)
 
-  const { activeAsset } = useAssetStore();
-
+  // Log when active asset changes
   useEffect(() => {
-    console.log("MainContent - Active asset changed:", activeAsset);
-  }, [activeAsset]);
+    console.log("MainContent - Active asset changed:", activeAsset)
+  }, [activeAsset])
 
   const handleResizeChart = (increase: boolean) => {
     setChartHeight((prev) => {
-      const newHeight = increase ? prev + 5 : prev - 5;
-      return Math.min(Math.max(newHeight, 30), 80); // Keep between 30% and 80%
-    });
-  };
+      const newHeight = increase ? prev + 5 : prev - 5
+      return Math.min(Math.max(newHeight, 30), 80) // Keep between 30% and 80%
+    })
+  }
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
@@ -57,9 +47,7 @@ export default function MainContent({
         {/* Left panel - shows based on active view (desktop only) */}
         {activeView && !isMobile && (
           <div className="w-[300px] border-r border-border overflow-y-auto hidden md:block">
-            {activeView === "market-watch" && (
-              <MarketWatchPanel addCurrencyPair={addCurrencyPair} />
-            )}
+            {activeView === "market-watch" && <MarketWatchPanel addCurrencyPair={addCurrencyPair} />}
             {activeView === "active-orders" && <ActiveOrdersPanel />}
             {activeView === "trading-history" && <TradingHistoryPanel />}
             {activeView === "calendar" && <CalendarPanel />}
@@ -70,16 +58,11 @@ export default function MainContent({
         {/* Center - Chart and Orders */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Chart area */}
-          <div
-            className="relative border-b border-border bg-background"
-            style={{ height: `${chartHeight}%` }}
-          >
+          <div className="relative border-b border-border bg-background" style={{ height: `${chartHeight}%` }}>
             {/* Chart header */}
             <div className="flex items-center justify-between h-10 px-4 border-b border-border">
               <div className="flex items-center">
-                <span className="text-sm font-medium">
-                  {activeAsset?.symbol_display || activePair}
-                </span>
+                <span className="text-sm font-medium">{activeAsset?.symbol_display || activePair}</span>
                 <span className="text-xs text-muted-foreground ml-2">1m</span>
               </div>
               <div className="flex items-center space-x-2">
@@ -95,9 +78,8 @@ export default function MainContent({
               </div>
             </div>
 
-            {/* Chart placeholder */}
-            <div className="w-full h-[calc(100%-40px)] flex items-center justify-center bg-background">
-              {/* <TradingChart /> */}
+            {/* TradingView Chart */}
+            <div className="w-full h-[calc(100%-40px)] bg-background">
               <TradingViewWidget />
             </div>
 
@@ -124,16 +106,27 @@ export default function MainContent({
             </div>
           </div>
 
+          {/* Mobile Trading Interface - between chart and table */}
+          {isLargeScreen && (
+            <div className="border-b border-border">
+              <TradingInterface />
+            </div>
+          )}
+
           {/* Orders table */}
-          <OrderTable />
+          <div className={`${isLargeScreen ? "h-auto" : "h-[200px]"} overflow-auto`}>
+            <OrderTable />
+          </div>
         </div>
 
-        {/* Right panel - Trading interface (only visible on large screens) */}
-        {!isLargeScreen && <TradingInterface />}
+        {/* Right panel - Trading interface (only visible on desktop) */}
+        {!isLargeScreen && (
+          <div className="w-[300px] border-l border-border overflow-y-auto">
+            <TradingInterface />
+          </div>
+        )}
       </div>
-
-      {/* Floating trading interface for small screens */}
-      {isLargeScreen && <TradingInterface />}
+    {/* <Toaster /> */}
     </div>
-  );
+  )
 }

@@ -237,32 +237,36 @@ export default function Header({
                         Currency Pairs
                       </h3>
                       <div className="space-y-2">
-                        {activePairs.map((pair) => (
-                          <div
-                            key={pair}
-                            className={`flex items-center justify-between p-2 rounded-md ${
-                              activePair === pair
-                                ? "bg-primary/10"
-                                : "hover:bg-muted/50"
-                            }`}
-                            onClick={() => handlePairClick(pair)}
-                          >
-                            <div className="flex items-center gap-2">
-                              <CurrencyFlag pair={pair} />
-                              <span>{pair}</span>
+                        {activePairs.map((pair, index) => (
+                          <>
+                            {/* ============================================================================================================================================ */}
+                            {console.log(pair)}
+                            <div
+                              key={index}
+                              className={`flex items-center justify-between p-2 rounded-md ${
+                                activePair === pair
+                                  ? "bg-primary/10"
+                                  : "hover:bg-muted/50"
+                              }`}
+                              onClick={() => handlePairClick(pair)}
+                            >
+                              <div className="flex items-center gap-2">
+                                <CurrencyFlag pair={pair} />
+                                <span>{pair}</span>
+                              </div>
+                              {activePairs.length > 1 && (
+                                <button
+                                  className="rounded-full hover:bg-muted p-0.5"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    removeCurrencyPair(pair);
+                                  }}
+                                >
+                                  <X className="h-4 w-4" />
+                                </button>
+                              )}
                             </div>
-                            {activePairs.length > 1 && (
-                              <button
-                                className="rounded-full hover:bg-muted p-0.5"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  removeCurrencyPair(pair);
-                                }}
-                              >
-                                <X className="h-4 w-4" />
-                              </button>
-                            )}
-                          </div>
+                          </>
                         ))}
                         <Button
                           variant="outline"
@@ -308,7 +312,7 @@ export default function Header({
               className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-md"
               onClick={() => setIsSearchOpen(!isSearchOpen)}
             >
-              <CurrencyFlag pair={activeAsset?.symbol_display || activePair} />
+              {/* <CurrencyFlag pair={activeAsset?.symbol_display || activePair} /> */}
               <span className="text-sm font-medium">
                 {activeAsset?.symbol_display || activePair}
               </span>
@@ -337,9 +341,9 @@ export default function Header({
                   className="flex overflow-x-auto scrollbar-hide whitespace-nowrap"
                   style={{ scrollbarWidth: "none" }}
                 >
-                  {activePairs.map((pair) => (
+                  {activePairs.map((pair, index) => (
                     <div
-                      key={pair}
+                      key={index}
                       ref={activePair === pair ? activeTabRef : null}
                       className={`flex items-center gap-2 px-3 py-2 cursor-pointer ${
                         activePair === pair
@@ -395,9 +399,9 @@ export default function Header({
             />
           </div>
           <div className="mt-2 max-h-[300px] overflow-y-auto">
-            {activePairs.map((pair) => (
+            {activePairs.map((pair, index) => (
               <div
-                key={pair}
+                key={index}
                 className={`flex items-center justify-between p-2 rounded-md ${
                   activePair === pair ? "bg-primary/10" : "hover:bg-muted/50"
                 }`}
@@ -533,7 +537,16 @@ function Logo() {
   );
 }
 
-function CurrencyFlag({ pair }: { pair: string }) {
+function CurrencyFlag({ pair }: { pair?: string }) {
+  // Handle undefined or invalid pair format
+  if (!pair || !pair.includes("/")) {
+    return (
+      <div className="h-5 w-5 rounded-full bg-muted flex items-center justify-center text-xs text-muted-foreground">
+        {pair ? pair.charAt(0) : "?"}
+      </div>
+    );
+  }
+
   // This would be replaced with actual flag images in a real implementation
   const firstCurrency = pair.split("/")[0];
   const color =

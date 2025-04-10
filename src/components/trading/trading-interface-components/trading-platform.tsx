@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import Header from "./header";
 import Sidebar from "./sidebar";
@@ -5,6 +7,7 @@ import MainContent from "./main-content";
 import useAssetStore from "@/store/assetStore";
 import useTradeStore from "@/store/tradeStore";
 import AssetInitializer from "../asset-initializer";
+import { useMobile } from "@/hooks/use-mobile";
 
 export type ActiveView =
   | "market-watch"
@@ -20,6 +23,7 @@ export default function TradingPlatform() {
   const [activeView, setActiveView] = useState<ActiveView>(null); // Set to null by default (panels closed)
   const [activePairs, setActivePairs] = useState<string[]>(["AUD/JPY"]);
   const [activePair, setActivePair] = useState("AUD/JPY");
+  const isMobile = useMobile(768);
 
   const { setActiveAsset, assets, fetchAssets, activeAsset } = useAssetStore();
   const { fetchOpenTrades, fetchClosedTrades } = useTradeStore();
@@ -103,13 +107,16 @@ export default function TradingPlatform() {
         toggleView={toggleView}
       />
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar
-          expanded={sidebarExpanded}
-          toggleSidebar={toggleSidebar}
-          activeView={activeView}
-          toggleView={toggleView}
-          addCurrencyPair={addCurrencyPair}
-        />
+        {/* Only show sidebar on desktop */}
+        {!isMobile && (
+          <Sidebar
+            expanded={sidebarExpanded}
+            toggleSidebar={toggleSidebar}
+            activeView={activeView}
+            toggleView={toggleView}
+            addCurrencyPair={addCurrencyPair}
+          />
+        )}
         <MainContent
           sidebarExpanded={sidebarExpanded}
           activeView={activeView}
