@@ -43,13 +43,13 @@ export default function TradingPlatform() {
 
   // Update active pair when active asset changes
   useEffect(() => {
-    if (activeAsset && activeAsset.symbol_display) {
+    if (activeAsset && activeAsset.sy) {
       // Update the active pair to match the active asset
-      setActivePair(activeAsset.symbol_display);
+      setActivePair(activeAsset.sy);
 
       // Make sure this pair is in the activePairs list
-      if (!activePairs.includes(activeAsset.symbol_display)) {
-        setActivePairs((prev) => [...prev, activeAsset.symbol_display]);
+      if (!activePairs.includes(activeAsset.sy)) {
+        setActivePairs((prev) => [...prev, activeAsset.sy]);
       }
     }
   }, [activeAsset, activePairs]);
@@ -63,8 +63,8 @@ export default function TradingPlatform() {
   };
 
   const addCurrencyPair = (pair: string) => {
-    // Find the asset by symbol_display
-    const asset = assets.find((a) => a.symbol_display === pair);
+    // Find the asset by sy
+    const asset = assets.find((a) => a.sy === pair);
     console.log("Adding currency pair:", pair, "Found asset:", asset);
 
     if (asset) {
@@ -88,7 +88,7 @@ export default function TradingPlatform() {
         setActivePair(newPairs[0]);
 
         // Also update the active asset
-        const newAsset = assets.find((a) => a.symbol_display === newPairs[0]);
+        const newAsset = assets.find((a) => a.sy === newPairs[0]);
         if (newAsset) {
           setActiveAsset(newAsset);
         }

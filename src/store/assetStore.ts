@@ -10,6 +10,7 @@ export interface Asset {
   tv_symbol: string;
   symbol: string;
   sy: string;
+  symbol_display: string;
   rate: string;
   price_low: string;
   price_high: string;
