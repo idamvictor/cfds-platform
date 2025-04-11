@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import type { Asset } from "@/store/assetStore";
 import AssetItem from "./AssetItem";
 
@@ -10,132 +10,133 @@ interface AssetCategoryProps {
     toggleCategory: () => void;
     handleAssetClick: (asset: Asset) => void;
     activeAssetId?: string;
+    priceColors?: Record<string, string>;
 }
 
-// Category icon component
-const CategoryIcon = memo(({ category }: { category: string }) => {
-    switch (category.toLowerCase()) {
-        case "forex":
-            return (
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                >
-                    <line x1="6" y1="15" x2="18" y2="15"></line>
-                    <path d="M9 11l3-8 3 8"></path>
-                    <path d="M13 11l5 4-5 4"></path>
-                </svg>
-            );
-        case "stocks":
-            return (
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                >
-                    <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
-                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
-                    <line x1="6" y1="1" x2="6" y2="4"></line>
-                    <line x1="10" y1="1" x2="10" y2="4"></line>
-                    <line x1="14" y1="1" x2="14" y2="4"></line>
-                </svg>
-            );
-        case "crypto":
-            return (
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                >
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <path d="M9.5 9.5c.5-1 1.5-2 2.5-2 2 0 3 1.5 3 3 0 1.5-1 2-2 3-1 1-1.5 2-1.5 3"></path>
-                    <line x1="12" y1="19" x2="12" y2="19.01"></line>
-                </svg>
-            );
-        default:
-            return (
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                >
-                    <circle cx="12" cy="12" r="10"></circle>
-                </svg>
-            );
-    }
-});
-
-// Asset category component
 const AssetCategory = memo(({
                                 category,
                                 assets,
                                 isExpanded,
                                 toggleCategory,
                                 handleAssetClick,
-                                activeAssetId
+                                activeAssetId,
+                                priceColors = {} // Default to empty object if not provided
                             }: AssetCategoryProps) => {
-    // Format category name for display
-    const formatCategoryName = (name: string) => {
-        return name.charAt(0).toUpperCase() + name.slice(1);
+    // Get category icon based on category name
+    const getCategoryIcon = (category: string) => {
+        switch (category.toLowerCase()) {
+            case "forex":
+                return <span className="text-lg">€</span>;
+            case "stocks":
+                return (
+                    <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+                        <path
+                            d="M4 18V8H6V18H4ZM8 18V4H10V18H8ZM12 18V10H14V18H12ZM16 18V13H18V18H16Z"
+                            fill="currentColor"
+                        />
+                    </svg>
+                );
+            case "indices":
+                return (
+                    <svg viewBox="0 0 24 24" fill="none" width="20" height="20" className="opacity-70">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"
+                            fill="currentColor"
+                        />
+                        <path
+                            d="M6.5 12.5L10 16L13.5 12.5L17 16"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
+                );
+            case "crypto":
+                return (
+                    <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+                        <path
+                            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            fillOpacity="0"
+                        />
+                        <path
+                            d="M17 13.5L12.5 16.5L7 13.5M12.5 7.5V16.5"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
+                );
+            case "commodities":
+                return (
+                    <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+                        <path
+                            d="M20 12L12 4L4 12M20 12L12 20M20 12H4"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
+                );
+            case "metals":
+                return (
+                    <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+                        <path
+                            d="M4 5H20V19H4V5Z"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            fillOpacity="0"
+                        />
+                        <path
+                            d="M8 9H16M8 12H16M8 15H12"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                        />
+                    </svg>
+                );
+            default:
+                return <span className="text-lg">•</span>;
+        }
     };
 
     return (
-        <div className="mb-2">
+        <div className="mb-px">
+            {/* Category header */}
             <button
-                className="flex items-center justify-between w-full p-2 text-sm font-medium hover:bg-muted/30 rounded-md"
+                className="flex items-center justify-between w-full py-1.5 px-4 bg-slate-700 text-white"
                 onClick={toggleCategory}
             >
                 <div className="flex items-center">
-                    <CategoryIcon category={category} />
-                    <span className="ml-2 text-xs">
-            {formatCategoryName(category)}
+          <span className="w-8 flex items-center justify-start text-slate-400">
+            {getCategoryIcon(category)}
           </span>
+                    <span className="text-xs font-light">{category.charAt(0).toUpperCase() + category.slice(1)}</span>
                 </div>
                 <div className="flex items-center">
-          <span className="text-muted-foreground mr-2 text-xs">
-            {assets.length}
-          </span>
+                    <span className="mr-2 text-slate-400 text-xs">{assets.length}</span>
                     {isExpanded ? (
-                        <ChevronDown className="h-4 w-4" />
+                        <ChevronUp className="h-4 w-4 text-slate-400" />
                     ) : (
-                        <ChevronRight className="h-4 w-4" />
+                        <ChevronDown className="h-4 w-4 text-slate-400" />
                     )}
                 </div>
             </button>
 
+            {/* Category items */}
             {isExpanded && (
-                <div className="mt-1 space-y-1 bg-muted/10 rounded-md p-1">
+                <div>
                     {assets.map((asset) => (
                         <AssetItem
                             key={asset.id}
                             asset={asset}
                             isActive={activeAssetId === asset.id}
                             onClick={() => handleAssetClick(asset)}
+                            priceColor={priceColors[asset.id] || ""}
                         />
                     ))}
                 </div>
@@ -144,8 +145,6 @@ const AssetCategory = memo(({
     );
 });
 
-// Add display names for debugging
-CategoryIcon.displayName = "CategoryIcon";
 AssetCategory.displayName = "AssetCategory";
 
 export default AssetCategory;

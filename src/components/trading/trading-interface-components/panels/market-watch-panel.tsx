@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import useAssetStore from "@/store/assetStore";
@@ -31,12 +31,12 @@ const MarketWatchPanel = ({ addCurrencyPair }: MarketWatchPanelProps) => {
     });
 
     // Expand categories when they first load
-    useEffect(() => {
-        const categories = Object.keys(groupedAssets);
-        if (categories.length > 0 && expandedCategories.length === 0) {
-            setExpandedCategories(categories);
-        }
-    }, [groupedAssets, expandedCategories.length]);
+    // useEffect(() => {
+    //     const categories = Object.keys(groupedAssets);
+    //     if (categories.length > 0 && expandedCategories.length === 0) {
+    //         setExpandedCategories(categories);
+    //     }
+    // }, [groupedAssets, expandedCategories.length]);
 
     // Toggle category expansion
     const toggleCategory = useCallback((category: string) => {
@@ -100,10 +100,12 @@ const MarketWatchPanel = ({ addCurrencyPair }: MarketWatchPanelProps) => {
 
     return (
         <div className="h-full bg-background">
-            <div className="p-4 border-b border-border">
-                <h2 className="text-sm font-medium mb-2">Market Watch</h2>
+            <div className="p-2 border-b border-border">
+                <div className="mb-4 ml-4 mt-2">
+                    <h2 className="text-sm font-medium ">Market Watch</h2>
+                </div>
                 <div className="relative">
-                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Search className="absolute left-2  top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Search..."
                         className="pl-8"

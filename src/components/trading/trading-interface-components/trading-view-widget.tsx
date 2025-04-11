@@ -28,19 +28,6 @@ function TradingViewWidget() {
     widgetElement.style.width = "100%";
 
     const copyrightElement = document.createElement("div");
-    copyrightElement.className = "tradingview-widget-copyright";
-
-    const copyrightLink = document.createElement("a");
-    copyrightLink.href = "https://www.tradingview.com/";
-    copyrightLink.rel = "noreferrer noopener nofollow";
-    copyrightLink.target = "_blank";
-
-    const spanElement = document.createElement("span");
-    spanElement.className = "blue-text";
-    spanElement.textContent = "Track all markets on TradingView";
-
-    copyrightLink.appendChild(spanElement);
-    copyrightElement.appendChild(copyrightLink);
 
     // Append elements to container
     widgetContainer.appendChild(widgetElement);
@@ -65,7 +52,7 @@ function TradingViewWidget() {
       locale: "en",
       withdateranges: true,
       hide_side_toolbar: false,
-      allow_symbol_change: true,
+      allow_symbol_change: false,
       support_host: "https://www.tradingview.com",
     });
 
