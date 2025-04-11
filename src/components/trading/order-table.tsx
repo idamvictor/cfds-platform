@@ -266,7 +266,7 @@ export default function OrderTable() {
 
     return (
       <div className="w-full overflow-hidden">
-        <div className="relative h-[400px]">
+        <div className="relative h-[150px] max-h-[150px] overflow-y-auto">
           <Table>
             <TableHeader className="sticky top-0 z-10 bg-background border-b">
               <TableRow className="hover:bg-muted/30">
@@ -743,7 +743,7 @@ export default function OrderTable() {
   };
 
   return (
-    <div className="flex flex-col bg-background text-foreground border border-muted rounded-md shadow-sm w-full max-w-[1200px] mx-auto">
+    <div className="flex flex-col bg-background text-foreground border border-muted rounded-md shadow-sm w-full ">
       {!isCollapsed && !isMobile && (
         <div className="flex-1">
           <div className="border-b border-muted flex justify-between items-center sticky top-0 z-20 bg-background">
