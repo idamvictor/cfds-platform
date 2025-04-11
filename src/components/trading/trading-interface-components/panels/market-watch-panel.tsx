@@ -2,75 +2,15 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { Search, ChevronDown, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import useAssetStore from "@/store/assetStore";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { Asset } from "@/store/assetStore";
 import { useAssetWebSocket } from "@/hooks/useAssetWebsocket";
+import AssetItem from "@/components/trading/trading-interface-components/panels/inc/AssetItem.tsx";
 
 interface MarketWatchPanelProps {
     addCurrencyPair: (pair: string) => void;
 }
 
-const AssetIcon = memo(({ asset }: { asset: Asset }) => {
-    if (asset.image) {
-        return (
-            <div
-                className="h-5 w-5 rounded-full flex items-center justify-center text-xs text-white"
-                style={{
-                    backgroundImage: `url(${asset.image})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                }}
-            >
-                {!asset.image.includes("http") && asset.symbol.charAt(0)}
-            </div>
-        );
-    }
-
-    // Fallback to colored circle with first letter
-    let color = "bg-blue-500";
-
-    if (asset.type === "forex") {
-        const firstCurrency = asset.symbol;
-        color =
-            firstCurrency === "AUD"
-                ? "bg-blue-500"
-                : firstCurrency === "EUR"
-                    ? "bg-yellow-500"
-                    : firstCurrency === "USD"
-                        ? "bg-green-500"
-                        : firstCurrency === "GBP"
-                            ? "bg-purple-500"
-                            : firstCurrency === "CAD"
-                                ? "bg-red-500"
-                                : firstCurrency === "CHF"
-                                    ? "bg-red-500"
-                                    : "bg-purple-500";
-    } else if (asset.type === "crypto") {
-        color =
-            asset.symbol === "BTC"
-                ? "bg-orange-500"
-                : asset.symbol === "ETH"
-                    ? "bg-purple-500"
-                    : asset.symbol === "XRP"
-                        ? "bg-blue-500"
-                        : asset.symbol === "SOL"
-                            ? "bg-green-500"
-                            : asset.symbol === "ADA"
-                                ? "bg-blue-400"
-                                : "bg-gray-500";
-    } else if (asset.type === "stocks") {
-        color = "bg-blue-600";
-    }
-
-    return (
-        <div
-            className={`h-5 w-5 rounded-full ${color} flex items-center justify-center text-xs text-white`}
-        >
-            {asset.symbol.charAt(0)}
-        </div>
-    );
-});
 
 const CategoryIcon = memo(({ category }: { category: string }) => {
     switch (category.toLowerCase()) {
@@ -147,49 +87,6 @@ const CategoryIcon = memo(({ category }: { category: string }) => {
                 </svg>
             );
     }
-});
-
-interface AssetItemProps {
-    asset: Asset;
-    isActive: boolean;
-    onClick: () => void;
-}
-
-const AssetItem = memo(({ asset, isActive, onClick }: AssetItemProps) => {
-    const rate = Number.parseFloat(asset.rate).toFixed(2);
-    const changePercent = asset.change_percent ? Number.parseFloat(asset.change_percent) : 0;
-    const isPositiveChange = changePercent >= 0;
-
-    return (
-        <div
-            className={cn(
-                "flex items-center justify-between p-2 hover:bg-muted/50 rounded-md cursor-pointer ml-2",
-                isActive ? "bg-primary/10" : ""
-            )}
-            onClick={onClick}
-        >
-            <div className="flex items-center">
-                <AssetIcon asset={asset} />
-                <span className="ml-2 text-sm">
-          {asset.sy}
-        </span>
-            </div>
-            <div className="flex items-center">
-                <span className="text-sm mr-2">{rate}</span>
-                {asset.change_percent && (
-                    <span
-                        className={cn(
-                            "text-xs",
-                            isPositiveChange ? "text-green-500" : "text-red-500"
-                        )}
-                    >
-            {isPositiveChange ? "+" : ""}
-                        {changePercent}%
-          </span>
-                )}
-            </div>
-        </div>
-    );
 });
 
 interface AssetCategoryProps {
@@ -381,8 +278,6 @@ const MarketWatchPanel = ({ addCurrencyPair }: MarketWatchPanelProps) => {
 
 // Add display names for debugging
 AssetCategory.displayName = "AssetCategory";
-AssetItem.displayName = "AssetItem";
 CategoryIcon.displayName = "CategoryIcon";
-AssetIcon.displayName = "AssetIcon";
 
 export default MarketWatchPanel;
