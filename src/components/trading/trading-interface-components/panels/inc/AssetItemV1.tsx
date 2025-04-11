@@ -13,18 +13,15 @@ const AssetItem = memo(({ asset, isActive, onClick }: AssetItemProps) => {
     const [changeColor, setChangeColor] = useState<string>("");
     const previousPriceRef = useRef<number>(Number.parseFloat(asset.rate));
 
-    // Parse numeric values
     const currentPrice = Number.parseFloat(asset.rate);
     const changeAmount = asset.change ? Number.parseFloat(asset.change) : 0;
     const changePercent = asset.change_percent ? Number.parseFloat(asset.change_percent) : 0;
 
     const isPositiveChange = changePercent >= 0;
 
-
     const formattedChangeAmount = (isPositiveChange ? "+" : "") + changeAmount.toFixed(2);
     const formattedChangePercent = (isPositiveChange ? "+" : "") + changePercent.toFixed(2) + "%";
 
-    // Check price changes and apply flash effect
     useEffect(() => {
         const prevPrice = previousPriceRef.current;
 
@@ -51,6 +48,7 @@ const AssetItem = memo(({ asset, isActive, onClick }: AssetItemProps) => {
         }
     }, [currentPrice]);
 
+    // Default color for change is based on whether it's positive or negative
     useEffect(() => {
         setChangeColor(isPositiveChange ? "text-green-500" : "text-red-500");
     }, [isPositiveChange]);
@@ -64,27 +62,30 @@ const AssetItem = memo(({ asset, isActive, onClick }: AssetItemProps) => {
             onClick={onClick}
         >
             {/* Left side - Currency information */}
-            <div className="flex flex-col">
-                <div className="flex items-center">
-                    <div className="h-6 w-6 rounded-full flex items-center justify-center overflow-hidden">
-                        {asset.image ? (
-                            <img
-                                src={asset.image}
-                                alt={asset.symbol}
-                                className="h-full w-full object-cover"
-                            />
-                        ) : (
-                            <div className="h-full w-full bg-blue-500 flex items-center justify-center text-white text-xs">
-                                {asset.symbol.charAt(0)}
-                            </div>
-                        )}
-                    </div>
-                    <span className="ml-2 font-bold text-base">
+            <div className="flex items-start">
+                {/* Asset image with height matching both text lines */}
+                <div className="h-10 w-10 rounded-full overflow-hidden flex-shrink-0 mr-2">
+                    {asset.image ? (
+                        <img
+                            src={asset.image}
+                            alt={asset.symbol}
+                            className="h-full w-full object-cover"
+                        />
+                    ) : (
+                        <div className="h-full w-full bg-blue-500 flex items-center justify-center text-white">
+                            {asset.symbol.charAt(0)}
+                        </div>
+                    )}
+                </div>
+
+                {/* Text content */}
+                <div className="flex flex-col">
+          <span className="font-bold text-base leading-tight">
             {asset.sy}
           </span>
-                </div>
-                <div className="text-xs text-muted-foreground ml-8">
-                    {asset.name}
+                    <span className="text-xs text-muted-foreground">
+            {asset.name}
+          </span>
                 </div>
             </div>
 
@@ -101,7 +102,6 @@ const AssetItem = memo(({ asset, isActive, onClick }: AssetItemProps) => {
     );
 });
 
-// Add display name for debugging
 AssetItem.displayName = "AssetItem";
 
 export default AssetItem;
