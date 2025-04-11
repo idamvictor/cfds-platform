@@ -46,7 +46,9 @@ interface WithdrawalHistoryProps {
   refreshTrigger?: number;
 }
 
-export function WithdrawalHistory({ refreshTrigger = 0 }: WithdrawalHistoryProps) {
+export function WithdrawalHistory({
+  refreshTrigger = 0,
+}: WithdrawalHistoryProps) {
   const [withdrawals, setWithdrawals] = useState<WithdrawalRequest[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -54,12 +56,14 @@ export function WithdrawalHistory({ refreshTrigger = 0 }: WithdrawalHistoryProps
   useEffect(() => {
     const fetchWithdrawals = async () => {
       try {
-        const response = await axiosInstance.get<ApiResponse>('/user/withdrawals');
+        const response = await axiosInstance.get<ApiResponse>(
+          "/user/withdrawals"
+        );
         setWithdrawals(response.data.data.data);
         setError(null);
       } catch (err) {
-        setError('Failed to load withdrawal history');
-        console.error('Error fetching withdrawals:', err);
+        setError("Failed to load withdrawal history");
+        console.error("Error fetching withdrawals:", err);
       } finally {
         setIsLoading(false);
       }
@@ -69,7 +73,35 @@ export function WithdrawalHistory({ refreshTrigger = 0 }: WithdrawalHistoryProps
   }, [refreshTrigger]);
 
   if (isLoading) {
-    return <div className="p-4 text-center">Loading withdrawal history...</div>;
+    return (
+      <div className="rounded-md border border-border/40 overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-card hover:bg-card">
+              <TableHead className="text-foreground font-bold">DATE</TableHead>
+              <TableHead className="text-foreground font-bold">
+                AMOUNT
+              </TableHead>
+              <TableHead className="text-foreground font-bold">TYPE</TableHead>
+              <TableHead className="text-foreground font-bold">
+                DETAILS
+              </TableHead>
+              <TableHead className="text-foreground font-bold">
+                STATUS
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell colSpan={5} className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white mx-auto"></div>
+                <p>Loading withdrawal history...</p>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </div>
+    );
   }
 
   if (error) {

@@ -80,7 +80,7 @@ export default function WithdrawalForm() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-6 p-6 bg-card rounded-lg border border-border/40"
+            className="space-y-6 p-6 bg-background rounded-lg border border-border/40"
           >
             <h2 className="text-xl font-semibold">Make a Withdrawal</h2>
 
