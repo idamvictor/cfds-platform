@@ -9,7 +9,7 @@ import useTradeStore from "@/store/tradeStore";
 import AssetInitializer from "../asset-initializer";
 import { useMobile } from "@/hooks/use-mobile";
 import {addClickSound} from "@/lib/addClickSound.ts";
-import Footer from "@/components/Footer";
+import Footer from "@/components/footer";
 
 export type ActiveView =
   | "market-watch"

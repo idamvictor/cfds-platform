@@ -10,6 +10,10 @@ import { Separator } from "@/components/ui/separator";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { ProfitCalculatorModal } from "./trading-interface-components/profit-calculator-modal";
+import { TakeProfitStopLossModal } from "./trading-interface-components/take-profit-stop-loss-modal";
+import { PendingOrderModal } from "./trading-interface-components/pending-order-modal";
+
 
 const formSchema = z.object({
   type: z.enum(["buy", "sell"]),
@@ -24,6 +28,11 @@ export function TradingInterface() {
   // Store the base volume in lots and the displayed volume
   const [baseVolumeLots, setBaseVolumeLots] = React.useState(0.01);
   const [displayVolume, setDisplayVolume] = React.useState(0.01);
+
+  const [isProfitCalculatorOpen, setIsProfitCalculatorOpen] =
+    React.useState(false);
+  const [isTpSlModalOpen, setIsTpSlModalOpen] = React.useState(false);
+  const [isPendingModalOpen, setIsPendingModalOpen] = React.useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -263,25 +272,38 @@ export function TradingInterface() {
             {/* Section 3: Profit Calculator and Buttons */}
             <div className="col-span-1 p-2 rounded-r flex flex-col justify-between">
               <div className="space-y-1">
-                <div className="flex items-center justify-center py-1">
-                  <BarChart2 className="h-3 w-3 mr-1 text-primary" />
+                <Button
+                  className="flex items-center justify-center py-1 w-full h-auto bg-secondary hover:bg-secondary/50"
+                  onClick={() => setIsProfitCalculatorOpen(true)}
+                >
+                  <BarChart2 className="h-3 w-3 mr-1" />
                   <span className="text-[10px] font-medium text-foreground">
                     Profit Calculator
                   </span>
+                </Button>
+
+                <div>
+                  <Button
+                    className="flex flex-col items-start justify-center w-full h-auto bg-secondary hover:bg-secondary/50"
+                    onClick={() => setIsTpSlModalOpen(true)}
+                  >
+                    <div className="text-[8px] text-muted-foreground">
+                      Take Profit & Stop Loss
+                    </div>
+                    <div className="text-[10px] text-foreground">Not set</div>
+                  </Button>
                 </div>
 
                 <div>
-                  <div className="text-[8px] text-muted-foreground">
-                    Take Profit & Stop Loss
-                  </div>
-                  <div className="text-[10px] text-foreground">Not set</div>
-                </div>
-
-                <div>
-                  <div className="text-[8px] text-muted-foreground">
-                    Pending
-                  </div>
-                  <div className="text-[10px] text-foreground">Market</div>
+                  <Button
+                    className="flex flex-col items-start justify-center w-full h-auto bg-secondary hover:bg-secondary/50"
+                    onClick={() => setIsPendingModalOpen(true)}
+                  >
+                    <div className="text-[8px] text-muted-foreground">
+                      Pending
+                    </div>
+                    <div className="text-[10px] text-foreground">Market</div>
+                  </Button>
                 </div>
               </div>
 
@@ -445,23 +467,36 @@ export function TradingInterface() {
 
             {/* Section 3: Profit Calculator and Buttons */}
             <div className="p-3 space-y-3">
-              <div className="flex items-center justify-center py-1">
-                <BarChart2 className="h-4 w-4 mr-2 text-primary" />
+              <Button
+                className="flex items-center justify-center py-1 w-full h-auto bg-secondary hover:bg-secondary/50"
+                onClick={() => setIsProfitCalculatorOpen(true)}
+              >
+                <BarChart2 className="h-4 w-4 mr-2" />
                 <span className="text-sm font-medium text-foreground">
                   Profit Calculator
                 </span>
+              </Button>
+
+              <div className="space-y-1">
+                <Button
+                  className="flex flex-col items-start justify-center w-full h-auto bg-secondary hover:bg-secondary/50"
+                  onClick={() => setIsTpSlModalOpen(true)}
+                >
+                  <div className="text-xs text-muted-foreground">
+                    Take Profit & Stop Loss
+                  </div>
+                  <div className="text-sm text-foreground">Not set</div>
+                </Button>
               </div>
 
               <div className="space-y-1">
-                <div className="text-xs text-muted-foreground">
-                  Take Profit & Stop Loss
-                </div>
-                <div className="text-sm text-foreground">Not set</div>
-              </div>
-
-              <div className="space-y-1">
-                <div className="text-xs text-muted-foreground">Pending</div>
-                <div className="text-sm text-foreground">Market</div>
+                <Button
+                  className="flex flex-col items-start justify-center w-full h-auto bg-secondary hover:bg-secondary/50"
+                  onClick={() => setIsPendingModalOpen(true)}
+                >
+                  <div className="text-xs text-muted-foreground">Pending</div>
+                  <div className="text-sm text-foreground">Market</div>
+                </Button>
               </div>
 
               <div className="grid grid-cols-2 gap-1 pt-2">
@@ -508,6 +543,19 @@ export function TradingInterface() {
           </div>
         </form>
       </Form>
+      <ProfitCalculatorModal
+        open={isProfitCalculatorOpen}
+        onOpenChange={setIsProfitCalculatorOpen}
+      />
+      <TakeProfitStopLossModal
+        open={isTpSlModalOpen}
+        onOpenChange={setIsTpSlModalOpen}
+      />
+      <PendingOrderModal
+        open={isPendingModalOpen}
+        onOpenChange={setIsPendingModalOpen}
+        currentPrice={tradingInfo.buyPrice}
+      />
     </div>
   );
 }

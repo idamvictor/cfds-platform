@@ -26,7 +26,7 @@ export default function Footer() {
   };
 
   return (
-    <div className="flex md:justify-between items-center bg-background text-muted-foreground p-2 text-xs border-t-2 border-secondary mt-2">
+    <div className="flex justify-between items-center bg-background text-muted-foreground p-2 text-xs border-t-2 border-secondary mt-2">
       {/* Left Section */}
       <div className="hidden md:flex items-center gap-2">
         <Phone size={14} />
@@ -35,7 +35,7 @@ export default function Footer() {
       </div>
 
       {/* Right Section */}
-      <div className=" w-full">
+      <div className="">
         <div className="flex items-center justify-self-end gap-4">
           <Link to="/main/chat" className="flex gap-1 items-center">
             <Mail size={14} />
