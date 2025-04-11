@@ -121,401 +121,576 @@ export default function Header({
   };
 
   return (
-    <header className="flex items-center justify-between h-16 px-2 sm:px-4 border-b border-border bg-background">
-      <div className="flex items-center">
-        <div className="mr-2 sm:mr-6">
+    <>
+      <header className="hidden md:flex items-center justify-between h-20 px-6 border-b border-border bg-background">
+        <div className="flex items-center gap-6">
           <Logo />
-        </div>
-
-        {/* Mobile menu */}
-        {isMobile && (
-          <div className="flex items-center">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="mr-2">
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-[280px] sm:w-[350px] p-0">
-                <div className="flex flex-col h-full">
-                  <div className="p-4 border-b border-border">
-                    <h2 className="text-lg font-bold">Menu</h2>
-                  </div>
-
-                  {/* Account info in mobile menu */}
-                  <div className="bg-muted/30 rounded-lg p-3 mx-3 mb-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Avatar className="h-8 w-8 border border-border">
-                        <AvatarFallback>M</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <div className="text-xs text-muted-foreground">
-                          STANDARD ACCOUNT
-                        </div>
-                        <div className="text-green-500 font-bold">$610.05</div>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 mt-2">
-                      <Button variant="outline" size="sm" className="w-full">
-                        Profile
-                      </Button>
-                      <Button variant="outline" size="sm" className="w-full">
-                        Settings
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Side panels in mobile menu */}
-                  <div className="overflow-y-auto flex-1">
-                    <div className="px-3 py-2">
-                      <h3 className="text-sm font-medium mb-2">Panels</h3>
-                      <div className="space-y-1">
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-start gap-2 text-sm"
-                          onClick={() => toggleView("market-watch")}
-                        >
-                          <LineChart className="h-4 w-4" />
-                          <span>Market Watch</span>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-start gap-2 text-sm"
-                          onClick={() => toggleView("active-orders")}
-                        >
-                          <BarChart3 className="h-4 w-4" />
-                          <span>Active Orders</span>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-start gap-2 text-sm"
-                          onClick={() => toggleView("trading-history")}
-                        >
-                          <Clock className="h-4 w-4" />
-                          <span>Trading History</span>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-start gap-2 text-sm"
-                          onClick={() => toggleView("calendar")}
-                        >
-                          <Calendar className="h-4 w-4" />
-                          <span>Calendar</span>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-start gap-2 text-sm"
-                          onClick={() => toggleView("market-news")}
-                        >
-                          <Newspaper className="h-4 w-4" />
-                          <span>Market News</span>
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className="border-t border-border mt-2 px-3 py-2">
-                      <div className="space-y-2">
-                        <Button
-                          variant="outline"
-                          className="w-full justify-start gap-2"
-                        >
-                          <Robot className="h-4 w-4" />
-                          <span>Auto Trader</span>
-                        </Button>
-                        <Button
-                          variant="outline"
-                          className="w-full justify-start gap-2"
-                        >
-                          <Wallet className="h-4 w-4" />
-                          <span>Deposit</span>
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className="border-t border-border mt-2 px-3 py-2">
-                      <h3 className="text-sm font-medium mb-2">
-                        Currency Pairs
-                      </h3>
-                      <div className="space-y-2">
-                        {activePairs.map((pair, index) => (
-                          <>
-                            {/* ============================================================================================================================================ */}
-                            {console.log(pair)}
-                            <div
-                              key={index}
-                              className={`flex items-center justify-between p-2 rounded-md ${
-                                activePair === pair
-                                  ? "bg-primary/10"
-                                  : "hover:bg-muted/50"
-                              }`}
-                              onClick={() => handlePairClick(pair)}
-                            >
-                              <div className="flex items-center gap-2">
-                                <CurrencyFlag pair={pair} />
-                                <span>{pair}</span>
-                              </div>
-                              {activePairs.length > 1 && (
-                                <button
-                                  className="rounded-full hover:bg-muted p-0.5"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    removeCurrencyPair(pair);
-                                  }}
-                                >
-                                  <X className="h-4 w-4" />
-                                </button>
-                              )}
-                            </div>
-                          </>
-                        ))}
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="w-full mt-2"
-                        >
-                          <Plus className="h-4 w-4 mr-2" /> Add Pair
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Logout button */}
-                  <div className="border-t border-border p-3">
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start text-red-500"
-                      onClick={() => {
-                        useUserStore.getState().clearUser();
-                        window.location.href = "/login";
-                      }}
-                    >
-                      <LogOut className="h-4 w-4 mr-2" />
-                      <span>Logout</span>
-                    </Button>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-
-            {/* Mobile search button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="mr-2"
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
-            >
-              <Search className="h-5 w-5" />
-            </Button>
-
-            {/* Mobile active pair display */}
-            <div
-              className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-md"
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
-            >
-              {/* <CurrencyFlag pair={activeAsset?.symbol_display || activePair} /> */}
-              <span className="text-sm font-medium">
-                {activeAsset?.symbol_display || activePair}
-              </span>
-              <ChevronDown className="h-4 w-4 ml-1" />
-            </div>
-          </div>
-        )}
-
-        {/* Desktop currency tabs */}
-        {!isMobile && (
-          <div className="flex items-center">
-            {showScrollButtons && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => scrollTabs("left")}
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-            )}
-            <div className="overflow-hidden max-w-[300px] sm:max-w-[400px] md:max-w-[500px]">
-              <div className="w-full">
-                <div
-                  ref={tabsListRef}
-                  className="flex overflow-x-auto scrollbar-hide whitespace-nowrap"
-                  style={{ scrollbarWidth: "none" }}
-                >
-                  {activePairs.map((pair, index) => (
-                    <div
-                      key={index}
-                      ref={activePair === pair ? activeTabRef : null}
-                      className={`flex items-center gap-2 px-3 py-2 cursor-pointer ${
-                        activePair === pair
-                          ? "bg-primary/10"
-                          : "hover:bg-muted/50"
-                      }`}
-                      onClick={() => handlePairClick(pair)}
-                    >
-                      <CurrencyFlag pair={pair} />
-                      <span>{pair}</span>
-                      <span className="text-xs text-muted-foreground hidden sm:inline">
-                        forex
-                      </span>
-                      <button
-                        className="ml-1 sm:ml-2 rounded-full hover:bg-muted p-0.5"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removeCurrencyPair(pair);
-                        }}
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            {showScrollButtons && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => scrollTabs("right")}
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            )}
-            <Button variant="outline" size="icon" className="rounded-md ml-2">
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
-        )}
-      </div>
-
-      {/* Mobile search dropdown */}
-      {isMobile && isSearchOpen && (
-        <div className="absolute top-16 left-0 right-0 bg-background border-b border-border p-3 z-50">
-          <div className="relative">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-            <input
-              className="w-full bg-muted/50 border border-border rounded-md py-2 pl-10 pr-3"
-              placeholder="Search currency pairs..."
-            />
-          </div>
-          <div className="mt-2 max-h-[300px] overflow-y-auto">
+          <div className="flex items-center gap-4">
             {activePairs.map((pair, index) => (
               <div
                 key={index}
-                className={`flex items-center justify-between p-2 rounded-md ${
-                  activePair === pair ? "bg-primary/10" : "hover:bg-muted/50"
+                className={`flex items-center gap-3 px-4 py-2 rounded-lg cursor-pointer border border-border/20 ${
+                  activePair === pair
+                    ? "bg-primary/10 text-primary"
+                    : "hover:bg-muted"
                 }`}
-                onClick={() => {
-                  handlePairClick(pair);
-                  setIsSearchOpen(false);
-                }}
+                onClick={() => handlePairClick(pair)}
               >
-                <div className="flex items-center gap-2">
-                  <CurrencyFlag pair={pair} />
-                  <span>{pair}</span>
+                <CurrencyFlag pair={pair} />
+                <div className="flex flex-col items-start">
+                  <span className="text-base font-medium">{pair}</span>
+                  <span className="text-sm text-muted-foreground">forex</span>
                 </div>
-                {activePairs.length > 1 && (
-                  <button
-                    className="rounded-full hover:bg-muted p-0.5"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeCurrencyPair(pair);
-                    }}
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                )}
               </div>
             ))}
+            <Button variant="outline" size="sm" className="ml-2 hover:bg-muted">
+              <Plus className="h-5 w-5" />
+            </Button>
           </div>
         </div>
-      )}
-
-      {/* Right side - account info */}
-      <div className="flex items-center gap-1 sm:gap-2">
-        {!isMobile && (
-          <>
-            <Button
-              variant="outline"
-              className="gap-2 text-green-500 border-green-500/20 hover:bg-green-500/10 hidden md:flex"
-            >
-              <Robot className="h-4 w-4" />
-              <span>Auto Trader</span>
-            </Button>
-            <Button
-              variant="outline"
-              className="gap-2 text-green-500 border-green-500/20 hover:bg-green-500/10 hidden sm:flex"
-            >
-              <Wallet className="h-4 w-4" />
-              <span>Deposit</span>
-            </Button>
-          </>
-        )}
-        <div className="flex items-center ml-1 sm:ml-4">
-          <div className="mr-2 hidden sm:block">
-            <div className="text-xs text-muted-foreground">
+        <div className="flex items-center gap-6">
+          <Button
+            variant="outline"
+            className="flex-1 h-full gap-3 text-trading-green border-trading-accent hover:bg-trading-green/10"
+          >
+            <Robot className="h-5 w-5" />
+            <span className="text-base">Auto Trader</span>
+          </Button>
+          <Button
+            variant="outline"
+            className="flex-1 h-full gap-3 text-trading-green border-trading-accent hover:bg-trading-green/10"
+          >
+            <Wallet className="h-5 w-5" />
+            <span className="text-base">Deposit</span>
+          </Button>
+          <div className="flex flex-col items-center gap-1">
+            <div className="text-xs font-bold text-green-500">
               STANDARD ACCOUNT
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="link"
-                  className="h-auto p-0 text-green-500 font-bold"
+                  className="h-auto p-0 text-trading-green font-bold text-base"
                 >
-                  $610.05 <ChevronDown className="h-4 w-4 ml-1" />
+                  $709.75 <ChevronDown className="h-5 w-5 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>Account Details</DropdownMenuItem>
-                <DropdownMenuItem>Transaction History</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuContent
+                align="end"
+                className="p-5 text-base text-muted-foreground space-y-3"
+              >
+                <div className="font-bold">REAL ACCOUNT #1651738</div>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>Balance</span>
+                    <span>$709.75</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Credit</span>
+                    <span>$0.00</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Invested</span>
+                    <span>$0.02</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Profit</span>
+                    <span className="text-trading-green">$0.00</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Equity</span>
+                    <span>$709.75</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Margin</span>
+                    <span>$0.00</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Margin Level</span>
+                    <span>36509964.87%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Free Margin</span>
+                    <span>$709.75</span>
+                  </div>
+                </div>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          <div className="flex items-center gap-2">
+            <img
+              src="https://res.cloudinary.com/dyp8gtllq/image/upload/v1744370355/main_plate_exi8jv.png"
+              alt="Badge"
+              className="w-8 h-8"
+            />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full p-0 h-8 w-8"
+                >
+                  <Avatar className="h-8 w-8 border border-border">
+                    <AvatarFallback>M</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem>Account Details</DropdownMenuItem>
+                <DropdownMenuItem>Transaction History</DropdownMenuItem>
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuItem
+                  className="text-red-500"
+                  onClick={() => {
+                    useUserStore.getState().clearUser();
+                    window.location.href = "/login";
+                  }}
+                >
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+      </header>
+
+      <header className="flex md:hidden items-center justify-between h-16 px-2 sm:px-4 border-b border-border bg-background">
+        <div className="flex items-center">
+          <div className="mr-2 sm:mr-6">
+            <Logo />
+          </div>
+
+          {/* Mobile menu */}
+          {isMobile && (
+            <div className="flex items-center">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="mr-2">
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent
+                  side="left"
+                  className="w-[280px] sm:w-[350px] p-0"
+                >
+                  <div className="flex flex-col h-full">
+                    <div className="p-4 border-b border-border">
+                      <h2 className="text-lg font-bold">Menu</h2>
+                    </div>
+
+                    {/* Account info in mobile menu */}
+                    <div className="bg-muted/30 rounded-lg p-3 mx-3 mb-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Avatar className="h-8 w-8 border border-border">
+                          <AvatarFallback>M</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="text-xs text-muted-foreground">
+                            STANDARD ACCOUNT
+                          </div>
+                          <div className="text-green-500 font-bold">
+                            $610.05
+                          </div>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 mt-2">
+                        <Button variant="outline" size="sm" className="w-full">
+                          Profile
+                        </Button>
+                        <Button variant="outline" size="sm" className="w-full">
+                          Settings
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Side panels in mobile menu */}
+                    <div className="overflow-y-auto flex-1">
+                      <div className="px-3 py-2">
+                        <h3 className="text-sm font-medium mb-2">Panels</h3>
+                        <div className="space-y-1">
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start gap-2 text-sm"
+                            onClick={() => toggleView("market-watch")}
+                          >
+                            <LineChart className="h-4 w-4" />
+                            <span>Market Watch</span>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start gap-2 text-sm"
+                            onClick={() => toggleView("active-orders")}
+                          >
+                            <BarChart3 className="h-4 w-4" />
+                            <span>Active Orders</span>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start gap-2 text-sm"
+                            onClick={() => toggleView("trading-history")}
+                          >
+                            <Clock className="h-4 w-4" />
+                            <span>Trading History</span>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start gap-2 text-sm"
+                            onClick={() => toggleView("calendar")}
+                          >
+                            <Calendar className="h-4 w-4" />
+                            <span>Calendar</span>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start gap-2 text-sm"
+                            onClick={() => toggleView("market-news")}
+                          >
+                            <Newspaper className="h-4 w-4" />
+                            <span>Market News</span>
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="border-t border-border mt-2 px-3 py-2">
+                        <div className="space-y-2">
+                          <Button
+                            variant="outline"
+                            className="w-full justify-start gap-2"
+                          >
+                            <Robot className="h-4 w-4" />
+                            <span>Auto Trader</span>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            className="w-full justify-start gap-2"
+                          >
+                            <Wallet className="h-4 w-4" />
+                            <span>Deposit</span>
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="border-t border-border mt-2 px-3 py-2">
+                        <h3 className="text-sm font-medium mb-2">
+                          Currency Pairs
+                        </h3>
+                        <div className="space-y-2">
+                          {activePairs.map((pair, index) => (
+                            <>
+                              <div
+                                key={index}
+                                className={`flex items-center justify-between p-2 rounded-md ${
+                                  activePair === pair
+                                    ? "bg-primary/10"
+                                    : "hover:bg-muted/50"
+                                }`}
+                                onClick={() => handlePairClick(pair)}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <CurrencyFlag pair={pair} />
+                                  <span>{pair}</span>
+                                </div>
+                                {activePairs.length > 1 && (
+                                  <button
+                                    className="rounded-full hover:bg-muted p-0.5"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      removeCurrencyPair(pair);
+                                    }}
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </button>
+                                )}
+                              </div>
+                            </>
+                          ))}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full mt-2"
+                          >
+                            <Plus className="h-4 w-4 mr-2" /> Add Pair
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Logout button */}
+                    <div className="border-t border-border p-3">
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start text-red-500"
+                        onClick={() => {
+                          useUserStore.getState().clearUser();
+                          window.location.href = "/login";
+                        }}
+                      >
+                        <LogOut className="h-4 w-4 mr-2" />
+                        <span>Logout</span>
+                      </Button>
+                    </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
+
+              {/* Mobile search button */}
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full p-0 h-8 w-8"
+                className="mr-2"
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
               >
-                <Avatar className="h-8 w-8 border border-border">
-                  <AvatarFallback>M</AvatarFallback>
-                </Avatar>
+                <Search className="h-5 w-5" />
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <div className="px-2 py-1.5 text-sm font-medium sm:hidden">
-                <div className="text-xs text-muted-foreground">
-                  STANDARD ACCOUNT
-                </div>
-                <div className="text-green-500 font-bold">$610.05</div>
-              </div>
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Account Details</DropdownMenuItem>
-              <DropdownMenuItem>Transaction History</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem
-                className="text-red-500"
-                onClick={() => {
-                  useUserStore.getState().clearUser();
-                  window.location.href = "/login";
-                }}
+
+              {/* Mobile active pair display */}
+              <div
+                className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-md"
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
               >
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                {/* <CurrencyFlag pair={activeAsset?.symbol_display || activePair} /> */}
+                <span className="text-sm font-medium">
+                  {activeAsset?.symbol_display || activePair}
+                </span>
+                <ChevronDown className="h-4 w-4 ml-1" />
+              </div>
+            </div>
+          )}
+
+          {/* Desktop currency tabs */}
+          {!isMobile && (
+            <div className="flex items-center">
+              {showScrollButtons && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => scrollTabs("left")}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+              )}
+              <div className="overflow-hidden max-w-[300px] sm:max-w-[400px] md:max-w-[500px]">
+                <div className="w-full">
+                  <div
+                    ref={tabsListRef}
+                    className="flex overflow-x-auto scrollbar-hide whitespace-nowrap"
+                    style={{ scrollbarWidth: "none" }}
+                  >
+                    {activePairs.map((pair, index) => (
+                      <div
+                        key={index}
+                        ref={activePair === pair ? activeTabRef : null}
+                        className={`flex items-center gap-2 px-3 py-2 cursor-pointer ${
+                          activePair === pair
+                            ? "bg-primary/10"
+                            : "hover:bg-muted/50"
+                        }`}
+                        onClick={() => handlePairClick(pair)}
+                      >
+                        <CurrencyFlag pair={pair} />
+                        <span>{pair}</span>
+                        <span className="text-xs text-muted-foreground hidden sm:inline">
+                          forex
+                        </span>
+                        <button
+                          className="ml-1 sm:ml-2 rounded-full hover:bg-muted p-0.5"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeCurrencyPair(pair);
+                          }}
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              {showScrollButtons && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => scrollTabs("right")}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              )}
+              <Button variant="outline" size="icon" className="rounded-md ml-2">
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
         </div>
-      </div>
-    </header>
+
+        {/* Mobile search dropdown */}
+        {isMobile && isSearchOpen && (
+          <div className="absolute top-16 left-0 right-0 bg-background border-b border-border p-3 z-50">
+            <div className="relative">
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+              <input
+                className="w-full bg-muted/50 border border-border rounded-md py-2 pl-10 pr-3"
+                placeholder="Search currency pairs..."
+              />
+            </div>
+            <div className="mt-2 max-h-[300px] overflow-y-auto">
+              {activePairs.map((pair, index) => (
+                <div
+                  key={index}
+                  className={`flex items-center justify-between p-2 rounded-md ${
+                    activePair === pair ? "bg-primary/10" : "hover:bg-muted/50"
+                  }`}
+                  onClick={() => {
+                    handlePairClick(pair);
+                    setIsSearchOpen(false);
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <CurrencyFlag pair={pair} />
+                    <span>{pair}</span>
+                  </div>
+                  {activePairs.length > 1 && (
+                    <button
+                      className="rounded-full hover:bg-muted p-0.5"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeCurrencyPair(pair);
+                      }}
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Right side - account info */}
+        <div className="flex items-center gap-1 sm:gap-2">
+          {!isMobile && (
+            <>
+              <Button
+                variant="outline"
+                className="gap-2 text-green-500 border-green-500/20 hover:bg-green-500/10 hidden md:flex"
+              >
+                <Robot className="h-4 w-4" />
+                <span>Auto Trader</span>
+              </Button>
+              <Button
+                variant="outline"
+                className="gap-2 text-green-500 border-green-500/20 hover:bg-green-500/10 hidden sm:flex"
+              >
+                <Wallet className="h-4 w-4" />
+                <span>Deposit</span>
+              </Button>
+            </>
+          )}
+          <div className="flex items-center ml-1 sm:ml-4">
+            <div className="mr-2 hidden sm:block">
+              <div className="text-xs text-muted-foreground">
+                STANDARD ACCOUNT
+              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="link"
+                    className="h-auto p-0 text-green-500 font-bold"
+                  >
+                    $610.05 <ChevronDown className="h-4 w-4 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <div className="p-4 text-xs">
+                    <div className="font-bold text-muted-foreground">
+                      REAL ACCOUNT #1651738
+                    </div>
+                    <div className="mt-2">
+                      <div className="flex justify-between">
+                        <span>Balance</span>
+                        <span>$709.75</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Credit</span>
+                        <span>$0.00</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Invested</span>
+                        <span>$0.02</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Profit</span>
+                        <span className="text-trading-green">$0.00</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Equity</span>
+                        <span>$709.75</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Margin</span>
+                        <span>$0.00</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Margin Level</span>
+                        <span>36509964.87%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Free Margin</span>
+                        <span>$709.75</span>
+                      </div>
+                    </div>
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full p-0 h-8 w-8"
+                >
+                  <Avatar className="h-8 w-8 border border-border">
+                    <AvatarFallback>M</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <div className="px-2 py-1.5 text-sm font-medium sm:hidden">
+                  <div className="text-xs text-muted-foreground">
+                    STANDARD ACCOUNT
+                  </div>
+                  <div className="text-green-500 font-bold">$610.05</div>
+                </div>
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem>Account Details</DropdownMenuItem>
+                <DropdownMenuItem>Transaction History</DropdownMenuItem>
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuItem
+                  className="text-red-500"
+                  onClick={() => {
+                    useUserStore.getState().clearUser();
+                    window.location.href = "/login";
+                  }}
+                >
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+      </header>
+    </>
   );
 }
 
 function Logo() {
   return (
     <div className="flex items-center">
-      <div className="h-8 w-8 bg-green-500 rounded-md flex items-center justify-center mr-1">
+      <div className="h-8 w-8 bg-primary rounded-md flex items-center justify-center mr-1">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"

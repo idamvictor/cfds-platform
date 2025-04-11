@@ -14,6 +14,7 @@ import {
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import useUserStore from "@/store/userStore";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "./ui/button";
 
 interface SidebarProps {
   onLinkClick: () => void;
@@ -27,7 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
 
   const handleLogout = () => {
     clearUser();
-    navigate("/");
+    navigate("/main/deposit");
   };
 
   const navItems = [
@@ -67,22 +68,18 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
         <h2 className="text-lg font-medium text-trading-light">
           {user ? `${user.first_name} ${user.last_name}` : ""}
         </h2>
-        <p className="text-sm text-trading-muted mt-1">#{user?.id || ""}</p>
+        {/* <p className="text-sm text-trading-muted mt-1">#{user?.id || ""}</p> */}
         <p className="text-xs text-trading-muted/70 mt-1">
           {user?.email || ""}
         </p>
         <div className="grid grid-cols-2 gap-2 w-full mt-4">
           {" "}
-          <Link
-            to="/main/deposit"
-            className="bg-trading-accent text-trading-light font-medium px-6 rounded-md transition-all text-sm py-3 hover:bg-trading-accent/90"
-            onClick={onLinkClick}
-          >
-            Deposit
-          </Link>
-          <button className="bg-transparent border border-trading-muted/30 text-trading-light font-medium py-2 px-6 rounded-md hover:bg-trading-muted/10 transition-all text-sm">
-            Autotrader
-          </button>
+          <Button>
+            <Link to="/main/deposit" onClick={onLinkClick}>
+              Deposit
+            </Link>
+          </Button>
+          <Button variant="ghost">Autotrader</Button>
         </div>
       </div>
       <nav className="flex-1 py-4 overflow-y-auto">
