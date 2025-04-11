@@ -54,7 +54,7 @@ export default function SettingsPage() {
     try {
       setIsSubmitting(true);
       console.log("Form values:", values);
-      const response = await axiosInstance.post("/change/password", {
+      await axiosInstance.post("/change/password", {
         current_password: values.current_password,
         new_password: values.new_password,
         confirm_new_password: values.confirm_password,

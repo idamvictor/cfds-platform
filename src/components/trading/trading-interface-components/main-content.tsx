@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react"
-import { Maximize2, Camera, Settings, ChevronDown, ChevronUp } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useEffect } from "react"
 import type { ActiveView } from "./trading-platform"
 import MarketWatchPanel from "./panels/market-watch-panel"
 import ActiveOrdersPanel from "./panels/active-orders-panel"
@@ -20,8 +18,7 @@ interface MainContentProps {
   addCurrencyPair: (pair: string) => void
 }
 
-export default function MainContent({ sidebarExpanded, activeView, activePair, addCurrencyPair }: MainContentProps) {
-  const [chartHeight, setChartHeight] = useState(60) // Percentage of the container height
+export default function MainContent({ sidebarExpanded, activeView, addCurrencyPair }: MainContentProps) {
   const isMobile = useMobile()
   const isLargeScreen = useMobile(1024)
 
