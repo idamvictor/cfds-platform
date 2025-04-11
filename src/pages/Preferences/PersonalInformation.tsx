@@ -17,6 +17,7 @@ import * as React from "react";
 import axiosInstance from "@/lib/axios";
 import { toast } from "sonner";
 import useUserStore from "@/store/userStore";
+import { countries } from "@/data/countries";
 
 const formSchema = z.object({
   first_name: z.string().min(2, "First name must be at least 2 characters"),
@@ -186,11 +187,11 @@ export default function PersonalInformation() {
               <SelectValue placeholder="Select a country" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="maldives">Maldives</SelectItem>
-              <SelectItem value="usa">United States</SelectItem>
-              <SelectItem value="uk">United Kingdom</SelectItem>
-              <SelectItem value="canada">Canada</SelectItem>
-              <SelectItem value="australia">Australia</SelectItem>
+              {countries.map((country) => (
+                <SelectItem key={country.value} value={country.value}>
+                  {country.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           {errors.country && (
@@ -200,10 +201,7 @@ export default function PersonalInformation() {
       </div>
 
       <div className="flex gap-4">
-        <Button
-          type="submit"
-          disabled={isLoading}
-        >
+        <Button type="submit" disabled={isLoading}>
           {isLoading ? "Submitting..." : "Submit"}
         </Button>
         <Button
