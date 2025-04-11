@@ -35,7 +35,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
           className={cn(
             "rounded-lg p-3",
             isUser
-              ? "bg-primary text-primary-foreground"
+              ? "bg-primary/30 text-primary-foreground"
               : "bg-muted/50 text-foreground border border-border/40"
           )}
         >

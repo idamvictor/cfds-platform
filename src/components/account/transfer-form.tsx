@@ -119,7 +119,7 @@ export function TransferForm({ accounts }: TransferFormProps) {
         <div>
           <Button
             onClick={handleTransfer}
-            className="w-full bg-success hover:bg-success/90 text-success-foreground"
+            className="w-full bg-primary hover:bg-success/90 text-success-foreground"
             disabled={
               !amount ||
               fromAccount === toAccount ||
