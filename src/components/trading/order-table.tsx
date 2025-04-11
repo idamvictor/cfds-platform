@@ -750,7 +750,7 @@ export default function OrderTable() {
             <div className="flex overflow-x-auto scrollbar-hide">
               <button
                 className={cn(
-                  "rounded-none border-b-2 border-transparent px-4 py-2 whitespace-nowrap",
+                  "rounded-none border-b-2 border-transparent px-4 py-2 whitespace-nowrap text-xs",
                   activeTab === "active"
                     ? "border-primary text-primary"
                     : "text-muted-foreground"
@@ -761,7 +761,7 @@ export default function OrderTable() {
               </button>
               <button
                 className={cn(
-                  "rounded-none border-b-2 border-transparent px-4 py-2 whitespace-nowrap",
+                  "rounded-none border-b-2 border-transparent px-4 py-2 whitespace-nowrap text-xs",
                   activeTab === "history"
                     ? "border-primary text-primary"
                     : "text-muted-foreground"
