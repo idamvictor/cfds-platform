@@ -112,12 +112,12 @@ const AssetCategory = memo(({
             >
                 <div className="flex items-center">
                     <CategoryIcon category={category} />
-                    <span className="ml-2">
+                    <span className="ml-2 text-xs">
             {formatCategoryName(category)}
           </span>
                 </div>
                 <div className="flex items-center">
-          <span className="text-muted-foreground mr-2">
+          <span className="text-muted-foreground mr-2 text-xs">
             {assets.length}
           </span>
                     {isExpanded ? (
