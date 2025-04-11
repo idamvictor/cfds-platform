@@ -270,38 +270,44 @@ export default function OrderTable() {
           <Table>
             <TableHeader className="sticky top-0 z-10 bg-background border-b">
               <TableRow className="hover:bg-muted/30">
-                <TableHead className="h-8 text-xs font-medium">
+                <TableHead className="h-8 text-xs font-medium text-muted-foreground">
                   Symbol
                 </TableHead>
-                <TableHead className="h-8 text-xs font-medium">ID</TableHead>
-                <TableHead className="h-8 text-xs font-medium">Type</TableHead>
-                <TableHead className="h-8 text-xs font-medium">
+                <TableHead className="h-8 text-xs font-medium text-muted-foreground">
+                  ID
+                </TableHead>
+                <TableHead className="h-8 text-xs font-medium text-muted-foreground">
+                  Type
+                </TableHead>
+                <TableHead className="h-8 text-xs font-medium text-muted-foreground">
                   Volume
                 </TableHead>
-                <TableHead className="h-8 text-xs font-medium">
+                <TableHead className="h-8 text-xs font-medium text-muted-foreground">
                   Open Price
                 </TableHead>
-                <TableHead className="h-8 text-xs font-medium">
+                <TableHead className="h-8 text-xs font-medium text-muted-foreground">
                   Open Time
                 </TableHead>
-                <TableHead className="h-8 text-xs font-medium">
+                <TableHead className="h-8 text-xs font-medium text-muted-foreground">
                   Take Profit
                 </TableHead>
-                <TableHead className="h-8 text-xs font-medium">
+                <TableHead className="h-8 text-xs font-medium text-muted-foreground">
                   Stop Loss
                 </TableHead>
-                <TableHead className="h-8 text-xs font-medium">
+                <TableHead className="h-8 text-xs font-medium text-muted-foreground">
                   {activeTab === "active" ? "Current Price" : "Close Price"}
                 </TableHead>
-                <TableHead className="h-8 text-xs font-medium">
+                <TableHead className="h-8 text-xs font-medium text-muted-foreground">
                   Leverage
                 </TableHead>
-                <TableHead className="h-8 text-xs font-medium">
+                <TableHead className="h-8 text-xs font-medium text-muted-foreground">
                   Amount
                 </TableHead>
-                <TableHead className="h-8 text-xs font-medium">PnL</TableHead>
+                <TableHead className="h-8 text-xs font-medium text-muted-foreground">
+                  PnL
+                </TableHead>
                 {activeTab === "active" && (
-                  <TableHead className="h-8 text-xs font-medium">
+                  <TableHead className="h-8 text-xs font-medium text-muted-foreground">
                     Actions
                   </TableHead>
                 )}
@@ -310,19 +316,19 @@ export default function OrderTable() {
             <TableBody className="overflow-y-auto">
               {trades.map((trade) => (
                 <TableRow key={trade.id} className="h-8 hover:bg-muted/30">
-                  <TableCell className="py-1 text-xs">
+                  <TableCell className="py-1 text-xs text-muted-foreground">
                     {trade.asset_symbol}
                   </TableCell>
-                  <TableCell className="py-1 text-xs">
+                  <TableCell className="py-1 text-xs text-muted-foreground">
                     {trade.id.substring(0, 8)}...
                   </TableCell>
-                  <TableCell className="py-1">
+                  <TableCell className="py-1 ">
                     <Badge
                       variant={
                         trade.trade_type === "buy" ? "default" : "secondary"
                       }
                       className={cn(
-                        "text-xs px-1.5 py-0.5",
+                        "text-xs px-1.5 py-0.5 ",
                         trade.trade_type === "buy"
                           ? "bg-green-500"
                           : "bg-red-500"
@@ -331,28 +337,28 @@ export default function OrderTable() {
                       {trade.trade_type.toUpperCase()}
                     </Badge>
                   </TableCell>
-                  <TableCell className="py-1 text-xs">
+                  <TableCell className="py-1 text-xs text-muted-foreground">
                     {trade.volume.toFixed(2)}
                   </TableCell>
-                  <TableCell className="py-1 text-xs">
+                  <TableCell className="py-1 text-xs text-muted-foreground">
                     {trade.opening_price}
                   </TableCell>
-                  <TableCell className="py-1 text-xs">
+                  <TableCell className="py-1 text-xs text-muted-foreground">
                     {new Date(trade.open_time).toLocaleString()}
                   </TableCell>
-                  <TableCell className="py-1 text-xs">
+                  <TableCell className="py-1 text-xs text-muted-foreground">
                     {trade.take_profit > 0 ? trade.take_profit : "-"}
                   </TableCell>
-                  <TableCell className="py-1 text-xs">
+                  <TableCell className="py-1 text-xs text-muted-foreground">
                     {trade.stop_loss > 0 ? trade.stop_loss : "-"}
                   </TableCell>
-                  <TableCell className="py-1 text-xs">
+                  <TableCell className="py-1 text-xs text-muted-foreground">
                     {trade.closing_price}
                   </TableCell>
-                  <TableCell className="py-1 text-xs">
+                  <TableCell className="py-1 text-xs text-muted-foreground">
                     x{trade.leverage}
                   </TableCell>
-                  <TableCell className="py-1 text-xs">
+                  <TableCell className="py-1 text-xs text-muted-foreground">
                     ${trade.amount.toFixed(2)}
                   </TableCell>
                   <TableCell
