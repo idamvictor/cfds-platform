@@ -13,6 +13,12 @@ function TradingViewWidget() {
     const currentContainer = container.current;
     const currentSymbol = tvSymbol;
 
+    // Get the computed background color from CSS variables
+    const computedStyle = getComputedStyle(document.documentElement);
+    const backgroundColor = computedStyle
+      .getPropertyValue("--background")
+      .trim();
+
     // Clear any existing widgets
     currentContainer.innerHTML = "";
 
@@ -49,7 +55,8 @@ function TradingViewWidget() {
 
     // Create and load script
     const script = document.createElement("script");
-    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+    script.src =
+      "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
     script.type = "text/javascript";
     script.async = true;
 
@@ -65,9 +72,8 @@ function TradingViewWidget() {
       withdateranges: true,
       hide_side_toolbar: false,
       allow_symbol_change: true,
-      details: true,
-      hide_volume: false,
       support_host: "https://www.tradingview.com",
+      backgroundColor: backgroundColor,
     });
 
     widgetContainer.appendChild(script);
