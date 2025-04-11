@@ -20,7 +20,6 @@ const AssetCategory = memo(({
                                 toggleCategory,
                                 handleAssetClick,
                                 activeAssetId,
-                                priceColors = {} // Default to empty object if not provided
                             }: AssetCategoryProps) => {
     // Get category icon based on category name
     const getCategoryIcon = (category: string) => {
@@ -136,7 +135,6 @@ const AssetCategory = memo(({
                             asset={asset}
                             isActive={activeAssetId === asset.id}
                             onClick={() => handleAssetClick(asset)}
-                            priceColor={priceColors[asset.id] || ""}
                         />
                     ))}
                 </div>
