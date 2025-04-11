@@ -9,6 +9,7 @@ import useTradeStore from "@/store/tradeStore";
 import AssetInitializer from "../asset-initializer";
 import { useMobile } from "@/hooks/use-mobile";
 import {addClickSound} from "@/lib/addClickSound.ts";
+import Footer from "@/components/Footer";
 
 export type ActiveView =
   | "market-watch"
@@ -131,6 +132,7 @@ export default function TradingPlatform() {
           addCurrencyPair={addCurrencyPair}
         />
       </div>
+      <Footer />
     </div>
   );
 }
