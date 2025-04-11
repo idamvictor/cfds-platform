@@ -52,17 +52,17 @@ export default function MainContent({
         )}
 
         {/* Center - Chart and Orders */}
-        <div className="flex-1 flex flex-col overflow-hidden w-full">
+        <div className="flex-1 flex flex-col gap-2 overflow-hidden w-full">
           {/* Chart and Trading Interface */}
           <div className="flex flex-1 border-b border-border bg-background w-full">
             {/* Chart area */}
-            <div className="flex-1 bg-background border-muted border-[3px] w-full">
+            <div className="flex-1 bg-background border-muted border-2 w-full">
               <TradingViewWidget />
             </div>
 
             {/* Trading Interface */}
             {!isLargeScreen && (
-              <div className="w-[300px] border-l border-border overflow-y-auto">
+              <div className="w-[300px] border-2 border-border overflow-y-auto">
                 <TradingInterface />
               </div>
             )}
@@ -70,7 +70,7 @@ export default function MainContent({
 
           {/* Orders table */}
           {isLargeScreen && (
-            <div className="border-b border-border w-full">
+            <div className="border-b-2 border-border w-full">
               <TradingInterface />
             </div>
           )}

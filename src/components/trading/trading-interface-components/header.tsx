@@ -28,6 +28,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useMobile } from "@/hooks/use-mobile";
 import useUserStore from "@/store/userStore";
 import useAssetStore from "@/store/assetStore";
+import { Link } from "react-router-dom";
 
 // Define the ActiveView type
 type ActiveView =
@@ -122,25 +123,34 @@ export default function Header({
 
   return (
     <>
-      <header className="hidden md:flex items-center justify-between h-20 px-6 border-b border-border bg-background">
+      <header className="hidden md:flex items-center justify-between h-20 px-6 border-b border-secondary border-2 bg-background">
         <div className="flex items-center gap-6">
           <Logo />
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             {activePairs.map((pair, index) => (
               <div
                 key={index}
-                className={`flex items-center gap-3 px-4 py-2 rounded-lg cursor-pointer border border-border/20 ${
+                className={`relative flex items-center gap-3 px-4 py-2 cursor-pointer border-[1px] border-muted ${
                   activePair === pair
-                    ? "bg-primary/10 text-primary"
+                    ? "border-b-2 border-b-accent "
                     : "hover:bg-muted"
                 }`}
                 onClick={() => handlePairClick(pair)}
               >
                 <CurrencyFlag pair={pair} />
                 <div className="flex flex-col items-start">
-                  <span className="text-base font-medium">{pair}</span>
-                  <span className="text-sm text-muted-foreground">forex</span>
+                  <span className="text-xs font-medium">{pair}</span>
+                  <span className="text-xs text-muted-foreground">forex</span>
                 </div>
+                <button
+                  className="absolute top-[0.5px] left-[0.5px] rounded-full hover:bg-muted p-0.5"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeCurrencyPair(pair);
+                  }}
+                >
+                  <X className="h-4 w-4" />
+                </button>
               </div>
             ))}
             <Button variant="outline" size="sm" className="ml-2 hover:bg-muted">
@@ -149,29 +159,35 @@ export default function Header({
           </div>
         </div>
         <div className="flex items-center gap-6">
-          <Button
-            variant="outline"
-            className="flex-1 h-full gap-3 text-trading-green border-trading-accent hover:bg-trading-green/10"
-          >
-            <Robot className="h-5 w-5" />
-            <span className="text-base">Auto Trader</span>
-          </Button>
-          <Button
-            variant="outline"
-            className="flex-1 h-full gap-3 text-trading-green border-trading-accent hover:bg-trading-green/10"
-          >
-            <Wallet className="h-5 w-5" />
-            <span className="text-base">Deposit</span>
-          </Button>
+          <Link to="/main/deposit">
+            <Button
+              variant="outline"
+              className="flex-1 h-full gap-3 text-primary border-primary hover:bg-trading-green/10"
+            >
+              <Robot className="h-5 w-5" />
+              <span className="text-base">Auto Trader</span>
+            </Button>
+          </Link>
+
+          <Link to="/main/deposit">
+            <Button
+              variant="outline"
+              className="flex-1 h-full gap-3 text-primary border-trading-accent hover:bg-trading-green/10"
+            >
+              <Wallet className="h-5 w-5" />
+              <span className="text-base">Deposit</span>
+            </Button>
+          </Link>
+
           <div className="flex flex-col items-center gap-1">
-            <div className="text-xs font-bold text-green-500">
+            <div className="text-xs font-bold text-primary">
               STANDARD ACCOUNT
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="link"
-                  className="h-auto p-0 text-trading-green font-bold text-base"
+                  className="h-auto p-0 text-primary font-bold text-base"
                 >
                   $709.75 <ChevronDown className="h-5 w-5 ml-1" />
                 </Button>
@@ -237,10 +253,18 @@ export default function Header({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Account Details</DropdownMenuItem>
-                <DropdownMenuItem>Transaction History</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <Link to="/main/dashboard">
+                  <DropdownMenuItem>Profile</DropdownMenuItem>
+                </Link>
+                <Link to="/main/accounts">
+                  <DropdownMenuItem>Account Details</DropdownMenuItem>
+                </Link>
+                <Link to="/main/withdrawal">
+                  <DropdownMenuItem>Transaction History</DropdownMenuItem>
+                </Link>
+                <Link to="/main/settings">
+                  <DropdownMenuItem>Settings</DropdownMenuItem>
+                </Link>
                 <DropdownMenuItem
                   className="text-red-500"
                   onClick={() => {
@@ -690,7 +714,7 @@ export default function Header({
 function Logo() {
   return (
     <div className="flex items-center">
-      <div className="h-8 w-8 bg-primary rounded-md flex items-center justify-center mr-1">
+      <div className="h-8 w-8 bg-accent rounded-md flex items-center justify-center mr-1">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"

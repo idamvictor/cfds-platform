@@ -330,8 +330,8 @@ export default function OrderTable() {
                       className={cn(
                         "text-xs px-1.5 py-0.5 ",
                         trade.trade_type === "buy"
-                          ? "bg-green-500"
-                          : "bg-red-500"
+                          ? "bg-primary"
+                          : "bg-destructive"
                       )}
                     >
                       {trade.trade_type.toUpperCase()}
@@ -749,7 +749,7 @@ export default function OrderTable() {
   };
 
   return (
-    <div className="flex flex-col bg-background text-foreground border border-muted rounded-md shadow-sm w-full ">
+    <div className="flex flex-col bg-background text-foreground border border-muted shadow-sm w-full ">
       {!isCollapsed && !isMobile && (
         <div className="flex-1">
           <div className="border-b border-muted flex justify-between items-center sticky top-0 z-20 bg-background">

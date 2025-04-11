@@ -19,9 +19,11 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
         </button>
         <Logo />
       </div>
-      <Button className="animate-scale-in bg-primary font-medium py-2 px-6 rounded-md transition-all">
-        <Link to="/trading">Start Trading</Link>
-      </Button>
+      <Link to="/trading">
+        <Button className="animate-scale-in bg-primary font-medium py-2 px-6 rounded-md transition-all">
+          Start Trading
+        </Button>
+      </Link>
     </header>
   );
 };

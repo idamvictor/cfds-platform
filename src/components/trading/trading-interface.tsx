@@ -175,12 +175,12 @@ export function TradingInterface() {
                     )}
                   />
                 </div>
-                <div className="flex flex-col ml-1">
+                <div className="flex flex-col gap-1 ml-1 mt-2.5">
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-4 w-4 text-muted-foreground hover:text-foreground p-0"
+                    className="h-4 w-4 text-muted-foreground bg-secondary hover:text-foreground p-0"
                     onClick={() => handleVolumeChange(true)}
                   >
                     <ChevronUp className="h-3 w-3" />
@@ -189,7 +189,7 @@ export function TradingInterface() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-4 w-4 text-muted-foreground hover:text-foreground p-0"
+                    className="h-4 w-4 text-muted-foreground bg-secondary hover:text-foreground p-0"
                     onClick={() => handleVolumeChange(false)}
                   >
                     <ChevronDown className="h-3 w-3" />
@@ -357,12 +357,12 @@ export function TradingInterface() {
                     )}
                   />
                 </div>
-                <div className="flex flex-col ml-2">
+                <div className="flex flex-col gap-0.5 ml-2 mt-1.5">
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-6 w-6 text-muted-foreground hover:text-foreground"
+                    className="h-6 w-6 text-muted-foreground bg-secondary hover:text-foreground"
                     onClick={() => handleVolumeChange(true)}
                   >
                     <ChevronUp className="h-4 w-4" />
@@ -371,7 +371,7 @@ export function TradingInterface() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-6 w-6 text-muted-foreground hover:text-foreground"
+                    className="h-6 w-6 text-muted-foreground bg-secondary hover:text-foreground"
                     onClick={() => handleVolumeChange(false)}
                   >
                     <ChevronDown className="h-4 w-4" />
