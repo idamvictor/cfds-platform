@@ -41,10 +41,10 @@
 
   /* custom color */
   --trading-dark: oklch(0.3 0.0283 270.28);
-  --trading-darker: oklch(0.24 0.0279 269.07); 
+  --trading-darker: oklch(0.24 0.0279 269.07);
   --trading-green: oklch(0.79 0.1165 179.7);
   --trading-light: oklch(0.984 0.003 247.858);
-  --trading-accent: oklch(0.66 0.178 142); 
+  --trading-accent: oklch(0.66 0.178 142);
   --trading-muted: oklch(0.65 0.0106 273.28);
 }
 
@@ -82,20 +82,20 @@
   --sidebar-ring: oklch(0.527 0.154 150.069);
 
   /* custom color */
-  /* --trading-dark: oklch(0.257 0.0257 268.23); 
-  --trading-darker: oklch(0.227 0.0228 265.6); 
-  --trading-green: oklch(0.738 0.1833 150.49); 
-  --trading-light: oklch(0.984 0.003 247.858); 
-  --trading-accent: oklch(0.755 0.142387 174.902); 
+  /* --trading-dark: oklch(0.257 0.0257 268.23);
+  --trading-darker: oklch(0.227 0.0228 265.6);
+  --trading-green: oklch(0.738 0.1833 150.49);
+  --trading-light: oklch(0.984 0.003 247.858);
+  --trading-accent: oklch(0.755 0.142387 174.902);
   --trading-muted: oklch(0.656 0.0082 260.73);  */
 
-  
+
   /* custom color */
   --trading-dark: oklch(0.3 0.0283 270.28);
-  --trading-darker: oklch(0.24 0.0279 269.07); 
+  --trading-darker: oklch(0.24 0.0279 269.07);
   --trading-green: oklch(0.79 0.1165 179.7);
   --trading-light: oklch(0.984 0.003 247.858);
-  --trading-accent: oklch(0.66 0.178 142); 
+  --trading-accent: oklch(0.66 0.178 142);
   --trading-muted: oklch(0.65 0.0106 273.28);
 }
 
@@ -171,4 +171,42 @@
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-muted/50;
   }
+}
+
+
+
+/* Add this to your global CSS file */
+
+/* Hide Google Translate banner */
+.goog-te-banner-frame,
+.skiptranslate,
+.goog-te-banner {
+  display: none !important;
+}
+
+/* Hide Google top bar */
+body {
+  top: 0 !important;
+}
+
+/* Hide all Google pop-ups and tooltips */
+.goog-tooltip,
+.goog-tooltip:hover {
+  display: none !important;
+}
+
+/* Remove translation highlights */
+.goog-text-highlight {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Hide all newer Google Translate UI elements by their class names */
+.VIpgJd-ZVi9od-l4eHX-hSRGPd,
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+.VIpgJd-ZVi9od-aZ2wEe-OiiCO,
+.VIpgJd-yAWNEb-L7lbkb,
+.VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Hf {
+  display: none !important;
 }
