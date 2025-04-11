@@ -13,12 +13,6 @@ function TradingViewWidget() {
     const currentContainer = container.current;
     const currentSymbol = tvSymbol;
 
-    // Get the computed background color from CSS variables
-    const computedStyle = getComputedStyle(document.documentElement);
-    const backgroundColor = computedStyle
-      .getPropertyValue("--background")
-      .trim();
-
     // Clear any existing widgets
     currentContainer.innerHTML = "";
 
@@ -73,7 +67,6 @@ function TradingViewWidget() {
       hide_side_toolbar: false,
       allow_symbol_change: true,
       support_host: "https://www.tradingview.com",
-      backgroundColor: backgroundColor,
     });
 
     widgetContainer.appendChild(script);

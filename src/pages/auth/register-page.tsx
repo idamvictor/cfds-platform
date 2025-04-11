@@ -400,7 +400,7 @@ export default function RegisterPage() {
           <div className="flex items-center justify-center space-x-2 text-sm text-card-foreground/80">
             <span>Already have an account?</span>
             <Link
-              to="/login"
+              to="/"
               className="text-primary hover:text-primary/90 font-medium"
             >
               Login
