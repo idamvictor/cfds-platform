@@ -7,7 +7,8 @@ import { Wallet, Coins, PiggyBank, Building2 } from "lucide-react";
 export default function TradingDashboard() {
   return (
     <div className="flex flex-col gap-6 p-6 bg-background text-foreground min-h-screen">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {" "}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* First row */}
         <StatCard
           title="Total Balance"
@@ -22,7 +23,10 @@ export default function TradingDashboard() {
           footnote="* using current exchange rate"
         />
 
-        <SuccessRateCard />
+        {/* Success Rate Card spans 2 columns and full height */}
+        <div className="md:col-span-2 md:row-span-2">
+          <SuccessRateCard />
+        </div>
 
         {/* Second row */}
         <StatCard
@@ -38,9 +42,7 @@ export default function TradingDashboard() {
           valueClassName="text-success"
         />
       </div>
-
       <TradingResultsChart />
-
       <AccountSection />
     </div>
   );

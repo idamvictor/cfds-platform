@@ -73,13 +73,12 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
           {user?.email || ""}
         </p>
         <div className="grid grid-cols-2 gap-2 w-full mt-4">
-          {" "}
-          <Button>
-            <Link to="/main/deposit" onClick={onLinkClick}>
-              Deposit
-            </Link>
+          <Link to="/main/deposit">
+            <Button onClick={onLinkClick}>Deposit</Button>
+          </Link>
+          <Button variant="ghost" className="border border-border">
+            Autotrader
           </Button>
-          <Button variant="ghost">Autotrader</Button>
         </div>
       </div>
       <nav className="flex-1 py-4 overflow-y-auto">
@@ -90,7 +89,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
                 {" "}
                 <Link
                   to={item.path}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-md text-trading-light/80 hover:text-trading-light hover:bg-trading-accent/20 transition-all duration-200 group ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-md text-trading-light/80 hover:text-trading-light hover:bg-trading-accent/20 transition-all duration-200 group text-sm ${
                     isActive(item.path)
                       ? "bg-trading-accent/30 text-trading-light"
                       : ""
@@ -109,7 +108,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
       <div className="p-4 border-t border-trading-darker">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 rounded-md text-trading-light/80 hover:text-trading-light hover:bg-trading-accent/20 transition-all duration-200 w-full justify-start group"
+          className="flex items-center gap-3 px-4 py-3 rounded-md text-trading-light/80 hover:text-trading-light hover:bg-trading-accent/20 transition-all duration-200 w-full justify-start group text-sm"
         >
           <LogOut className="h-5 w-5 opacity-70 group-hover:opacity-100 transition-opacity" />
           <span>Log Out</span>

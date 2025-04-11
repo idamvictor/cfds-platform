@@ -3,7 +3,7 @@ import React from 'react';
 const Logo: React.FC = () => {
   return (
     <div className="flex items-center gap-1">
-      <div className="h-8 w-8 rounded bg-trading-accent flex items-center justify-center">
+      <div className="h-8 w-8 rounded bg-accent flex items-center justify-center">
         <svg 
           width="16" 
           height="16" 

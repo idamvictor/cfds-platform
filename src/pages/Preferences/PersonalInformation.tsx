@@ -45,7 +45,7 @@ export default function PersonalInformation() {
       first_name: user?.first_name || "",
       last_name: user?.last_name || "",
       address: "Gowerflower / GN, Fuvahmulah",
-      country: user?.country || "",
+      country: user?.country || "maldives",
       avatar: user?.avatar || null,
     },
   });
@@ -139,7 +139,7 @@ export default function PersonalInformation() {
           <Input
             id="first_name"
             {...register("first_name")}
-            className="bg-card border-card-foreground/10"
+            className="bg-card-foreground border-card-foreground/10"
           />
           {errors.first_name && (
             <p className="text-red-500 text-sm">{errors.first_name.message}</p>
@@ -202,7 +202,6 @@ export default function PersonalInformation() {
       <div className="flex gap-4">
         <Button
           type="submit"
-          className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-2 text-lg font-semibold"
           disabled={isLoading}
         >
           {isLoading ? "Submitting..." : "Submit"}
@@ -210,7 +209,6 @@ export default function PersonalInformation() {
         <Button
           type="button"
           variant="outline"
-          className="px-8 py-2 text-lg font-semibold"
           onClick={() => {
             // Reset form to default values
             Object.keys(formSchema.shape).forEach((key) => {
@@ -224,7 +222,7 @@ export default function PersonalInformation() {
       </div>
 
       <div className="mt-4">
-        <h2 className="text-xl font-bold mb-6">PROFILE PHOTO</h2>
+        <h2 className="text-l font-bold mb-6">PROFILE PHOTO</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card

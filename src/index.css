@@ -42,9 +42,9 @@
   /* custom color */
   --trading-dark: oklch(0.3 0.0283 270.28);
   --trading-darker: oklch(0.24 0.0279 269.07); 
-  --trading-green: oklch(0.66 0.178 142);
+  --trading-green: oklch(0.79 0.1165 179.7);
   --trading-light: oklch(0.984 0.003 247.858);
-  --trading-accent: oklch(0.79 0.1165 179.7); 
+  --trading-accent: oklch(0.66 0.178 142); 
   --trading-muted: oklch(0.65 0.0106 273.28);
 }
 
@@ -57,14 +57,14 @@
   --popover-foreground: var(--trading-light);
   --primary: var(--trading-accent);
   --primary-foreground: var(--trading-light);
-  --secondary: var(--trading-muted);
+  --secondary: var(--trading-dark);
   --secondary-foreground: var(--trading-light);
   --muted: var(--trading-dark);
   --muted-foreground: var(--trading-muted);
   --accent: var(--trading-green);
   --accent-foreground: var(--trading-light);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: var(--trading-dark);
+  --border: var(--trading-darker);
   --input: var(--trading-dark);
   --ring: var(--trading-accent);
   --chart-1: oklch(0.488 0.243 264.376);
@@ -93,9 +93,9 @@
   /* custom color */
   --trading-dark: oklch(0.3 0.0283 270.28);
   --trading-darker: oklch(0.24 0.0279 269.07); 
-  --trading-green: oklch(0.66 0.178 142);
+  --trading-green: oklch(0.79 0.1165 179.7);
   --trading-light: oklch(0.984 0.003 247.858);
-  --trading-accent: oklch(0.79 0.1165 179.7); 
+  --trading-accent: oklch(0.66 0.178 142); 
   --trading-muted: oklch(0.65 0.0106 273.28);
 }
 

@@ -9,7 +9,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   return (
-    <header className="flex justify-between items-center px-6 py-4 bg-background border-b border-border">
+    <header className="flex justify-between items-center px-6 py-4 bg-secondary border-b border-border">
       <div className="flex items-center gap-4">
         <button
           className="md:hidden p-2 rounded bg-primary text-white"
