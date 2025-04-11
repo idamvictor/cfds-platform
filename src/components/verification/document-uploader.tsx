@@ -51,7 +51,7 @@ export function DocumentUploader({
 
   return (
     <Card
-      className={`flex flex-col items-center justify-center p-8 h-[180px] bg-card border-card-foreground/10 cursor-pointer transition-all ${
+      className={`flex flex-col items-center justify-center p-6 h-[150px] bg-card border-card-foreground/10 cursor-pointer transition-all ${
         isDragging ? "border-success border-2" : ""
       }`}
       onDragOver={handleDragOver}
@@ -59,10 +59,10 @@ export function DocumentUploader({
       onDrop={handleDrop}
       onClick={handleClick}
     >
-      <div className="flex items-center justify-center mb-4">{icon}</div>
+      <div className="flex items-center justify-center mb-3">{icon}</div>
       <div className="text-center">
-        <p className="font-medium">{title}</p>
-        <p className="text-sm text-muted-foreground mt-2">
+        <p className="font-medium text-sm">{title}</p>
+        <p className="text-xs text-muted-foreground mt-1">
           drag and drop the document to this area
         </p>
       </div>
