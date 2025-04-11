@@ -50,8 +50,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   };
 
   return (
-    <aside className="bg-sidebar h-full w-60 flex flex-col border-r border-sidebar-border">
-      <div className="flex flex-col items-center text-center p-6 border-b border-sidebar-border">
+    <aside className="bg-trading-dark h-full w-60 flex flex-col border-r border-trading-darker">
+      <div className="flex flex-col items-center text-center p-6 border-b border-trading-darker">
         {" "}
         <Avatar className="h-20 w-20">
           <AvatarImage
@@ -63,38 +63,39 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
               ? `${user.first_name[0]}${user.last_name[0]}`.toUpperCase()
               : ""}
           </AvatarFallback>
-        </Avatar>
-        <h2 className="text-lg font-medium text-sidebar-foreground">
+        </Avatar>{" "}
+        <h2 className="text-lg font-medium text-trading-light">
           {user ? `${user.first_name} ${user.last_name}` : ""}
         </h2>
-        <p className="text-sm text-muted-foreground mt-1">#{user?.id || ""}</p>
-        <p className="text-xs text-muted-foreground/70 mt-1">
+        <p className="text-sm text-trading-muted mt-1">#{user?.id || ""}</p>
+        <p className="text-xs text-trading-muted/70 mt-1">
           {user?.email || ""}
         </p>
         <div className="grid grid-cols-2 gap-2 w-full mt-4">
+          {" "}
           <Link
             to="/main/deposit"
-            className="bg-sidebar-primary text-sidebar-primary-foreground font-medium px-6 rounded-md transition-all text-sm py-3"
+            className="bg-trading-accent text-trading-light font-medium px-6 rounded-md transition-all text-sm py-3 hover:bg-trading-accent/90"
             onClick={onLinkClick}
           >
             Deposit
           </Link>
-          <button className="bg-transparent border border-muted/30 text-sidebar-foreground font-medium py-2 px-6 rounded-md hover:bg-muted/10 transition-all text-sm">
+          <button className="bg-transparent border border-trading-muted/30 text-trading-light font-medium py-2 px-6 rounded-md hover:bg-trading-muted/10 transition-all text-sm">
             Autotrader
           </button>
         </div>
       </div>
-
       <nav className="flex-1 py-4 overflow-y-auto">
         <ScrollArea>
           <ul className="space-y-1 px-2">
             {navItems.map((item) => (
               <li key={item.title}>
+                {" "}
                 <Link
                   to={item.path}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-md text-sidebar-foreground/80 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-all duration-200 group ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-md text-trading-light/80 hover:text-trading-light hover:bg-trading-accent/20 transition-all duration-200 group ${
                     isActive(item.path)
-                      ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                      ? "bg-trading-accent/30 text-trading-light"
                       : ""
                   }`}
                   onClick={onLinkClick}
@@ -107,12 +108,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
           </ul>
           <ScrollBar orientation="vertical" />
         </ScrollArea>
-      </nav>
-
-      <div className="p-4 border-t border-sidebar-border">
+      </nav>{" "}
+      <div className="p-4 border-t border-trading-darker">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 rounded-md text-sidebar-foreground/80 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-all duration-200 w-full justify-start group"
+          className="flex items-center gap-3 px-4 py-3 rounded-md text-trading-light/80 hover:text-trading-light hover:bg-trading-accent/20 transition-all duration-200 w-full justify-start group"
         >
           <LogOut className="h-5 w-5 opacity-70 group-hover:opacity-100 transition-opacity" />
           <span>Log Out</span>
