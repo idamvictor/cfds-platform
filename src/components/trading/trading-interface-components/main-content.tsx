@@ -27,7 +27,7 @@ export default function MainContent({
   const isLargeScreen = useMobile(1024);
 
   const { activeAsset } = useAssetStore();
-  console.log(sidebarExpanded);
+  console.log('sidebarExtended', sidebarExpanded);
 
   // Log when active asset changes
   useEffect(() => {

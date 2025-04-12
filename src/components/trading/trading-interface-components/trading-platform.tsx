@@ -116,7 +116,7 @@ export default function TradingPlatform() {
       />
       <div className="flex flex-1 overflow-hidden">
         {/* Only show sidebar on desktop */}
-        {!isMobile && (
+        {/* {!isMobile && (
           <Sidebar
             expanded={sidebarExpanded}
             toggleSidebar={toggleSidebar}
@@ -124,7 +124,15 @@ export default function TradingPlatform() {
             toggleView={toggleView}
             addCurrencyPair={addCurrencyPair}
           />
-        )}
+        )} */}
+
+        <Sidebar
+          expanded={sidebarExpanded}
+          toggleSidebar={toggleSidebar}
+          activeView={activeView}
+          toggleView={toggleView}
+          addCurrencyPair={addCurrencyPair}
+        />
         <MainContent
           sidebarExpanded={sidebarExpanded}
           activeView={activeView}

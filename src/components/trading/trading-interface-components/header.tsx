@@ -280,7 +280,7 @@ export default function Header({
         </div>
       </header>
 
-      <header className="flex md:hidden items-center justify-between h-16 px-2 sm:px-4 border-b border-border bg-background">
+      <header className="flex items-center justify-between h-16 px-2 sm:px-4 border-b border-border bg-background">
         <div className="flex items-center">
           <div className="mr-2 sm:mr-6">
             <Logo />
@@ -334,46 +334,56 @@ export default function Header({
                       <div className="px-3 py-2">
                         <h3 className="text-sm font-medium mb-2">Panels</h3>
                         <div className="space-y-1">
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-start gap-2 text-sm"
-                            onClick={() => toggleView("market-watch")}
-                          >
-                            <LineChart className="h-4 w-4" />
-                            <span>Market Watch</span>
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-start gap-2 text-sm"
-                            onClick={() => toggleView("active-orders")}
-                          >
-                            <BarChart3 className="h-4 w-4" />
-                            <span>Active Orders</span>
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-start gap-2 text-sm"
-                            onClick={() => toggleView("trading-history")}
-                          >
-                            <Clock className="h-4 w-4" />
-                            <span>Trading History</span>
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-start gap-2 text-sm"
-                            onClick={() => toggleView("calendar")}
-                          >
-                            <Calendar className="h-4 w-4" />
-                            <span>Calendar</span>
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-start gap-2 text-sm"
-                            onClick={() => toggleView("market-news")}
-                          >
-                            <Newspaper className="h-4 w-4" />
-                            <span>Market News</span>
-                          </Button>
+                          <SheetTrigger className="w-full">
+                            <Button
+                              variant="outline"
+                              className="w-full justify-start gap-2 text-sm hover:bg-slapte-700"
+                              onClick={() => toggleView("market-watch")}
+                            >
+                              <LineChart className="h-4 w-4" />
+                              <span>Market Watch</span>
+                            </Button>
+                          </SheetTrigger>
+                          <SheetTrigger className="w-full">
+                            <Button
+                              variant="outline"
+                              className="w-full justify-start gap-2 text-sm hover:bg-slapte-700"
+                              onClick={() => toggleView("active-orders")}
+                            >
+                              <BarChart3 className="h-4 w-4" />
+                              <span>Active Orders</span>
+                            </Button>
+                          </SheetTrigger>
+                          <SheetTrigger className="w-full">
+                            <Button
+                              variant="outline"
+                              className="w-full justify-start gap-2 text-sm hover:bg-slapte-700"
+                              onClick={() => toggleView("trading-history")}
+                            >
+                              <Clock className="h-4 w-4" />
+                              <span>Trading History</span>
+                            </Button>
+                          </SheetTrigger>
+                          <SheetTrigger className="w-full">
+                            <Button
+                              variant="outline"
+                              className="w-full justify-start gap-2 text-sm hover:bg-slapte-700"
+                              onClick={() => toggleView("calendar")}
+                            >
+                              <Calendar className="h-4 w-4" />
+                              <span>Calendar</span>
+                            </Button>
+                          </SheetTrigger>
+                          <SheetTrigger className="w-full">
+                            <Button
+                              variant="outline"
+                              className="w-full justify-start gap-2 text-sm hover:bg-slapte-700"
+                              onClick={() => toggleView("market-news")}
+                            >
+                              <Newspaper className="h-4 w-4" />
+                              <span>Market News</span>
+                            </Button>
+                          </SheetTrigger>
                         </div>
                       </div>
 

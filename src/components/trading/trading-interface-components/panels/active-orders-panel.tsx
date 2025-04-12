@@ -76,9 +76,9 @@ export default function ActiveOrdersPanel() {
             className="flex-1 rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent h-full"
           >
             <span
-              className={`text-xs font-medium ${
+              className={`text-xs font-medium w-full ${
                 activeTab === "active"
-                  ? "text-primary"
+                  ? ""
                   : "text-muted-foreground"
               }`}
             >
@@ -115,12 +115,12 @@ export default function ActiveOrdersPanel() {
               )}
 
               {Object.entries(groupedTrades).map(([assetSymbol, trades]) => (
-                <div key={assetSymbol} className="mb-4">
-                  <div className="bg-muted/50 rounded-md p-3 mb-2">
-                    <span className="text-sm font-medium">{assetSymbol}</span>
+                <div key={assetSymbol} className="mb-1">
+                  <div className="bg-slate-700 p-1 mb-2">
+                    <span className="text-xs font-medium">{assetSymbol}</span>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-1">
                     {trades.map((trade) => (
                       <TradeItem key={trade.id} trade={trade} />
                     ))}
@@ -155,14 +155,14 @@ function TradeItem({ trade }: { trade: Trade }) {
   const isPnlPositive = trade.pnl >= 0;
 
   return (
-    <div className="border-b border-border pb-3">
+    <div className="border-b border-border pb-3 text-xs">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <CryptoIcon type={trade.asset_id.split("-")[0]} />
-          <span className="text-sm">{trade.asset_name}</span>
+          <span className="">{trade.asset_name}</span>
         </div>
         <span
-          className={`text-sm font-medium ${
+          className={`font-medium ${
             isPnlPositive ? "text-green-500" : "text-red-500"
           }`}
         >
@@ -174,7 +174,7 @@ function TradeItem({ trade }: { trade: Trade }) {
 
       <div className="flex items-center justify-between mt-1">
         <button
-          className="text-xs text-muted-foreground flex items-center"
+          className=" text-muted-foreground flex items-center"
           onClick={() => setIsExpanded(!isExpanded)}
         >
           Show more{" "}
@@ -260,7 +260,7 @@ function CryptoIcon({ type }: { type: string }) {
 
   return (
     <div
-      className={`h-5 w-5 rounded-full ${bgColor} flex items-center justify-center text-xs text-white font-medium`}
+      className={`h-4 w-4 rounded-full ${bgColor} flex items-center justify-center text-[10px] text-white font-medium`}
     >
       {content}
     </div>

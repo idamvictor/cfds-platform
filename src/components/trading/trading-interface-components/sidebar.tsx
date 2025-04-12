@@ -40,6 +40,7 @@ export default function Sidebar({
   const isMobile = useMobile();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   console.log("isMobile", isMobileMenuOpen);
+  console.log("is active view", activeView);
   
   // Close mobile menu when switching to desktop
   useEffect(() => {
@@ -61,7 +62,7 @@ export default function Sidebar({
     return (
       <>
         {/* Mobile sidebar - collapsed state (icons only) */}
-        <div className="flex flex-col bg-background border-r border-border w-[60px] z-10">
+        <div className="lg:flex flex-col bg-background border-r border-border w-[60px] z-10 hidden">
           <div className="flex flex-col items-center py-4 space-y-6">
             {sidebarItems.map((item) => {
               const Icon = item.icon;
@@ -92,7 +93,7 @@ export default function Sidebar({
             onClick={() => toggleView(activeView)}
           >
             <div
-              className="absolute left-[60px] top-0 h-full w-[300px] bg-background border-r border-border overflow-y-auto"
+              className="absolute right-0 top-0 h-full w-[300px] bg-background border-r border-border overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               {activeView === "market-watch" && (
@@ -163,7 +164,7 @@ export default function Sidebar({
         )}
       </Button>
 
-      <div className="flex flex-col items-center py-4 space-y-6">
+      <div className="flex flex-col items-center py-4 space-y-2 border-r-2 border-secondary h-full">
         {sidebarItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeView === item.id;
@@ -172,9 +173,9 @@ export default function Sidebar({
             <button
               key={item.id}
               className={cn(
-                "flex flex-col items-center justify-center w-full py-2 px-1 transition-colors",
+                "flex flex-col items-center justify-center w-full py-4 px-1 transition-colors",
                 isActive
-                  ? "text-primary bg-primary/10"
+                  ? "bg-slate-700"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               )}
               onClick={() => toggleView(item.id as ActiveView)}

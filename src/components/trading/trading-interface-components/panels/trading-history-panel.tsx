@@ -99,11 +99,11 @@ function TradeHistoryItem({ trade }: { trade: Trade }) {
   });
 
   return (
-    <div className="p-3 border-b border-border hover:bg-muted/30">
+    <div className="p-3 border-b border-slate-700 hover:bg-muted/30">
       <div className="flex justify-between items-start">
         <div>
           <div className="flex items-center gap-1">
-            <span className="text-sm font-medium">{time}</span>
+            <span className="text-xs font-medium">{time}</span>
             <span className="text-xs text-muted-foreground">{date}</span>
           </div>
           <div className="flex items-center gap-2 mt-1">
@@ -111,7 +111,7 @@ function TradeHistoryItem({ trade }: { trade: Trade }) {
               assetId={trade.asset_id}
               symbol={trade.asset_symbol}
             />
-            <span className="text-sm">{trade.asset_symbol}</span>
+            <span className="text-xs">{trade.asset_symbol}</span>
           </div>
           <div className="text-xs text-muted-foreground mt-1">
             {trade.asset_id.split("-")[0].toUpperCase()}
@@ -131,7 +131,7 @@ function TradeHistoryItem({ trade }: { trade: Trade }) {
 
         <div className="text-right">
           <div
-            className={`text-sm font-medium ${
+            className={`text-xs font-medium ${
               isPnlPositive ? "text-green-500" : "text-red-500"
             }`}
           >
@@ -197,10 +197,10 @@ function CurrencyFlag({
 
   if (type === "crypto") {
     return (
-      <div className="h-5 w-5 rounded-full bg-[#F7931A] flex items-center justify-center">
+      <div className="h-4 w-4 rounded-full bg-[#F7931A] flex items-center justify-center">
         <svg
-          width="10"
-          height="10"
+          width="8"
+          height="8"
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
