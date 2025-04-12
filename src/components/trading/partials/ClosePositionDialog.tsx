@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Loader2 } from "lucide-react";
 import type { Trade } from "@/store/tradeStore";
 
 interface ClosePositionDialogProps {
@@ -7,6 +8,7 @@ interface ClosePositionDialogProps {
     onOpenChange: (open: boolean) => void;
     selectedOrder: Trade | null;
     onConfirm: () => void;
+    isClosing?: boolean;
 }
 
 export function ClosePositionDialog({
@@ -14,6 +16,7 @@ export function ClosePositionDialog({
                                         onOpenChange,
                                         selectedOrder,
                                         onConfirm,
+                                        isClosing = false,
                                     }: ClosePositionDialogProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -34,12 +37,21 @@ export function ClosePositionDialog({
                             <Button
                                 className="w-full bg-red-500 hover:bg-red-600 text-white"
                                 onClick={onConfirm}
+                                disabled={isClosing}
                             >
-                                Yes
+                                {isClosing ? (
+                                    <div className="flex items-center justify-center">
+                                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                        <span>Closing...</span>
+                                    </div>
+                                ) : (
+                                    "Yes"
+                                )}
                             </Button>
                             <Button
                                 className="w-full bg-slate-600 hover:bg-slate-700 text-white"
                                 onClick={() => onOpenChange(false)}
+                                disabled={isClosing}
                             >
                                 No
                             </Button>

@@ -13,6 +13,7 @@ import MobileFilterDialog from "@/components/trading/partials/MobileFilterDialog
 import MobileSheet from "@/components/trading/partials/MobileSheet";
 
 export default function OrderTable() {
+    // UI state
     const [activeTab, setActiveTab] = useState<"active" | "history">("active");
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [showCloseDialog, setShowCloseDialog] = useState(false);
@@ -21,11 +22,13 @@ export default function OrderTable() {
     const [showFilters, setShowFilters] = useState(false);
     const [showAccountDetails, setShowAccountDetails] = useState(false);
 
-    const isMobile = useMobile(768); // Use 768px as the breakpoint for mobile view
+    const isMobile = useMobile(768);
 
+    // Get trade data directly from the store
     const {
         openTrades,
         closedTrades,
+        accountSummary,
         isLoadingOpen,
         isLoadingClosed,
         errorOpen,
@@ -80,18 +83,6 @@ export default function OrderTable() {
         };
     }, [lastElementRef, activeTab, openTrades, closedTrades]);
 
-    // Account summary data
-    const accountData = {
-        balance: 610.05,
-        credit: 0.0,
-        equity: 610.05,
-        margin: 0.0,
-        marginLevel: "31381102.23%",
-        freeMargin: 610.05,
-        pnl: openTrades.reduce((sum, trade) => sum + trade.pnl, 0),
-        lifetimePnl: 460.05,
-    };
-
     const handleClosePosition = (order: Trade) => {
         setSelectedOrder(order);
         setShowCloseDialog(true);
@@ -99,6 +90,7 @@ export default function OrderTable() {
 
     const confirmClose = () => {
         // Logic to close the position would go here
+        // In a real implementation, you would call an API endpoint
         setShowCloseDialog(false);
     };
 
@@ -107,7 +99,7 @@ export default function OrderTable() {
     };
 
     return (
-        <div className="flex flex-col bg-background text-foreground border border-muted shadow-sm w-full ">
+        <div className="flex flex-col bg-background text-foreground border border-muted shadow-sm w-full">
             {!isCollapsed && !isMobile && (
                 <div className="flex-1">
                     <div className="border-b border-muted flex justify-between items-center sticky top-0 z-20 bg-background">
@@ -147,7 +139,6 @@ export default function OrderTable() {
                         </div>
                     </div>
 
-
                     <DesktopTradeTable
                         trades={activeTab === "active" ? openTrades : closedTrades}
                         isLoading={activeTab === "active" ? isLoadingOpen : isLoadingClosed}
@@ -165,7 +156,7 @@ export default function OrderTable() {
             <div className="sticky bottom-0 z-20 bg-background">
                 {isMobile ? (
                     <AccountSummary
-                        accountData={accountData}
+                        accountData={accountSummary}
                         isDesktop={false}
                         showAccountDetails={showAccountDetails}
                         setShowAccountDetails={setShowAccountDetails}
@@ -186,7 +177,7 @@ export default function OrderTable() {
                     </AccountSummary>
                 ) : (
                     <AccountSummary
-                        accountData={accountData}
+                        accountData={accountSummary}
                         isDesktop={true}
                         isCollapsed={isCollapsed}
                         setIsCollapsed={setIsCollapsed}

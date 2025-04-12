@@ -1,6 +1,5 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -67,13 +66,13 @@ export function DesktopTradeTable({
                                 Open Time
                             </TableHead>
                             <TableHead className="h-8 text-xs font-medium text-muted-foreground">
-                                Take Profit
+                                TP
                             </TableHead>
                             <TableHead className="h-8 text-xs font-medium text-muted-foreground">
-                                Stop Loss
+                                SL
                             </TableHead>
                             <TableHead className="h-8 text-xs font-medium text-muted-foreground">
-                                {activeTab === "active" ? "Current Price" : "Close Price"}
+                                {activeTab === "active" ? "Price" : "Close Price"}
                             </TableHead>
                             <TableHead className="h-8 text-xs font-medium text-muted-foreground">
                                 Leverage
@@ -100,20 +99,13 @@ export function DesktopTradeTable({
                                 <TableCell className="py-1 text-xs text-muted-foreground">
                                     {trade.id.substring(0, 8)}...
                                 </TableCell>
-                                <TableCell className="py-1 ">
-                                    <Badge
-                                        variant={
-                                            trade.trade_type === "buy" ? "default" : "secondary"
-                                        }
-                                        className={cn(
-                                            "text-xs px-1.5 py-0.5 ",
-                                            trade.trade_type === "buy"
-                                                ? "bg-primary"
-                                                : "bg-destructive"
-                                        )}
-                                    >
-                                        {trade.trade_type.toUpperCase()}
-                                    </Badge>
+                                <TableCell  className={cn(
+                                    "py-1 ",
+                                    trade.trade_type === "buy"
+                                        ? "text-primary"
+                                        : "text-destructive"
+                                )} >
+                                    {trade.trade_type.toUpperCase()}
                                 </TableCell>
                                 <TableCell className="py-1 text-xs text-muted-foreground">
                                     {trade.volume.toFixed(2)}
