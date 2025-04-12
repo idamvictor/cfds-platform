@@ -5,12 +5,12 @@ import { PieChartComponent } from "./pie-cahrt";
 export function SuccessRateCard() {
   return (
     <Card className="bg-card text-card-foreground row-span-2">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-sm font-medium">Success rate</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col items-center justify-center pt-6">
+      <CardContent className="flex flex-col items-center justify-center">
         <PieChartComponent />
-        <div className="flex items-center justify-center gap-4 mt-6">
+        <div className="flex items-center justify-center gap-4 mt-2">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-primary"></div>
             <span className="text-sm">Closed With Profit</span>

@@ -45,7 +45,7 @@ export function PieChartComponent() {
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
+          className="mx-auto aspect-square max-h-[200px]"
         >
           <PieChart>
             <ChartTooltip
@@ -57,6 +57,7 @@ export function PieChartComponent() {
               dataKey="visitors"
               nameKey="browser"
               innerRadius={60}
+              outerRadius={100}
               strokeWidth={5}
             >
               <Label

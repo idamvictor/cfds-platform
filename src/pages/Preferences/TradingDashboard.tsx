@@ -23,13 +23,13 @@ export default function TradingDashboard() {
                 <StatCard
                     title="Total Balance"
                     value={formatCurrency(balance)}
-                    icon={<Wallet className="h-10 w-10 text-primary/80" />}
+                    icon={<Wallet className="h-10 w-10 text-accent" />}
                 />
 
                 <StatCard
                     title="Total PNL"
                     value={formatCurrency(totalPnl)}
-                    icon={<Coins className="h-10 w-10 text-primary/80" />}
+                    icon={<Coins className="h-10 w-10 text-accent" />}
                     footnote="* using current exchange rate"
                 />
 
@@ -42,13 +42,13 @@ export default function TradingDashboard() {
                 <StatCard
                     title="Profitable Orders"
                     value="77 / 82"
-                    icon={<PiggyBank className="h-10 w-10 text-primary/80" />}
+                    icon={<PiggyBank className="h-12 w-12 text-accent" />}
                 />
 
                 <StatCard
                     title="Total Deposits"
                     value={formatCurrency(totalDeposits)}
-                    icon={<Building2 className="h-10 w-10 text-primary/80" />}
+                    icon={<Building2 className="h-10 w-10 text-accent" />}
                     valueClassName="text-success"
                 />
             </div>
