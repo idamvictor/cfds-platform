@@ -47,39 +47,39 @@ export function AccountSummary({
         return (
             <div className="w-full bg-muted/30 border-t border-muted p-2">
                 <div className="flex flex-wrap gap-4 justify-between">
-                    <div className="flex flex-wrap gap-4">
+                    <div className="flex  gap-4">
                         <div className="flex items-center gap-2">
-                            <span className="text-muted-foreground text-sm">Balance:</span>
-                            <span className="text-sm">{formatCurrency(accountData.balance)}</span>
+                            <span className="text-muted-foreground text-xs">Balance:</span>
+                            <span className="text-xs">{formatCurrency(accountData.balance)}</span>
                         </div>
 
                         <div className="flex items-center gap-2">
-                            <span className="text-muted-foreground text-sm">Credit:</span>
-                            <span className="text-sm">{formatCurrency(accountData.credit)}</span>
+                            <span className="text-muted-foreground text-xs">Credit:</span>
+                            <span className="text-xs">{formatCurrency(accountData.credit)}</span>
                         </div>
 
                         <div className="flex items-center gap-2">
-                            <span className="text-muted-foreground text-sm">Equity:</span>
-                            <span className="text-sm">{formatCurrency(accountData.equity)}</span>
+                            <span className="text-muted-foreground text-xs">Equity:</span>
+                            <span className="text-xs">{formatCurrency(accountData.equity)}</span>
                         </div>
 
                         <div className="flex items-center gap-2">
-                            <span className="text-muted-foreground text-sm">Margin:</span>
-                            <span className="text-sm">{formatCurrency(accountData.margin)}</span>
+                            <span className="text-muted-foreground text-xs">Margin:</span>
+                            <span className="text-xs">{formatCurrency(accountData.margin)}</span>
                         </div>
 
                         <div className="flex items-center gap-2">
-                            <span className="text-muted-foreground text-sm">
+                            <span className="text-muted-foreground text-xs">
                                 Margin level:
                             </span>
-                            <span className="text-sm">{accountData.marginLevel}</span>
+                            <span className="text-xs">{accountData.marginLevel}</span>
                         </div>
 
                         <div className="flex items-center gap-2">
-                            <span className="text-muted-foreground text-sm">
+                            <span className="text-muted-foreground text-xs">
                                 Free Margin:
                             </span>
-                            <span className="text-sm">
+                            <span className="text-xs">
                                 {formatCurrency(accountData.freeMargin)}
                             </span>
                         </div>
@@ -100,12 +100,12 @@ export function AccountSummary({
 
                     {!isCollapsed && (
                         <div className="flex items-center gap-2">
-                            <span className="text-muted-foreground text-sm">
+                            <span className="text-muted-foreground text-xs">
                                 PnL:
                             </span>
                             <span
                                 className={cn(
-                                    "text-sm",
+                                    "text-xs",
                                     accountData.lifetimePnl >= 0
                                         ? "text-green-500"
                                         : "text-red-500"
