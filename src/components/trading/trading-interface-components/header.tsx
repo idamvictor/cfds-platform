@@ -123,168 +123,10 @@ export default function Header({
 
   return (
     <>
-      <header className="hidden md:flex items-center justify-between h-20 px-6 border-b border-secondary border-2 bg-background">
-        <div className="flex items-center gap-6">
+      <header className=" flex items-center justify-between h-20 px-6 border-b border-secondary border-2 bg-background">
+        {/* left side */}
+        <div className="flex items-center gap-6 h-full">
           <Logo />
-          <div className="flex items-center gap-2">
-            {activePairs.map((pair, index) => (
-              <div
-                key={index}
-                className={`relative flex items-center gap-3 px-4 py-2 cursor-pointer border-[1px] border-muted ${
-                  activePair === pair
-                    ? "border-b-2 border-b-accent "
-                    : "hover:bg-muted"
-                }`}
-                onClick={() => handlePairClick(pair)}
-              >
-                <CurrencyFlag pair={pair} />
-                <div className="flex flex-col items-start">
-                  <span className="text-xs font-medium">{pair}</span>
-                  <span className="text-xs text-muted-foreground">forex</span>
-                </div>
-                <button
-                  className="absolute top-[0.5px] left-[0.5px] rounded-full hover:bg-muted p-0.5"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeCurrencyPair(pair);
-                  }}
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-            ))}
-            <Button variant="outline" size="sm" className="ml-2 hover:bg-muted">
-              <Plus className="h-5 w-5" />
-            </Button>
-          </div>
-        </div>
-        <div className="flex items-center gap-6">
-          <Link to="/main/deposit">
-            <Button
-              variant="outline"
-              className="flex-1 h-full gap-3 text-primary border-primary hover:bg-trading-green/10"
-            >
-              <Robot className="h-5 w-5" />
-              <span className="text-base">Auto Trader</span>
-            </Button>
-          </Link>
-
-          <Link to="/main/deposit">
-            <Button
-              variant="outline"
-              className="flex-1 h-full gap-3 text-primary border-trading-accent hover:bg-trading-green/10"
-            >
-              <Wallet className="h-5 w-5" />
-              <span className="text-base">Deposit</span>
-            </Button>
-          </Link>
-
-          <div className="flex flex-col items-center gap-1">
-            <div className="text-xs font-bold text-primary">
-              STANDARD ACCOUNT
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="link"
-                  className="h-auto p-0 text-primary font-bold text-base"
-                >
-                  $709.75 <ChevronDown className="h-5 w-5 ml-1" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="p-5 text-base text-muted-foreground space-y-3"
-              >
-                <div className="font-bold">REAL ACCOUNT #1651738</div>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>Balance</span>
-                    <span>$709.75</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Credit</span>
-                    <span>$0.00</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Invested</span>
-                    <span>$0.02</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Profit</span>
-                    <span className="text-trading-green">$0.00</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Equity</span>
-                    <span>$709.75</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Margin</span>
-                    <span>$0.00</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Margin Level</span>
-                    <span>36509964.87%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Free Margin</span>
-                    <span>$709.75</span>
-                  </div>
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-          <div className="flex items-center gap-2">
-            <img
-              src="https://res.cloudinary.com/dyp8gtllq/image/upload/v1744370355/main_plate_exi8jv.png"
-              alt="Badge"
-              className="w-8 h-8"
-            />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full p-0 h-8 w-8"
-                >
-                  <Avatar className="h-8 w-8 border border-border">
-                    <AvatarFallback>M</AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <Link to="/main/dashboard">
-                  <DropdownMenuItem>Profile</DropdownMenuItem>
-                </Link>
-                <Link to="/main/accounts">
-                  <DropdownMenuItem>Account Details</DropdownMenuItem>
-                </Link>
-                <Link to="/main/withdrawal">
-                  <DropdownMenuItem>Transaction History</DropdownMenuItem>
-                </Link>
-                <Link to="/main/settings">
-                  <DropdownMenuItem>Settings</DropdownMenuItem>
-                </Link>
-                <DropdownMenuItem
-                  className="text-red-500"
-                  onClick={() => {
-                    useUserStore.getState().clearUser();
-                    window.location.href = "/login";
-                  }}
-                >
-                  Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-      </header>
-
-      <header className="flex items-center justify-between h-16 px-2 sm:px-4 border-b border-border bg-background">
-        <div className="flex items-center">
-          <div className="mr-2 sm:mr-6">
-            <Logo />
-          </div>
 
           {/* Mobile menu */}
           {isMobile && (
@@ -493,9 +335,9 @@ export default function Header({
             </div>
           )}
 
-          {/* Desktop currency tabs */}
+          {/* assets listing tabs new */}
           {!isMobile && (
-            <div className="flex items-center">
+            <div className="flex items-center h-full">
               {showScrollButtons && (
                 <Button
                   variant="ghost"
@@ -506,31 +348,33 @@ export default function Header({
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
               )}
-              <div className="overflow-hidden max-w-[300px] sm:max-w-[400px] md:max-w-[500px]">
-                <div className="w-full">
+              <div className="overflow-hidden max-w-[300px] sm:max-w-[400px] md:max-w-[500px] h-full flex items-center">
+                <div className="w-full h-full flex items-center">
                   <div
                     ref={tabsListRef}
-                    className="flex overflow-x-auto scrollbar-hide whitespace-nowrap"
+                    className="flex gap-2 overflow-x-auto scrollbar-hide whitespace-nowrap h-[70%]"
                     style={{ scrollbarWidth: "none" }}
                   >
                     {activePairs.map((pair, index) => (
                       <div
                         key={index}
                         ref={activePair === pair ? activeTabRef : null}
-                        className={`flex items-center gap-2 px-3 py-2 cursor-pointer ${
+                        className={`relative flex items-center gap-3 px-4 py-2 cursor-pointer border-[1px] border-muted ${
                           activePair === pair
-                            ? "bg-primary/10"
-                            : "hover:bg-muted/50"
+                            ? "border-b-2 border-b-accent "
+                            : "hover:bg-muted"
                         }`}
                         onClick={() => handlePairClick(pair)}
                       >
                         <CurrencyFlag pair={pair} />
-                        <span>{pair}</span>
-                        <span className="text-xs text-muted-foreground hidden sm:inline">
-                          forex
-                        </span>
+                        <div className="flex flex-col items-start">
+                          <span className="text-xs">{pair}</span>
+                          <span className="text-xs text-muted-foreground hidden sm:inline">
+                            forex
+                          </span>
+                        </div>
                         <button
-                          className="ml-1 sm:ml-2 rounded-full hover:bg-muted p-0.5"
+                          className="absolute top-0 left-[-7px] ml-1 sm:ml-2 rounded-full hover:bg-muted p-0.5"
                           onClick={(e) => {
                             e.stopPropagation();
                             removeCurrencyPair(pair);
@@ -560,126 +404,89 @@ export default function Header({
           )}
         </div>
 
-        {/* Mobile search dropdown */}
-        {isMobile && isSearchOpen && (
-          <div className="absolute top-16 left-0 right-0 bg-background border-b border-border p-3 z-50">
-            <div className="relative">
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-              <input
-                className="w-full bg-muted/50 border border-border rounded-md py-2 pl-10 pr-3"
-                placeholder="Search currency pairs..."
-              />
-            </div>
-            <div className="mt-2 max-h-[300px] overflow-y-auto">
-              {activePairs.map((pair, index) => (
-                <div
-                  key={index}
-                  className={`flex items-center justify-between p-2 rounded-md ${
-                    activePair === pair ? "bg-primary/10" : "hover:bg-muted/50"
-                  }`}
-                  onClick={() => {
-                    handlePairClick(pair);
-                    setIsSearchOpen(false);
-                  }}
-                >
-                  <div className="flex items-center gap-2">
-                    <CurrencyFlag pair={pair} />
-                    <span>{pair}</span>
-                  </div>
-                  {activePairs.length > 1 && (
-                    <button
-                      className="rounded-full hover:bg-muted p-0.5"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeCurrencyPair(pair);
-                      }}
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* right side */}
+        <div className="flex items-center gap-6">
+          <Link to="/main/deposit">
+            <Button
+              variant="outline"
+              className="flex-1 h-full gap-3 text-primary border-primary hover:bg-trading-green/10"
+            >
+              <Robot className="h-5 w-5" />
+              <span className="text-base">Auto Trader</span>
+            </Button>
+          </Link>
 
-        {/* Right side - account info */}
-        <div className="flex items-center gap-1 sm:gap-2">
-          {!isMobile && (
-            <>
-              <Button
-                variant="outline"
-                className="gap-2 text-green-500 border-green-500/20 hover:bg-green-500/10 hidden md:flex"
-              >
-                <Robot className="h-4 w-4" />
-                <span>Auto Trader</span>
-              </Button>
-              <Button
-                variant="outline"
-                className="gap-2 text-green-500 border-green-500/20 hover:bg-green-500/10 hidden sm:flex"
-              >
-                <Wallet className="h-4 w-4" />
-                <span>Deposit</span>
-              </Button>
-            </>
-          )}
-          <div className="flex items-center ml-1 sm:ml-4">
-            <div className="mr-2 hidden sm:block">
-              <div className="text-xs text-muted-foreground">
-                STANDARD ACCOUNT
-              </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="link"
-                    className="h-auto p-0 text-green-500 font-bold"
-                  >
-                    $610.05 <ChevronDown className="h-4 w-4 ml-1" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <div className="p-4 text-xs">
-                    <div className="font-bold text-muted-foreground">
-                      REAL ACCOUNT #1651738
-                    </div>
-                    <div className="mt-2">
-                      <div className="flex justify-between">
-                        <span>Balance</span>
-                        <span>$709.75</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Credit</span>
-                        <span>$0.00</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Invested</span>
-                        <span>$0.02</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Profit</span>
-                        <span className="text-trading-green">$0.00</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Equity</span>
-                        <span>$709.75</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Margin</span>
-                        <span>$0.00</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Margin Level</span>
-                        <span>36509964.87%</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Free Margin</span>
-                        <span>$709.75</span>
-                      </div>
-                    </div>
-                  </div>
-                </DropdownMenuContent>
-              </DropdownMenu>
+          <Link to="/main/deposit">
+            <Button
+              variant="outline"
+              className="flex-1 h-full gap-3 text-primary border-trading-accent hover:bg-trading-green/10"
+            >
+              <Wallet className="h-5 w-5" />
+              <span className="text-base">Deposit</span>
+            </Button>
+          </Link>
+
+          <div className="flex flex-col items-center gap-1">
+            <div className="text-xs font-bold text-primary">
+              STANDARD ACCOUNT
             </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="link"
+                  className="h-auto p-0 text-primary font-bold text-base"
+                >
+                  $709.75 <ChevronDown className="h-5 w-5 ml-1" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="p-5 text-base text-muted-foreground space-y-3"
+              >
+                <div className="font-bold">REAL ACCOUNT #1651738</div>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>Balance</span>
+                    <span>$709.75</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Credit</span>
+                    <span>$0.00</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Invested</span>
+                    <span>$0.02</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Profit</span>
+                    <span className="text-trading-green">$0.00</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Equity</span>
+                    <span>$709.75</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Margin</span>
+                    <span>$0.00</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Margin Level</span>
+                    <span>36509964.87%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Free Margin</span>
+                    <span>$709.75</span>
+                  </div>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <div className="flex items-center gap-2">
+            <img
+              src="https://res.cloudinary.com/dyp8gtllq/image/upload/v1744370355/main_plate_exi8jv.png"
+              alt="Badge"
+              className="w-8 h-8"
+            />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -693,16 +500,18 @@ export default function Header({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <div className="px-2 py-1.5 text-sm font-medium sm:hidden">
-                  <div className="text-xs text-muted-foreground">
-                    STANDARD ACCOUNT
-                  </div>
-                  <div className="text-green-500 font-bold">$610.05</div>
-                </div>
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Account Details</DropdownMenuItem>
-                <DropdownMenuItem>Transaction History</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <Link to="/main/dashboard">
+                  <DropdownMenuItem>Profile</DropdownMenuItem>
+                </Link>
+                <Link to="/main/accounts">
+                  <DropdownMenuItem>Account Details</DropdownMenuItem>
+                </Link>
+                <Link to="/main/withdrawal">
+                  <DropdownMenuItem>Transaction History</DropdownMenuItem>
+                </Link>
+                <Link to="/main/settings">
+                  <DropdownMenuItem>Settings</DropdownMenuItem>
+                </Link>
                 <DropdownMenuItem
                   className="text-red-500"
                   onClick={() => {
@@ -717,6 +526,8 @@ export default function Header({
           </div>
         </div>
       </header>
+
+      
     </>
   );
 }
