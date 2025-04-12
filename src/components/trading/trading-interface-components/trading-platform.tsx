@@ -26,6 +26,7 @@ export default function TradingPlatform() {
   const [activePairs, setActivePairs] = useState<string[]>(["AUD/JPY"]);
   const [activePair, setActivePair] = useState("AUD/JPY");
   const isMobile = useMobile(768);
+  console.log("isMobile", isMobile);
 
   const { setActiveAsset, assets, fetchAssets, activeAsset } = useAssetStore();
   const { fetchOpenTrades, fetchClosedTrades } = useTradeStore();
