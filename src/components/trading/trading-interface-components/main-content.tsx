@@ -30,9 +30,9 @@ export default function MainContent({
   console.log(sidebarExpanded);
 
   // Log when active asset changes
-  useEffect(() => {
-    console.log("MainContent - Active asset changed:", activeAsset);
-  }, [activeAsset]);
+  // useEffect(() => {
+  //   console.log("MainContent - Active asset changed:", activeAsset);
+  // }, [activeAsset]);
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">

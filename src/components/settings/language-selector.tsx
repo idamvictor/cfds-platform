@@ -3,10 +3,12 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
 export function LanguageSelector() {
+  // Get initial language from localStorage if available
   const [language, setLanguage] = React.useState(() => {
     return localStorage.getItem('selectedLanguage') || 'en';
   });
 
+  // Languages supported by Google Translate with their codes
   const languages = [
     { code: "en", name: "English", flag: "🇬🇧" },
     { code: "es", name: "Español", flag: "🇪🇸" },
@@ -22,6 +24,14 @@ export function LanguageSelector() {
     { code: "hi", name: "हिन्दी", flag: "🇮🇳" }
   ];
 
+  // Initialize component with correct language on mount
+  // React.useEffect(() => {
+  //   const savedLang = localStorage.getItem('selectedLanguage');
+  //   if (savedLang) {
+  //     setLanguage(savedLang);
+  //   }
+  // }, []);
+
   const changeLanguage = (langCode: string) => {
     // Update the component state
     setLanguage(langCode);
@@ -30,12 +40,35 @@ export function LanguageSelector() {
     localStorage.setItem('selectedLanguage', langCode);
 
     try {
-      // Use doGTranslate which is the method that worked for your implementation
-      if (window.doGTranslate) {
+      // Special handling for English to ensure we reset the translation
+      if (langCode === 'en') {
+        // For English, we need to first go to null language to reset
+        if (typeof window.doGTranslate === 'function') {
+          window.doGTranslate('auto|en');
+        }
+
+        // Clear any translation cookies to ensure reset to English
+        document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+
+        if (window.location.hostname.indexOf('.') > -1) {
+          const rootDomain = window.location.hostname.split('.').slice(-2).join('.');
+          document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + rootDomain;
+        }
+
+        // Some implementations need a reload for English
+        if (document.querySelector('.skiptranslate iframe')) {
+          window.location.reload();
+        }
+
+        return;
+      }
+
+      // For non-English languages, use doGTranslate normally
+      if (typeof window.doGTranslate === 'function') {
         window.doGTranslate('en|' + langCode);
       }
     } catch (e) {
-      // Silent error handling
+      // Silent error handling in production
     }
   };
 

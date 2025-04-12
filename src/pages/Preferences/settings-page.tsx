@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form";
 import axiosInstance from "@/lib/axios";
 import { toast } from "sonner";
+import TranslateButton from "@/components/TranslateButton.tsx";
 
 const passwordFormSchema = z
   .object({
@@ -267,6 +268,9 @@ export default function SettingsPage() {
           <CurrencySelector />
         </CardContent>
       </Card>
+
+
+      <TranslateButton />
 
       {/* Language Section */}
       <Card className="bg-card text-card-foreground">

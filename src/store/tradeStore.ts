@@ -72,7 +72,6 @@ const useTradeStore = create<TradeStore>((set, get) => ({
     try {
       const response = await axiosInstance.get(`/open/trades?page=${page}`);
 
-      // If it's the first page, replace the data, otherwise append
       if (page === 1) {
         set({
           openTrades: response.data.data,

@@ -11,11 +11,11 @@ export default function AssetInitializer() {
     });
   }, [fetchAssets]);
 
-  useEffect(() => {
-    console.log("AssetInitializer - Assets loaded:", assets.length);
-    console.log("AssetInitializer - Loading state:", isLoading);
-    console.log("AssetInitializer - Error state:", error);
-  }, [assets, isLoading, error]);
+  // useEffect(() => {
+  //   console.log("AssetInitializer - Assets loaded:", assets.length);
+  //   console.log("AssetInitializer - Loading state:", isLoading);
+  //   console.log("AssetInitializer - Error state:", error);
+  // }, [assets, isLoading, error]);
 
   return null;
 }
