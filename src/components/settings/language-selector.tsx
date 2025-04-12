@@ -25,12 +25,12 @@ export function LanguageSelector() {
   ];
 
   // Initialize component with correct language on mount
-  // React.useEffect(() => {
-  //   const savedLang = localStorage.getItem('selectedLanguage');
-  //   if (savedLang) {
-  //     setLanguage(savedLang);
-  //   }
-  // }, []);
+  React.useEffect(() => {
+    const savedLang = localStorage.getItem('selectedLanguage');
+    if (savedLang) {
+      setLanguage(savedLang);
+    }
+  }, []);
 
   const changeLanguage = (langCode: string) => {
     // Update the component state
@@ -39,35 +39,25 @@ export function LanguageSelector() {
     // Save to localStorage (for persistence)
     localStorage.setItem('selectedLanguage', langCode);
 
+    console.log('langCode',langCode)
     try {
-      // Special handling for English to ensure we reset the translation
+
+      // Skip translation if selecting English
       if (langCode === 'en') {
-        // For English, we need to first go to null language to reset
-        if (typeof window.doGTranslate === 'function') {
-          window.doGTranslate('auto|en');
-        }
-
-        // Clear any translation cookies to ensure reset to English
-        document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-
-        if (window.location.hostname.indexOf('.') > -1) {
-          const rootDomain = window.location.hostname.split('.').slice(-2).join('.');
-          document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + rootDomain;
-        }
-
-        // Some implementations need a reload for English
-        if (document.querySelector('.skiptranslate iframe')) {
-          window.location.reload();
-        }
-
+        // Create a cookie to remember the language preference
+        document.cookie = `googtrans=/en/en; path=/; domain=${window.location.hostname}`;
+        window.location.reload();
         return;
       }
 
-      // For non-English languages, use doGTranslate normally
-      if (typeof window.doGTranslate === 'function') {
-        window.doGTranslate('en|' + langCode);
-      }
+      // Set Google Translate cookie for the selected language
+      document.cookie = `googtrans=/en/${langCode}; path=/; domain=${window.location.hostname}`;
+
+      // Reload the page to apply the translation
+      window.location.reload();
+
     } catch (e) {
+      console.log('language error', e)
       // Silent error handling in production
     }
   };
