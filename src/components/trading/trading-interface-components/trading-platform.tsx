@@ -45,9 +45,9 @@ export default function TradingPlatform() {
   }, [fetchAssets, fetchOpenTrades, fetchClosedTrades]);
 
   // Log assets when they change
-  useEffect(() => {
-    console.log("TradingPlatform - Assets loaded:", assets.length);
-  }, [assets]);
+  // useEffect(() => {
+  //   console.log("TradingPlatform - Assets loaded:", assets.length);
+  // }, [assets]);
 
   // Update active pair when active asset changes
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+
 import type { ActiveView } from "./trading-platform";
 import MarketWatchPanel from "./panels/market-watch-panel";
 import ActiveOrdersPanel from "./panels/active-orders-panel";
@@ -7,7 +7,7 @@ import CalendarPanel from "./panels/calendar-panel";
 import MarketNewsPanel from "./panels/market-news-panel";
 import { useMobile } from "@/hooks/use-mobile";
 import TradingViewWidget from "./trading-view-widget";
-import useAssetStore from "@/store/assetStore";
+// import useAssetStore from "@/store/assetStore";
 import TradingInterface from "../trading-interface";
 import OrderTable from "../order-table";
 
@@ -26,13 +26,13 @@ export default function MainContent({
   const isMobile = useMobile();
   const isLargeScreen = useMobile(1024);
 
-  const { activeAsset } = useAssetStore();
+  // const { activeAsset } = useAssetStore();
   console.log('sidebarExtended', sidebarExpanded);
 
   // Log when active asset changes
-  useEffect(() => {
-    console.log("MainContent - Active asset changed:", activeAsset);
-  }, [activeAsset]);
+  // useEffect(() => {
+  //   console.log("MainContent - Active asset changed:", activeAsset);
+  // }, [activeAsset]);
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">

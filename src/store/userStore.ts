@@ -13,6 +13,7 @@ export interface User {
   avatar: string;
   balance: number;
   copy_trader: number;
+  currency_code: string;
 }
 
 interface UserStore {

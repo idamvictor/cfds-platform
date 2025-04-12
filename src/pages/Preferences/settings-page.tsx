@@ -268,6 +268,8 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
+
+
       {/* Language Section */}
       <Card className="bg-card text-card-foreground">
         <CardHeader>

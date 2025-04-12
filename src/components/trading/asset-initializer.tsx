@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import useAssetStore from "@/store/assetStore";
 
 export default function AssetInitializer() {
-  const { fetchAssets, isLoading, error, assets } = useAssetStore();
+  // const { fetchAssets, isLoading, error, assets } = useAssetStore();
+  const { fetchAssets } = useAssetStore();
 
   useEffect(() => {
     console.log("AssetInitializer - Fetching assets");
@@ -11,11 +12,11 @@ export default function AssetInitializer() {
     });
   }, [fetchAssets]);
 
-  useEffect(() => {
-    console.log("AssetInitializer - Assets loaded:", assets.length);
-    console.log("AssetInitializer - Loading state:", isLoading);
-    console.log("AssetInitializer - Error state:", error);
-  }, [assets, isLoading, error]);
+  // useEffect(() => {
+  //   console.log("AssetInitializer - Assets loaded:", assets.length);
+  //   console.log("AssetInitializer - Loading state:", isLoading);
+  //   console.log("AssetInitializer - Error state:", error);
+  // }, [assets, isLoading, error]);
 
   return null;
 }
