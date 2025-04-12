@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import useAssetStore from "@/store/assetStore";
 
 export default function AssetInitializer() {
-  const { fetchAssets, isLoading, error, assets } = useAssetStore();
+  // const { fetchAssets, isLoading, error, assets } = useAssetStore();
+  const { fetchAssets } = useAssetStore();
 
   useEffect(() => {
     console.log("AssetInitializer - Fetching assets");
