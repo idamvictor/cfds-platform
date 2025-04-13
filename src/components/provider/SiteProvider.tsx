@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import useSiteSettingsStore from "@/store/siteSettingStore";
 import { setApiBaseUrl } from "@/lib/axios";
-import {LoadingScreen} from "@/components/site/LoadingScreen.tsx";
+
 import {SiteUnreachable} from "@/components/site/SiteUnreachable.tsx";
 import {SiteDisabled} from "@/components/site/SiteDisabled.tsx";
+import LoadingScreen from "@/components/loading-screen.tsx";
 
 
 interface SiteProviderProps {
