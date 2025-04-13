@@ -30,7 +30,7 @@ export function SiteProvider({ children }: SiteProviderProps) {
             let apiUrl = "";
 
             // Special handling for localhost environments
-            if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+            if (origin.includes('localhost') || origin.includes('127.0.0.1') || origin.includes('cfds-platform.vercel.app')) {
                 apiUrl = "https://cfd.surdonline.com/api/v1";
                 console.log("Development environment detected. Using production API URL.");
             } else {
