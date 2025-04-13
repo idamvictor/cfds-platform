@@ -35,10 +35,10 @@ export default function SettingsPage() {
   const [showCurrentPassword, setShowCurrentPassword] = React.useState(false);
   const [showNewPassword, setShowNewPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-  const [activationCode] = React.useState(
-    "EN5WMXKWPMUT45JZGNCU2M2AJBAGGPDUHAWI"
-  );
-  const [authCode, setAuthCode] = React.useState("");
+  // const [activationCode] = React.useState(
+  //   "EN5WMXKWPMUT45JZGNCU2M2AJBAGGPDUHAWI"
+  // );
+  // const [authCode, setAuthCode] = React.useState("");
 
   const form = useForm({
     resolver: zodResolver(passwordFormSchema),
@@ -68,16 +68,16 @@ export default function SettingsPage() {
     }
   };
 
-  const handleActivate2FA = () => {
-    // Handle 2FA activation logic
-    console.log("Activating 2FA");
-  };
+  // const handleActivate2FA = () => {
+  //   // Handle 2FA activation logic
+  //   console.log("Activating 2FA");
+  // };
 
   return (
     <div className="flex flex-col gap-8 p-6 bg-background text-foreground min-h-screen">
       <h1 className="text-2xl font-bold text-center">SETTINGS</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6">
         {/* Password Update Section */}
         <Card className="bg-card text-card-foreground">
           <CardHeader>
@@ -208,7 +208,7 @@ export default function SettingsPage() {
         </Card>
 
         {/* 2FA Section */}
-        <Card className="bg-card text-card-foreground">
+        {/* <Card className="bg-card text-card-foreground">
           <CardHeader>
             <CardTitle>ACTIVATE 2FA PROTECTION</CardTitle>
           </CardHeader>
@@ -255,7 +255,7 @@ export default function SettingsPage() {
               Activate 2FA Protection
             </Button>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
 
       {/* Currency Section */}
