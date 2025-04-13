@@ -26,7 +26,6 @@ interface SiteSettingsState {
     setInitialized: (value: boolean) => void;
 }
 
-// Create a dynamic axios instance specifically for settings
 const settingsAxios = axios.create({
     headers: {
         "Content-Type": "application/json",

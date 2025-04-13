@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import useSiteSettingsStore from "@/store/siteSettingStore";
 import { setApiBaseUrl } from "@/lib/axios";
-import {LoadingScreen} from "@/components/site/LoadingScreen.tsx";
+
 import {SiteUnreachable} from "@/components/site/SiteUnreachable.tsx";
 import {SiteDisabled} from "@/components/site/SiteDisabled.tsx";
+import LoadingScreen from "@/components/loading-screen.tsx";
 
 
 interface SiteProviderProps {
@@ -29,7 +30,7 @@ export function SiteProvider({ children }: SiteProviderProps) {
             let apiUrl = "";
 
             // Special handling for localhost environments
-            if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+            if (origin.includes('localhost') || origin.includes('127.0.0.1') || origin.includes('cfds-platform.vercel.app')) {
                 apiUrl = "https://cfd.surdonline.com/api/v1";
                 console.log("Development environment detected. Using production API URL.");
             } else {
