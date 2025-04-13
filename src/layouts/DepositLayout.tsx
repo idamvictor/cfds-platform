@@ -140,7 +140,7 @@ const DepositLayout = () => {
         </div>
 
         {/* Right content area */}
-        <Card className=" items-start">
+        <Card className=" items-start flex-1 rounded-none">
           <CardContent className="md:p-6">
             <Outlet />
           </CardContent>

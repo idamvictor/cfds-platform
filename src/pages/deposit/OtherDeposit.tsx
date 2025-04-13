@@ -14,57 +14,57 @@ export default function CryptoPartners() {
   const partners: PartnerLogo[] = [
     {
       name: "Bitcoin.se",
-      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1740652807/Google_2011_logo-600x206_nilxnl.png",
+      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744491440/bitcoinse_ynsp3u.png",
       url: "https://bitcoin.se",
     },
     {
-      name: "Bitcoin.com",
-      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1740652807/Google_2011_logo-600x206_nilxnl.png",
-      url: "https://bitcoin.com",
-    },
-    {
       name: "Change NOW",
-      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1740652807/Google_2011_logo-600x206_nilxnl.png",
+      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744491436/changenow_mtal3l.png",
       url: "https://changenow.io",
     },
     {
+      name: "Bitcoin.com",
+      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744491436/bitcoincom_sjhcfz.png",
+      url: "https://bitcoin.com",
+    },
+    {
       name: "Kraken",
-      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1740652807/Google_2011_logo-600x206_nilxnl.png",
+      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744491434/kraken_iylbz6.png",
       url: "https://kraken.com",
     },
     {
       name: "Coinbase",
-      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1740652807/Google_2011_logo-600x206_nilxnl.png",
+      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744491433/coinbase_xwei2z.png",
       url: "https://coinbase.com",
     },
     {
       name: "NURI",
-      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1740652807/Google_2011_logo-600x206_nilxnl.png",
+      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744491434/nuri_ptozsb.png",
       url: "https://nuri.com",
     },
     {
       name: "EXMO",
-      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1740652807/Google_2011_logo-600x206_nilxnl.png",
+      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744491433/exmo_oyvjap.png",
       url: "https://exmo.com",
     },
     {
       name: "Bitonic",
-      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1740652807/Google_2011_logo-600x206_nilxnl.png",
+      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744491433/bitonic_yroan9.png",
       url: "https://bitonic.nl",
     },
     {
       name: "PAYEER",
-      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1740652807/Google_2011_logo-600x206_nilxnl.png",
+      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744491432/payeer_sbjguf.png",
       url: "https://payeer.com",
     },
     {
       name: "BTCX",
-      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1740652807/Google_2011_logo-600x206_nilxnl.png",
+      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744491432/btcx_xpqnnc.png",
       url: "https://btcx.com",
     },
     {
       name: "LocalBitcoins",
-      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1740652807/Google_2011_logo-600x206_nilxnl.png",
+      logo: "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744491432/localbitcoins_powbqf.png",
       url: "https://localbitcoins.com",
     },
   ];
@@ -72,18 +72,9 @@ export default function CryptoPartners() {
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl ">
-                  Our Partners
-                </h2>
-                <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                  Trusted cryptocurrency platforms we work with
-                </p>
-              </div>
-            </div>
+        <section className="w-full">
+          <div className="container px-4">
+            
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8 mt-12">
               {partners.map((partner) => (
                 <Link
@@ -118,7 +109,7 @@ export default function CryptoPartners() {
                         alt={partner.name}
                         width={150}
                         height={40}
-                        className="max-h-10 w-auto object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+                        className="grayscale max-h-10 w-auto object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300"
                       />
                     </motion.div>
                   </div>
