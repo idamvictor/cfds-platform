@@ -32,13 +32,22 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true
 
-      // Clear user data and redirect to login
-      useUserStore.getState().clearUser()
+        const currentPath = window.location.pathname;
 
-      // Redirect to login if in browser environment
-      if (typeof window !== "undefined") {
-        window.location.href = "/login"
-      }
+        const authRoutes = ['/', '/login', '/register', '/forgot-password'];
+        const isAuthRoute = authRoutes.some(route => currentPath === route);
+
+        // Clear user data
+        useUserStore.getState().clearUser();
+
+
+        if (!isAuthRoute) {
+            // Redirect to login
+            if (typeof window !== "undefined") {
+                window.location.href = "/login";
+            }
+        }
+
     }
 
     return Promise.reject(error)
