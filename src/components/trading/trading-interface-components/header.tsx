@@ -7,7 +7,6 @@ import {
   ChevronDown,
   Menu,
   X,
-  Search,
   LineChart,
   Clock,
   BarChart3,
@@ -306,14 +305,17 @@ export default function Header({
               </Sheet>
 
               {/* Mobile search button */}
-              <Button
+              {/* <Button
                 variant="ghost"
                 size="icon"
                 className="mr-2"
-                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                onClick={() => {
+                  setIsSearchOpen(!isSearchOpen);
+                  console.log("isSearch open:", isSearchOpen);
+                }}
               >
                 <Search className="h-5 w-5" />
-              </Button>
+              </Button> */}
 
               {/* Mobile active pair display */}
               <div
@@ -398,6 +400,49 @@ export default function Header({
           )}
         </div>
 
+        {/* Mobile search dropdown */}
+        {isMobile && isSearchOpen && (
+          <div className="absolute top-16 left-0 right-0 bg-background border-b border-border p-3 z-50">
+            {/* <div className="relative">
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+              <input
+                className="w-full bg-muted/50 border border-border rounded-md py-2 pl-10 pr-3"
+                placeholder="Search currency pairs..."
+              />
+            </div> */}
+            <div className="mt-2 max-h-[300px] overflow-y-auto">
+              {activePairs.map((pair) => (
+                <div
+                  key={pair}
+                  className={`flex items-center justify-between p-2 rounded-md ${
+                    activePair === pair ? "bg-primary/10" : "hover:bg-muted/50"
+                  }`}
+                  onClick={() => {
+                    handlePairClick(pair);
+                    setIsSearchOpen(false);
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <CurrencyFlag pair={pair} />
+                    <span>{pair}</span>
+                  </div>
+                  {activePairs.length > 1 && (
+                    <button
+                      className="rounded-full hover:bg-muted p-0.5"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeCurrencyPair(pair);
+                      }}
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* right side */}
         <div className="flex items-center gap-6">
           {!isMobile && (
@@ -410,7 +455,7 @@ export default function Header({
                   className="flex-1 h-full gap-3 text-primary border-trading-accent hover:bg-trading-green/10"
                 >
                   <Wallet className="h-5 w-5" />
-                  <span className="text-base md:hidden">Deposit</span>
+                  <span className="text-base hidden lg:flex">Deposit</span>
                 </Button>
               </Link>
 

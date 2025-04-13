@@ -28,7 +28,7 @@ export default function AutoTraderModal() {
           className="flex-1 h-full gap-3 text-primary border-primary hover:bg-trading-green/10"
         >
           <Robot className="h-5 w-5" />
-          <span className="text-base md:hidden">Auto Trader</span>
+          <span className="text-base hidden lg:flex">Auto Trader</span>
         </Button>
       </DialogTrigger>
       <DialogContent>
