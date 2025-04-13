@@ -8,6 +8,11 @@ const axiosInstance = axios.create({
   },
 });
 
+
+export const setApiBaseUrl = (baseUrl: string) => {
+    axiosInstance.defaults.baseURL = baseUrl;
+};
+
 // Add request interceptor to attach auth token to every request
 axiosInstance.interceptors.request.use(
   (config) => {
@@ -37,15 +42,13 @@ axiosInstance.interceptors.response.use(
         const authRoutes = ['/', '/login', '/register', '/forgot-password'];
         const isAuthRoute = authRoutes.some(route => currentPath === route);
 
-        // Clear user data
-        useUserStore.getState().clearUser();
-
 
         if (!isAuthRoute) {
-            // Redirect to login
-            if (typeof window !== "undefined") {
-                window.location.href = "/login";
-            }
+
+            useUserStore.getState().clearUser();
+
+            window.history.pushState({}, '', '/');
+            window.dispatchEvent(new Event('popstate'));
         }
 
     }

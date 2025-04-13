@@ -22,6 +22,7 @@ interface UserStore {
   token: string | null;
   setUser: (user: User, token: string) => void;
   clearUser: () => void;
+  isLoading: boolean;
 }
 
 const useUserStore = create<UserStore>()(
@@ -31,10 +32,14 @@ const useUserStore = create<UserStore>()(
       token: null,
       setUser: (user, token) => set({ user, token }),
       clearUser: () => set({ user: null, token: null }),
+        isLoading: true,
     }),
-    {
-      name: "user-storage", // Key for localStorage
-    }
+      {
+          name: "user-storage",
+          onRehydrateStorage: () => (state) => {
+              if (state) state.isLoading = false;
+          }
+      }
   )
 );
 
