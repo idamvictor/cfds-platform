@@ -1,8 +1,13 @@
+import type React from "react";
+
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, Loader2 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 interface QRCodeDepositProps {
@@ -10,20 +15,49 @@ interface QRCodeDepositProps {
   title?: string;
   qrTitle?: string;
   addressTitle?: string;
+  onSubmit?: (amount: string) => Promise<void> | void;
 }
 
 export default function QRCodeDeposit({
-  address,
+  address = "",
   title = "Deposit",
   qrTitle = "QR CODE",
   addressTitle = "DEPOSIT ADDRESS",
+  onSubmit,
 }: QRCodeDepositProps) {
   const [copied, setCopied] = useState(false);
+  const [amount, setAmount] = useState("");
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(address);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAmount(e.target.value);
+  };
+
+  const handleConfirmChange = (checked: boolean) => {
+    setIsConfirmed(checked);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!amount || !isConfirmed) return;
+
+    setIsLoading(true);
+    try {
+      if (onSubmit) {
+        await onSubmit(amount);
+      }
+    } catch (error) {
+      console.error("Error submitting transfer:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -83,8 +117,63 @@ export default function QRCodeDeposit({
             </Button>
           </div>
         </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="amount">Transfer Amount</Label>
+            <Input
+              id="amount"
+              type="text"
+              placeholder="Enter amount"
+              value={amount}
+              onChange={handleAmountChange}
+              required
+              className="border-slate-700"
+            />
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="confirm"
+              checked={isConfirmed}
+              onCheckedChange={handleConfirmChange}
+              className="mt-1 border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white"
+            />
+            <Label
+              htmlFor="confirm"
+              className="text-sm leading-tight cursor-pointer"
+            >
+              I confirm I have transferred{" "}
+              <span className="font-medium">
+                {amount ? amount : "[amount]"}
+              </span>{" "}
+              to the{" "}
+              <span className="font-medium break-all">
+                {address && typeof address === "string"
+                  ? `${address.substring(0, 6)}...${address.substring(
+                      address.length - 4
+                    )}`
+                  : "wallet address"}
+              </span>
+            </Label>
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={!amount || !isConfirmed || isLoading}
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              "Confirm Transfer"
+            )}
+          </Button>
+        </form>
       </div>
     </div>
   );
 }
-

@@ -1,5 +1,6 @@
-
-import * as React from "react";
+import { useState, useEffect } from "react";
+import { FileText, User, Building } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import {
   Table,
@@ -9,303 +10,235 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { CreditCard, Home, FileText, User } from "lucide-react";
-import { VerificationCard } from "@/components/verification/verification-card";
 import { DocumentUploader } from "@/components/verification/document-uploader";
 
-// Document types
-type DocumentType =
-  | "id-front"
-  | "id-back"
-  | "residence"
-  | "credit-card-front"
-  | "credit-card-back"
-  | "selfie";
-
-// Document status
-type DocumentStatus = "confirmed" | "pending" | "rejected";
-
-// Document interface
-interface Document {
+type UploadedFile = {
   id: string;
-  type: DocumentType;
+  type: string;
   name: string;
-  status: DocumentStatus;
-  uploadedAt: string;
-  processedAt?: string;
-}
+  uploadedDate: string;
+  processedDate: string | null;
+  status: "pending" | "verified";
+};
 
-export default function Verification() {
-  // Documents state
-  const [documents, setDocuments] = React.useState<Document[]>([
-    {
-      id: "doc-1",
-      type: "id-front",
-      name: "Proof of Id",
-      status: "confirmed",
-      uploadedAt: "6/25/2024, 2:55:29 PM",
-      processedAt: "6/25/2024, 3:12:00 PM",
-    },
-    {
-      id: "doc-2",
-      type: "id-back",
-      name: "Proof of Id Back",
-      status: "confirmed",
-      uploadedAt: "6/25/2024, 2:55:33 PM",
-      processedAt: "6/25/2024, 3:11:59 PM",
-    },
-    {
-      id: "doc-3",
-      type: "residence",
-      name: "Proof of Residence",
-      status: "confirmed",
-      uploadedAt: "6/25/2024, 3:07:33 PM",
-      processedAt: "6/25/2024, 3:11:58 PM",
-    },
-  ]);
+export default function VerificationPage() {
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const [progress, setProgress] = useState(0);
 
-  // Calculate progress
-  const totalDocuments = 6;
-  const confirmedDocuments = documents.filter(
-    (doc) => doc.status === "confirmed"
-  ).length;
-  const progress = (confirmedDocuments / totalDocuments) * 100;
+  // Calculate progress based on number of uploaded files (out of 4 possible uploads)
+  useEffect(() => {
+    setProgress((uploadedFiles.length / 4) * 100);
+  }, [uploadedFiles]);
 
-  // Handle document upload
-  const handleUpload = (type: DocumentType, file: File) => {
-    console.log("uploading:", type, file);
-    const newDocument: Document = {
-      id: `doc-${Date.now()}`,
-      type,
-      name: getDocumentName(type),
-      status: "pending",
-      uploadedAt: new Date().toLocaleString(),
-    };
+  const handleUpload = (type: string, file: File) => {
+    // Check if this type already exists and replace it if it does
+    const newFiles = uploadedFiles.filter((f) => f.type !== type);
 
-    setDocuments([...documents, newDocument]);
-
-    // Simulate processing (in a real app, this would be an API call)
-    setTimeout(() => {
-      setDocuments((prev) =>
-        prev.map((doc) =>
-          doc.id === newDocument.id
-            ? {
-                ...doc,
-                status: "confirmed",
-                processedAt: new Date().toLocaleString(),
-              }
-            : doc
-        )
-      );
-    }, 3000);
+    // Add the new file
+    setUploadedFiles([
+      ...newFiles,
+      {
+        id: Math.random().toString(36).substring(2, 9),
+        type,
+        name: file.name,
+        uploadedDate: new Date().toLocaleString(),
+        processedDate: null,
+        status: "pending",
+      },
+    ]);
   };
 
-  // Get document name based on type
-  const getDocumentName = (type: DocumentType): string => {
+  const handleRemove = (type: string) => {
+    setUploadedFiles(uploadedFiles.filter((f) => f.type !== type));
+  };
+
+  const getTypeLabel = (type: string) => {
     switch (type) {
-      case "id-front":
-        return "Proof of Id";
-      case "id-back":
-        return "Proof of Id Back";
-      case "residence":
-        return "Proof of Residence";
-      case "credit-card-front":
-        return "Credit Card Front";
-      case "credit-card-back":
-        return "Credit Card Back";
       case "selfie":
         return "Selfie";
+      case "proof_of_address":
+        return "Proof of Address";
+      case "business_license":
+        return "Business License";
+      case "tax_document":
+        return "Tax Document";
+      default:
+        return type;
     }
   };
 
-  // Check if document is confirmed
-  const isConfirmed = (type: DocumentType): boolean => {
-    return documents.some(
-      (doc) => doc.type === type && doc.status === "confirmed"
-    );
+  // Helper function to get uploaded file info for a specific type
+  const getUploadedFile = (type: string) => {
+    const file = uploadedFiles.find((f) => f.type === type);
+    if (!file) return null;
+
+    return {
+      name: file.name,
+      uploadedDate: file.uploadedDate,
+    };
   };
 
   return (
-    <div className="flex flex-col gap-8 p-6 bg-background text-foreground min-h-screen">
-      <h1 className="text-2xl font-bold text-center">VERIFICATION</h1>
+    <div className="container mx-auto p-8">
+      <h1 className="text-2xl font-bold mb-6">Identity Verification</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* ID Front */}
-        {isConfirmed("id-front") ? (
-          <VerificationCard
-            title="PROOF OF ID"
-            confirmed={true}
-            icon={<FileText className="h-8 w-8 text-success" />}
-          />
-        ) : (
-          <DocumentUploader
-            type="id-front"
-            title="UPLOAD PROOF OF ID"
-            icon={<FileText className="h-8 w-8 text-muted-foreground" />}
-            onUpload={handleUpload}
-          />
-        )}
+      {/* Document Uploaders */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <DocumentUploader
+          type="selfie"
+          title="Upload Selfie"
+          icon={<User className="h-6 w-6 text-primary" />}
+          onUpload={handleUpload}
+          onRemove={handleRemove}
+          uploadedFile={getUploadedFile("selfie")}
+        />
 
-        {/* Proof of Residence */}
-        {isConfirmed("residence") ? (
-          <VerificationCard
-            title="PROOF OF RESIDENCE"
-            confirmed={true}
-            icon={<Home className="h-8 w-8 text-success" />}
-          />
-        ) : (
-          <DocumentUploader
-            type="residence"
-            title="UPLOAD PROOF OF RESIDENCE"
-            icon={<Home className="h-8 w-8 text-muted-foreground" />}
-            onUpload={handleUpload}
-          />
-        )}
+        <DocumentUploader
+          type="proof_of_address"
+          title="Upload Proof of Address"
+          icon={<FileText className="h-6 w-6 text-primary" />}
+          onUpload={handleUpload}
+          onRemove={handleRemove}
+          uploadedFile={getUploadedFile("proof_of_address")}
+        />
 
-        {/* Credit Card Front */}
-        {isConfirmed("credit-card-front") ? (
-          <VerificationCard
-            title="CREDIT CARD FRONT"
-            confirmed={true}
-            icon={<CreditCard className="h-8 w-8 text-success" />}
-          />
-        ) : (
-          <DocumentUploader
-            type="credit-card-front"
-            title="UPLOAD CREDIT CARD FRONT"
-            icon={<CreditCard className="h-8 w-8 text-muted-foreground" />}
-            onUpload={handleUpload}
-          />
-        )}
+        <DocumentUploader
+          type="business_license"
+          title="Upload Business License"
+          icon={<Building className="h-6 w-6 text-primary" />}
+          onUpload={handleUpload}
+          onRemove={handleRemove}
+          uploadedFile={getUploadedFile("business_license")}
+        />
 
-        {/* Credit Card Back */}
-        {isConfirmed("credit-card-back") ? (
-          <VerificationCard
-            title="CREDIT CARD BACK"
-            confirmed={true}
-            icon={<CreditCard className="h-8 w-8 text-success" />}
-          />
-        ) : (
-          <DocumentUploader
-            type="credit-card-back"
-            title="UPLOAD CREDIT CARD BACK"
-            icon={<CreditCard className="h-8 w-8 text-muted-foreground" />}
-            onUpload={handleUpload}
-          />
-        )}
-
-        {/* ID Back */}
-        {isConfirmed("id-back") ? (
-          <VerificationCard
-            title="PROOF OF ID BACK"
-            confirmed={true}
-            icon={<FileText className="h-8 w-8 text-success" />}
-          />
-        ) : (
-          <DocumentUploader
-            type="id-back"
-            title="UPLOAD PROOF OF ID BACK"
-            icon={<FileText className="h-8 w-8 text-muted-foreground" />}
-            onUpload={handleUpload}
-          />
-        )}
-
-        {/* Selfie */}
-        {isConfirmed("selfie") ? (
-          <VerificationCard
-            title="SELFIE"
-            confirmed={true}
-            icon={<User className="h-8 w-8 text-success" />}
-          />
-        ) : (
-          <DocumentUploader
-            type="selfie"
-            title="UPLOAD SELFIE"
-            icon={<User className="h-8 w-8 text-muted-foreground" />}
-            onUpload={handleUpload}
-          />
-        )}
+        <DocumentUploader
+          type="tax_document"
+          title="Upload Tax Document"
+          icon={<FileText className="h-6 w-6 text-primary" />}
+          onUpload={handleUpload}
+          onRemove={handleRemove}
+          uploadedFile={getUploadedFile("tax_document")}
+        />
       </div>
 
-      <div className="space-y-2">
-        <Progress value={progress} className="h-2 bg-muted" />
-        <p className="text-muted-foreground">
-          {confirmedDocuments} of {totalDocuments} of your documents have been
-          uploaded and confirmed
-        </p>
+      {/* Verification Status Cards */}
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <VerificationCard
+          title="Identity Verification"
+          confirmed={uploadedFiles.some((f) => f.type === "selfie")}
+          icon={<User className="h-6 w-6 text-muted-foreground" />}
+        />
+
+        <VerificationCard
+          title="Address Verification"
+          confirmed={uploadedFiles.some((f) => f.type === "proof_of_address")}
+          icon={<FileText className="h-6 w-6 text-muted-foreground" />}
+        />
+      </div> */}
+
+      {/* Progress Bar and File Count Visualization - Moved before the table */}
+      <div className="mb-8">
+        <div className="flex justify-between mb-2">
+          <span className="text-sm font-medium">Verification Progress</span>
+          <span className="text-sm font-medium">
+            {uploadedFiles.length} of 4
+          </span>
+        </div>
+        <Progress value={progress} className="h-2 mb-4" />
+
+        {/* File Count Visualization */}
+        <div className="grid grid-cols-4 gap-2 mt-4">
+          {[
+            "selfie",
+            "proof_of_address",
+            "business_license",
+            "tax_document",
+          ].map((docType) => {
+            const isUploaded = uploadedFiles.some((f) => f.type === docType);
+            return (
+              <div key={docType} className="relative">
+                <div
+                  className={`h-2 rounded-full ${
+                    isUploaded ? "bg-primary" : "bg-muted"
+                  }`}
+                />
+                <div className="mt-2 text-xs text-center">
+                  {getTypeLabel(docType).split(" ")[0]}
+                  <span
+                    className={`ml-1 ${
+                      isUploaded
+                        ? "text-primary font-bold"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    {isUploaded ? "✓" : ""}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      <div className="space-y-4">
-        <h2 className="text-lg font-medium">List of uploaded documents</h2>
-
-        <div className="rounded-md border border-border/40 overflow-hidden">
+      {/* Uploaded Files Table */}
+      <Card className="mb-6">
+        <div className="p-4 border-b">
+          <h2 className="text-lg font-medium">Uploaded Documents</h2>
+        </div>
+        <div className="p-0">
           <Table>
             <TableHeader>
-              <TableRow className="bg-card hover:bg-card">
-                <TableHead className="text-foreground font-bold">
-                  DOCUMENT
-                </TableHead>
-                <TableHead className="text-foreground font-bold">
-                  TIME UPLOADED
-                </TableHead>
-                <TableHead className="text-foreground font-bold">
-                  TIME PROCESSED
-                </TableHead>
-                <TableHead className="text-foreground font-bold">
-                  STATUS
-                </TableHead>
+              <TableRow>
+                <TableHead>Document</TableHead>
+                <TableHead>Time Uploaded</TableHead>
+                <TableHead>Time Processed</TableHead>
+                <TableHead>Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {documents.map((doc) => (
-                <TableRow key={doc.id} className="bg-card/50 hover:bg-card">
-                  <TableCell>{doc.name}</TableCell>
-                  <TableCell>{doc.uploadedAt}</TableCell>
-                  <TableCell>{doc.processedAt || "Pending"}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={doc.status} />
+              {uploadedFiles.length > 0 ? (
+                uploadedFiles.map((file) => (
+                  <TableRow key={file.id}>
+                    <TableCell className="font-medium">
+                      {getTypeLabel(file.type)}
+                    </TableCell>
+                    <TableCell>{file.uploadedDate}</TableCell>
+                    <TableCell>{file.processedDate || "Pending"}</TableCell>
+                    <TableCell>
+                      <span
+                        className={
+                          file.status === "verified"
+                            ? "text-success"
+                            : "text-amber-500"
+                        }
+                      >
+                        {file.status === "verified" ? "Verified" : "Pending"}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={4}
+                    className="h-24 text-center text-muted-foreground"
+                  >
+                    No documents uploaded yet
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </div>
-      </div>
+      </Card>
+
+      <Card className="p-4">
+        <p className="text-sm text-muted-foreground">
+          Please upload all required documents to complete your verification
+          process. All documents must be clear, unmodified, and show your full
+          information.
+        </p>
+      </Card>
     </div>
   );
-}
-
-function StatusBadge({ status }: { status: DocumentStatus }) {
-  switch (status) {
-    case "confirmed":
-      return (
-        <Badge
-          variant="outline"
-          className="bg-success/10 text-success border-success/20"
-        >
-          Approved
-        </Badge>
-      );
-    case "pending":
-      return (
-        <Badge
-          variant="outline"
-          className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
-        >
-          Pending
-        </Badge>
-      );
-    case "rejected":
-      return (
-        <Badge
-          variant="outline"
-          className="bg-destructive/10 text-destructive border-destructive/20"
-        >
-          Rejected
-        </Badge>
-      );
-    default:
-      return null;
-  }
 }

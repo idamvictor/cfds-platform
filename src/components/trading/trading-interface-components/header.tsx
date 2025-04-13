@@ -4,7 +4,6 @@ import { useRef, useState, useEffect } from "react";
 import {
   Plus,
   Wallet,
-  BotIcon as Robot,
   ChevronDown,
   Menu,
   X,
@@ -401,75 +400,80 @@ export default function Header({
 
         {/* right side */}
         <div className="flex items-center gap-6">
-          
-            <AutoTraderModal/>
-          
+          {!isMobile && (
+            <>
+              <AutoTraderModal />
 
-          <Link to="/main/deposit">
-            <Button
-              variant="outline"
-              className="flex-1 h-full gap-3 text-primary border-trading-accent hover:bg-trading-green/10"
-            >
-              <Wallet className="h-5 w-5" />
-              <span className="text-base">Deposit</span>
-            </Button>
-          </Link>
-
-          <div className="flex flex-col items-center gap-1">
-            <div className="text-xs font-bold text-primary">
-              STANDARD ACCOUNT
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <Link to="/main/deposit">
                 <Button
-                  variant="link"
-                  className="h-auto p-0 text-primary font-bold text-base"
+                  variant="outline"
+                  className="flex-1 h-full gap-3 text-primary border-trading-accent hover:bg-trading-green/10"
                 >
-                  $709.75 <ChevronDown className="h-5 w-5 ml-1" />
+                  <Wallet className="h-5 w-5" />
+                  <span className="text-base md:hidden">Deposit</span>
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="p-5 text-base text-muted-foreground space-y-3"
-              >
-                <div className="font-bold text-sm">REAL ACCOUNT #1651738</div>
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between">
-                    <span>Balance</span>
-                    <span>$709.75</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Credit</span>
-                    <span>$0.00</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Invested</span>
-                    <span>$0.02</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Profit</span>
-                    <span className="text-trading-green">$0.00</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Equity</span>
-                    <span>$709.75</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Margin</span>
-                    <span>$0.00</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Margin Level</span>
-                    <span>36509964.87%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Free Margin</span>
-                    <span>$709.75</span>
-                  </div>
+              </Link>
+
+              <div className="flex flex-col items-center gap-1">
+                <div className="text-xs font-bold text-primary">
+                  STANDARD ACCOUNT
                 </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="link"
+                      className="h-auto p-0 text-primary font-bold text-base"
+                    >
+                      $709.75 <ChevronDown className="h-5 w-5 ml-1" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    className="p-5 text-base text-muted-foreground space-y-3"
+                  >
+                    <div className="font-bold text-sm">
+                      REAL ACCOUNT #1651738
+                    </div>
+                    <div className="space-y-2 text-xs">
+                      <div className="flex justify-between">
+                        <span>Balance</span>
+                        <span>$709.75</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Credit</span>
+                        <span>$0.00</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Invested</span>
+                        <span>$0.02</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Profit</span>
+                        <span className="text-trading-green">$0.00</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Equity</span>
+                        <span>$709.75</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Margin</span>
+                        <span>$0.00</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Margin Level</span>
+                        <span>36509964.87%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Free Margin</span>
+                        <span>$709.75</span>
+                      </div>
+                    </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </>
+          )}
+
           <div className="flex items-center gap-2">
             <img
               src="https://res.cloudinary.com/dyp8gtllq/image/upload/v1744370355/main_plate_exi8jv.png"
@@ -514,7 +518,7 @@ export default function Header({
             </DropdownMenu>
           </div>
         </div>
-      </header>     
+      </header>
     </>
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X , BotIcon as Robot, } from "lucide-react";
+import { BotIcon as Robot, } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -28,7 +28,7 @@ export default function AutoTraderModal() {
           className="flex-1 h-full gap-3 text-primary border-primary hover:bg-trading-green/10"
         >
           <Robot className="h-5 w-5" />
-          <span className="text-base">Auto Trader</span>
+          <span className="text-base md:hidden">Auto Trader</span>
         </Button>
       </DialogTrigger>
       <DialogContent>

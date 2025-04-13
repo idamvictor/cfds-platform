@@ -16,18 +16,18 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 const chartData = [
-  { browser: "profit", visitors: 90, fill: "var(--color-safari)" },
-  { browser: "loss", visitors: 10, fill: "var(--color-other)" },
+  { browser: "profit", visitors: 90, fill: "var(--primary)" },
+  { browser: "loss", visitors: 10, fill: "var(--destructive)" },
 ];
 
 const chartConfig = {
   safari: {
     label: "Profit",
-    color: "var(--chart-2)",
+    color: "var(--primary)",
   },
   other: {
     label: "Loss",
-    color: "var(--chart-5)",
+    color: "var(--destructive)",
   },
 } satisfies ChartConfig;
 
