@@ -1,14 +1,28 @@
-import * as React from "react";
+import { useState, useEffect } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Loader2 } from "lucide-react";
+
+declare global {
+  interface Window {
+    /**
+     * Changes the current translation to the specified language pair
+     */
+    doGTranslate?: (lang_pair: string) => void;
+
+    /**
+     * Gets the current language from the googtrans cookie
+     */
+    GTranslateGetCurrentLang?: () => string | null;
+  }
+}
 
 export function LanguageSelector() {
-  // Get initial language from localStorage if available
-  const [language, setLanguage] = React.useState(() => {
-    return localStorage.getItem('selectedLanguage') || 'en';
-  });
+  // State for the selected language and loading state
+  const [language, setLanguage] = useState<string>('en');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // Languages supported by Google Translate with their codes
+  // Languages list with codes, names and flags
   const languages = [
     { code: "en", name: "English", flag: "🇬🇧" },
     { code: "es", name: "Español", flag: "🇪🇸" },
@@ -24,43 +38,47 @@ export function LanguageSelector() {
     { code: "hi", name: "हिन्दी", flag: "🇮🇳" }
   ];
 
-  // Initialize component with correct language on mount
-  React.useEffect(() => {
-    const savedLang = localStorage.getItem('selectedLanguage');
-    if (savedLang) {
-      setLanguage(savedLang);
-    }
+  // Initialize with stored language preference
+  useEffect(() => {
+    // Check cookies for current language (most reliable)
+    const currentLang = window.GTranslateGetCurrentLang?.() || 'en';
+
+    // Check localStorage as fallback
+    const storedLang = localStorage.getItem('selectedLanguage') || 'en';
+
+    // Set state to reflect the actual current language
+    setLanguage(currentLang !== 'en' ? currentLang : storedLang);
   }, []);
 
   const changeLanguage = (langCode: string) => {
-    // Update the component state
+    setIsLoading(true);
+
+    // Save the selection to localStorage
+    localStorage.setItem('selectedLanguage', langCode);
     setLanguage(langCode);
 
-    // Save to localStorage (for persistence)
-    localStorage.setItem('selectedLanguage', langCode);
+    // Use GTranslate's function-based approach
+    if (window.doGTranslate) {
+      window.doGTranslate(`en|${langCode}`);
 
-    console.log('langCode',langCode)
-    try {
-
-      // Skip translation if selecting English
-      if (langCode === 'en') {
-        // Create a cookie to remember the language preference
-        document.cookie = `googtrans=/en/en; path=/; domain=${window.location.hostname}`;
-        window.location.reload();
-        return;
-      }
-
-      // Set Google Translate cookie for the selected language
-      document.cookie = `googtrans=/en/${langCode}; path=/; domain=${window.location.hostname}`;
-
-      // Reload the page to apply the translation
-      window.location.reload();
-
-    } catch (e) {
-      console.log('language error', e)
-      // Silent error handling in production
+      // Short delay to show loading indicator
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 800);
+    } else {
+      console.error('GTranslate function not available');
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return (
+        <div className="flex justify-center items-center p-4">
+          <Loader2 className="h-5 w-5 animate-spin mr-2" />
+          <span>Changing language...</span>
+        </div>
+    );
+  }
 
   return (
       <RadioGroup
@@ -86,11 +104,4 @@ export function LanguageSelector() {
         ))}
       </RadioGroup>
   );
-}
-
-// Add this to the global Window interface
-declare global {
-  interface Window {
-    doGTranslate?: (lang_pair: string) => void;
-  }
 }

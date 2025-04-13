@@ -98,7 +98,7 @@ export function AccountSummary({
                         {/*</div>*/}
                     </div>
 
-                    {!isCollapsed && (
+                    {/*{!isCollapsed && (*/}
                         <div className="flex items-center gap-2">
                             <span className="text-muted-foreground text-xs">
                                 PnL:
@@ -115,7 +115,7 @@ export function AccountSummary({
                                 {formatCurrency(accountData.pnl)}
                             </span>
                         </div>
-                    )}
+                    {/*)}*/}
 
                     {isCollapsed && (
                         <Button
