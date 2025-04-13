@@ -29,6 +29,7 @@ import { useMobile } from "@/hooks/use-mobile";
 import useUserStore from "@/store/userStore";
 import useAssetStore from "@/store/assetStore";
 import { Link } from "react-router-dom";
+import AutoTraderModal from "./auto-trader-modal";
 
 // Define the ActiveView type
 type ActiveView =
@@ -231,13 +232,7 @@ export default function Header({
 
                       <div className="border-t border-border mt-2 px-3 py-2">
                         <div className="space-y-2">
-                          <Button
-                            variant="outline"
-                            className="w-full justify-start gap-2"
-                          >
-                            <Robot className="h-4 w-4" />
-                            <span>Auto Trader</span>
-                          </Button>
+                          <AutoTraderModal />
                           <Button
                             variant="outline"
                             className="w-full justify-start gap-2"
@@ -406,15 +401,9 @@ export default function Header({
 
         {/* right side */}
         <div className="flex items-center gap-6">
-          <Link to="/main/deposit">
-            <Button
-              variant="outline"
-              className="flex-1 h-full gap-3 text-primary border-primary hover:bg-trading-green/10"
-            >
-              <Robot className="h-5 w-5" />
-              <span className="text-base">Auto Trader</span>
-            </Button>
-          </Link>
+          
+            <AutoTraderModal/>
+          
 
           <Link to="/main/deposit">
             <Button
@@ -443,8 +432,8 @@ export default function Header({
                 align="end"
                 className="p-5 text-base text-muted-foreground space-y-3"
               >
-                <div className="font-bold">REAL ACCOUNT #1651738</div>
-                <div className="space-y-2">
+                <div className="font-bold text-sm">REAL ACCOUNT #1651738</div>
+                <div className="space-y-2 text-xs">
                   <div className="flex justify-between">
                     <span>Balance</span>
                     <span>$709.75</span>
@@ -525,9 +514,7 @@ export default function Header({
             </DropdownMenu>
           </div>
         </div>
-      </header>
-
-      
+      </header>     
     </>
   );
 }
