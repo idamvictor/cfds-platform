@@ -108,7 +108,7 @@ export function PendingOrderModal({
                             className="bg-transparent border-none p-0 text-white focus-visible:ring-0 focus-visible:ring-offset-0 h-6"
                           />
                         </div>
-                        <div className="flex flex-col bg-[#131722] rounded-r">
+                        <div className="flex flex-col bg-[#131722] rounded-r h-full justify-center">
                           <Button
                             type="button"
                             variant="ghost"
@@ -148,7 +148,7 @@ export function PendingOrderModal({
 
             <Button
               type="submit"
-              className="w-full bg-green-500 hover:bg-green-600 text-white"
+              className="w-full bg-primary"
             >
               Apply
             </Button>

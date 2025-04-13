@@ -622,7 +622,7 @@ export function TradingInterface() {
 
             {/* Section 2: Trading Info */}
             <div className="p-3">
-              <div className="space-y-1 text-sm">
+              <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Contract size:</span>
                   <span className="text-primary">
@@ -663,7 +663,7 @@ export function TradingInterface() {
             <Separator className="bg-muted" />
 
             {/* Section 3: Profit Calculator and Buttons */}
-            <div className="p-3 space-y-3">
+            <div className="p-3 space-y-2">
               <Button
                 type="button"
                 className="flex items-center justify-center py-1 w-full h-auto bg-secondary hover:bg-secondary/50"
@@ -685,7 +685,7 @@ export function TradingInterface() {
                     <div className="text-xs text-muted-foreground items-center">
                       TP & SL
                     </div>
-                    <div className="text-sm text-foreground">
+                    <div className="text-xs text-foreground">
                       {getTpSlText()}
                     </div>
                   </Button>
@@ -698,15 +698,15 @@ export function TradingInterface() {
                     onClick={() => setIsPendingModalOpen(true)}
                   >
                     <div className="text-xs text-muted-foreground">Pending</div>
-                    <div className="text-sm text-foreground">Market</div>
+                    <div className="text-xs text-foreground">Market</div>
                   </Button>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-1 pt-2">
+              <div className="grid grid-cols-2 gap-1 pt-1">
                 <Button
                   type="submit"
-                  className="bg-green-500 hover:bg-green-600 text-white h-14"
+                  className="bg-green-500 hover:bg-green-600 text-white h-10 text-xs"
                   onClick={() => {
                     form.setValue("type", "buy");
                     form.setValue("id", uuidv4());
@@ -733,7 +733,7 @@ export function TradingInterface() {
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-red-500 hover:bg-red-600 text-white h-14"
+                  className="bg-red-500 hover:bg-red-600 text-white h-10 text-xs"
                   onClick={() => {
                     form.setValue("type", "sell");
                     form.setValue("id", uuidv4());

@@ -1,4 +1,4 @@
-import { X, Plus, Minus } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -64,11 +64,10 @@ export function TakeProfitStopLossModal({
       <DialogContent className="sm:max-w-[350px] bg-[#1E2130] text-white border-gray-700 p-0 overflow-hidden">
         <DialogHeader className="p-4 pb-2">
           <div className="flex justify-between items-center">
-            <DialogTitle className="text-white text-lg">
+            <DialogTitle className="text-white text-sm">
               TAKE PROFIT & STOP LOSS
             </DialogTitle>
             <DialogClose className="h-6 w-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-              <X className="h-4 w-4" />
               <span className="sr-only">Close</span>
             </DialogClose>
           </div>
@@ -121,7 +120,7 @@ export function TakeProfitStopLossModal({
                               placeholder="0.000"
                             />
                           </div>
-                          <div className="flex flex-col bg-[#131722] rounded-r">
+                          <div className="flex flex-col bg-[#131722] rounded-r h-full justify-center">
                             <Button
                               type="button"
                               variant="ghost"
@@ -170,7 +169,7 @@ export function TakeProfitStopLossModal({
                               placeholder="0.000"
                             />
                           </div>
-                          <div className="flex flex-col bg-[#131722] rounded-r">
+                          <div className="flex flex-col bg-[#131722] rounded-r h-full justify-center">
                             <Button
                               type="button"
                               variant="ghost"

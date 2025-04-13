@@ -50,6 +50,7 @@ function TradingViewWidget() {
       theme: "dark",
       style: "1",
       locale: "en",
+      isTransparent: true,
       withdateranges: true,
       hide_side_toolbar: false,
       allow_symbol_change: false,
