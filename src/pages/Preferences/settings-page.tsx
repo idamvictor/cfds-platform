@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form";
 import axiosInstance from "@/lib/axios";
 import { toast } from "sonner";
+import useSiteSettingsStore from "@/store/siteSettingStore.ts";
 
 const passwordFormSchema = z
   .object({
@@ -35,6 +36,9 @@ export default function SettingsPage() {
   const [showCurrentPassword, setShowCurrentPassword] = React.useState(false);
   const [showNewPassword, setShowNewPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+
+  const settings = useSiteSettingsStore((state) => state.settings);
+
   // const [activationCode] = React.useState(
   //   "EN5WMXKWPMUT45JZGNCU2M2AJBAGGPDUHAWI"
   // );
@@ -269,6 +273,7 @@ export default function SettingsPage() {
       </Card>
 
 
+      <p>{ settings?.logo }</p>
 
       {/* Language Section */}
       <Card className="bg-card text-card-foreground">
