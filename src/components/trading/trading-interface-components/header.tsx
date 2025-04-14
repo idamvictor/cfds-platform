@@ -311,7 +311,7 @@ export default function Header({
                         className="w-full justify-start text-red-500"
                         onClick={() => {
                           useUserStore.getState().clearUser();
-                          window.location.href = "/login";
+                          window.location.href = "/";
                         }}
                       >
                         <LogOut className="h-4 w-4 mr-2" />

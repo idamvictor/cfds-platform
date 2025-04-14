@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { BotIcon as Robot, } from "lucide-react";
+import { BotIcon as Robot } from "lucide-react";
+import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,16 +20,18 @@ export default function AutoTraderModal() {
   const [enabled, setEnabled] = useState(true);
   const [tradingLevel, setTradingLevel] = useState("medium");
   const [accepted, setAccepted] = useState(false);
+  const location = useLocation();
+  const showRobot = !location.pathname.startsWith("/main");
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="flex-1 h-full gap-3 text-primary border-primary hover:bg-trading-green/10"
+          className="flex-1 h-full gap-3 text-primary border-primary hover:bg-trading-green/10 "
         >
-          <Robot className="h-5 w-5" />
-          <span className="text-base hidden lg:flex">Auto Trader</span>
+          {showRobot && <Robot className="h-5 w-5" />}
+          <span>Auto Trader</span>
         </Button>
       </DialogTrigger>
       <DialogContent>

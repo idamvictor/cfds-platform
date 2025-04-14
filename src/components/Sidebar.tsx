@@ -15,6 +15,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import useUserStore from "@/store/userStore";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "./ui/button";
+import AutoTraderModal from "./trading/trading-interface-components/auto-trader-modal";
 
 interface SidebarProps {
   onLinkClick: () => void;
@@ -78,9 +79,10 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
           <Link to="/main/deposit">
             <Button onClick={onLinkClick}>Deposit</Button>
           </Link>
-          <Button variant="ghost" className="border border-border">
+          {/* <Button variant="ghost" className="border border-border">
             Autotrader
-          </Button>
+          </Button> */}
+          <AutoTraderModal />
         </div>
       </div>
       <nav className="flex-1 py-4 overflow-y-auto">
