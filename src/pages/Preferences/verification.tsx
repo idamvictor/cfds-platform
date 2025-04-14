@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FileText, User, Building } from "lucide-react";
+import { FileText, User } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -58,10 +58,10 @@ export default function VerificationPage() {
         return "Selfie";
       case "proof_of_address":
         return "Proof of Address";
-      case "business_license":
-        return "Business License";
-      case "tax_document":
-        return "Tax Document";
+      case "proof_of_id":
+        return "Proof of ID";
+      case "proof_of_id_back":
+        return "Proof of ID Back";
       default:
         return type;
     }
@@ -103,38 +103,23 @@ export default function VerificationPage() {
         />
 
         <DocumentUploader
-          type="business_license"
-          title="Upload Business License"
-          icon={<Building className="h-6 w-6 text-primary" />}
-          onUpload={handleUpload}
-          onRemove={handleRemove}
-          uploadedFile={getUploadedFile("business_license")}
-        />
-
-        <DocumentUploader
-          type="tax_document"
-          title="Upload Tax Document"
+          type="proof_of_id"
+          title="Upload Proof of ID"
           icon={<FileText className="h-6 w-6 text-primary" />}
           onUpload={handleUpload}
           onRemove={handleRemove}
-          uploadedFile={getUploadedFile("tax_document")}
+          uploadedFile={getUploadedFile("proof_of_id")}
+        />
+
+        <DocumentUploader
+          type="proof_of_id_back"
+          title="Upload Proof of ID Back"
+          icon={<FileText className="h-6 w-6 text-primary" />}
+          onUpload={handleUpload}
+          onRemove={handleRemove}
+          uploadedFile={getUploadedFile("proof_of_id_back")}
         />
       </div>
-
-      {/* Verification Status Cards */}
-      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <VerificationCard
-          title="Identity Verification"
-          confirmed={uploadedFiles.some((f) => f.type === "selfie")}
-          icon={<User className="h-6 w-6 text-muted-foreground" />}
-        />
-
-        <VerificationCard
-          title="Address Verification"
-          confirmed={uploadedFiles.some((f) => f.type === "proof_of_address")}
-          icon={<FileText className="h-6 w-6 text-muted-foreground" />}
-        />
-      </div> */}
 
       {/* Progress Bar and File Count Visualization - Moved before the table */}
       <div className="mb-8">
@@ -151,8 +136,8 @@ export default function VerificationPage() {
           {[
             "selfie",
             "proof_of_address",
-            "business_license",
-            "tax_document",
+            "proof_of_id",
+            "proof_of_id_back",
           ].map((docType) => {
             const isUploaded = uploadedFiles.some((f) => f.type === docType);
             return (
