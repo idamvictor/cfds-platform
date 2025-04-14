@@ -60,6 +60,7 @@ export default function Header({
   const isMobile = useMobile();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { activeAsset, setActiveAsset, assets } = useAssetStore();
+  const user = useUserStore((state) => state.user);
 
   // Check if scroll buttons should be shown
   useEffect(() => {
@@ -522,8 +523,11 @@ export default function Header({
 
           <div className="flex items-center gap-2">
             <img
-              src="https://res.cloudinary.com/dyp8gtllq/image/upload/v1744370355/main_plate_exi8jv.png"
-              alt="Badge"
+              src={
+                user?.account_type?.icon ||
+                "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744370355/main_plate_exi8jv.png"
+              }
+              alt={`${user?.account_type?.name || "Basic"} Badge`}
               className="w-8 h-8"
             />
             <DropdownMenu>
@@ -568,8 +572,6 @@ export default function Header({
     </>
   );
 }
-
-
 
 function CurrencyFlag({ pair }: { pair?: string }) {
   // Handle undefined or invalid pair format
