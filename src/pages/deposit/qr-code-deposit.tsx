@@ -1,14 +1,25 @@
-import type React from "react";
-
-import { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import { Check, Copy, Loader2 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+
+const formSchema = z.object({
+  amount: z.string().min(1, "Amount is required"),
+  isConfirmed: z.boolean().refine((val) => val === true, {
+    message: "You must confirm the transfer",
+  }),
+});
+
+type FormData = z.infer<typeof formSchema>;
 
 interface QRCodeDepositProps {
   address: string;
@@ -25,10 +36,15 @@ export default function QRCodeDeposit({
   addressTitle = "DEPOSIT ADDRESS",
   onSubmit,
 }: QRCodeDepositProps) {
-  const [copied, setCopied] = useState(false);
-  const [amount, setAmount] = useState("");
-  const [isConfirmed, setIsConfirmed] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [copied, setCopied] = React.useState(false);
+
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      amount: "",
+      isConfirmed: false,
+    },
+  });
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(address);
@@ -36,32 +52,18 @@ export default function QRCodeDeposit({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(e.target.value);
-  };
-
-  const handleConfirmChange = (checked: boolean) => {
-    setIsConfirmed(checked);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!amount || !isConfirmed) return;
-
-    setIsLoading(true);
+  const handleSubmit = async (values: FormData) => {
+    if (!onSubmit) return;
     try {
-      if (onSubmit) {
-        await onSubmit(amount);
-      }
+      await onSubmit(values.amount);
+      form.reset();
     } catch (error) {
       console.error("Error submitting transfer:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
-    <div className="w-full mx-auto p-2 sm:p-4 rounded-lg">
+    <div className="w-full mx-auto p-2 sm:p-4 rounded-lg min-h-screen">
       {title && (
         <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">{title}</h2>
       )}
@@ -94,7 +96,7 @@ export default function QRCodeDeposit({
             <motion.div
               className={cn(
                 "flex-1 bg-background/20 border border-primary/10 rounded-md p-2 sm:p-3 overflow-hidden",
-                "min-w-0" // Prevent flex child from expanding beyond container
+                "min-w-0"
               )}
               whileHover={{ scale: 1.01 }}
               transition={{ duration: 0.2 }}
@@ -118,61 +120,78 @@ export default function QRCodeDeposit({
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="amount">Transfer Amount</Label>
-            <Input
-              id="amount"
-              type="text"
-              placeholder="Enter amount"
-              value={amount}
-              onChange={handleAmountChange}
-              required
-              className="border-slate-700"
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="amount"
+              render={({ field }) => (
+                <FormItem>
+                  <Label htmlFor="amount">Transfer Amount</Label>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      id="amount"
+                      type="text"
+                      placeholder="Enter amount"
+                      className="border-slate-700"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="confirm"
-              checked={isConfirmed}
-              onCheckedChange={handleConfirmChange}
-              className="mt-1 border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white"
+            <FormField
+              control={form.control}
+              name="isConfirmed"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      className="mt-1 border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white"
+                    />
+                  </FormControl>
+                  <Label
+                    htmlFor="confirm"
+                    className="text-sm leading-tight cursor-pointer"
+                  >
+                    I confirm I have transferred{" "}
+                    <span className="font-medium">
+                      {form.watch("amount") || "[amount]"}
+                    </span>{" "}
+                    to the{" "}
+                    <span className="font-medium break-all">
+                      {address
+                        ? `${address.substring(0, 6)}...${address.substring(
+                            address.length - 4
+                          )}`
+                        : "wallet address"}
+                    </span>
+                  </Label>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            <Label
-              htmlFor="confirm"
-              className="text-sm leading-tight cursor-pointer"
+
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={!form.formState.isValid || form.formState.isSubmitting}
             >
-              I confirm I have transferred{" "}
-              <span className="font-medium">
-                {amount ? amount : "[amount]"}
-              </span>{" "}
-              to the{" "}
-              <span className="font-medium break-all">
-                {address && typeof address === "string"
-                  ? `${address.substring(0, 6)}...${address.substring(
-                      address.length - 4
-                    )}`
-                  : "wallet address"}
-              </span>
-            </Label>
-          </div>
-
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={!amount || !isConfirmed || isLoading}
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Processing...
-              </>
-            ) : (
-              "Confirm Transfer"
-            )}
-          </Button>
-        </form>
+              {form.formState.isSubmitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                "Confirm Transfer"
+              )}
+            </Button>
+          </form>
+        </Form>
       </div>
     </div>
   );

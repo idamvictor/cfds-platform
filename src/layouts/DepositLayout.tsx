@@ -2,6 +2,7 @@ import { Link, Outlet } from "react-router-dom";
 import PaymentMethods from "@/components/PaymentMethods";
 import { Card, CardContent } from "@/components/ui/card";
 import { Banknote, Cloud, CreditCard, SquareChevronDown } from "lucide-react";
+import useDataStore from "@/store/dataStore";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,64 +12,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useEffect } from "react";
 
-const paymentMethods = [
-  {
-    id: "bitcoin",
-    name: "Bitcoin Wallet",
-    icon: <Cloud className="h-5 w-5 opacity-70" />,
-    processingTime: "5-10 minutes",
-    path: "/main/deposit/crypto",
-  },
-  {
-    id: "litecoin",
-    name: "Litecoin Wallet",
-    icon: <Cloud className="h-5 w-5 opacity-70" />,
-    processingTime: "5-10 minutes",
-    path: "/main/deposit/litecoin",
-  },
-  {
-    id: "polyswarm",
-    name: "Polyswarm Wallet",
-    icon: <Cloud className="h-5 w-5 opacity-70" />,
-    processingTime: "5-10 minutes",
-    path: "/main/deposit/polyswarm",
-  },
-  {
-    id: "dogecoin",
-    name: "DogeCoin Wallet",
-    icon: <Cloud className="h-5 w-5 opacity-70" />,
-    processingTime: "5-10 minutes",
-    path: "/main/deposit/dogecoin",
-  },
-  {
-    id: "binance",
-    name: "Binance Coin Wallet",
-    icon: <Cloud className="h-5 w-5 opacity-70" />,
-    processingTime: "5-10 minutes",
-    path: "/main/deposit/binance",
-  },
-  {
-    id: "ethereum",
-    name: "Ethereum Wallet",
-    icon: <Cloud className="h-5 w-5 opacity-70" />,
-    processingTime: "5-10 minutes",
-    path: "/main/deposit/ethereum",
-  },
-  {
-    id: "usdt-erc20",
-    name: "USDT ERC20 Wallet",
-    icon: <Cloud className="h-5 w-5 opacity-70" />,
-    processingTime: "5-10 minutes",
-    path: "/main/deposit/erc20",
-  },
-  {
-    id: "usdt-trc20",
-    name: "USDT TRC20 Wallet",
-    icon: <Cloud className="h-5 w-5 opacity-70" />,
-    processingTime: "5-10 minutes",
-    path: "/main/deposit/trc20",
-  },
+// Static payment methods that are always available
+const staticPaymentMethods = [
   {
     id: "credit-card",
     name: "Credit/Debit Card",
@@ -107,6 +54,26 @@ const paymentMethods = [
 ];
 
 const DepositLayout = () => {
+  const { data, fetchData } = useDataStore();
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // Generate payment methods from wallets
+  const paymentMethods = [
+    ...(data?.wallets
+      .filter((wallet) => wallet.is_general === 1 && wallet.is_active === 1)
+      .map((wallet) => ({
+        id: wallet.crypto.toLowerCase(),
+        name: `${wallet.crypto} Wallet`,
+        icon: <Cloud className="h-5 w-5 opacity-70" />,
+        processingTime: "5-10 minutes",
+        path: `/main/deposit/${wallet.crypto.toLowerCase()}`,
+      })) || []),
+    ...staticPaymentMethods,
+  ];
+
   return (
     <div className="animate-fade-in pt-3">
       <div className="flex items-center justify-between mb-4">
@@ -123,8 +90,10 @@ const DepositLayout = () => {
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 {paymentMethods.map((method) => (
-                  <DropdownMenuItem key={method.id}>
-                    <Link to={method.path}>{method.name}</Link>
+                  <DropdownMenuItem key={method.id} asChild>
+                    <Link to={method.path} className="w-full">
+                      {method.name}
+                    </Link>
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuGroup>
@@ -140,8 +109,8 @@ const DepositLayout = () => {
         </div>
 
         {/* Right content area */}
-        <Card className=" items-start flex-1 rounded-none">
-          <CardContent className="md:p-6">
+        <Card className="items-start flex-1 rounded-none">
+          <CardContent className="md:p-6 min-h-screen">
             <Outlet />
           </CardContent>
         </Card>
