@@ -1,4 +1,3 @@
-import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -48,37 +47,40 @@ export function ProfitCalculatorModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] border-muted p-0 overflow-hidden">
-        <DialogHeader className="p-4 pb-0">
+      <DialogContent className="sm:max-w-[400px] border-muted p-0 overflow-hidden text-sm">
+        <DialogHeader className="p-2">
           <div className="flex justify-between items-center">
-            <DialogTitle>Calculations for {symbol}</DialogTitle>
-            <DialogClose>
-              <X className="h-4 w-4" />
-              <span className="sr-only">Close</span>
-            </DialogClose>
+            <DialogTitle className="text-base">
+              Calculations for {symbol}
+            </DialogTitle>
+            <DialogClose>{/* <X className="h-3 w-3" /> */}</DialogClose>
           </div>
         </DialogHeader>
-        <div className="grid grid-cols-2 gap-4 p-4">
-          <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-2 px-2 pb-2">
+          <div className="space-y-2">
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
+                className="space-y-2"
               >
-                <div className="grid grid-cols-1 gap-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <Button className="bg-primary">BUY</Button>
-                    <Button className="bg-destructive">SELL</Button>
+                <div className="grid grid-cols-1 gap-2">
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button size="sm" className="bg-primary text-xs">
+                      BUY
+                    </Button>
+                    <Button size="sm" className="bg-destructive text-xs">
+                      SELL
+                    </Button>
                   </div>
 
-                  <div className="bg-secondary p-3 rounded flex justify-between items-center">
+                  <div className="bg-secondary p-2 rounded flex justify-between items-center text-xs">
                     <span className="text-muted-foreground">
                       Price from profit
                     </span>
                   </div>
 
-                  <div className="bg-[#131722] p-3 rounded flex justify-between items-center">
-                    <span className="text-gray-400">Volume</span>
+                  <div className="bg-slate-700 p-2 rounded flex justify-between items-center">
+                    <span className="text-gray-400 text-xs">Volume</span>
                     <FormField
                       control={form.control}
                       name="volume"
@@ -87,7 +89,7 @@ export function ProfitCalculatorModal({
                           <FormControl>
                             <Input
                               {...field}
-                              className="bg-transparent border-none text-right w-24 text-white focus-visible:ring-0 focus-visible:ring-offset-0"
+                              className="border-none text-right w-20 text-white focus-visible:ring-0 focus-visible:ring-offset-0 text-xs h-6 px-1"
                             />
                           </FormControl>
                         </FormItem>
@@ -95,8 +97,8 @@ export function ProfitCalculatorModal({
                     />
                   </div>
 
-                  <div className="bg-[#131722] p-3 rounded flex justify-between items-center">
-                    <span className="text-gray-400">Entry Price</span>
+                  <div className="bg-slate-700 p-2 rounded flex justify-between items-center">
+                    <span className="text-gray-400 text-xs">Entry Price</span>
                     <FormField
                       control={form.control}
                       name="entryPrice"
@@ -105,7 +107,7 @@ export function ProfitCalculatorModal({
                           <FormControl>
                             <Input
                               {...field}
-                              className="bg-transparent border-none text-right w-24 focus-visible:ring-0 focus-visible:ring-offset-0"
+                              className="bg-transparent border-none text-right w-20 focus-visible:ring-0 focus-visible:ring-offset-0 text-xs h-6 px-1"
                             />
                           </FormControl>
                         </FormItem>
@@ -113,8 +115,8 @@ export function ProfitCalculatorModal({
                     />
                   </div>
 
-                  <div className="bg-[#131722] p-3 rounded flex justify-between items-center">
-                    <span className="text-gray-400">Take Profit</span>
+                  <div className="bg-slate-700 p-2 rounded flex justify-between items-center">
+                    <span className="text-gray-400 text-xs">Take Profit</span>
                     <FormField
                       control={form.control}
                       name="takeProfit"
@@ -123,7 +125,7 @@ export function ProfitCalculatorModal({
                           <FormControl>
                             <Input
                               {...field}
-                              className="bg-transparent border-none text-right w-24 focus-visible:ring-0 focus-visible:ring-offset-0"
+                              className="bg-transparent border-none text-right w-20 focus-visible:ring-0 focus-visible:ring-offset-0 text-xs h-6 px-1"
                             />
                           </FormControl>
                         </FormItem>
@@ -131,8 +133,8 @@ export function ProfitCalculatorModal({
                     />
                   </div>
 
-                  <div className="bg-[#131722] p-3 rounded flex justify-between items-center">
-                    <span className="text-gray-400">Stop Loss</span>
+                  <div className="bg-slate-700 p-2 rounded flex justify-between items-center">
+                    <span className="text-gray-400 text-xs">Stop Loss</span>
                     <FormField
                       control={form.control}
                       name="stopLoss"
@@ -141,7 +143,7 @@ export function ProfitCalculatorModal({
                           <FormControl>
                             <Input
                               {...field}
-                              className="bg-transparent border-none text-right w-24 text-white focus-visible:ring-0 focus-visible:ring-offset-0"
+                              className="bg-transparent border-none text-right w-20 text-white focus-visible:ring-0 focus-visible:ring-offset-0 text-xs h-6 px-1"
                             />
                           </FormControl>
                         </FormItem>
@@ -149,14 +151,11 @@ export function ProfitCalculatorModal({
                     />
                   </div>
 
-                  <div className="text-gray-400">
+                  <div className="text-gray-400 text-xs">
                     Max Position: 19000 AUD/JPY
                   </div>
 
-                  <Button
-                    type="submit"
-                    className="bg-green-500 hover:bg-green-600 text-white"
-                  >
+                  <Button type="submit" size="sm" className=" text-xs h-7">
                     Calculate
                   </Button>
                 </div>
@@ -164,44 +163,43 @@ export function ProfitCalculatorModal({
             </Form>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-2 bg-slate-700 p-4 flex flex-col gap-4">
             <div className="flex justify-between items-center">
-              {" "}
-              <span className="text-gray-400 text-sm">Leverage</span>
-              <span className="text-white text-sm">1:20</span>
+              <span className="text-gray-400 text-xs">Leverage</span>
+              <span className="text-white text-xs">1:20</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-gray-400 text-sm">Required Margin</span>
-              <span className="text-white text-sm">
-                3122.48 <span className="text-gray-400 text-sm">USD</span>
+              <span className="text-gray-400 text-xs">Required Margin</span>
+              <span className="text-white text-xs">
+                3122.48 <span className="text-gray-400 text-xs">USD</span>
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-gray-400 text-sm">Profit from TP</span>
-              <span className="text-white text-sm">
-                69.56 <span className="text-gray-400 text-sm">USD</span>
+              <span className="text-gray-400 text-xs">Profit from TP</span>
+              <span className="text-white text-xs">
+                69.56 <span className="text-gray-400 text-xs">USD</span>
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-gray-400 text-sm">Loss from SL</span>
-              <span className="text-white text-sm">
-                69.56 <span className="text-gray-400 text-sm">USD</span>
-              </span>
-            </div>{" "}
-            <div className="flex justify-between items-center">
-              <span className="text-gray-400 text-sm">ROE</span>
-              <span className="text-white text-sm">
-                +2.23 <span className="text-gray-400 text-sm">%</span>
+              <span className="text-gray-400 text-xs">Loss from SL</span>
+              <span className="text-white text-xs">
+                69.56 <span className="text-gray-400 text-xs">USD</span>
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-gray-400 text-sm">PIP</span>
-              <span className="text-white text-sm">
-                0.7 <span className="text-gray-400 text-sm">USD</span>
+              <span className="text-gray-400 text-xs">ROE</span>
+              <span className="text-white text-xs">
+                +2.23 <span className="text-gray-400 text-xs">%</span>
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-gray-400 text-sm">Price from profit</span>
+              <span className="text-gray-400 text-xs">PIP</span>
+              <span className="text-white text-xs">
+                0.7 <span className="text-gray-400 text-xs">USD</span>
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400 text-xs">Price from profit</span>
             </div>
           </div>
         </div>
