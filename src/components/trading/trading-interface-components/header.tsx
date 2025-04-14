@@ -61,6 +61,14 @@ export default function Header({
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { activeAsset, setActiveAsset, assets } = useAssetStore();
   const user = useUserStore((state) => state.user);
+  const selectedAccountIndex = useUserStore(
+    (state) => state.selectedAccountIndex
+  );
+  const setSelectedAccountIndex = useUserStore(
+    (state) => state.setSelectedAccountIndex
+  );
+
+  const selectedAccount = user?.accounts[selectedAccountIndex];
 
   // Check if scroll buttons should be shown
   useEffect(() => {
@@ -155,20 +163,28 @@ export default function Header({
                         </Avatar>
                         <div>
                           <div className="text-xs text-muted-foreground">
-                            STANDARD ACCOUNT
+                            {user?.account_type?.name || "STANDARD"}
                           </div>
                           <div className="text-green-500 font-bold">
-                            $610.05
+                            {selectedAccount?.balance || "0.00"}
                           </div>
                         </div>
                       </div>
-                      <div className="grid grid-cols-2 gap-2 mt-2">
-                        <Button variant="outline" size="sm" className="w-full">
-                          Profile
-                        </Button>
-                        <Button variant="outline" size="sm" className="w-full">
-                          Settings
-                        </Button>
+                      <div className="space-y-2">
+                        {user?.accounts.map((account, index) => (
+                          <div
+                            key={index}
+                            className={`flex justify-between items-center p-2 rounded cursor-pointer text-xs gap-1 ${
+                              selectedAccountIndex === index
+                                ? "bg-muted"
+                                : "hover:bg-muted/50"
+                            }`}
+                            onClick={() => setSelectedAccountIndex(index)}
+                          >
+                            <span>{account.title}</span>
+                            <span>{account.balance}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
 
@@ -463,7 +479,7 @@ export default function Header({
 
               <div className="flex flex-col items-center gap-1">
                 <div className="text-xs font-bold text-primary">
-                  STANDARD ACCOUNT
+                  {user?.account_type?.name || "STANDARD"}
                 </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -471,48 +487,74 @@ export default function Header({
                       variant="link"
                       className="h-auto p-0 text-primary font-bold text-base"
                     >
-                      $709.75 <ChevronDown className="h-5 w-5 ml-1" />
+                      {selectedAccount?.balance || "0.00"}{" "}
+                      <ChevronDown className="h-5 w-5 ml-1" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="end"
-                    className="p-5 text-base text-muted-foreground space-y-3"
+                    className="p-5 text-base text-muted-foreground"
                   >
-                    <div className="font-bold text-sm">
-                      REAL ACCOUNT #1651738
-                    </div>
-                    <div className="space-y-2 text-xs">
-                      <div className="flex justify-between">
-                        <span>Balance</span>
-                        <span>$709.75</span>
+                    <div className="space-y-4">
+                      {/* Account selection */}
+                      <div className="space-y-2">
+                        <div className="font-bold text-sm">Select Account</div>
+                        <div className="space-y-1">
+                          {user?.accounts.map((account, index) => (
+                            <div
+                              key={index}
+                              className={`flex justify-between items-center p-2 rounded cursor-pointer hover:bg-slate-500 hover:text-muted ${
+                                selectedAccountIndex === index
+                                  ? "bg-slate-700"
+                                  : ""
+                              }`}
+                              onClick={() => setSelectedAccountIndex(index)}
+                            >
+                              <span className="text-xs">{account.title}</span>
+                              <span className="text-xs">{account.balance}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Credit</span>
-                        <span>$0.00</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Invested</span>
-                        <span>$0.02</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Profit</span>
-                        <span className="text-trading-green">$0.00</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Equity</span>
-                        <span>$709.75</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Margin</span>
-                        <span>$0.00</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Margin Level</span>
-                        <span>36509964.87%</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Free Margin</span>
-                        <span>$709.75</span>
+
+                      {/* Selected account details */}
+                      <div className="space-y-2 text-xs pt-4 border-t">
+                        <div className="font-bold text-sm mb-3">
+                          {selectedAccount?.title || "ACCOUNT"} #
+                          {user?.account_id}
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Balance</span>
+                          <span>${selectedAccount?.balance || "0.00"}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Credit</span>
+                          <span>$0.00</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Invested</span>
+                          <span>$0.02</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Profit</span>
+                          <span className="text-trading-green">$0.00</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Equity</span>
+                          <span>${selectedAccount?.balance || "0.00"}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Margin</span>
+                          <span>$0.00</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Margin Level</span>
+                          <span>36509964.87%</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Free Margin</span>
+                          <span>${selectedAccount?.balance || "0.00"}</span>
+                        </div>
                       </div>
                     </div>
                   </DropdownMenuContent>

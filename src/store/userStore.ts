@@ -37,9 +37,11 @@ export interface User {
 interface UserStore {
   user: User | null;
   token: string | null;
+  selectedAccountIndex: number;
   setUser: (user: User, token: string) => void;
   clearUser: () => void;
   isLoading: boolean;
+  setSelectedAccountIndex: (index: number) => void;
 }
 
 const useUserStore = create<UserStore>()(
@@ -47,9 +49,12 @@ const useUserStore = create<UserStore>()(
     (set) => ({
       user: null,
       token: null,
+      selectedAccountIndex: 0,
       setUser: (user, token) => set({ user, token }),
-      clearUser: () => set({ user: null, token: null }),
+      clearUser: () =>
+        set({ user: null, token: null, selectedAccountIndex: 0 }),
       isLoading: true,
+      setSelectedAccountIndex: (index) => set({ selectedAccountIndex: index }),
     }),
     {
       name: "user-storage",
