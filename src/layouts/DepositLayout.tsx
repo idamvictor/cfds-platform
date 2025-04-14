@@ -30,27 +30,27 @@ const staticPaymentMethods = [
     processingTime: "5-10 minutes",
     path: "/main/deposit/bank",
   },
-  {
-    id: "paypal",
-    name: "PayPal",
-    icon: <CreditCard className="h-5 w-5 opacity-70" />,
-    processingTime: "5-10 minutes",
-    path: "/main/deposit/paypal",
-  },
-  {
-    id: "other",
-    name: "Other",
-    icon: (
-      <div className="h-5 w-5 opacity-70 grid grid-cols-2 gap-0.5">
-        <div className="bg-muted-foreground rounded-sm"></div>
-        <div className="bg-muted-foreground rounded-sm"></div>
-        <div className="bg-muted-foreground rounded-sm"></div>
-        <div className="bg-muted-foreground rounded-sm"></div>
-      </div>
-    ),
-    processingTime: "5-10 minutes",
-    path: "/main/deposit/other",
-  },
+  // {
+  //   id: "paypal",
+  //   name: "PayPal",
+  //   icon: <CreditCard className="h-5 w-5 opacity-70" />,
+  //   processingTime: "5-10 minutes",
+  //   path: "/main/deposit/paypal",
+  // },
+  // {
+  //   id: "other",
+  //   name: "Other",
+  //   icon: (
+  //     <div className="h-5 w-5 opacity-70 grid grid-cols-2 gap-0.5">
+  //       <div className="bg-muted-foreground rounded-sm"></div>
+  //       <div className="bg-muted-foreground rounded-sm"></div>
+  //       <div className="bg-muted-foreground rounded-sm"></div>
+  //       <div className="bg-muted-foreground rounded-sm"></div>
+  //     </div>
+  //   ),
+  //   processingTime: "5-10 minutes",
+  //   path: "/main/deposit/other",
+  // },
 ];
 
 const DepositLayout = () => {
