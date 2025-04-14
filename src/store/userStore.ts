@@ -22,8 +22,8 @@ export interface User {
   username: string | null;
   avatar: string;
   balance: number;
-  copy_trader: number;
   birth_date?: string;
+  copy_trader: number;
   account_type: {
     id: number;
     name: string;

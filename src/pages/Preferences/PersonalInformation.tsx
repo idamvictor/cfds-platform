@@ -24,7 +24,7 @@ const formSchema = z.object({
   last_name: z.string().min(2, "Last name must be at least 2 characters"),
   address: z.string().min(5, "Address must be at least 5 characters"),
   country: z.string().min(1, "Please select a country"),
-  date_of_birth: z.string().min(1, "Date of birth is required"),
+  birth_date: z.string().min(1, "Date of birth is required"),
   email: z.string().email("Please enter a valid email address"),
   phone: z.string().min(5, "Phone number must be at least 5 characters"),
   avatar: z.string().nullable(),
@@ -50,7 +50,7 @@ export default function PersonalInformation() {
       last_name: user?.last_name || "",
       address: "Gowerflower / GN, Fuvahmulah",
       country: user?.country || "maldives",
-      date_of_birth: "",
+      birth_date: user?.birth_date || "",
       email: user?.email || "",
       phone: user?.phone || "",
       avatar: user?.avatar || null,
@@ -75,7 +75,7 @@ export default function PersonalInformation() {
               first_name: data.first_name,
               last_name: data.last_name,
               country: data.country,
-              date_of_birth: data.date_of_birth,
+              birth_date: data.birth_date,
               email: data.email,
               phone: data.phone,
               avatar: image || user.avatar,
@@ -209,19 +209,17 @@ export default function PersonalInformation() {
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="date_of_birth" className="text-muted-foreground">
+          <label htmlFor="birth_date" className="text-muted-foreground">
             Date of Birth
           </label>
           <Input
-            id="date_of_birth"
+            id="birth_date"
             type="date"
-            {...register("date_of_birth")}
+            {...register("birth_date")}
             className="bg-card border-card-foreground/10 [color-scheme:dark]"
           />
-          {errors.date_of_birth && (
-            <p className="text-red-500 text-sm">
-              {errors.date_of_birth.message}
-            </p>
+          {errors.birth_date && (
+            <p className="text-red-500 text-sm">{errors.birth_date.message}</p>
           )}
         </div>
 
