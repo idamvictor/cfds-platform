@@ -81,7 +81,7 @@ export function TransferForm({ accounts }: TransferFormProps) {
         TRANSFER FUNDS BETWEEN YOUR ACCOUNTS
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-col-1 lg:grid-cols-2 gap-6">
         <div className="space-y-2">
           <label htmlFor="fromAccount" className="text-muted-foreground">
             From account
@@ -91,17 +91,26 @@ export function TransferForm({ accounts }: TransferFormProps) {
             onValueChange={setFromAccount}
             disabled={fromAccounts.length === 0}
           >
-            <SelectTrigger className="bg-card border-card-foreground/10">
+            <SelectTrigger className="bg-card border-card-foreground/10 w-full">
               <SelectValue>
                 {fromAccounts.find(
                   (acc) => acc.type === fromAccount.split("_")[0]
-                )?.title || "Select account"}
+                )?.title || "Select account"}{" "}
+                {fromAccounts.find(
+                  (acc) => acc.type === fromAccount.split("_")[0]
+                )
+                  ? ` (${
+                      fromAccounts.find(
+                        (acc) => acc.type === fromAccount.split("_")[0]
+                      )?.balance
+                    })`
+                  : ""}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {fromAccounts.map((account) => (
                 <SelectItem key={account.type} value={`${account.type}_wallet`}>
-                  {account.title}
+                  {account.title} &nbsp;&nbsp;&nbsp;&nbsp;({account.balance})
                 </SelectItem>
               ))}
             </SelectContent>
@@ -117,25 +126,30 @@ export function TransferForm({ accounts }: TransferFormProps) {
             onValueChange={setToAccount}
             disabled={toAccounts.length === 0}
           >
-            <SelectTrigger className="bg-card border-card-foreground/10">
+            <SelectTrigger className="bg-card border-card-foreground/10 w-full">
               <SelectValue>
                 {toAccounts.find((acc) => acc.type === toAccount.split("_")[0])
-                  ?.title || "Select account"}
+                  ?.title || "Select account"}{" "}
+                {toAccounts.find((acc) => acc.type === toAccount.split("_")[0])
+                  ? ` (${
+                      toAccounts.find(
+                        (acc) => acc.type === toAccount.split("_")[0]
+                      )?.balance
+                    })`
+                  : ""}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {toAccounts.map((account) => (
                 <SelectItem key={account.type} value={`${account.type}_wallet`}>
-                  {account.title}
+                  {account.title} &nbsp;&nbsp;&nbsp;&nbsp;({account.balance})
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-        <div className="md:col-span-2 space-y-2">
+        <div className="space-y-2">
           <label htmlFor="amount" className="text-muted-foreground">
             Amount
           </label>
@@ -151,7 +165,7 @@ export function TransferForm({ accounts }: TransferFormProps) {
           />
         </div>
 
-        <div>
+        <div className="flex items-end">
           <Button
             onClick={handleTransfer}
             className="w-full bg-primary hover:bg-success/90 text-success-foreground"
