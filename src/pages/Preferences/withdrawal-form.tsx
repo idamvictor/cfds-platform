@@ -40,7 +40,7 @@ export default function WithdrawalForm() {
     resolver: zodResolver(withdrawalFormSchema),
     defaultValues: {
       amount: "",
-      method: "",
+      method: "crypto",
       network: "",
       wallet_address: "",
       bank_name: "",
@@ -80,58 +80,62 @@ export default function WithdrawalForm() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-6 p-6 bg-background rounded-lg border border-border/40"
+            className="space-y-6 pb-3 bg-background rounded-lg border border-border/40"
           >
             <h2 className="text-xl font-semibold">Make a Withdrawal</h2>
 
             <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="amount"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Amount</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          placeholder="Enter amount"
-                          {...field}
-                          className="pr-8"
-                        />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                          $
-                        </span>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="method"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Payment Method</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+              <div>
+                <FormField
+                  control={form.control}
+                  name="amount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Amount</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select payment method" />
-                        </SelectTrigger>
+                        <div className="relative">
+                          <Input
+                            placeholder="Enter amount"
+                            {...field}
+                            className="pr-8"
+                          />
+                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                            $
+                          </span>
+                        </div>
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="crypto">Cryptocurrency</SelectItem>
-                        <SelectItem value="bank">Bank Transfer</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="justify-self-start">
+                <FormField
+                  control={form.control}
+                  name="method"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Method</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select payment method" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="crypto">Cryptocurrency</SelectItem>
+                          <SelectItem value="bank">Bank Transfer</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
 
             {method === "crypto" && (
