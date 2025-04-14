@@ -337,7 +337,7 @@ export function TradingInterface() {
   };
 
   return (
-      <div className="w-full bg-background rounded-lg text-foreground max-h-screen overflow-y-auto">
+      <div className="w-full bg-background rounded-lg text-foreground" style={{ maxHeight: "500px", overflowY: "auto", overflowX: "hidden" }}>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="md:space-y-2">
             {/* Mobile layout - side by side sections */}
@@ -764,16 +764,16 @@ export function TradingInterface() {
             </div>
 
             {/* Technical Analysis Widget */}
-            <div className="mt-4 px-3- mb-36">
+            <div className="mt-4 px-3- mb-4">
               <div className="border border-muted rounded">
                 <TechnicalAnalysisWidget
                     symbol={activeAsset?.tv_symbol || "NASDAQ:AAPL"}
                     interval="15m"
                     width="100%"
-                    height="400px"
+                    height="350px"
                     colorTheme="dark"
-                    isTransparent={true}
                     showIntervalTabs={true}
+                    isTransparent={true}
                 />
               </div>
             </div>
