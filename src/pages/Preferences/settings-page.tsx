@@ -2,6 +2,7 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,7 +19,6 @@ import {
 } from "@/components/ui/form";
 import axiosInstance from "@/lib/axios";
 import { toast } from "sonner";
-import useSiteSettingsStore from "@/store/siteSettingStore.ts";
 
 const passwordFormSchema = z
   .object({
@@ -36,8 +36,6 @@ export default function SettingsPage() {
   const [showCurrentPassword, setShowCurrentPassword] = React.useState(false);
   const [showNewPassword, setShowNewPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-
-  const settings = useSiteSettingsStore((state) => state.settings);
 
   // const [activationCode] = React.useState(
   //   "EN5WMXKWPMUT45JZGNCU2M2AJBAGGPDUHAWI"
@@ -65,8 +63,14 @@ export default function SettingsPage() {
       });
       toast.success("Password changed successfully");
       form.reset();
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to change password");
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        toast.error(
+          error.response?.data?.message || "Failed to change password"
+        );
+      } else {
+        toast.error("An unexpected error occurred");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -250,7 +254,6 @@ export default function SettingsPage() {
                   className="h-[180px] w-[180px]"
                 />
               </div>
-            </div>
 
             <Button
               onClick={handleActivate2FA}
@@ -271,9 +274,6 @@ export default function SettingsPage() {
           <CurrencySelector />
         </CardContent>
       </Card>
-
-
-      <p>{ settings?.logo }</p>
 
       {/* Language Section */}
       <Card className="bg-card text-card-foreground">

@@ -1,15 +1,16 @@
-import useSiteSettingsStore from '@/store/siteSettingStore';
-import React from 'react';
+import useSiteSettingsStore from "@/store/siteSettingStore";
+import React from "react";
 
 const Logo: React.FC = () => {
-  const settings = useSiteSettingsStore((state) => state.settings)
+  const settings = useSiteSettingsStore((state) => state.settings);
 
   return (
     <div className="flex items-center gap-1">
       <img
-        src={settings?.logo }
+        src={settings?.logo}
         alt="Logo"
-        className="w-30 h-15 rounded bg-accent flex items-center justify-center" />
+        className="w-30 h-15 rounded flex items-center justify-center"
+      />
     </div>
   );
 };
