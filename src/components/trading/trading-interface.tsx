@@ -17,7 +17,7 @@ import axiosInstance from "@/lib/axios";
 import { ProfitCalculatorModal } from "./trading-interface-components/profit-calculator-modal";
 import { TakeProfitStopLossModal } from "./trading-interface-components/take-profit-stop-loss-modal";
 import { PendingOrderModal } from "./trading-interface-components/pending-order-modal";
-import TechnicalAnalysisWidget from "@/components/trading/partials/TechnicalAnalysisWidget";
+// import TechnicalAnalysisWidget from "@/components/trading/partials/TechnicalAnalysisWidget";
 
 // AudioContext type for sound effects
 type AudioContextType = typeof AudioContext;
@@ -764,19 +764,19 @@ export function TradingInterface() {
             </div>
 
             {/* Technical Analysis Widget */}
-            <div className="mt-4 px-3- mb-4">
-              <div className="border border-muted rounded">
-                <TechnicalAnalysisWidget
-                    symbol={activeAsset?.tv_symbol || "NASDAQ:AAPL"}
-                    interval="15m"
-                    width="100%"
-                    height="350px"
-                    colorTheme="dark"
-                    showIntervalTabs={true}
-                    isTransparent={true}
-                />
-              </div>
-            </div>
+            {/*<div className="mt-4 px-3- mb-4-">*/}
+            {/*  <div className="border border-muted rounded">*/}
+            {/*    <TechnicalAnalysisWidget*/}
+            {/*        symbol={activeAsset?.tv_symbol || "NASDAQ:AAPL"}*/}
+            {/*        interval="15m"*/}
+            {/*        width="100%"*/}
+            {/*        height="350px"*/}
+            {/*        colorTheme="dark"*/}
+            {/*        showIntervalTabs={true}*/}
+            {/*        isTransparent={true}*/}
+            {/*    />*/}
+            {/*  </div>*/}
+            {/*</div>*/}
           </form>
         </Form>
         <ProfitCalculatorModal
