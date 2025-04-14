@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { BaseLayout } from "@/components/BaseLayout.tsx";
 import { SiteProvider } from "@/components/provider/SiteProvider.tsx";
 import LoadingScreen from "./components/loading-screen";
+import WebSocketInitializer from "@/components/WebSocketInitializer.tsx";
 
 const Test = lazy(() => import("./pages/test"));
 const Trading = lazy(() => import("./pages/trading"));
@@ -50,6 +51,7 @@ const App = () => {
         <BrowserRouter>
           <SiteProvider>
             <BaseLayout>
+              <WebSocketInitializer />
               <Routes>
                 <Route
                   path="/main"

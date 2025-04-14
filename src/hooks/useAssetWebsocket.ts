@@ -39,45 +39,60 @@ export function useAssetWebSocket(options: WebSocketOptions = {}) {
 
     // Connect to WebSocket
     const connect = useCallback(() => {
+        // Don't try to reconnect if already connected
         if (socketRef.current?.connected) {
             return;
         }
 
+        // If there's an existing socket that's not connected, clean it up first
+        if (socketRef.current) {
+            socketRef.current.removeAllListeners();
+            socketRef.current.close();
+            socketRef.current = null;
+        }
+
+        // Create a new socket
         socketRef.current = io("https://asset-data.surdonline.com", {
             auth: {
                 apiKey: "9e37abad-04e9-47fb-bbd5-b8e344ff7e5a"
             },
-            transports: ['websocket']
+            transports: ['websocket'],
+            reconnectionAttempts: 5,
+            timeout: 10000
         });
 
         // Handle connection events
         socketRef.current.on('connect', () => {
             options.onConnected?.();
+
+            // Subscribe to all assets immediately when connected
+            if (socketRef.current) {
+                socketRef.current.emit('subscribe:all');
+            }
         });
 
         socketRef.current.on('disconnect', () => {
             options.onDisconnected?.();
         });
 
-        socketRef.current.on('error', (error: Error) => {
+        socketRef.current.on('connect_error', (error: Error) => {
             options.onError?.(error);
         });
 
-        // Handle data events - simplified to only necessary events
+        // Handle data events
         socketRef.current.on('data:all', (response: WebSocketResponse) => {
             if (response.success && response.data?.length) {
                 updateAssetFromWebsocket(response.data);
             }
         });
 
-        // Standard updates for individual assets
         socketRef.current.on('data:update', (asset: AssetUpdate) => {
             updateAssetFromWebsocket(asset);
         });
 
     }, [options, updateAssetFromWebsocket]);
 
-    // Subscribe to all assets - this is all we need
+    // Subscribe to all assets
     const subscribeToAll = useCallback(() => {
         if (socketRef.current) {
             socketRef.current.emit('subscribe:all');
@@ -87,6 +102,7 @@ export function useAssetWebSocket(options: WebSocketOptions = {}) {
     // Disconnect and cleanup
     const disconnect = useCallback(() => {
         if (socketRef.current) {
+            socketRef.current.removeAllListeners();
             socketRef.current.disconnect();
             socketRef.current = null;
         }
@@ -96,6 +112,7 @@ export function useAssetWebSocket(options: WebSocketOptions = {}) {
     useEffect(() => {
         connect();
 
+        // Clean up WebSocket connection on unmount
         return () => {
             disconnect();
         };
@@ -103,6 +120,7 @@ export function useAssetWebSocket(options: WebSocketOptions = {}) {
 
     return {
         subscribeToAll,
-        disconnect
+        disconnect,
+        isConnected: !!socketRef.current?.connected
     };
 }
