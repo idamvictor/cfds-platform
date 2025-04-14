@@ -7,18 +7,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-
-interface Account {
-  id: string;
-  number: string;
-  currency: string;
-  balance: number;
-  credit: number;
-  status: "active" | "inactive" | "suspended";
-}
+import { UserAccount } from "@/store/userStore";
 
 interface AccountsTableProps {
-  accounts: Account[];
+  accounts: UserAccount[];
 }
 
 export function AccountsTable({ accounts }: AccountsTableProps) {
@@ -28,21 +20,21 @@ export function AccountsTable({ accounts }: AccountsTableProps) {
         <TableHeader>
           <TableRow className="bg-card hover:bg-card">
             <TableHead className="text-foreground font-bold">ACCOUNT</TableHead>
+            <TableHead className="text-foreground font-bold">TYPE</TableHead>
+            <TableHead className="text-foreground font-bold">BALANCE</TableHead>
             <TableHead className="text-foreground font-bold">
               CURRENCY
             </TableHead>
-            <TableHead className="text-foreground font-bold">BALANCE</TableHead>
-            <TableHead className="text-foreground font-bold">CREDIT</TableHead>
-            <TableHead className="text-foreground font-bold"></TableHead>
+            <TableHead className="text-foreground font-bold">STATUS</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {accounts.map((account) => (
-            <TableRow key={account.id} className="bg-card/50 hover:bg-card">
-              <TableCell>{account.number}</TableCell>
+            <TableRow key={account.type} className="bg-card/50 hover:bg-card">
+              <TableCell>{account.title}</TableCell>
+              <TableCell className="capitalize">{account.type}</TableCell>
+              <TableCell>{account.balance}</TableCell>
               <TableCell>{account.currency}</TableCell>
-              <TableCell>${account.balance.toFixed(2)}</TableCell>
-              <TableCell>${account.credit.toFixed(2)}</TableCell>
               <TableCell>
                 <StatusBadge status={account.status} />
               </TableCell>
@@ -54,7 +46,7 @@ export function AccountsTable({ accounts }: AccountsTableProps) {
   );
 }
 
-function StatusBadge({ status }: { status: Account["status"] }) {
+function StatusBadge({ status }: { status: UserAccount["status"] }) {
   switch (status) {
     case "active":
       return (

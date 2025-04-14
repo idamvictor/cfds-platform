@@ -1,32 +1,10 @@
-
 import { AccountsTable } from "@/components/account/accounts-table";
 import { TransferForm } from "@/components/account/transfer-form";
-import * as React from "react";
-
-// Account interface
-interface Account {
-  id: string;
-  number: string;
-  currency: string;
-  balance: number;
-  credit: number;
-  status: "active" | "inactive" | "suspended";
-}
+import useUserStore from "@/store/userStore";
 
 export default function AccountsPage() {
-  // Accounts state
-  const [accounts, setAccounts] = React.useState<Account[]>([
-    {
-      id: "acc-1",
-      number: "CFD 1651738",
-      currency: "USD",
-      balance: 610.05,
-      credit: 0.0,
-      status: "active",
-    },
-  ]);
-
-  console.log(setAccounts);
+  const user = useUserStore((state) => state.user);
+  const accounts = user?.accounts || [];
 
   return (
     <div className="flex flex-col gap-8 p-6 bg-background text-foreground min-h-screen">

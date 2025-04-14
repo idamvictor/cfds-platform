@@ -8,40 +8,72 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-interface Account {
-  id: string;
-  number: string;
-  currency: string;
-  balance: number;
-  credit: number;
-  status: "active" | "inactive" | "suspended";
-}
+import { UserAccount } from "@/store/userStore";
+import axiosInstance from "@/lib/axios";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
+import useUserStore from "@/store/userStore";
 
 interface TransferFormProps {
-  accounts: Account[];
+  accounts: UserAccount[];
 }
 
 export function TransferForm({ accounts }: TransferFormProps) {
-  const [fromAccount, setFromAccount] = React.useState<string>(
-    accounts[0]?.id || ""
-  );
-  const [toAccount, setToAccount] = React.useState<string>(
-    accounts[0]?.id || ""
-  );
+  const [fromAccount, setFromAccount] = React.useState<string>("credit_wallet");
+  const [toAccount, setToAccount] = React.useState<string>("balance_wallet");
   const [amount, setAmount] = React.useState<string>("");
+  const [isLoading, setIsLoading] = React.useState(false);
+  const setUser = useUserStore((state) => state.setUser);
 
-  const handleTransfer = () => {
-    // In a real app, this would call an API to process the transfer
-    console.log("Transfer", { fromAccount, toAccount, amount });
-
-    // Reset form
-    setAmount("");
+  const refreshUserData = async () => {
+    try {
+      const { data } = await axiosInstance.get("/user");
+      if (data?.data) {
+        // Get the current token from the store
+        const currentToken = useUserStore.getState().token || "";
+        setUser(data.data, currentToken);
+      }
+    } catch {
+      console.error("Failed to refresh user data");
+    }
   };
 
-  const getAccountLabel = (account: Account) => {
-    return `${account.number} ($${account.balance.toFixed(2)})`;
+  const handleTransfer = async () => {
+    try {
+      setIsLoading(true);
+      const formData = new FormData();
+      formData.append("from_account", fromAccount);
+      formData.append("to_account", toAccount);
+      formData.append("amount", amount);
+
+      await axiosInstance.post("/account/convert", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      toast.success("Transfer completed successfully");
+      setAmount("");
+
+      // Subtle refresh of user data after successful transfer
+      setTimeout(() => {
+        refreshUserData();
+      }, 300);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message || "Transfer failed");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  // Get available "from" accounts (those with transfer_type "from")
+  const fromAccounts = accounts.filter((acc) => acc.transfer_type === "from");
+  // Get available "to" accounts (those with transfer_type "to")
+  const toAccounts = accounts.filter((acc) => acc.transfer_type === "to");
 
   return (
     <div className="space-y-6">
@@ -54,20 +86,22 @@ export function TransferForm({ accounts }: TransferFormProps) {
           <label htmlFor="fromAccount" className="text-muted-foreground">
             From account
           </label>
-          <Select value={fromAccount} onValueChange={setFromAccount}>
+          <Select
+            value={fromAccount}
+            onValueChange={setFromAccount}
+            disabled={fromAccounts.length === 0}
+          >
             <SelectTrigger className="bg-card border-card-foreground/10">
               <SelectValue>
-                {accounts.find((acc) => acc.id === fromAccount)
-                  ? getAccountLabel(
-                      accounts.find((acc) => acc.id === fromAccount)!
-                    )
-                  : "Select account"}
+                {fromAccounts.find(
+                  (acc) => acc.type === fromAccount.split("_")[0]
+                )?.title || "Select account"}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
-              {accounts.map((account) => (
-                <SelectItem key={account.id} value={account.id}>
-                  {getAccountLabel(account)}
+              {fromAccounts.map((account) => (
+                <SelectItem key={account.type} value={`${account.type}_wallet`}>
+                  {account.title}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -78,20 +112,21 @@ export function TransferForm({ accounts }: TransferFormProps) {
           <label htmlFor="toAccount" className="text-muted-foreground">
             To account
           </label>
-          <Select value={toAccount} onValueChange={setToAccount}>
+          <Select
+            value={toAccount}
+            onValueChange={setToAccount}
+            disabled={toAccounts.length === 0}
+          >
             <SelectTrigger className="bg-card border-card-foreground/10">
               <SelectValue>
-                {accounts.find((acc) => acc.id === toAccount)
-                  ? getAccountLabel(
-                      accounts.find((acc) => acc.id === toAccount)!
-                    )
-                  : "Select account"}
+                {toAccounts.find((acc) => acc.type === toAccount.split("_")[0])
+                  ?.title || "Select account"}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
-              {accounts.map((account) => (
-                <SelectItem key={account.id} value={account.id}>
-                  {getAccountLabel(account)}
+              {toAccounts.map((account) => (
+                <SelectItem key={account.type} value={`${account.type}_wallet`}>
+                  {account.title}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -123,10 +158,11 @@ export function TransferForm({ accounts }: TransferFormProps) {
             disabled={
               !amount ||
               fromAccount === toAccount ||
-              Number.parseFloat(amount) <= 0
+              Number.parseFloat(amount) <= 0 ||
+              isLoading
             }
           >
-            Make Transfer
+            {isLoading ? "Processing..." : "Make Transfer"}
           </Button>
         </div>
       </div>

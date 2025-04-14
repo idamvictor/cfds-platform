@@ -1,12 +1,20 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+export interface UserAccount {
+  type: "balance" | "credit";
+  transfer_type: "to" | "from";
+  title: string;
+  balance: string;
+  status: "active" | "inactive" | "suspended";
+  currency: string;
+}
+
 export interface User {
   id: string;
   account_id: string;
   first_name: string;
   last_name: string;
-  date_of_birth?: string;
   email: string;
   phone: string;
   country_code: string | null;
@@ -15,7 +23,6 @@ export interface User {
   avatar: string;
   balance: number;
   copy_trader: number;
-  currency_code: string;
   birth_date?: string;
   account_type: {
     id: number;
@@ -24,6 +31,7 @@ export interface User {
     leverage: number;
     icon: string;
   };
+  accounts: UserAccount[];
 }
 
 interface UserStore {
