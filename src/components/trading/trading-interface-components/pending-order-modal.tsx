@@ -1,4 +1,4 @@
-import { X, Plus, Minus } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -76,20 +76,17 @@ export function PendingOrderModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[350px] bg-[#1E2130] text-white border-gray-700 p-0 overflow-hidden">
-        <DialogHeader className="p-4 pb-2">
+      <DialogContent className="sm:max-w-[300px] bg-[#1E2130] text-white border-gray-700 p-0 overflow-hidden">
+        <DialogHeader className="p-2">
           <div className="flex justify-between items-center">
-            <DialogTitle className="text-white text-lg">PENDING</DialogTitle>
-            <DialogClose className="h-6 w-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-              <X className="h-4 w-4" />
-              <span className="sr-only">Close</span>
-            </DialogClose>
+            <DialogTitle className="text-white text-base">PENDING</DialogTitle>
+            <DialogClose className="h-5 w-5 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground" />
           </div>
         </DialogHeader>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="p-4 pt-0 space-y-4"
+            className="p-2 space-y-2"
           >
             <div className="flex items-center">
               <FormField
@@ -99,13 +96,13 @@ export function PendingOrderModal({
                   <FormItem className="flex-1">
                     <FormControl>
                       <div className="flex items-center">
-                        <div className="bg-[#131722] p-3 rounded-l flex-1">
-                          <div className="text-gray-400 text-sm">
+                        <div className="bg-[#131722] p-2 rounded-l flex-1">
+                          <div className="text-gray-400 text-xs">
                             Asset Price
                           </div>
                           <Input
                             {...field}
-                            className="bg-transparent border-none p-0 text-white focus-visible:ring-0 focus-visible:ring-offset-0 h-6"
+                            className="bg-transparent border-none p-0 text-sm text-white focus-visible:ring-0 focus-visible:ring-offset-0 h-5"
                           />
                         </div>
                         <div className="flex flex-col bg-[#131722] rounded-r h-full justify-center">
@@ -113,19 +110,19 @@ export function PendingOrderModal({
                             type="button"
                             variant="ghost"
                             size="icon"
-                            className="h-6 rounded-none rounded-tr text-gray-400 hover:text-white hover:bg-[#232838]"
+                            className="h-5 rounded-none rounded-tr text-gray-400 hover:text-white hover:bg-[#232838]"
                             onClick={() => handleAdjustValue(true)}
                           >
-                            <Plus className="h-3 w-3" />
+                            <Plus className="h-2.5 w-2.5" />
                           </Button>
                           <Button
                             type="button"
                             variant="ghost"
                             size="icon"
-                            className="h-6 rounded-none rounded-br text-gray-400 hover:text-white hover:bg-[#232838]"
+                            className="h-5 rounded-none rounded-br text-gray-400 hover:text-white hover:bg-[#232838]"
                             onClick={() => handleAdjustValue(false)}
                           >
-                            <Minus className="h-3 w-3" />
+                            <Minus className="h-2.5 w-2.5" />
                           </Button>
                         </div>
                       </div>
@@ -139,21 +136,18 @@ export function PendingOrderModal({
               <Button
                 type="button"
                 variant="secondary"
-                className="w-full bg-[#131722] hover:bg-[#232838] text-white border-0"
+                className="w-full h-7 text-sm bg-[#131722] hover:bg-[#232838] text-white border-0"
                 onClick={handleRevertToMarket}
               >
                 Revert to Market Price
               </Button>
             )}
 
-            <Button
-              type="submit"
-              className="w-full bg-primary"
-            >
+            <Button type="submit" className="w-full h-7 text-sm bg-primary">
               Apply
             </Button>
 
-            <div className="text-center text-xs text-gray-400">
+            <div className="text-center text-[10px] text-gray-400">
               Position will be opened automatically when the price reaches this
               level
             </div>

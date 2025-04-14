@@ -62,20 +62,18 @@ export function TakeProfitStopLossModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[350px] bg-[#1E2130] text-white border-gray-700 p-0 overflow-hidden">
-        <DialogHeader className="p-4 pb-2">
+        <DialogHeader className="p-2">
           <div className="flex justify-between items-center">
-            <DialogTitle className="text-white text-sm">
+            <DialogTitle className="text-white text-xs">
               TAKE PROFIT & STOP LOSS
             </DialogTitle>
-            <DialogClose className="h-6 w-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-              <span className="sr-only">Close</span>
-            </DialogClose>
+            <DialogClose className="h-4 w-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"></DialogClose>
           </div>
         </DialogHeader>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="p-4 pt-0 space-y-4"
+            className="p-2 space-y-2"
           >
             <FormField
               control={form.control}
@@ -87,11 +85,11 @@ export function TakeProfitStopLossModal({
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger className="w-full bg-[#131722] border-0 text-white">
+                      <SelectTrigger className="w-full h-8 text-xs bg-[#131722] border-0 text-white">
                         <SelectValue placeholder="Select preset" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent className="bg-[#1E2130] text-white border-gray-700">
+                    <SelectContent className="bg-[#1E2130] text-white text-xs border-gray-700">
                       <SelectItem value="default">default</SelectItem>
                       <SelectItem value="conservative">conservative</SelectItem>
                       <SelectItem value="aggressive">aggressive</SelectItem>
@@ -101,7 +99,7 @@ export function TakeProfitStopLossModal({
               )}
             />
 
-            <div className="space-y-2">
+            <div className="space-y-1">
               <div className="flex items-center">
                 <FormField
                   control={form.control}
@@ -110,13 +108,13 @@ export function TakeProfitStopLossModal({
                     <FormItem className="flex-1">
                       <FormControl>
                         <div className="flex items-center">
-                          <div className="bg-[#131722] p-3 rounded-l flex-1">
-                            <div className="text-gray-400 text-sm">
+                          <div className="bg-[#131722] p-2 rounded-l flex-1">
+                            <div className="text-gray-400 text-xs">
                               Take Profit
                             </div>
                             <Input
                               {...field}
-                              className="bg-transparent border-none p-0 text-white focus-visible:ring-0 focus-visible:ring-offset-0 h-6"
+                              className="bg-transparent border-none p-0 text-white text-xs focus-visible:ring-0 focus-visible:ring-offset-0 h-5"
                               placeholder="0.000"
                             />
                           </div>
@@ -125,7 +123,7 @@ export function TakeProfitStopLossModal({
                               type="button"
                               variant="ghost"
                               size="icon"
-                              className="h-6 rounded-none rounded-tr text-gray-400 hover:text-white hover:bg-[#232838]"
+                              className="h-5 w-5 rounded-none rounded-tr text-gray-400 hover:text-white hover:bg-[#232838]"
                               onClick={() =>
                                 handleAdjustValue("takeProfit", true)
                               }
@@ -136,7 +134,7 @@ export function TakeProfitStopLossModal({
                               type="button"
                               variant="ghost"
                               size="icon"
-                              className="h-6 rounded-none rounded-br text-gray-400 hover:text-white hover:bg-[#232838]"
+                              className="h-5 w-5 rounded-none rounded-br text-gray-400 hover:text-white hover:bg-[#232838]"
                               onClick={() =>
                                 handleAdjustValue("takeProfit", false)
                               }
@@ -159,13 +157,13 @@ export function TakeProfitStopLossModal({
                     <FormItem className="flex-1">
                       <FormControl>
                         <div className="flex items-center">
-                          <div className="bg-[#131722] p-3 rounded-l flex-1">
-                            <div className="text-gray-400 text-sm">
+                          <div className="bg-[#131722] p-2 rounded-l flex-1">
+                            <div className="text-gray-400 text-xs">
                               Stop Loss
                             </div>
                             <Input
                               {...field}
-                              className="bg-transparent border-none p-0 text-white focus-visible:ring-0 focus-visible:ring-offset-0 h-6"
+                              className="bg-transparent border-none p-0 text-white text-xs focus-visible:ring-0 focus-visible:ring-offset-0 h-5"
                               placeholder="0.000"
                             />
                           </div>
@@ -174,7 +172,7 @@ export function TakeProfitStopLossModal({
                               type="button"
                               variant="ghost"
                               size="icon"
-                              className="h-6 rounded-none rounded-tr text-gray-400 hover:text-white hover:bg-[#232838]"
+                              className="h-5 w-5 rounded-none rounded-tr text-gray-400 hover:text-white hover:bg-[#232838]"
                               onClick={() =>
                                 handleAdjustValue("stopLoss", true)
                               }
@@ -185,7 +183,7 @@ export function TakeProfitStopLossModal({
                               type="button"
                               variant="ghost"
                               size="icon"
-                              className="h-6 rounded-none rounded-br text-gray-400 hover:text-white hover:bg-[#232838]"
+                              className="h-5 w-5 rounded-none rounded-br text-gray-400 hover:text-white hover:bg-[#232838]"
                               onClick={() =>
                                 handleAdjustValue("stopLoss", false)
                               }
@@ -203,7 +201,7 @@ export function TakeProfitStopLossModal({
 
             <Button
               type="submit"
-              className="w-full bg-green-500 hover:bg-green-600 text-white"
+              className="w-full h-8 text-xs bg-green-500 hover:bg-green-600 text-white"
             >
               Apply
             </Button>
