@@ -16,6 +16,14 @@ export interface User {
   balance: number;
   copy_trader: number;
   currency_code: string;
+  birth_date?: string;
+  account_type: {
+    id: number;
+    name: string;
+    price: number;
+    leverage: number;
+    icon: string;
+  };
 }
 
 interface UserStore {
@@ -33,14 +41,14 @@ const useUserStore = create<UserStore>()(
       token: null,
       setUser: (user, token) => set({ user, token }),
       clearUser: () => set({ user: null, token: null }),
-        isLoading: true,
+      isLoading: true,
     }),
-      {
-          name: "user-storage",
-          onRehydrateStorage: () => (state) => {
-              if (state) state.isLoading = false;
-          }
-      }
+    {
+      name: "user-storage",
+      onRehydrateStorage: () => (state) => {
+        if (state) state.isLoading = false;
+      },
+    }
   )
 );
 
