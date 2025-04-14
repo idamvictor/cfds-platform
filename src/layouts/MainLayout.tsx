@@ -20,9 +20,9 @@ const MainLayout = () => {
         <Header toggleSidebar={toggleSidebar} />
       </div>
 
-      <div className="flex flex-1 pt-[64px]">
+      <div className="flex flex-1 pt-[90px]">
         <div
-          className={`fixed top-[64px] left-0 bottom-0 w-[250px] z-10  transition-transform transform ${
+          className={`fixed top-[80px] left-0 bottom-0 w-[250px] z-10  transition-transform transform ${
             isSidebarVisible ? "translate-x-0" : "-translate-x-full"
           } md:translate-x-0`}
         >

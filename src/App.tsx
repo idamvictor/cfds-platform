@@ -22,8 +22,8 @@ const PersonalInformation = lazy(
 );
 const BankDeposit = lazy(() => import("./pages/deposit/BankDeposit"));
 const CardDeposit = lazy(() => import("./pages/deposit/CardDeposit"));
-const PaypalDeposit = lazy(() => import("./pages/deposit/PaypalDeposit"));
-const OtherDeposit = lazy(() => import("./pages/deposit/OtherDeposit"));
+// const PaypalDeposit = lazy(() => import("./pages/deposit/PaypalDeposit"));
+// const OtherDeposit = lazy(() => import("./pages/deposit/OtherDeposit"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const TradingDashboard = lazy(
   () => import("./pages/Preferences/TradingDashboard")
@@ -85,14 +85,14 @@ const App = () => {
                       path="/main/deposit/card"
                       element={<CardDeposit />}
                     />
-                    <Route
+                    {/* <Route
                       path="/main/deposit/paypal"
                       element={<PaypalDeposit />}
                     />
                     <Route
                       path="/main/deposit/other"
                       element={<OtherDeposit />}
-                    />
+                    /> */}
 
                     {/* Crypto routes */}
                     <Route
