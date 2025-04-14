@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 
 export interface User {
   id: string;
+  account_id: string;
   first_name: string;
   last_name: string;
   date_of_birth?: string;

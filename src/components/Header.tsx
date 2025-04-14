@@ -8,6 +8,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
+
   return (
     <header className="flex justify-between items-center px-6 py-4 bg-secondary border-b border-border">
       <div className="flex items-center gap-4">

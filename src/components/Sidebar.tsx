@@ -68,7 +68,9 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
         <h2 className="text-lg font-medium text-trading-light">
           {user ? `${user.first_name} ${user.last_name}` : ""}
         </h2>
-        {/* <p className="text-sm text-trading-muted mt-1">#{user?.id || ""}</p> */}
+        <p className="text-sm text-trading-muted mt-1">
+          #{user?.account_id || ""}
+        </p>
         <p className="text-xs text-trading-muted/70 mt-1">
           {user?.email || ""}
         </p>
