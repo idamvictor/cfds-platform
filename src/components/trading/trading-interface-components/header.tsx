@@ -70,6 +70,17 @@ export default function Header({
 
   const selectedAccount = user?.accounts[selectedAccountIndex];
 
+  // Get user's initials
+  const getInitials = (name?: string) => {
+    if (!name) return "U";
+    return name
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase()
+      .substring(0, 2);
+  };
+
   // Check if scroll buttons should be shown
   useEffect(() => {
     const checkScrollable = () => {
@@ -570,7 +581,7 @@ export default function Header({
                 "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744370355/main_plate_exi8jv.png"
               }
               alt={`${user?.account_type?.name || "Basic"} Badge`}
-              className="w-8 h-8"
+              className="w-12 h-12"
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -579,8 +590,10 @@ export default function Header({
                   size="icon"
                   className="rounded-full p-0 h-8 w-8"
                 >
-                  <Avatar className="h-8 w-8 border border-border">
-                    <AvatarFallback>M</AvatarFallback>
+                  <Avatar className="h-12 w-12 border border-border">
+                    <AvatarFallback className="text-lg">
+                      {getInitials(user?.first_name)}
+                    </AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
