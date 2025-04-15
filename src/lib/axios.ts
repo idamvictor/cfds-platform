@@ -8,53 +8,57 @@ const axiosInstance = axios.create({
   },
 });
 
-
 export const setApiBaseUrl = (baseUrl: string) => {
-    axiosInstance.defaults.baseURL = baseUrl;
+  axiosInstance.defaults.baseURL = baseUrl;
 };
 
 // Add request interceptor to attach auth token to every request
 axiosInstance.interceptors.request.use(
   (config) => {
     // Get token from Zustand store
-    const token = useUserStore.getState().token
+    const token = useUserStore.getState().token;
 
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    return config
+    return config;
   },
-  (error) => Promise.reject(error),
-)
+  (error) => Promise.reject(error)
+);
 
 // Add response interceptor to handle token expiration
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config
+    // Log the error response for debugging
+    console.error("API Error:", {
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+      url: error.config?.url,
+      method: error.config?.method,
+    });
+
+    const originalRequest = error.config;
 
     // If error is 401 (Unauthorized) and we haven't tried to refresh yet
     if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true
+      originalRequest._retry = true;
 
-        const currentPath = window.location.pathname;
+      const currentPath = window.location.pathname;
 
-        const authRoutes = ['/', '/login', '/register', '/forgot-password'];
-        const isAuthRoute = authRoutes.some(route => currentPath === route);
+      const authRoutes = ["/", "/login", "/register", "/forgot-password"];
+      const isAuthRoute = authRoutes.some((route) => currentPath === route);
 
-
-        if (!isAuthRoute) {
-
-            useUserStore.getState().clearUser();
-
-            window.history.pushState({}, '', '/');
-            window.dispatchEvent(new Event('popstate'));
-        }
-
+      if (!isAuthRoute) {
+        useUserStore.getState().clearUser();
+        window.history.pushState({}, "", "/");
+        window.dispatchEvent(new Event("popstate"));
+      }
     }
 
-    return Promise.reject(error)
-  },
-)
+    return Promise.reject(error);
+  }
+);
 
 export default axiosInstance;

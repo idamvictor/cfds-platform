@@ -75,7 +75,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
         <p className="text-xs text-trading-muted/70 mt-1">
           {user?.email || ""}
         </p>
-        <div className="grid grid-cols-2 gap-2 w-full mt-4">
+        <div className="grid grid-cols-1 gap-2 w-full mt-4">
           <Link to="/main/deposit">
             <Button onClick={onLinkClick}>Deposit</Button>
           </Link>
