@@ -1,7 +1,7 @@
 import { Link, Outlet } from "react-router-dom";
 import PaymentMethods from "@/components/PaymentMethods";
 import { Card, CardContent } from "@/components/ui/card";
-import { Banknote, Cloud, CreditCard, SquareChevronDown } from "lucide-react";
+import { Cloud, CreditCard, SquareChevronDown } from "lucide-react";
 import useDataStore from "@/store/dataStore";
 import {
   DropdownMenu,
@@ -23,13 +23,13 @@ const staticPaymentMethods = [
     processingTime: "5-10 minutes",
     path: "/main/deposit/card",
   },
-  {
-    id: "bank",
-    name: "Bank Transfer",
-    icon: <Banknote className="h-5 w-5 opacity-70" />,
-    processingTime: "5-10 minutes",
-    path: "/main/deposit/bank",
-  },
+  // {
+  //   id: "bank",
+  //   name: "Bank Transfer",
+  //   icon: <Banknote className="h-5 w-5 opacity-70" />,
+  //   processingTime: "5-10 minutes",
+  //   path: "/main/deposit/bank",
+  // },
   // {
   //   id: "paypal",
   //   name: "PayPal",
