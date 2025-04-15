@@ -55,17 +55,23 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
     <aside className="bg-trading-dark h-full w-60 flex flex-col border-r border-trading-darker">
       <div className="flex flex-col items-center text-center p-6 border-b border-trading-darker">
         {" "}
-        <Avatar className="h-20 w-20">
+        <Avatar className="h-20 w-20 relative overflow-hidden">
           <AvatarImage
-            src={user?.avatar}
-            alt={`${user?.first_name} ${user?.last_name}`}
+              src={user?.avatar}
+              alt={`${user?.first_name} ${user?.last_name}`}
+              className="object-cover w-full h-full"
+              style={{
+                objectPosition: 'center'
+              }}
           />
-          <AvatarFallback className="bg-sidebar-accent text-2xl font-semibold">
+          <AvatarFallback className="bg-sidebar-accent text-2xl font-semibold absolute inset-0 flex items-center justify-center">
             {user
-              ? `${user.first_name[0]}${user.last_name[0]}`.toUpperCase()
-              : ""}
+                ? `${user.first_name[0]}${user.last_name[0]}`.toUpperCase()
+                : ""}
           </AvatarFallback>
-        </Avatar>{" "}
+        </Avatar>
+
+
         <h2 className="text-lg font-medium text-trading-light">
           {user ? `${user.first_name} ${user.last_name}` : ""}
         </h2>
