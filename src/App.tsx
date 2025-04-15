@@ -101,6 +101,10 @@ const App = () => {
                       path="/main/deposit/:crypto"
                       element={<CryptoWalletDeposit />}
                     />
+                    <Route
+                      path="/main/deposit/:crypto/:walletId"
+                      element={<CryptoWalletDeposit />}
+                    />
                   </Route>
 
                   {/* Placeholder routes for other sections */}

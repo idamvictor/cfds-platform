@@ -60,19 +60,20 @@ const DepositLayout = () => {
     fetchData();
   }, [fetchData]);
 
-  // Generate payment methods from wallets
-  const paymentMethods = [
-    ...(data?.wallets
+  // Map each wallet to a payment method
+  const cryptoPaymentMethods =
+    data?.wallets
       .filter((wallet) => wallet.is_general === 1 && wallet.is_active === 1)
       .map((wallet) => ({
-        id: wallet.crypto.toLowerCase(),
-        name: `${wallet.crypto} Wallet`,
+        id: wallet.id, // Use wallet ID instead of crypto type
+        name: `${wallet.crypto} Wallet (${wallet.address.substring(0, 8)}...)`,
         icon: <Cloud className="h-5 w-5 opacity-70" />,
         processingTime: "5-10 minutes",
-        path: `/main/deposit/${wallet.crypto.toLowerCase()}`,
-      })) || []),
-    ...staticPaymentMethods,
-  ];
+        path: `/main/deposit/${wallet.crypto.toLowerCase()}/${wallet.id}`, // Include wallet ID in path
+      })) || [];
+
+  // Generate payment methods from wallets
+  const paymentMethods = [...cryptoPaymentMethods, ...staticPaymentMethods];
 
   return (
     <div className="animate-fade-in pt-3">

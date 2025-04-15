@@ -8,7 +8,10 @@ import { Loader2 } from "lucide-react";
 import { AxiosError } from "axios";
 
 export default function CryptoWalletDeposit() {
-  const { crypto } = useParams<{ crypto: string }>();
+  const { crypto, walletId } = useParams<{
+    crypto: string;
+    walletId: string;
+  }>();
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -17,18 +20,19 @@ export default function CryptoWalletDeposit() {
       try {
         const response = await axiosInstance.get("/data");
         const wallets = response.data.data.wallets;
-        const foundWallet = wallets.find(
+
+        // Find the specific wallet by ID
+        const selectedWallet = wallets.find(
           (w: Wallet) =>
-            w.crypto.toLowerCase() === crypto?.toLowerCase() &&
-            w.is_general === 1
+            w.id === walletId && w.is_general === 1 && w.is_active === 1
         );
 
-        if (!foundWallet) {
-          toast.error("Wallet not found");
+        if (!selectedWallet) {
+          toast.error(`No active wallet found with ID ${walletId}`);
           return;
         }
 
-        setWallet(foundWallet);
+        setWallet(selectedWallet);
       } catch (error) {
         const axiosError = error as AxiosError<{ message: string }>;
         toast.error(
@@ -41,7 +45,7 @@ export default function CryptoWalletDeposit() {
     };
 
     fetchWallet();
-  }, [crypto]);
+  }, [walletId]);
 
   const handleSubmit = async (amount: string) => {
     try {
