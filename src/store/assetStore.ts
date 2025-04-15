@@ -30,6 +30,8 @@ export interface Asset {
   sell_price: number;
   created_at: string;
   updated_at: string;
+  contract_size: number;
+  position: number;
 }
 
 interface AssetStore {

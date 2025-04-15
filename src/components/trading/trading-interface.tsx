@@ -182,8 +182,8 @@ export function TradingInterface() {
       const userBalance = user?.balance || 610.05;
 
       setTradingInfo({
-        contractSize: 100000,
-        position: Math.round(baseVolumeLots * 100000),
+        contractSize: activeAsset.contract_size,
+        position: activeAsset.position,
         margin: calculatedMargin,
         freeMargin: userBalance - calculatedMargin,
         spread: buySpread + sellSpread,
@@ -763,20 +763,6 @@ export function TradingInterface() {
               </div>
             </div>
 
-            {/* Technical Analysis Widget */}
-            {/*<div className="mt-4 px-3- mb-4-">*/}
-            {/*  <div className="border border-muted rounded">*/}
-            {/*    <TechnicalAnalysisWidget*/}
-            {/*        symbol={activeAsset?.tv_symbol || "NASDAQ:AAPL"}*/}
-            {/*        interval="15m"*/}
-            {/*        width="100%"*/}
-            {/*        height="350px"*/}
-            {/*        colorTheme="dark"*/}
-            {/*        showIntervalTabs={true}*/}
-            {/*        isTransparent={true}*/}
-            {/*    />*/}
-            {/*  </div>*/}
-            {/*</div>*/}
           </form>
         </Form>
         <ProfitCalculatorModal

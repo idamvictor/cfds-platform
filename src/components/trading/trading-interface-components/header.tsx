@@ -70,17 +70,6 @@ export default function Header({
 
   const selectedAccount = user?.accounts[selectedAccountIndex];
 
-  // Get user's initials
-  const getInitials = (name?: string) => {
-    if (!name) return "U";
-    return name
-      .split(" ")
-      .map((word) => word[0])
-      .join("")
-      .toUpperCase()
-      .substring(0, 2);
-  };
-
   // Check if scroll buttons should be shown
   useEffect(() => {
     const checkScrollable = () => {
@@ -588,13 +577,12 @@ export default function Header({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="rounded-full p-0 h-8 w-8"
+                  className="rounded-full p-0 h-10 w-10"
                 >
-                  <Avatar className="h-12 w-12 border border-border">
-                    <AvatarFallback className="text-lg">
-                      {getInitials(user?.first_name)}
-                    </AvatarFallback>
-                  </Avatar>
+                  <img
+                      src={user?.avatar}
+                      className="w-10 h-10 rounded-full"
+                  />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">

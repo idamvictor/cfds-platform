@@ -30,6 +30,7 @@ const withdrawalFormSchema = z.object({
   wallet_address: z.string().optional(),
   bank_name: z.string().optional(),
   bank_address: z.string().optional(),
+  iban_number: z.string().optional(),
   account_number: z.string().optional(),
   account_name: z.string().optional(),
   swiftcode: z.string().optional(),
@@ -48,6 +49,7 @@ export default function WithdrawalForm() {
       account_number: "",
       account_name: "",
       swiftcode: "",
+      iban_number: "",
     },
   });
 
@@ -222,6 +224,70 @@ export default function WithdrawalForm() {
                         <FormControl>
                           <Input
                             placeholder="Enter account number"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="account_name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Account Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter account name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="account_number"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Account Number</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter account number"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="account_name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Account Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter account name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="iban_number"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>IBAN Number</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter IBAN Number"
                             {...field}
                           />
                         </FormControl>

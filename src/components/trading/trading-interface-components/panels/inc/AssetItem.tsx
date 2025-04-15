@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, memo } from "react";
 import { Plus, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Asset } from "@/store/assetStore";
+import AssetInfoModal from "./AssetInfoModal";
 
 interface AssetItemProps {
     asset: Asset;
@@ -15,6 +16,7 @@ const AssetItem = memo(({
                             onClick
                         }: AssetItemProps) => {
     const [priceColor, setPriceColor] = useState<string>("");
+    const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
     const previousPriceRef = useRef<number>(Number.parseFloat(asset.rate));
 
     // Parse numeric values for percentage change
@@ -39,10 +41,8 @@ const AssetItem = memo(({
                 setPriceColor("text-red-500");
             }
 
-            // Store the new price for future comparison
             previousPriceRef.current = currentPrice;
 
-            // Reset price color after the flash effect
             const timer = setTimeout(() => {
                 setPriceColor("");
             }, 2200);
@@ -51,44 +51,77 @@ const AssetItem = memo(({
         }
     }, [currentPrice]);
 
+    const handleInfoClick = (e: React.MouseEvent) => {
+        e.stopPropagation(); // Prevent triggering the parent onClick handler
+        setIsInfoModalOpen(true);
+    };
+
     return (
-        <div
-            className={cn(
-                "flex items-center justify-between py-2 px-3 hover:bg-slate-700/50 border-b border-slate-700 cursor-pointer",
-                isActive ? "bg-slate-700/50" : ""
-            )}
-            onClick={onClick}
-        >
-            <div className="flex items-center space-x-2">
-                {asset.image ? (
-                    <img
-                        src={asset.image}
-                        alt={asset.symbol}
-                        className="h-4 w-4 rounded-full"
-                    />
-                ) : (
-                    <div className="h-4 w-4 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
-                        {asset.symbol.charAt(0)}
-                    </div>
+        <>
+            <div
+                className={cn(
+                    "grid grid-cols-[auto_minmax(0,1fr)_auto] items-center py-2 px-2 hover:bg-slate-700/50 border-b border-slate-700 cursor-pointer gap-2",
+                    isActive ? "bg-slate-700/50" : ""
                 )}
-                <span className="text-xs font-light">{asset.name}</span>
+                onClick={onClick}
+            >
+                {/* Asset icon */}
+                <div className="flex-shrink-0">
+                    {asset.image ? (
+                        <img
+                            src={asset.image}
+                            alt={asset.symbol}
+                            className="h-4 w-4 rounded-full"
+                        />
+                    ) : (
+                        <div className="h-4 w-4 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
+                            {asset.symbol.charAt(0)}
+                        </div>
+                    )}
+                </div>
+
+                <div className="overflow-hidden-">
+                    <span className="text-xs font-light overflow-hidden- whitespace-nowrap-block">
+                        {asset.name}
+                    </span>
+                </div>
+
+                <div className="flex pl-3 items-center gap-2 flex-shrink-0-">
+                    <span className={cn(
+                        "text-xs font-medium w-14 text-right truncate whitespace-nowrap-block transition-colors duration-300",
+                        priceColor
+                    )}>
+                        {asset.rate}
+                    </span>
+                    <span className={cn(
+                        "text-xs w-12 text-right truncate",
+                        percentColor
+                    )}>
+                        {formattedPercent}
+                    </span>
+                    <button
+                        className="text-slate-400  hover:text-slate-300 w-3 flex items-center justify-center"
+                    >
+                        <Plus className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                        className="text-slate-400 hover:text-slate-300 w-3 flex items-center justify-center cursor-pointer"
+                        onClick={handleInfoClick}
+                        aria-label="View asset information"
+                        title="Asset Information"
+                    >
+                        <Info className="h-3.5 w-3.5" />
+                    </button>
+                </div>
             </div>
 
-            <div className="flex items-center">
-                <span className={cn("text-xs font-medium mr-2 transition-colors duration-300", priceColor)}>
-                    {asset.rate}
-                </span>
-                <span className={cn("text-xs w-14 text-right", percentColor)}>
-                    {formattedPercent}
-                </span>
-                <button className="ml-2 text-slate-400 hover:text-slate-300">
-                    <Plus className="h-3.5 w-3.5" />
-                </button>
-                <button className="ml-2 text-slate-400 hover:text-slate-300">
-                    <Info className="h-3.5 w-3.5" />
-                </button>
-            </div>
-        </div>
+            <AssetInfoModal
+                asset={asset}
+                open={isInfoModalOpen}
+                onOpenChange={setIsInfoModalOpen}
+                onTradeClick={onClick}
+            />
+        </>
     );
 });
 

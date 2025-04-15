@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import Header from "./header";
 import Sidebar from "./sidebar";
