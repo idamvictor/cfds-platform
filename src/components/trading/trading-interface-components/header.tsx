@@ -29,6 +29,7 @@ import useAssetStore from "@/store/assetStore";
 import { Link } from "react-router-dom";
 import AutoTraderModal from "./auto-trader-modal";
 import Logo from "@/components/Logo";
+import useTradeStore from "@/store/tradeStore";
 
 // Define the ActiveView type
 type ActiveView =
@@ -67,6 +68,7 @@ export default function Header({
   const setSelectedAccountIndex = useUserStore(
     (state) => state.setSelectedAccountIndex
   );
+  const accountSummary = useTradeStore((state) => state.accountSummary);
 
   const selectedAccount = user?.accounts[selectedAccountIndex];
 
@@ -525,35 +527,43 @@ export default function Header({
                         </div>
                         <div className="flex justify-between">
                           <span>Balance</span>
-                          <span>${selectedAccount?.balance || "0.00"}</span>
+                          <span>{selectedAccount?.balance || "0.00"}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>Credit</span>
-                          <span>$0.00</span>
+                          <span>${accountSummary.credit.toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>Invested</span>
-                          <span>$0.02</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Profit</span>
-                          <span className="text-trading-green">$0.00</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Equity</span>
-                          <span>${selectedAccount?.balance || "0.00"}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Margin</span>
                           <span>$0.00</span>
                         </div>
                         <div className="flex justify-between">
+                          <span>Profit</span>
+                          <span
+                            className={`${
+                              accountSummary.pnl >= 0
+                                ? "text-trading-green"
+                                : "text-red-500"
+                            }`}
+                          >
+                            ${accountSummary.pnl.toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Equity</span>
+                          <span>${accountSummary.equity.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Margin</span>
+                          <span>${accountSummary.margin.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between">
                           <span>Margin Level</span>
-                          <span>36509964.87%</span>
+                          <span>{accountSummary.marginLevel}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>Free Margin</span>
-                          <span>${selectedAccount?.balance || "0.00"}</span>
+                          <span>${accountSummary.freeMargin.toFixed(2)}</span>
                         </div>
                       </div>
                     </div>
@@ -579,10 +589,7 @@ export default function Header({
                   size="icon"
                   className="rounded-full p-0 h-10 w-10"
                 >
-                  <img
-                      src={user?.avatar}
-                      className="w-10 h-10 rounded-full"
-                  />
+                  <img src={user?.avatar} className="w-10 h-10 rounded-full" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
