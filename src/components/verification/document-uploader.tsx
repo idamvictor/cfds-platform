@@ -21,6 +21,7 @@ interface DocumentUploaderProps {
     name: string;
     uploadedDate: string;
   } | null;
+  disabled?: boolean;
 }
 
 const getTypeGuidelines = (type: string): string[] => {
@@ -72,13 +73,41 @@ export function DocumentUploader({
   onUpload,
   onRemove,
   uploadedFile,
+  disabled = false
 }: DocumentUploaderProps) {
   const [isDragging, setIsDragging] = React.useState(false);
+  const [isUploading, setIsUploading] = React.useState(false);
   const guidelines = getTypeGuidelines(type);
   const allowedTypes = getAllowedFileTypes(type);
 
+  const processFile = async (file: File) => {
+    if (!file || disabled) return;
+
+    // Validate file type
+    if (!allowedTypes.includes(file.type)) {
+      alert("Invalid file type. Please upload a valid document.");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert("File is too large. Maximum size is 5MB.");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      await onUpload(type, file);
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Failed to upload file. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleDragOver = (e: React.DragEvent) => {
-    if (uploadedFile) return; // Prevent drag if already uploaded
+    if (uploadedFile || isUploading || disabled) return;
     e.preventDefault();
     setIsDragging(true);
   };
@@ -87,34 +116,34 @@ export function DocumentUploader({
     setIsDragging(false);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
-    if (uploadedFile) return; // Prevent drop if already uploaded
+  const handleDrop = async (e: React.DragEvent) => {
+    if (uploadedFile || isUploading || disabled) return;
     e.preventDefault();
     setIsDragging(false);
 
     const files = e.dataTransfer.files;
     if (files.length > 0) {
-      onUpload(type, files[0]);
+      await processFile(files[0]);
     }
   };
 
   const handleClick = () => {
-    if (uploadedFile) return; // Prevent click if already uploaded
+    if (uploadedFile || isUploading || disabled) return;
 
     const input = document.createElement("input");
     input.type = "file";
     input.accept = allowedTypes;
-    input.onchange = (e) => {
+    input.onchange = async (e) => {
       const files = (e.target as HTMLInputElement).files;
       if (files && files.length > 0) {
-        onUpload(type, files[0]);
+        await processFile(files[0]);
       }
     };
     input.click();
   };
 
   const handleRemove = () => {
-    if (onRemove) {
+    if (onRemove && !isUploading) {
       onRemove(type);
     }
   };
@@ -155,19 +184,25 @@ export function DocumentUploader({
   // Default UI for uploading
   return (
     <Card
-      className={`flex flex-col items-center justify-center p-6 h-auto min-h-[200px] bg-card border-card-foreground/10 cursor-pointer transition-all relative ${
+      className={`flex flex-col items-center justify-center p-6 h-auto min-h-[200px] bg-card border-card-foreground/10 ${
+        !disabled ? "cursor-pointer" : "cursor-not-allowed opacity-50"
+      } transition-all relative ${
         isDragging ? "border-success border-2" : ""
-      }`}
+      } ${isUploading ? "opacity-50" : ""}`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      onClick={handleClick}
+      onClick={disabled ? undefined : handleClick}
     >
       <div className="flex items-center justify-center mb-3">{icon}</div>
       <div className="text-center w-full">
         <p className="font-medium text-sm">{title}</p>
         <p className="text-xs text-muted-foreground mt-1">
-          drag and drop the document to this area
+          {isUploading
+            ? "Uploading..."
+            : disabled
+            ? "Document already uploaded"
+            : "drag and drop the document to this area"}
         </p>
 
         <Collapsible className="w-full mt-4">

@@ -1,55 +1,71 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { FileText, User } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import axiosInstance from "@/lib/axios";
 import { DocumentUploader } from "@/components/verification/document-uploader";
+import { DocumentsTable } from "@/components/verification/documents-table";
+import { toast } from "@/components/ui/sonner";
 
-type UploadedFile = {
+type Document = {
   id: string;
+  user_id: string;
+  document: string[];
   type: string;
-  name: string;
-  uploadedDate: string;
-  processedDate: string | null;
-  status: "pending" | "verified";
+  status: string;
 };
 
 export default function VerificationPage() {
-  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
-  const [progress, setProgress] = useState(0);
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [editingType, setEditingType] = useState<string | null>(null);
 
-  // Calculate progress based on number of uploaded files (out of 4 possible uploads)
-  useEffect(() => {
-    setProgress((uploadedFiles.length / 4) * 100);
-  }, [uploadedFiles]);
+  // Calculate progress based on number of unique document types
+  const progress =
+    ((documents.length + (documents.find((d) => d.type === "id") ? 1 : 0)) /
+      4) *
+    100;
 
-  const handleUpload = (type: string, file: File) => {
-    // Check if this type already exists and replace it if it does
-    const newFiles = uploadedFiles.filter((f) => f.type !== type);
+  const handleUpload = async (type: string, file: File) => {
+    try {
+      const formData = new FormData();
 
-    // Add the new file
-    setUploadedFiles([
-      ...newFiles,
-      {
-        id: Math.random().toString(36).substring(2, 9),
-        type,
-        name: file.name,
-        uploadedDate: new Date().toLocaleString(),
-        processedDate: null,
-        status: "pending",
-      },
-    ]);
-  };
+      switch (type) {
+        case "selfie":
+          formData.append("type", "selfie");
+          formData.append("document", file);
+          break;
+        case "proof_of_id":
+          formData.append("type", "id");
+          formData.append("id_front", file);
+          break;
+        case "proof_of_id_back":
+          formData.append("type", "id");
+          formData.append("id_back", file);
+          break;
+        case "proof_of_address":
+          formData.append("type", "proof_of_address");
+          formData.append("document", file);
+          break;
+      }
 
-  const handleRemove = (type: string) => {
-    setUploadedFiles(uploadedFiles.filter((f) => f.type !== type));
+      toast.loading(`Uploading ${getTypeLabel(type).toLowerCase()}...`);
+
+      await axiosInstance.post("/update/kyc", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      setEditingType(null);
+      toast.success(`${getTypeLabel(type)} uploaded successfully`);
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error(
+        `Failed to upload ${getTypeLabel(
+          type
+        ).toLowerCase()}. Please try again.`
+      );
+    }
   };
 
   const getTypeLabel = (type: string) => {
@@ -67,15 +83,18 @@ export default function VerificationPage() {
     }
   };
 
-  // Helper function to get uploaded file info for a specific type
-  const getUploadedFile = (type: string) => {
-    const file = uploadedFiles.find((f) => f.type === type);
-    if (!file) return null;
+  const isDocumentUploaded = (type: string) => {
+    if (type === "proof_of_id") {
+      return documents.some((doc) => doc.type === "id" && doc.document[0]);
+    }
+    if (type === "proof_of_id_back") {
+      return documents.some((doc) => doc.type === "id" && doc.document[1]);
+    }
+    return documents.some((doc) => doc.type === type);
+  };
 
-    return {
-      name: file.name,
-      uploadedDate: file.uploadedDate,
-    };
+  const handleEditDocument = (type: string) => {
+    setEditingType(type);
   };
 
   return (
@@ -89,8 +108,7 @@ export default function VerificationPage() {
           title="Upload Selfie"
           icon={<User className="h-6 w-6 text-primary" />}
           onUpload={handleUpload}
-          onRemove={handleRemove}
-          uploadedFile={getUploadedFile("selfie")}
+          disabled={isDocumentUploaded("selfie") && editingType !== "selfie"}
         />
 
         <DocumentUploader
@@ -98,8 +116,10 @@ export default function VerificationPage() {
           title="Upload Proof of Address"
           icon={<FileText className="h-6 w-6 text-primary" />}
           onUpload={handleUpload}
-          onRemove={handleRemove}
-          uploadedFile={getUploadedFile("proof_of_address")}
+          disabled={
+            isDocumentUploaded("proof_of_address") &&
+            editingType !== "proof_of_address"
+          }
         />
 
         <DocumentUploader
@@ -107,8 +127,9 @@ export default function VerificationPage() {
           title="Upload Proof of ID"
           icon={<FileText className="h-6 w-6 text-primary" />}
           onUpload={handleUpload}
-          onRemove={handleRemove}
-          uploadedFile={getUploadedFile("proof_of_id")}
+          disabled={
+            isDocumentUploaded("proof_of_id") && editingType !== "proof_of_id"
+          }
         />
 
         <DocumentUploader
@@ -116,17 +137,21 @@ export default function VerificationPage() {
           title="Upload Proof of ID Back"
           icon={<FileText className="h-6 w-6 text-primary" />}
           onUpload={handleUpload}
-          onRemove={handleRemove}
-          uploadedFile={getUploadedFile("proof_of_id_back")}
+          disabled={
+            isDocumentUploaded("proof_of_id_back") &&
+            editingType !== "proof_of_id_back"
+          }
         />
       </div>
 
-      {/* Progress Bar and File Count Visualization - Moved before the table */}
+      {/* Progress Bar */}
       <div className="mb-8">
         <div className="flex justify-between mb-2">
           <span className="text-sm font-medium">Verification Progress</span>
           <span className="text-sm font-medium">
-            {uploadedFiles.length} of 4
+            {documents.length +
+              (documents.find((d) => d.type === "id") ? 1 : 0)}{" "}
+            of 4
           </span>
         </div>
         <Progress value={progress} className="h-2 mb-4" />
@@ -139,7 +164,7 @@ export default function VerificationPage() {
             "proof_of_id",
             "proof_of_id_back",
           ].map((docType) => {
-            const isUploaded = uploadedFiles.some((f) => f.type === docType);
+            const isUploaded = isDocumentUploaded(docType);
             return (
               <div key={docType} className="relative">
                 <div
@@ -165,57 +190,11 @@ export default function VerificationPage() {
         </div>
       </div>
 
-      {/* Uploaded Files Table */}
-      <Card className="mb-6">
-        <div className="p-4 border-b">
-          <h2 className="text-lg font-medium">Uploaded Documents</h2>
-        </div>
-        <div className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Document</TableHead>
-                <TableHead>Time Uploaded</TableHead>
-                <TableHead>Time Processed</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {uploadedFiles.length > 0 ? (
-                uploadedFiles.map((file) => (
-                  <TableRow key={file.id}>
-                    <TableCell className="font-medium">
-                      {getTypeLabel(file.type)}
-                    </TableCell>
-                    <TableCell>{file.uploadedDate}</TableCell>
-                    <TableCell>{file.processedDate || "Pending"}</TableCell>
-                    <TableCell>
-                      <span
-                        className={
-                          file.status === "verified"
-                            ? "text-success"
-                            : "text-amber-500"
-                        }
-                      >
-                        {file.status === "verified" ? "Verified" : "Pending"}
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={4}
-                    className="h-24 text-center text-muted-foreground"
-                  >
-                    No documents uploaded yet
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </Card>
+      {/* Documents Table */}
+      <DocumentsTable
+        onEditDocument={handleEditDocument}
+        onDocumentsChange={setDocuments}
+      />
 
       <Card className="p-4">
         <p className="text-sm text-muted-foreground">
