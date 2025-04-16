@@ -17,6 +17,7 @@ import axiosInstance from "@/lib/axios";
 import { ProfitCalculatorModal } from "./trading-interface-components/profit-calculator-modal";
 import { TakeProfitStopLossModal } from "./trading-interface-components/take-profit-stop-loss-modal";
 import { PendingOrderModal } from "./trading-interface-components/pending-order-modal";
+import {useCurrency} from "@/hooks/useCurrency.ts";
 // import TechnicalAnalysisWidget from "@/components/trading/partials/TechnicalAnalysisWidget";
 
 // AudioContext type for sound effects
@@ -72,6 +73,9 @@ export function TradingInterface() {
       stopLoss: undefined
     },
   });
+
+  const { formatCurrencyValue } = useCurrency();
+
 
   // Initialize audio context on first user interaction
   useEffect(() => {
@@ -430,13 +434,13 @@ export function TradingInterface() {
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Margin:</span>
                     <span className="text-primary">
-                    ${tradingInfo.margin.toFixed(2)}
+                    {formatCurrencyValue(parseFloat(tradingInfo.margin.toFixed(2)))}
                   </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Free Margin:</span>
                     <span className="text-primary">
-                    ${tradingInfo.freeMargin.toFixed(2)}
+                    {formatCurrencyValue(parseFloat(tradingInfo.freeMargin.toFixed(2)))}
                   </span>
                   </div>
                   <div className="flex justify-between">
@@ -639,13 +643,13 @@ export function TradingInterface() {
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Margin:</span>
                     <span className="text-primary">
-                    ${tradingInfo.margin.toFixed(2)}
+                    {formatCurrencyValue(parseFloat(tradingInfo.margin.toFixed(2)))}
                   </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Free Margin:</span>
                     <span className="text-primary">
-                    ${tradingInfo.freeMargin.toFixed(2)}
+                    {formatCurrencyValue(parseFloat(tradingInfo.freeMargin.toFixed(2)))}
                   </span>
                   </div>
                   <div className="flex justify-between">
@@ -765,11 +769,14 @@ export function TradingInterface() {
 
           </form>
         </Form>
+
         <ProfitCalculatorModal
             open={isProfitCalculatorOpen}
             onOpenChange={setIsProfitCalculatorOpen}
             symbol={activeAsset?.symbol_display || ""}
+            asset={activeAsset}
         />
+
         <TakeProfitStopLossModal
             open={isTpSlModalOpen}
             onOpenChange={setIsTpSlModalOpen}
