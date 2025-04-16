@@ -23,6 +23,7 @@ export interface User {
   username: string | null;
   avatar: string;
   balance: number;
+  credit_balance: number;
   birth_date?: string;
   copy_trader: number;
   account_type: {
