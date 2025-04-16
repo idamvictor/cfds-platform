@@ -30,6 +30,7 @@ import { Link } from "react-router-dom";
 import AutoTraderModal from "./auto-trader-modal";
 import Logo from "@/components/Logo";
 import useTradeStore from "@/store/tradeStore";
+import { useCurrency } from "@/hooks/useCurrency";
 
 // Define the ActiveView type
 type ActiveView =
@@ -55,6 +56,7 @@ export default function Header({
   removeCurrencyPair,
   toggleView,
 }: HeaderProps) {
+  const { formatCurrency } = useCurrency();
   const tabsListRef = useRef<HTMLDivElement>(null);
   const activeTabRef = useRef<HTMLDivElement>(null);
   const [showScrollButtons, setShowScrollButtons] = useState(false);
@@ -65,9 +67,9 @@ export default function Header({
   const selectedAccountIndex = useUserStore(
     (state) => state.selectedAccountIndex
   );
-  const setSelectedAccountIndex = useUserStore(
-    (state) => state.setSelectedAccountIndex
-  );
+  // const setSelectedAccountIndex = useUserStore(
+  //   (state) => state.setSelectedAccountIndex
+  // );
   const accountSummary = useTradeStore((state) => state.accountSummary);
 
   const selectedAccount = user?.accounts[selectedAccountIndex];
@@ -168,7 +170,7 @@ export default function Header({
                             {user?.account_type?.name || "STANDARD"}
                           </div>
                           <div className="text-green-500 font-bold">
-                            {selectedAccount?.balance || "0.00"}
+                            {formatCurrency(user?.balance || 0)}
                           </div>
                         </div>
                       </div>
@@ -176,12 +178,10 @@ export default function Header({
                         {user?.accounts.map((account, index) => (
                           <div
                             key={index}
-                            className={`flex justify-between items-center p-2 rounded cursor-pointer text-xs gap-1 ${
-                              selectedAccountIndex === index
-                                ? "bg-muted"
-                                : "hover:bg-muted/50"
+                            className={`flex justify-between items-center p-2 rounded text-xs gap-1 ${
+                              selectedAccountIndex === index ? "" : ""
                             }`}
-                            onClick={() => setSelectedAccountIndex(index)}
+                            // onClick={() => setSelectedAccountIndex(index)}
                           >
                             <span>{account.title}</span>
                             <span>{account.balance}</span>
@@ -489,7 +489,7 @@ export default function Header({
                       variant="link"
                       className="h-auto p-0 text-primary font-bold text-base"
                     >
-                      {selectedAccount?.balance || "0.00"}{" "}
+                      {formatCurrency(user?.balance || 0)}{" "}
                       <ChevronDown className="h-5 w-5 ml-1" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -505,12 +505,10 @@ export default function Header({
                           {user?.accounts.map((account, index) => (
                             <div
                               key={index}
-                              className={`flex justify-between items-center p-2 rounded cursor-pointer hover:bg-slate-500 hover:text-muted ${
-                                selectedAccountIndex === index
-                                  ? "bg-slate-700"
-                                  : ""
+                              className={`flex justify-between items-center p-2 rounded hover:bg-slate-500 hover:text-muted ${
+                                selectedAccountIndex === index ? "" : ""
                               }`}
-                              onClick={() => setSelectedAccountIndex(index)}
+                              // onClick={() => setSelectedAccountIndex(index)}
                             >
                               <span className="text-xs">{account.title}</span>
                               <span className="text-xs">{account.balance}</span>
@@ -527,15 +525,15 @@ export default function Header({
                         </div>
                         <div className="flex justify-between">
                           <span>Balance</span>
-                          <span>{selectedAccount?.balance || "0.00"}</span>
+                          <span>{formatCurrency(user?.balance || 0)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>Credit</span>
-                          <span>${accountSummary.credit.toFixed(2)}</span>
+                          <span>{formatCurrency(accountSummary.credit)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>Invested</span>
-                          <span>$0.00</span>
+                          <span>{formatCurrency(0)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>Profit</span>
@@ -546,16 +544,16 @@ export default function Header({
                                 : "text-red-500"
                             }`}
                           >
-                            ${accountSummary.pnl.toFixed(2)}
+                            {formatCurrency(accountSummary.pnl)}
                           </span>
                         </div>
                         <div className="flex justify-between">
                           <span>Equity</span>
-                          <span>${accountSummary.equity.toFixed(2)}</span>
+                          <span>{formatCurrency(accountSummary.equity)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>Margin</span>
-                          <span>${accountSummary.margin.toFixed(2)}</span>
+                          <span>{formatCurrency(accountSummary.margin)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>Margin Level</span>
@@ -563,7 +561,9 @@ export default function Header({
                         </div>
                         <div className="flex justify-between">
                           <span>Free Margin</span>
-                          <span>${accountSummary.freeMargin.toFixed(2)}</span>
+                          <span>
+                            {formatCurrency(accountSummary.freeMargin)}
+                          </span>
                         </div>
                       </div>
                     </div>
