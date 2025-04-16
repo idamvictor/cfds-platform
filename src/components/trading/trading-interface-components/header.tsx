@@ -21,7 +21,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useMobile } from "@/hooks/use-mobile";
 import useUserStore from "@/store/userStore";
@@ -163,7 +163,12 @@ export default function Header({
                     <div className="bg-muted/30 rounded-lg p-3 mx-3 mb-4">
                       <div className="flex items-center gap-2 mb-2">
                         <Avatar className="h-8 w-8 border border-border">
-                          <AvatarFallback>M</AvatarFallback>
+                          <AvatarImage src={user?.avatar} alt="avatar" />
+                          <AvatarFallback>
+                            {user
+                              ? `${user.first_name[0]}${user.last_name[0]}`.toUpperCase()
+                              : ""}
+                          </AvatarFallback>
                         </Avatar>
                         <div>
                           <div className="text-xs text-muted-foreground">
@@ -295,13 +300,13 @@ export default function Header({
                               </div>
                             </>
                           ))}
-                          <Button
+                          {/* <Button
                             variant="outline"
                             size="sm"
                             className="w-full mt-2"
                           >
                             <Plus className="h-4 w-4 mr-2" /> Add Pair
-                          </Button>
+                          </Button> */}
                         </div>
                       </div>
                     </div>
@@ -598,9 +603,6 @@ export default function Header({
                 </Link>
                 <Link to="/main/accounts">
                   <DropdownMenuItem>Account Details</DropdownMenuItem>
-                </Link>
-                <Link to="/main/withdrawal">
-                  <DropdownMenuItem>Transaction History</DropdownMenuItem>
                 </Link>
                 <Link to="/main/settings">
                   <DropdownMenuItem>Settings</DropdownMenuItem>
