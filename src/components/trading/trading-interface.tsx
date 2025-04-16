@@ -17,6 +17,7 @@ import axiosInstance from "@/lib/axios";
 import { ProfitCalculatorModal } from "./trading-interface-components/profit-calculator-modal";
 import { TakeProfitStopLossModal } from "./trading-interface-components/take-profit-stop-loss-modal";
 import { PendingOrderModal } from "./trading-interface-components/pending-order-modal";
+import {useCurrency} from "@/hooks/useCurrency.ts";
 // import TechnicalAnalysisWidget from "@/components/trading/partials/TechnicalAnalysisWidget";
 
 // AudioContext type for sound effects
@@ -41,7 +42,9 @@ export function TradingInterface() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState("lots");
   const [baseVolumeLots, setBaseVolumeLots] = useState(0.01);
-  const [displayVolume, setDisplayVolume] = useState(0.01);
+
+  const [displayVolume, setDisplayVolume] = useState<number | string>(0.01);
+
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
 
   // Modal state
@@ -72,6 +75,9 @@ export function TradingInterface() {
       stopLoss: undefined
     },
   });
+
+  const { formatCurrencyValue } = useCurrency();
+
 
   // Initialize audio context on first user interaction
   useEffect(() => {
@@ -182,8 +188,8 @@ export function TradingInterface() {
       const userBalance = user?.balance || 610.05;
 
       setTradingInfo({
-        contractSize: 100000,
-        position: Math.round(baseVolumeLots * 100000),
+        contractSize: activeAsset.contract_size,
+        position: activeAsset.position,
         margin: calculatedMargin,
         freeMargin: userBalance - calculatedMargin,
         spread: buySpread + sellSpread,
@@ -228,11 +234,17 @@ export function TradingInterface() {
       step = 10;
     }
 
-    // Calculate new volume
-    const newDisplayVolume = increment
-        ? displayVolume + step
-        : Math.max(step, displayVolume - step);
+    // Ensure displayVolume is treated as a number for calculations
+    const currentValue = typeof displayVolume === 'string'
+        ? parseFloat(displayVolume) || 0
+        : displayVolume;
 
+    // Calculate new volume with proper numeric addition
+    const newDisplayVolume = increment
+        ? currentValue + step
+        : Math.max(step, currentValue - step);
+
+    // Update state with the numeric value
     setDisplayVolume(newDisplayVolume);
 
     // Always update the base volume in lots
@@ -243,23 +255,55 @@ export function TradingInterface() {
     form.setValue("volume", newDisplayVolume);
   };
 
-  // Handle direct input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number.parseFloat(e.target.value) || 0;
-    setDisplayVolume(value);
 
-    // Convert to base lots
-    const newBaseLots = convertVolume(value, activeTab, "lots");
-    setBaseVolumeLots(newBaseLots);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+
+    if (inputValue === '' || /^[0-9]*\.?[0-9]*$/.test(inputValue)) {
+      // Update display value
+      setDisplayVolume(inputValue);
+
+      if (inputValue !== '' && inputValue !== '.' && !inputValue.endsWith('.')) {
+        const numValue = Number.parseFloat(inputValue);
+        if (!isNaN(numValue)) {
+          // Convert to base lots
+          const newBaseLots = convertVolume(numValue, activeTab, "lots");
+          setBaseVolumeLots(newBaseLots);
+          form.setValue("volume", numValue);
+        }
+      } else {
+        form.setValue("volume", 0);
+      }
+    }
   };
 
-  // Handle tab changes
+// Handle tab changes
   const handleTabChange = (value: string) => {
     setActiveTab(value);
 
-    const newDisplayVolume = convertVolume(baseVolumeLots, "lots", value);
-    setDisplayVolume(newDisplayVolume);
-    form.setValue("volume", newDisplayVolume);
+    // Get current numeric value (handle string case)
+    const currentNumericValue = typeof displayVolume === 'string'
+        ? (parseFloat(displayVolume) || 0)
+        : displayVolume;
+
+    // Only convert when we have a valid numeric value
+    if (currentNumericValue > 0) {
+      // First convert current display value to lots
+      const currentLots = convertVolume(currentNumericValue, activeTab, "lots");
+
+      // Then convert from lots to the new format
+      const newDisplayValue = convertVolume(currentLots, "lots", value);
+
+      // Update the display with the new value in the selected format
+      setDisplayVolume(newDisplayValue);
+      setBaseVolumeLots(currentLots);
+      form.setValue("volume", newDisplayValue);
+    } else {
+      // Use baseVolumeLots as fallback for partial inputs
+      const newDisplayValue = convertVolume(baseVolumeLots, "lots", value);
+      setDisplayVolume(newDisplayValue);
+      form.setValue("volume", newDisplayValue);
+    }
   };
 
   // Form submission - create trade
@@ -357,7 +401,6 @@ export function TradingInterface() {
                                     {...field}
                                     value={displayVolume}
                                     onChange={(e) => {
-                                      field.onChange(e);
                                       handleInputChange(e);
                                     }}
                                     className="h-6 bg-muted border-0 text-foreground text-sm font-medium p-1"
@@ -430,13 +473,13 @@ export function TradingInterface() {
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Margin:</span>
                     <span className="text-primary">
-                    ${tradingInfo.margin.toFixed(2)}
+                    {formatCurrencyValue(parseFloat(tradingInfo.margin.toFixed(2)))}
                   </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Free Margin:</span>
                     <span className="text-primary">
-                    ${tradingInfo.freeMargin.toFixed(2)}
+                    {formatCurrencyValue(parseFloat(tradingInfo.freeMargin.toFixed(2)))}
                   </span>
                   </div>
                   <div className="flex justify-between">
@@ -639,13 +682,13 @@ export function TradingInterface() {
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Margin:</span>
                     <span className="text-primary">
-                    ${tradingInfo.margin.toFixed(2)}
+                    {formatCurrencyValue(parseFloat(tradingInfo.margin.toFixed(2)))}
                   </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Free Margin:</span>
                     <span className="text-primary">
-                    ${tradingInfo.freeMargin.toFixed(2)}
+                    {formatCurrencyValue(parseFloat(tradingInfo.freeMargin.toFixed(2)))}
                   </span>
                   </div>
                   <div className="flex justify-between">
@@ -763,27 +806,16 @@ export function TradingInterface() {
               </div>
             </div>
 
-            {/* Technical Analysis Widget */}
-            {/*<div className="mt-4 px-3- mb-4-">*/}
-            {/*  <div className="border border-muted rounded">*/}
-            {/*    <TechnicalAnalysisWidget*/}
-            {/*        symbol={activeAsset?.tv_symbol || "NASDAQ:AAPL"}*/}
-            {/*        interval="15m"*/}
-            {/*        width="100%"*/}
-            {/*        height="350px"*/}
-            {/*        colorTheme="dark"*/}
-            {/*        showIntervalTabs={true}*/}
-            {/*        isTransparent={true}*/}
-            {/*    />*/}
-            {/*  </div>*/}
-            {/*</div>*/}
           </form>
         </Form>
+
         <ProfitCalculatorModal
             open={isProfitCalculatorOpen}
             onOpenChange={setIsProfitCalculatorOpen}
             symbol={activeAsset?.symbol_display || ""}
+            asset={activeAsset}
         />
+
         <TakeProfitStopLossModal
             open={isTpSlModalOpen}
             onOpenChange={setIsTpSlModalOpen}

@@ -138,7 +138,7 @@ export default function AutoTraderModal() {
           </RadioGroup>
 
           <div className="flex items-center justify-between rounded bg-slate-700 px-4 py-3">
-            <span className="text-white">Trades per day:</span>
+            <span className="text-white">Open Trades:</span>
             <span className="text-white">
               {getTradingLevelInfo(tradingLevel)}
             </span>

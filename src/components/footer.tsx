@@ -36,7 +36,7 @@ export default function Footer() {
       <div className="hidden md:flex">
         <Button
             onClick={() => setIsPlansModalOpen(true)}
-            className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-black font-medium rounded-md border border-red-300 shadow-md transition-all duration-300 group"
+            className="bg-gradient-to-r from-red-500 to-red-400 hover:from-red-500 hover:to-red-400 text-black font-medium rounded-md border border-red-300 shadow-md transition-all duration-300 group"
         >
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 backdrop-blur-sm">

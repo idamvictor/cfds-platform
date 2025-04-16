@@ -21,7 +21,7 @@ const DepositLayout = lazy(() => import("./layouts/DepositLayout"));
 const PersonalInformation = lazy(
   () => import("./pages/Preferences/PersonalInformation")
 );
-const BankDeposit = lazy(() => import("./pages/deposit/BankDeposit"));
+// const BankDeposit = lazy(() => import("./pages/deposit/BankDeposit"));
 const CardDeposit = lazy(() => import("./pages/deposit/CardDeposit"));
 // const PaypalDeposit = lazy(() => import("./pages/deposit/PaypalDeposit"));
 // const OtherDeposit = lazy(() => import("./pages/deposit/OtherDeposit"));
@@ -79,10 +79,10 @@ const App = () => {
                       index
                       element={<Navigate to="/main/deposit/card" replace />}
                     />
-                    <Route
-                      path="/main/deposit/bank"
-                      element={<BankDeposit />}
-                    />
+                    {/*<Route*/}
+                    {/*  path="/main/deposit/bank"*/}
+                    {/*  element={<BankDeposit />}*/}
+                    {/*/>*/}
                     <Route
                       path="/main/deposit/card"
                       element={<CardDeposit />}

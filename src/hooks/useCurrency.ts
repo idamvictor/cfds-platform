@@ -24,6 +24,13 @@ export function useCurrency() {
         };
     }, [selectedCurrency]);
 
+    const formatCurrencyValue = (amount: number, symbol: string = "$") => {
+        return `${symbol}${amount.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })}`;
+    };
+
     const formatWithSymbol = useMemo(() => {
         return (amount: number) => {
             if (!selectedCurrency) return `$${amount.toLocaleString(undefined, {
@@ -50,6 +57,7 @@ export function useCurrency() {
     return {
         convertCurrency,
         formatWithSymbol,
+        formatCurrencyValue,
         formatCurrency,
         selectedCurrency,
         currencies,

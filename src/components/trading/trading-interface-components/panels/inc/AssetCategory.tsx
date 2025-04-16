@@ -21,7 +21,7 @@ const AssetCategory = memo(({
                                 handleAssetClick,
                                 activeAssetId,
                             }: AssetCategoryProps) => {
-    // Get category icon based on category name
+
     const getCategoryIcon = (category: string) => {
         switch (category.toLowerCase()) {
             case "forex":
@@ -107,7 +107,7 @@ const AssetCategory = memo(({
         <div className="mb-px">
             {/* Category header */}
             <button
-                className="flex items-center justify-between w-full py-1.5 px-4 bg-slate-700 text-white"
+                className="flex items-center justify-between w-full py-1.5 px-3 bg-slate-700 text-white"
                 onClick={toggleCategory}
             >
                 <div className="flex items-center">

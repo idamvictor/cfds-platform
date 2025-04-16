@@ -283,6 +283,7 @@ const useTradeStore = create<TradeStore>((set, get) => ({
 
     const user = useUserStore.getState().user;
     const balance = user?.balance || 0;
+    const credit = user?.credit_balance || 0;
 
     const totalPnL = openTrades.reduce((sum, trade) => sum + trade.pnl, 0);
 
@@ -302,7 +303,7 @@ const useTradeStore = create<TradeStore>((set, get) => ({
     set({
       accountSummary: {
         balance,
-        credit: 0.0,
+        credit,
         equity,
         margin: totalMargin,
         marginLevel,
