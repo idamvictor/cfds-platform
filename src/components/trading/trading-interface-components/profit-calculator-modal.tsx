@@ -51,40 +51,51 @@ export function ProfitCalculatorModal({
     pip: 0,
   });
 
+  // Track if the modal has been initialized
+  const [initialized, setInitialized] = useState(false);
+
+  // Initialize form with asset data when modal opens
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      volume: "100000",
+      volume: "1", // Default volume is 1
       entryPrice: asset?.rate || "89.78",
-      takeProfit: "0",
-      stopLoss: "0",
+      takeProfit: "",
+      stopLoss: "",
     },
   });
 
-  // Update form when asset changes or modal opens
+  // Reset form ONLY when the modal OPENS (not on every asset update)
   useEffect(() => {
-    if (asset && open) {
-      const currentPrice = parseFloat(asset.rate || "0");
+    // Only run this effect when the modal goes from closed to open
+    if (open && !initialized) {
+      if (asset) {
+        const currentPrice = parseFloat(asset.rate || "0");
 
-      form.setValue("entryPrice", asset.rate);
+        // Initialize form
+        form.setValue("volume", "1");
+        form.setValue("entryPrice", asset.rate);
 
-      // Set default take profit (0.1% higher for buy, lower for sell)
-      const takeProfitPrice = tradeType === "buy"
-          ? (currentPrice * 1.001).toFixed(5)
-          : (currentPrice * 0.999).toFixed(5);
+        // Default take profit (0.1% higher for buy, lower for sell)
+        const defaultTp = tradeType === "buy"
+            ? (currentPrice * 1.001).toFixed(5)
+            : (currentPrice * 0.999).toFixed(5);
 
-      // Set default stop loss (0.1% lower for buy, higher for sell)
-      const stopLossPrice = tradeType === "buy"
-          ? (currentPrice * 0.999).toFixed(5)
-          : (currentPrice * 1.001).toFixed(5);
+        // Default stop loss (0.1% lower for buy, higher for sell)
+        const defaultSl = tradeType === "buy"
+            ? (currentPrice * 0.999).toFixed(5)
+            : (currentPrice * 1.001).toFixed(5);
 
-      form.setValue("takeProfit", takeProfitPrice);
-      form.setValue("stopLoss", stopLossPrice);
+        form.setValue("takeProfit", defaultTp);
+        form.setValue("stopLoss", defaultSl);
+      }
 
-      // Calculate with new values
-      calculateProfit(form.getValues());
+      setInitialized(true);
+    } else if (!open) {
+      // Reset initialization flag when modal closes
+      setInitialized(false);
     }
-  }, [asset, open, tradeType, form]);
+  }, [open]); // Only depend on the open state, not on asset or form
 
   const calculateProfit = (values: z.infer<typeof formSchema>) => {
     if (!asset) return;
@@ -121,10 +132,20 @@ export function ProfitCalculatorModal({
       lossFromSl = priceDifferenceSL * volume;
     }
 
-    // Calculate ROE (Return on Equity)
-    const roe = requiredMargin > 0 ? (profitFromTp / requiredMargin) * 100 : 0;
+    // Calculate ROE (Return on Equity) - Properly accounting for leverage and trade direction
+    let roe = 0;
+    if (!isNaN(takeProfit) && takeProfit > 0) {
+      if (tradeType === "buy") {
+        // For buy positions: ROE = ((TP - Entry) / Entry) * Leverage * 100
+        roe = ((takeProfit - entryPrice) / entryPrice) * leverage * 100;
+      } else {
+        // For sell positions: ROE = ((Entry - TP) / Entry) * Leverage * 100
+        roe = ((entryPrice - takeProfit) / entryPrice) * leverage * 100;
+      }
+    }
 
     // Calculate pip value (standard 0.0001 pip size for forex)
+    // Adjust pip size based on asset type (forex = 0.0001, crypto might be different)
     const pipSize = 0.0001;
     const pip = volume * pipSize;
 
@@ -138,6 +159,7 @@ export function ProfitCalculatorModal({
   };
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
+    // Only calculate when the button is clicked
     calculateProfit(values);
   };
 
@@ -145,29 +167,28 @@ export function ProfitCalculatorModal({
     setTradeType(type);
 
     if (asset) {
-      const currentPrice = parseFloat(asset.rate || "0");
-      const entryPrice = parseFloat(form.getValues().entryPrice) || currentPrice;
+      // Keep the current entry price
+      const entryPrice = parseFloat(form.getValues().entryPrice);
 
-      // Adjust TP/SL for the new trade type
-      const takeProfitPrice = type === "buy"
-          ? (entryPrice * 1.001).toFixed(5)
-          : (entryPrice * 0.999).toFixed(5);
+      if (!isNaN(entryPrice)) {
+        // Switch TP/SL based on trade type
+        const defaultTp = type === "buy"
+            ? (entryPrice * 1.001).toFixed(5)
+            : (entryPrice * 0.999).toFixed(5);
 
-      const stopLossPrice = type === "buy"
-          ? (entryPrice * 0.999).toFixed(5)
-          : (entryPrice * 1.001).toFixed(5);
+        const defaultSl = type === "buy"
+            ? (entryPrice * 0.999).toFixed(5)
+            : (entryPrice * 1.001).toFixed(5);
 
-      form.setValue("takeProfit", takeProfitPrice);
-      form.setValue("stopLoss", stopLossPrice);
-
-      // Recalculate with new values
-      calculateProfit(form.getValues());
+        form.setValue("takeProfit", defaultTp);
+        form.setValue("stopLoss", defaultSl);
+      }
     }
   };
 
   return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[400px] border-muted p-0 overflow-hidden text-sm">
+        <DialogContent className="sm:max-w-[550px] border-muted p-0 overflow-hidden text-sm">
           <DialogHeader className="p-2">
             <div className="flex justify-between items-center">
               <DialogTitle className="text-base">
@@ -205,8 +226,9 @@ export function ProfitCalculatorModal({
 
                     <div className="bg-secondary p-2 rounded flex justify-between items-center text-xs">
                     <span className="text-muted-foreground">
-                      {asset?.symbol_display || symbol} Calculator
+                      Price from profit
                     </span>
+                      <span>{tradeType === "buy" ? "↑" : "↓"}</span>
                     </div>
 
                     <div className="bg-slate-700 p-2 rounded flex justify-between items-center">
@@ -220,13 +242,6 @@ export function ProfitCalculatorModal({
                                   <Input
                                       {...field}
                                       className="border-none text-right w-20 text-white focus-visible:ring-0 focus-visible:ring-offset-0 text-xs h-6 px-1"
-                                      onChange={(e) => {
-                                        field.onChange(e);
-                                        calculateProfit({
-                                          ...form.getValues(),
-                                          volume: e.target.value,
-                                        });
-                                      }}
                                   />
                                 </FormControl>
                               </FormItem>
@@ -245,13 +260,6 @@ export function ProfitCalculatorModal({
                                   <Input
                                       {...field}
                                       className="bg-transparent border-none text-right w-20 focus-visible:ring-0 focus-visible:ring-offset-0 text-xs h-6 px-1"
-                                      onChange={(e) => {
-                                        field.onChange(e);
-                                        calculateProfit({
-                                          ...form.getValues(),
-                                          entryPrice: e.target.value,
-                                        });
-                                      }}
                                   />
                                 </FormControl>
                               </FormItem>
@@ -270,13 +278,6 @@ export function ProfitCalculatorModal({
                                   <Input
                                       {...field}
                                       className="bg-transparent border-none text-right w-20 focus-visible:ring-0 focus-visible:ring-offset-0 text-xs h-6 px-1"
-                                      onChange={(e) => {
-                                        field.onChange(e);
-                                        calculateProfit({
-                                          ...form.getValues(),
-                                          takeProfit: e.target.value,
-                                        });
-                                      }}
                                   />
                                 </FormControl>
                               </FormItem>
@@ -295,13 +296,6 @@ export function ProfitCalculatorModal({
                                   <Input
                                       {...field}
                                       className="bg-transparent border-none text-right w-20 text-white focus-visible:ring-0 focus-visible:ring-offset-0 text-xs h-6 px-1"
-                                      onChange={(e) => {
-                                        field.onChange(e);
-                                        calculateProfit({
-                                          ...form.getValues(),
-                                          stopLoss: e.target.value,
-                                        });
-                                      }}
                                   />
                                 </FormControl>
                               </FormItem>
@@ -347,7 +341,7 @@ export function ProfitCalculatorModal({
               <div className="flex justify-between items-center">
                 <span className="text-gray-400 text-xs">ROE</span>
                 <span className="text-white text-xs">
-                {calculationResults.roe.toFixed(2)} <span className="text-gray-400 text-xs">%</span>
+                {calculationResults.roe > 0 ? "+" : ""}{calculationResults.roe.toFixed(2)} <span className="text-gray-400 text-xs">%</span>
               </span>
               </div>
               <div className="flex justify-between items-center">
@@ -358,9 +352,6 @@ export function ProfitCalculatorModal({
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-400 text-xs">Price from profit</span>
-                <span className="text-white text-xs">
-                {tradeType === "buy" ? "↑" : "↓"}
-              </span>
               </div>
             </div>
           </div>

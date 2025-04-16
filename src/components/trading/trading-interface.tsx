@@ -42,7 +42,9 @@ export function TradingInterface() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState("lots");
   const [baseVolumeLots, setBaseVolumeLots] = useState(0.01);
-  const [displayVolume, setDisplayVolume] = useState(0.01);
+
+  const [displayVolume, setDisplayVolume] = useState<number | string>(0.01);
+
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
 
   // Modal state
@@ -232,11 +234,17 @@ export function TradingInterface() {
       step = 10;
     }
 
-    // Calculate new volume
-    const newDisplayVolume = increment
-        ? displayVolume + step
-        : Math.max(step, displayVolume - step);
+    // Ensure displayVolume is treated as a number for calculations
+    const currentValue = typeof displayVolume === 'string'
+        ? parseFloat(displayVolume) || 0
+        : displayVolume;
 
+    // Calculate new volume with proper numeric addition
+    const newDisplayVolume = increment
+        ? currentValue + step
+        : Math.max(step, currentValue - step);
+
+    // Update state with the numeric value
     setDisplayVolume(newDisplayVolume);
 
     // Always update the base volume in lots
@@ -247,23 +255,55 @@ export function TradingInterface() {
     form.setValue("volume", newDisplayVolume);
   };
 
-  // Handle direct input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number.parseFloat(e.target.value) || 0;
-    setDisplayVolume(value);
 
-    // Convert to base lots
-    const newBaseLots = convertVolume(value, activeTab, "lots");
-    setBaseVolumeLots(newBaseLots);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+
+    if (inputValue === '' || /^[0-9]*\.?[0-9]*$/.test(inputValue)) {
+      // Update display value
+      setDisplayVolume(inputValue);
+
+      if (inputValue !== '' && inputValue !== '.' && !inputValue.endsWith('.')) {
+        const numValue = Number.parseFloat(inputValue);
+        if (!isNaN(numValue)) {
+          // Convert to base lots
+          const newBaseLots = convertVolume(numValue, activeTab, "lots");
+          setBaseVolumeLots(newBaseLots);
+          form.setValue("volume", numValue);
+        }
+      } else {
+        form.setValue("volume", 0);
+      }
+    }
   };
 
-  // Handle tab changes
+// Handle tab changes
   const handleTabChange = (value: string) => {
     setActiveTab(value);
 
-    const newDisplayVolume = convertVolume(baseVolumeLots, "lots", value);
-    setDisplayVolume(newDisplayVolume);
-    form.setValue("volume", newDisplayVolume);
+    // Get current numeric value (handle string case)
+    const currentNumericValue = typeof displayVolume === 'string'
+        ? (parseFloat(displayVolume) || 0)
+        : displayVolume;
+
+    // Only convert when we have a valid numeric value
+    if (currentNumericValue > 0) {
+      // First convert current display value to lots
+      const currentLots = convertVolume(currentNumericValue, activeTab, "lots");
+
+      // Then convert from lots to the new format
+      const newDisplayValue = convertVolume(currentLots, "lots", value);
+
+      // Update the display with the new value in the selected format
+      setDisplayVolume(newDisplayValue);
+      setBaseVolumeLots(currentLots);
+      form.setValue("volume", newDisplayValue);
+    } else {
+      // Use baseVolumeLots as fallback for partial inputs
+      const newDisplayValue = convertVolume(baseVolumeLots, "lots", value);
+      setDisplayVolume(newDisplayValue);
+      form.setValue("volume", newDisplayValue);
+    }
   };
 
   // Form submission - create trade
@@ -361,7 +401,6 @@ export function TradingInterface() {
                                     {...field}
                                     value={displayVolume}
                                     onChange={(e) => {
-                                      field.onChange(e);
                                       handleInputChange(e);
                                     }}
                                     className="h-6 bg-muted border-0 text-foreground text-sm font-medium p-1"
