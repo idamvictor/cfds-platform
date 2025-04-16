@@ -25,7 +25,10 @@ interface DocumentsTableProps {
   onDocumentsChange?: (documents: Document[]) => void;
 }
 
-export function DocumentsTable({ onEditDocument, onDocumentsChange }: DocumentsTableProps) {
+export function DocumentsTable({
+  onEditDocument,
+  onDocumentsChange,
+}: DocumentsTableProps) {
   const [documents, setDocuments] = useState<Document[]>([]);
 
   const fetchDocuments = useCallback(async () => {
@@ -47,9 +50,10 @@ export function DocumentsTable({ onEditDocument, onDocumentsChange }: DocumentsT
   }, [fetchDocuments]);
 
   // Helper functions to find documents
-  const findSelfie = () => documents.find(doc => doc.type === "selfie");
-  const findProofOfAddress = () => documents.find(doc => doc.type === "proof_of_address");
-  const findId = () => documents.find(doc => doc.type === "id");
+  const findSelfie = () => documents.find((doc) => doc.type === "selfie");
+  const findProofOfAddress = () =>
+    documents.find((doc) => doc.type === "proof_of_address");
+  const findId = () => documents.find((doc) => doc.type === "id");
 
   return (
     <Card className="mb-6">
@@ -84,14 +88,18 @@ export function DocumentsTable({ onEditDocument, onDocumentsChange }: DocumentsT
                   >
                     <FileIcon className="h-5 w-5" />
                   </a>
-                ) : "-"}
+                ) : (
+                  "-"
+                )}
               </TableCell>
               <TableCell>
                 {findSelfie()?.status === "verified" ? (
                   <span className="text-success">Verified</span>
                 ) : findSelfie()?.status === "pending" ? (
                   <span className="text-amber-500">Pending</span>
-                ) : "-"}
+                ) : (
+                  "-"
+                )}
               </TableCell>
               <TableCell>
                 {findSelfie() && (
@@ -122,14 +130,18 @@ export function DocumentsTable({ onEditDocument, onDocumentsChange }: DocumentsT
                   >
                     <FileIcon className="h-5 w-5" />
                   </a>
-                ) : "-"}
+                ) : (
+                  "-"
+                )}
               </TableCell>
               <TableCell>
                 {findId()?.status === "verified" ? (
                   <span className="text-success">Verified</span>
                 ) : findId()?.status === "pending" ? (
                   <span className="text-amber-500">Pending</span>
-                ) : "-"}
+                ) : (
+                  "-"
+                )}
               </TableCell>
               <TableCell>
                 {findId()?.document[0] && (
@@ -160,14 +172,18 @@ export function DocumentsTable({ onEditDocument, onDocumentsChange }: DocumentsT
                   >
                     <FileIcon className="h-5 w-5" />
                   </a>
-                ) : "-"}
+                ) : (
+                  "-"
+                )}
               </TableCell>
               <TableCell>
                 {findId()?.status === "verified" ? (
                   <span className="text-success">Verified</span>
                 ) : findId()?.status === "pending" ? (
                   <span className="text-amber-500">Pending</span>
-                ) : "-"}
+                ) : (
+                  "-"
+                )}
               </TableCell>
               <TableCell>
                 {findId()?.document[1] && (
@@ -198,14 +214,18 @@ export function DocumentsTable({ onEditDocument, onDocumentsChange }: DocumentsT
                   >
                     <FileIcon className="h-5 w-5" />
                   </a>
-                ) : "-"}
+                ) : (
+                  "-"
+                )}
               </TableCell>
               <TableCell>
                 {findProofOfAddress()?.status === "verified" ? (
                   <span className="text-success">Verified</span>
                 ) : findProofOfAddress()?.status === "pending" ? (
                   <span className="text-amber-500">Pending</span>
-                ) : "-"}
+                ) : (
+                  "-"
+                )}
               </TableCell>
               <TableCell>
                 {findProofOfAddress() && (

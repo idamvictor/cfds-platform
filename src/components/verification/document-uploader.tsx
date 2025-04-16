@@ -73,7 +73,7 @@ export function DocumentUploader({
   onUpload,
   onRemove,
   uploadedFile,
-  disabled = false
+  disabled = false,
 }: DocumentUploaderProps) {
   const [isDragging, setIsDragging] = React.useState(false);
   const [isUploading, setIsUploading] = React.useState(false);
