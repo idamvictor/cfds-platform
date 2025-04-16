@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { FileText, User } from "lucide-react";
+import { FileText, User, ArrowLeft, ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import axiosInstance from "@/lib/axios";
 import { DocumentUploader } from "@/components/verification/document-uploader";
 import { DocumentsTable } from "@/components/verification/documents-table";
 import { toast } from "@/components/ui/sonner";
+import { useMobile } from "@/hooks/use-mobile";
 
 type Document = {
   id: string;
@@ -18,6 +19,7 @@ type Document = {
 export default function VerificationPage() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [editingType, setEditingType] = useState<string | null>(null);
+  const isMobile = useMobile();
 
   // Calculate progress based on number of unique document types
   const progress =
@@ -202,6 +204,18 @@ export default function VerificationPage() {
           process. All documents must be clear, unmodified, and show your full
           information.
         </p>
+        {isMobile && (
+          <div className="mt-4 flex justify-between items-center text-xs text-muted-foreground">
+            <div className="flex items-center">
+              <ArrowLeft className="w-4 h-4 mr-1" />
+              <span>Slide left</span>
+            </div>
+            <div className="flex items-center">
+              <span>Slide right</span>
+              <ArrowRight className="w-4 h-4 ml-1" />
+            </div>
+          </div>
+        )}
       </Card>
     </div>
   );

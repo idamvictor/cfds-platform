@@ -2,22 +2,22 @@ import React from "react";
 import Logo from "./Logo";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
+import { Menu } from "lucide-react";
 
 interface HeaderProps {
   toggleSidebar: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
-
   return (
     <header className="flex justify-between items-center px-6 py-4 bg-secondary border-b border-border">
       <div className="flex items-center gap-4">
-        <button
+        <Button
           className="md:hidden p-2 rounded bg-primary text-white"
           onClick={toggleSidebar}
         >
-          ☰
-        </button>
+          <Menu className="h-10 w-10" />
+        </Button>
         <Logo />
       </div>
       <Link to="/trading">

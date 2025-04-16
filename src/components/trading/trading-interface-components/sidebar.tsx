@@ -2,6 +2,7 @@ import type React from "react";
 
 import { useState, useEffect } from "react";
 import {
+  X,
   LineChart,
   Clock,
   BarChart3,
@@ -41,7 +42,7 @@ export default function Sidebar({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   console.log("isMobile", isMobileMenuOpen);
   console.log("is active view", activeView);
-  
+
   // Close mobile menu when switching to desktop
   useEffect(() => {
     if (!isMobile) {
@@ -199,7 +200,7 @@ export default function Sidebar({
 
 // Helper component for mobile panel headers
 function MobilePanelWrapper({
-  title,
+  // title,
   onClose,
   children,
 }: {
@@ -209,19 +210,18 @@ function MobilePanelWrapper({
 }) {
   return (
     <div className="h-full flex flex-col">
-      <div className="flex items-center justify-between p-4 border-b border-border">
-        <h2 className="text-sm font-medium">{title}</h2>
+      <div className="flex items-center justify-end px-4 pt-4 border-b border-border">
+        {/* <h2 className="text-sm font-medium">{title}</h2> */}
         <Button
           variant="ghost"
           size="icon"
           className="h-7 w-7"
           onClick={onClose}
         >
-          <ChevronLeft className="h-4 w-4" />
+          <X className="h-4 w-4" />
         </Button>
       </div>
       <div className="flex-1 overflow-auto">{children}</div>
     </div>
   );
 }
-

@@ -86,7 +86,9 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
           {/* <Button variant="ghost" className="border border-border">
             Autotrader
           </Button> */}
-          <AutoTraderModal />
+          <div className="border border-primary/50 rounded-md flex justify-center">
+            <AutoTraderModal />
+          </div>
         </div>
       </div>
       <nav className="flex-1 py-4 overflow-y-auto">
