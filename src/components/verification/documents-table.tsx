@@ -102,7 +102,7 @@ export function DocumentsTable({
                 )}
               </TableCell>
               <TableCell>
-                {findSelfie() && (
+                {findSelfie() && findSelfie()?.status !== "verified" && (
                   <Button
                     variant="ghost"
                     size="sm"
@@ -144,7 +144,7 @@ export function DocumentsTable({
                 )}
               </TableCell>
               <TableCell>
-                {findId()?.document[0] && (
+                {findId()?.document[0] && findId()?.status !== "verified" && (
                   <Button
                     variant="ghost"
                     size="sm"
@@ -186,7 +186,7 @@ export function DocumentsTable({
                 )}
               </TableCell>
               <TableCell>
-                {findId()?.document[1] && (
+                {findId()?.document[1] && findId()?.status !== "verified" && (
                   <Button
                     variant="ghost"
                     size="sm"
@@ -228,15 +228,16 @@ export function DocumentsTable({
                 )}
               </TableCell>
               <TableCell>
-                {findProofOfAddress() && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onEditDocument?.("proof_of_address")}
-                  >
-                    <PencilIcon className="h-4 w-4" />
-                  </Button>
-                )}
+                {findProofOfAddress() &&
+                  findProofOfAddress()?.status !== "verified" && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onEditDocument?.("proof_of_address")}
+                    >
+                      <PencilIcon className="h-4 w-4" />
+                    </Button>
+                  )}
               </TableCell>
             </TableRow>
           </TableBody>

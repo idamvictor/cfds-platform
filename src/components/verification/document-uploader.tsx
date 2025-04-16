@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { Card } from "@/components/ui/card";
 import { Check, X, ChevronDown } from "lucide-react";
