@@ -261,10 +261,7 @@ export default function Header({
                         <div className="space-y-2">
                           <AutoTraderModal />
                           <Link to="/main/deposit">
-                            <Button
-                              variant="outline"
-                              className="w-full justify-start gap-2"
-                            >
+                            <Button className="w-full justify-start gap-2">
                               <Wallet className="h-4 w-4" />
                               <span>Deposit</span>
                             </Button>
