@@ -165,14 +165,14 @@ export default function QRCodeDeposit({
                   </FormControl>
                   <Label
                     htmlFor="confirm"
-                    className="text-sm leading-tight cursor-pointer"
+                    className="text-sm leading-relaxed cursor-pointer inline-block"
                   >
                     I confirm I have transferred{" "}
-                    <span className="font-medium">
+                    <span className="font-medium text-primary">
                       {form.watch("amount") || "[amount]"}
                     </span>{" "}
-                    to the{" "}
-                    <span className="font-medium break-all">
+                    to the address{" "}
+                    <span className="font-medium text-primary break-all">
                       {address
                         ? `${address.substring(0, 6)}...${address.substring(
                             address.length - 4
