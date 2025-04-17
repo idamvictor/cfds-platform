@@ -291,19 +291,6 @@ export default function WithdrawalForm() {
                     )}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name="account_name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Account Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter account name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
@@ -320,19 +307,6 @@ export default function WithdrawalForm() {
                     )}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name="account_name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Account Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter account name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                 </div>
 
                 <FormField
