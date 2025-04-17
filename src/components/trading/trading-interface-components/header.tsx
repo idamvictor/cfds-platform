@@ -136,7 +136,7 @@ export default function Header({
 
   return (
     <>
-      <header className=" flex items-center justify-between h-20 px-6 border-b border-secondary border-2 bg-background">
+      <header className=" flex items-center justify-between h-12 md:h-20 px-6 border-b border-secondary border-2 bg-background">
         {/* left side */}
         <div className="flex items-center gap-6 h-full">
           <Logo />
@@ -589,7 +589,7 @@ export default function Header({
                 "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744370355/main_plate_exi8jv.png"
               }
               alt={`${user?.account_type?.name || "Basic"} Badge`}
-              className="w-12 h-12"
+              className="w-10 h-10 md:w-12 md:h-12"
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -598,7 +598,10 @@ export default function Header({
                   size="icon"
                   className="rounded-full p-0 h-10 w-10"
                 >
-                  <img src={user?.avatar} className="w-10 h-10 rounded-full" />
+                  <img
+                    src={user?.avatar}
+                    className="w-8 h-8 md:w-10 md:h-10 rounded-full"
+                  />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
