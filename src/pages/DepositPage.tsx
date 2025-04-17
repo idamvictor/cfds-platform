@@ -175,7 +175,7 @@ export default function DepositPage() {
                 </div>
             </div>
 
-            <div className="flex gap-6">
+            <div className="flex md:gap-6">
                 {/* Left sidebar with payment methods */}
                 { data?.wallets ? (
                     <div className="md:w-64 shrink-0">
