@@ -77,7 +77,7 @@ const App = () => {
                   <Route path="/main/deposit" element={<DepositLayout />}>
                     <Route
                       index
-                      element={<Navigate to="/main/deposit/card" replace />}
+                      element={<Navigate to="/main/deposit/:crypto" replace />}
                     />
                     {/*<Route*/}
                     {/*  path="/main/deposit/bank"*/}
