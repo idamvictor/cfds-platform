@@ -6,7 +6,8 @@ export interface UserAccount {
   type: "balance" | "credit";
   transfer_type: "to" | "from";
   title: string;
-  balance: string;
+  balance: number;
+  balance_value: string;
   status: "active" | "inactive" | "suspended";
   currency: string;
 }
@@ -48,49 +49,49 @@ interface UserStore {
 }
 
 const useUserStore = create<UserStore>()(
-    persist(
-        (set, get) => ({
-          user: null,
-          token: null,
-          selectedAccountIndex: 0,
-          setUser: (user, token) => set({ user, token }),
-          clearUser: () =>
-              set({ user: null, token: null, selectedAccountIndex: 0 }),
-          isLoading: true,
-          setSelectedAccountIndex: (index) => set({ selectedAccountIndex: index }),
-          getCurrentUser: async () => {
-            // Don't attempt to fetch if no token is available
-            const token = get().token;
-            if (!token) {
-              set({ isLoading: false });
-              return;
-            }
-
-            set({ isLoading: true });
-            try {
-              const response = await axiosInstance.get("/user");
-
-              if (response.data && response.data.data) {
-                // Update the user while keeping the current token
-                set({
-                  user: response.data.data,
-                  isLoading: false
-                });
-              }
-            } catch (error) {
-              console.error("Failed to fetch user data:", error);
-              // Don't clear user on error, just set loading to false
-              set({ isLoading: false });
-            }
-          }
-        }),
-        {
-          name: "user-storage",
-          onRehydrateStorage: () => (state) => {
-            if (state) state.isLoading = false;
-          },
+  persist(
+    (set, get) => ({
+      user: null,
+      token: null,
+      selectedAccountIndex: 0,
+      setUser: (user, token) => set({ user, token }),
+      clearUser: () =>
+        set({ user: null, token: null, selectedAccountIndex: 0 }),
+      isLoading: true,
+      setSelectedAccountIndex: (index) => set({ selectedAccountIndex: index }),
+      getCurrentUser: async () => {
+        // Don't attempt to fetch if no token is available
+        const token = get().token;
+        if (!token) {
+          set({ isLoading: false });
+          return;
         }
-    )
+
+        set({ isLoading: true });
+        try {
+          const response = await axiosInstance.get("/user");
+
+          if (response.data && response.data.data) {
+            // Update the user while keeping the current token
+            set({
+              user: response.data.data,
+              isLoading: false,
+            });
+          }
+        } catch (error) {
+          console.error("Failed to fetch user data:", error);
+          // Don't clear user on error, just set loading to false
+          set({ isLoading: false });
+        }
+      },
+    }),
+    {
+      name: "user-storage",
+      onRehydrateStorage: () => (state) => {
+        if (state) state.isLoading = false;
+      },
+    }
+  )
 );
 
 export default useUserStore;

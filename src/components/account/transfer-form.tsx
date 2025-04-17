@@ -99,7 +99,7 @@ export function TransferForm({ accounts }: TransferFormProps) {
                 {fromAccounts.find(
                   (acc) => acc.type === fromAccount.split("_")[0]
                 )
-                  ? ` (${
+                  ? ` ($${
                       fromAccounts.find(
                         (acc) => acc.type === fromAccount.split("_")[0]
                       )?.balance
@@ -110,7 +110,7 @@ export function TransferForm({ accounts }: TransferFormProps) {
             <SelectContent>
               {fromAccounts.map((account) => (
                 <SelectItem key={account.type} value={`${account.type}_wallet`}>
-                  {account.title} &nbsp;&nbsp;&nbsp;&nbsp;({account.balance})
+                  {account.title} &nbsp;&nbsp;&nbsp;&nbsp;(${account.balance})
                 </SelectItem>
               ))}
             </SelectContent>
@@ -131,7 +131,7 @@ export function TransferForm({ accounts }: TransferFormProps) {
                 {toAccounts.find((acc) => acc.type === toAccount.split("_")[0])
                   ?.title || "Select account"}{" "}
                 {toAccounts.find((acc) => acc.type === toAccount.split("_")[0])
-                  ? ` (${
+                  ? ` ($${
                       toAccounts.find(
                         (acc) => acc.type === toAccount.split("_")[0]
                       )?.balance
@@ -142,7 +142,7 @@ export function TransferForm({ accounts }: TransferFormProps) {
             <SelectContent>
               {toAccounts.map((account) => (
                 <SelectItem key={account.type} value={`${account.type}_wallet`}>
-                  {account.title} &nbsp;&nbsp;&nbsp;&nbsp;({account.balance})
+                  {account.title} &nbsp;&nbsp;&nbsp;&nbsp;(${account.balance})
                 </SelectItem>
               ))}
             </SelectContent>

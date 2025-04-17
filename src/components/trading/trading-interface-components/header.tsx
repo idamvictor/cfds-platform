@@ -189,7 +189,7 @@ export default function Header({
                             // onClick={() => setSelectedAccountIndex(index)}
                           >
                             <span>{account.title}</span>
-                            <span>{account.balance}</span>
+                            <span>{formatCurrency(account.balance)}</span>
                           </div>
                         ))}
                       </div>
@@ -256,13 +256,15 @@ export default function Header({
                       <div className="border-t border-border mt-2 px-3 py-2">
                         <div className="space-y-2">
                           <AutoTraderModal />
-                          <Button
-                            variant="outline"
-                            className="w-full justify-start gap-2"
-                          >
-                            <Wallet className="h-4 w-4" />
-                            <span>Deposit</span>
-                          </Button>
+                          <Link to="/main/deposit">
+                            <Button
+                              variant="outline"
+                              className="w-full justify-start gap-2"
+                            >
+                              <Wallet className="h-4 w-4" />
+                              <span>Deposit</span>
+                            </Button>
+                          </Link>
                         </div>
                       </div>
 
@@ -516,7 +518,9 @@ export default function Header({
                               // onClick={() => setSelectedAccountIndex(index)}
                             >
                               <span className="text-xs">{account.title}</span>
-                              <span className="text-xs">{account.balance}</span>
+                              <span className="text-xs">
+                                {formatCurrency(account.balance)}
+                              </span>
                             </div>
                           ))}
                         </div>

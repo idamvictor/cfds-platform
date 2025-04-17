@@ -33,7 +33,7 @@ export function AccountsTable({ accounts }: AccountsTableProps) {
             <TableRow key={account.type} className="bg-card/50 hover:bg-card">
               <TableCell>{account.title}</TableCell>
               <TableCell className="capitalize">{account.type}</TableCell>
-              <TableCell>{account.balance}</TableCell>
+              <TableCell>${account.balance}</TableCell>
               <TableCell>{account.currency}</TableCell>
               <TableCell>
                 <StatusBadge status={account.status} />
