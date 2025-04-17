@@ -247,7 +247,7 @@ export default function AutoTraderModal() {
             disabled={!accepted || isSubmitting}
             onClick={handleSave}
           >
-            {isSubmitting ? "Saving..." : "Save"}
+            {isSubmitting ? "Activating..." : "Activate"}
           </Button>
           <Button
             type="button"
