@@ -72,13 +72,13 @@ export default function AutoTraderModal() {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className={`flex-1 h-full  gap-3 text-primary border-primary hover:bg-trading-green/10  w-full ${
+          className={`flex-1 h-full gap-3 text-primary border-primary hover:bg-trading-green/10 w-full ${
             showRobot ? "justify-start" : "justify-center"
           }`}
         >
-          <span className="flex items-center gap-2">
-            <Robot className="h-5 w-5" />
-            <span>Auto Trader</span>
+          <span className="flex items-center gap-2 max-w-full">
+            <Robot className="h-5 w-5 flex-shrink-0" />
+            <span className="truncate">Auto Trader</span>
           </span>
         </Button>
       </DialogTrigger>
