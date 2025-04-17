@@ -29,11 +29,11 @@ const withdrawalFormSchema = z.object({
   method: z.string().min(1, "Payment method is required"),
   network: z.string().optional(),
   wallet_address: z.string().optional(),
-  bank_name: z.string().optional(),
-  bank_address: z.string().optional(),
+  bank_name: z.string().min(1, "Bank name is required"),
+  bank_address: z.string().min(1, "Bank address is required"),
   iban_number: z.string().optional(),
-  account_number: z.string().optional(),
-  account_name: z.string().optional(),
+  account_number: z.string().min(1, "Account number is required"),
+  account_name: z.string().min(1, "Account name is required"),
   swiftcode: z.string().optional(),
 });
 
