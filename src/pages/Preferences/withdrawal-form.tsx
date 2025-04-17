@@ -222,7 +222,7 @@ export default function WithdrawalForm() {
                     <FormItem>
                       <FormLabel>Bank Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter bank name" {...field} />
+                        <Input required placeholder="Enter bank name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -236,7 +236,7 @@ export default function WithdrawalForm() {
                     <FormItem>
                       <FormLabel>Bank Address</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter bank address" {...field} />
+                        <Input required placeholder="Enter bank address" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -252,6 +252,7 @@ export default function WithdrawalForm() {
                         <FormLabel>Account Number</FormLabel>
                         <FormControl>
                           <Input
+                              required
                             placeholder="Enter account number"
                             {...field}
                           />
@@ -268,7 +269,7 @@ export default function WithdrawalForm() {
                       <FormItem>
                         <FormLabel>Account Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter account name" {...field} />
+                          <Input required placeholder="Enter account name" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -283,7 +284,7 @@ export default function WithdrawalForm() {
                       <FormItem>
                         <FormLabel>IBAN Number</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter IBAN Number" {...field} />
+                          <Input  placeholder="Enter IBAN Number" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
