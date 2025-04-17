@@ -155,9 +155,7 @@ export default function WithdrawalForm() {
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="crypto">Cryptocurrency</SelectItem>
-                          <SelectItem value="wire_transfer">
-                            Wire Transfer
-                          </SelectItem>
+                          <SelectItem value="bank">Bank Transfer</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -213,7 +211,7 @@ export default function WithdrawalForm() {
               </div>
             )}
 
-            {method === "wire_transfer" && (
+            {method === "bank" && (
               <div className="space-y-4">
                 <FormField
                   control={form.control}
@@ -290,20 +288,24 @@ export default function WithdrawalForm() {
                     )}
                   />
 
+
                   <FormField
-                    control={form.control}
-                    name="swiftcode"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Swift Code</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter SWIFT code" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                      control={form.control}
+                      name="swiftcode"
+                      render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Swift Code</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Enter SWIFT code" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                      )}
                   />
+
+
                 </div>
+
               </div>
             )}
 
