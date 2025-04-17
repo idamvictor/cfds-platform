@@ -276,25 +276,6 @@ export default function WithdrawalForm() {
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="account_number"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Account Number</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Enter account number"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
                     name="iban_number"
                     render={({ field }) => (
                       <FormItem>
@@ -307,21 +288,24 @@ export default function WithdrawalForm() {
                     )}
                   />
 
+
+                  <FormField
+                      control={form.control}
+                      name="swiftcode"
+                      render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Swift Code</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Enter SWIFT code" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                      )}
+                  />
+
+
                 </div>
 
-                <FormField
-                  control={form.control}
-                  name="swiftcode"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Swift Code</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter SWIFT code" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
               </div>
             )}
 
