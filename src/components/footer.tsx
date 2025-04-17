@@ -64,13 +64,15 @@ export default function Footer() {
         <div className="flex items-center justify-self-end gap-4">
           <Link to="/main/chat" className="flex gap-1 items-center">
             <Mail size={14} />
-            <span>LIVE CHAT</span>
+            {!isMobile && <span>LIVE CHAT</span>}
           </Link>
           <Link to="/main/settings">
             <Settings size={14} />
           </Link>
           <Volume2 size={14} />
-          <span>Current Time: {currentTime}</span>
+          <span>
+            {!isMobile && "Current Time:"} {currentTime}
+          </span>
           {isFullScreen ? (
             <Minimize
               size={14}
