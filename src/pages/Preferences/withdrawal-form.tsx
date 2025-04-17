@@ -21,7 +21,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
 import axiosInstance from "@/lib/axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import useDataStore from "@/store/dataStore";
 
 const withdrawalFormSchema = z.object({
   amount: z.string().min(1, "Amount is required"),
@@ -37,6 +38,11 @@ const withdrawalFormSchema = z.object({
 });
 
 export default function WithdrawalForm() {
+  const { data, fetchData } = useDataStore();
+  const [uniqueNetworks, setUniqueNetworks] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
   const form = useForm<z.infer<typeof withdrawalFormSchema>>({
     resolver: zodResolver(withdrawalFormSchema),
     defaultValues: {
@@ -54,8 +60,25 @@ export default function WithdrawalForm() {
   });
 
   const method = form.watch("method");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useEffect(() => {
+    if (data?.wallets) {
+      const networks = [
+        ...new Set(data.wallets.map((wallet) => wallet.crypto_network)),
+      ];
+      setUniqueNetworks(networks);
+
+      // Only set the default network if one isn't already set
+      const currentNetwork = form.getValues("network");
+      if (networks.length > 0 && !currentNetwork) {
+        form.setValue("network", networks[0], { shouldValidate: true });
+      }
+    }
+  }, [data?.wallets, form]);
 
   async function onSubmit(values: z.infer<typeof withdrawalFormSchema>) {
     try {
@@ -65,10 +88,12 @@ export default function WithdrawalForm() {
       form.reset();
       // Increment refresh trigger to force table update
       setRefreshTrigger((prev) => prev + 1);
-    } catch (error: any) {
-      toast.error(
-        error.response?.data?.message || "Failed to submit withdrawal request"
-      );
+    } catch (error: Error | unknown) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to submit withdrawal request";
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -158,9 +183,11 @@ export default function WithdrawalForm() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="btc">Bitcoin</SelectItem>
-                          <SelectItem value="eth">Ethereum</SelectItem>
-                          <SelectItem value="usdt">USDT</SelectItem>
+                          {uniqueNetworks.map((network) => (
+                            <SelectItem key={network} value={network}>
+                              {network}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -286,10 +313,7 @@ export default function WithdrawalForm() {
                       <FormItem>
                         <FormLabel>IBAN Number</FormLabel>
                         <FormControl>
-                          <Input
-                            placeholder="Enter IBAN Number"
-                            {...field}
-                          />
+                          <Input placeholder="Enter IBAN Number" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

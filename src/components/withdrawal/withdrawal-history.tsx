@@ -10,12 +10,13 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Info } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface WithdrawalRequest {
   id: string;
@@ -52,6 +53,9 @@ export function WithdrawalHistory({
   const [withdrawals, setWithdrawals] = useState<WithdrawalRequest[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedRequest, setSelectedRequest] =
+    useState<WithdrawalRequest | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   useEffect(() => {
     const fetchWithdrawals = async () => {
@@ -109,37 +113,36 @@ export function WithdrawalHistory({
   }
 
   return (
-    <div className="rounded-md border border-border/40 overflow-hidden">
-      <Table>
-        <TableHeader>
-          <TableRow className="bg-card hover:bg-card">
-            <TableHead className="text-foreground font-bold">DATE</TableHead>
-            <TableHead className="text-foreground font-bold">AMOUNT</TableHead>
-            <TableHead className="text-foreground font-bold">TYPE</TableHead>
-            <TableHead className="text-foreground font-bold">DETAILS</TableHead>
-            <TableHead className="text-foreground font-bold">STATUS</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {withdrawals.length === 0 ? (
-            <TableRow>
-              <TableCell
-                colSpan={5}
-                className="text-center text-muted-foreground"
-              >
-                No withdrawal history found
-              </TableCell>
+    <>
+      <div className="rounded-md border border-border/40 overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-card hover:bg-card">
+              <TableHead className="text-foreground font-bold">DATE</TableHead>
+              <TableHead className="text-foreground font-bold">
+                AMOUNT
+              </TableHead>
+              <TableHead className="text-foreground font-bold">TYPE</TableHead>
+              <TableHead className="text-foreground font-bold">
+                DETAILS
+              </TableHead>
+              <TableHead className="text-foreground font-bold">
+                STATUS
+              </TableHead>
             </TableRow>
-          ) : (
-            withdrawals.map((request) => {
-              let details;
-              try {
-                details = JSON.parse(request.details);
-              } catch {
-                details = { error: "Unable to parse details" };
-              }
-
-              return (
+          </TableHeader>
+          <TableBody>
+            {withdrawals.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={5}
+                  className="text-center text-muted-foreground"
+                >
+                  No withdrawal history found
+                </TableCell>
+              </TableRow>
+            ) : (
+              withdrawals.map((request) => (
                 <TableRow key={request.id} className="bg-card/50 hover:bg-card">
                   <TableCell className="text-muted-foreground">
                     {request.date}
@@ -147,38 +150,75 @@ export function WithdrawalHistory({
                   <TableCell>{request.amount}</TableCell>
                   <TableCell className="capitalize">{request.type}</TableCell>
                   <TableCell>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <div className="flex items-center cursor-help">
-                            <Info className="h-4 w-4 text-muted-foreground mr-1" />
-                            <span className="text-muted-foreground">
-                              Details
-                            </span>
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <div className="space-y-1">
-                            {Object.entries(details).map(([key, value]) => (
-                              <p key={key} className="capitalize">
-                                {key.replace("_", " ")}: {value as string}
-                              </p>
-                            ))}
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
+                      onClick={() => {
+                        setSelectedRequest(request);
+                        setIsDetailsOpen(true);
+                      }}
+                    >
+                      <Info className="h-4 w-4" />
+                      <span>View Details</span>
+                    </Button>
                   </TableCell>
                   <TableCell>
                     <StatusBadge status={request.status} />
                   </TableCell>
                 </TableRow>
-              );
-            })
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Withdrawal Details</DialogTitle>
+          </DialogHeader>
+          {selectedRequest && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                {Object.entries(JSON.parse(selectedRequest.details)).map(
+                  ([key, value]) => (
+                    <div key={key} className="contents">
+                      <div className="font-medium capitalize">
+                        {key.replace(/_/g, " ")}:
+                      </div>
+                      <div className="text-muted-foreground">
+                        {String(value)}
+                      </div>
+                    </div>
+                  )
+                )}
+                <div className="font-medium">Status:</div>
+                <div>
+                  <StatusBadge status={selectedRequest.status} />
+                </div>
+                <div className="font-medium">Amount:</div>
+                <div className="text-muted-foreground">
+                  {selectedRequest.amount}
+                </div>
+                <div className="font-medium">Date:</div>
+                <div className="text-muted-foreground">
+                  {selectedRequest.date}
+                </div>
+              </div>
+              <div className="flex justify-end">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsDetailsOpen(false)}
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
           )}
-        </TableBody>
-      </Table>
-    </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
