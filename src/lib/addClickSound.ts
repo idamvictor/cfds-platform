@@ -1,3 +1,5 @@
+import useSoundStore from "@/store/soundStore";
+
 /**
  * Adds a click sound to the entire application
  * Call this function once during app initialization
@@ -35,7 +37,11 @@ export function addClickSound() {
 
     // Function to play the click sound
     const playClickSound = () => {
-        if (!audioContext) return;
+        // Check if sound is enabled from the store
+        const isSoundEnabled = useSoundStore.getState().isSoundEnabled;
+
+        // Only play sound if it's enabled and audio context exists
+        if (!isSoundEnabled || !audioContext) return;
 
         try {
             // Create a short "chick" sound (higher pitched, shorter)
