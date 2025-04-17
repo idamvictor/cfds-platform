@@ -4,13 +4,11 @@ import { Maximize, Minimize } from "react-feather";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button.tsx";
 import AccountPlansModal from "@/components/AccountPlanModal.tsx";
-import { useMobile } from "@/hooks/use-mobile.tsx";
 
 export default function Footer() {
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleString());
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isPlansModalOpen, setIsPlansModalOpen] = useState(false);
-  const isMobile = useMobile();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -33,7 +31,7 @@ export default function Footer() {
   return (
     <div className="flex justify-between items-center bg-background text-muted-foreground p-2 text-xs border-t-2 border-secondary mt-2">
       {/* Left Section */}
-      <div className="flex">
+      <div className=" hidden md:flex">
         <Button
           onClick={() => setIsPlansModalOpen(true)}
           className="bg-gradient-to-r from-red-500 to-red-400 hover:from-red-500 hover:to-red-400 text-black font-medium rounded-md border border-red-300 shadow-md transition-all duration-300 group"
@@ -56,32 +54,27 @@ export default function Footer() {
         <div className="flex items-center justify-self-end gap-4">
           <Link to="/main/chat" className="flex gap-1 items-center">
             <Mail size={14} />
-            {!isMobile && <span>LIVE CHAT</span>}
+            <span>LIVE CHAT</span>
           </Link>
           <Link to="/main/settings">
             <Settings size={14} />
           </Link>
-          {!isMobile && <Volume2 size={14} />}
+          <Volume2 size={14} />
 
-          <span>
-            {!isMobile && "Current Time:"} {currentTime}
-          </span>
-          {!isMobile && (
-            <div>
-              {isFullScreen ? (
-                <Minimize
-                  size={14}
-                  onClick={handleFullScreen}
-                  className="cursor-pointer"
-                />
-              ) : (
-                <Maximize
-                  size={14}
-                  onClick={handleFullScreen}
-                  className="cursor-pointer"
-                />
-              )}
-            </div>
+          <span>Current Time: {currentTime}</span>
+
+          {isFullScreen ? (
+            <Minimize
+              size={14}
+              onClick={handleFullScreen}
+              className="cursor-pointer"
+            />
+          ) : (
+            <Maximize
+              size={14}
+              onClick={handleFullScreen}
+              className="cursor-pointer"
+            />
           )}
         </div>
       </div>

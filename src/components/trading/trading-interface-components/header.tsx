@@ -13,6 +13,7 @@ import {
   Calendar,
   Newspaper,
   LogOut,
+  Crown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +32,7 @@ import AutoTraderModal from "./auto-trader-modal";
 import Logo from "@/components/Logo";
 import useTradeStore from "@/store/tradeStore";
 import { useCurrency } from "@/hooks/useCurrency";
+import AccountPlansModal from "@/components/AccountPlanModal";
 
 // Define the ActiveView type
 type ActiveView =
@@ -67,6 +69,8 @@ export default function Header({
   const selectedAccountIndex = useUserStore(
     (state) => state.selectedAccountIndex
   );
+  const [isPlansModalOpen, setIsPlansModalOpen] = useState(false);
+
   // const setSelectedAccountIndex = useUserStore(
   //   (state) => state.setSelectedAccountIndex
   // );
@@ -266,6 +270,29 @@ export default function Header({
                             </Button>
                           </Link>
                         </div>
+                      </div>
+
+                      {/* Plan Type */}
+                      <div className="flex mt-2 px-3 py-2 w-full">
+                        <Button
+                          onClick={() => setIsPlansModalOpen(true)}
+                          className="bg-gradient-to-r from-red-500 to-red-400 hover:from-red-500 hover:to-red-400 text-black font-medium rounded-md border border-red-300 shadow-md transition-all duration-300 group w-full flex"
+                        >
+                          <div className="flex items-center gap-3 justify-items-start-">
+                            <div className="flex items-center  justify-center w-5 h-5 rounded-full bg-white/20 backdrop-blur-sm">
+                              <Crown className="h-2 w-2 text-white group-hover:scale-110 transition-transform" />
+                            </div>
+                            <div className="flex flex-col items-start">
+                              <span className="text-xs text-white font-bold">
+                                BASIC ACCOUNT
+                              </span>
+                            </div>
+                          </div>
+                        </Button>
+                        <AccountPlansModal
+                          open={isPlansModalOpen}
+                          onOpenChange={setIsPlansModalOpen}
+                        />
                       </div>
 
                       <div className="border-t border-border mt-2 px-3 py-2">
