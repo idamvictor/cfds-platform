@@ -155,9 +155,7 @@ export default function WithdrawalForm() {
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="crypto">Cryptocurrency</SelectItem>
-                          <SelectItem value="wire_transfer">
-                            Wire Transfer
-                          </SelectItem>
+                          <SelectItem value="bank">Bank Transfer</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -213,7 +211,7 @@ export default function WithdrawalForm() {
               </div>
             )}
 
-            {method === "wire_transfer" && (
+            {method === "bank" && (
               <div className="space-y-4">
                 <FormField
                   control={form.control}
@@ -222,7 +220,7 @@ export default function WithdrawalForm() {
                     <FormItem>
                       <FormLabel>Bank Name</FormLabel>
                       <FormControl>
-                        <Input required placeholder="Enter bank name" {...field} />
+                        <Input placeholder="Enter bank name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -236,7 +234,7 @@ export default function WithdrawalForm() {
                     <FormItem>
                       <FormLabel>Bank Address</FormLabel>
                       <FormControl>
-                        <Input required placeholder="Enter bank address" {...field} />
+                        <Input placeholder="Enter bank address" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -252,7 +250,6 @@ export default function WithdrawalForm() {
                         <FormLabel>Account Number</FormLabel>
                         <FormControl>
                           <Input
-                              required
                             placeholder="Enter account number"
                             {...field}
                           />
@@ -269,7 +266,7 @@ export default function WithdrawalForm() {
                       <FormItem>
                         <FormLabel>Account Name</FormLabel>
                         <FormControl>
-                          <Input required placeholder="Enter account name" {...field} />
+                          <Input placeholder="Enter account name" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -284,27 +281,31 @@ export default function WithdrawalForm() {
                       <FormItem>
                         <FormLabel>IBAN Number</FormLabel>
                         <FormControl>
-                          <Input  placeholder="Enter IBAN Number" {...field} />
+                          <Input placeholder="Enter IBAN Number" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
 
+
                   <FormField
-                    control={form.control}
-                    name="swiftcode"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Swift Code</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter SWIFT code" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                      control={form.control}
+                      name="swiftcode"
+                      render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Swift Code</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Enter SWIFT code" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                      )}
                   />
+
+
                 </div>
+
               </div>
             )}
 
