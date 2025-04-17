@@ -24,7 +24,7 @@ export default function Footer() {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen();
       setIsFullScreen(true);
-    } else if (document.exitFullscreen) {
+    } else {
       document.exitFullscreen();
       setIsFullScreen(false);
     }
@@ -36,26 +36,18 @@ export default function Footer() {
       <div className="flex">
         <Button
           onClick={() => setIsPlansModalOpen(true)}
-          className={
-            isMobile
-              ? "w-8 h-8 bg-gradient-to-r from-red-500 to-red-400 hover:from-red-500 hover:to-red-400 p-1 rounded-md border border-red-300 shadow-md transition-all duration-300 group"
-              : "bg-gradient-to-r from-red-500 to-red-400 hover:from-red-500 hover:to-red-400 text-black font-medium rounded-md border border-red-300 shadow-md transition-all duration-300 group"
-          }
+          className="bg-gradient-to-r from-red-500 to-red-400 hover:from-red-500 hover:to-red-400 text-black font-medium rounded-md border border-red-300 shadow-md transition-all duration-300 group"
         >
-          {isMobile ? (
-            <Crown className="h-4 w-4 text-white group-hover:scale-110 transition-transform" />
-          ) : (
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 backdrop-blur-sm">
-                <Crown className="h-2 w-2 text-white group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="flex flex-col items-start">
-                <span className="text-xs text-white font-bold">
-                  BASIC ACCOUNT
-                </span>
-              </div>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 backdrop-blur-sm">
+              <Crown className="h-2 w-2 text-white group-hover:scale-110 transition-transform" />
             </div>
-          )}
+            <div className="flex flex-col items-start">
+              <span className="text-xs text-white font-bold">
+                BASIC ACCOUNT
+              </span>
+            </div>
+          </div>
         </Button>
       </div>
 
@@ -69,22 +61,27 @@ export default function Footer() {
           <Link to="/main/settings">
             <Settings size={14} />
           </Link>
-          <Volume2 size={14} />
+          {!isMobile && <Volume2 size={14} />}
+
           <span>
             {!isMobile && "Current Time:"} {currentTime}
           </span>
-          {isFullScreen ? (
-            <Minimize
-              size={14}
-              onClick={handleFullScreen}
-              className="cursor-pointer"
-            />
-          ) : (
-            <Maximize
-              size={14}
-              onClick={handleFullScreen}
-              className="cursor-pointer"
-            />
+          {!isMobile && (
+            <div>
+              {isFullScreen ? (
+                <Minimize
+                  size={14}
+                  onClick={handleFullScreen}
+                  className="cursor-pointer"
+                />
+              ) : (
+                <Maximize
+                  size={14}
+                  onClick={handleFullScreen}
+                  className="cursor-pointer"
+                />
+              )}
+            </div>
           )}
         </div>
       </div>
