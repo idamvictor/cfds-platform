@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronUp, Info } from "lucide-react";
+import { ChevronUp, Info, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { useCurrency } from "@/hooks/useCurrency.ts";
+import AssetInfoModal from "@/components/trading/trading-interface-components/panels/inc/AssetInfoModal";
+import { Asset } from "@/store/assetStore";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 export interface AccountSummary {
   balance: number;
@@ -23,6 +20,7 @@ export interface AccountSummary {
 
 interface AccountSummaryProps {
   accountData: AccountSummary;
+  asset: Asset; // Add asset prop
   isDesktop: boolean;
   isCollapsed?: boolean;
   setIsCollapsed?: (collapsed: boolean) => void;
@@ -31,6 +29,7 @@ interface AccountSummaryProps {
 
 export function AccountSummary({
   accountData,
+  asset,
   isDesktop,
   isCollapsed = false,
   setIsCollapsed = () => {},
@@ -38,6 +37,7 @@ export function AccountSummary({
 }: AccountSummaryProps) {
   const { formatCurrency } = useCurrency();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showAccountDetails, setShowAccountDetails] = useState(false);
 
   if (isDesktop) {
     return (
@@ -144,65 +144,82 @@ export function AccountSummary({
 
         <div className="flex items-center gap-1">
           {children}
-          <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6 rounded-full"
-              onClick={() => setIsModalOpen(true)}
-            >
-              <Info className="h-3.5 w-3.5" />
-            </Button>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Account Details</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Credit:</span>
-                  <span className="text-sm">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 rounded-full"
+            onClick={() => setShowAccountDetails(true)}
+          >
+            <Wallet className="h-3.5 w-3.5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 rounded-full"
+            onClick={() => setIsModalOpen(true)}
+          >
+            <Info className="h-3.5 w-3.5" />
+          </Button>
+
+          {/* Asset Info Modal */}
+          <AssetInfoModal
+            asset={asset}
+            open={isModalOpen}
+            onOpenChange={setIsModalOpen}
+            onTradeClick={() => {}}
+          />
+
+          {/* Account Details Dialog */}
+          <Dialog
+            open={showAccountDetails}
+            onOpenChange={setShowAccountDetails}
+          >
+            <DialogContent className="sm:max-w-md">
+              <div className="space-y-4 p-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">Balance</span>
+                  <span className="font-medium">
+                    {formatCurrency(accountData.balance)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">Credit</span>
+                  <span className="font-medium">
                     {formatCurrency(accountData.credit)}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Equity:</span>
-                  <span className="text-sm">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">Equity</span>
+                  <span className="font-medium">
                     {formatCurrency(accountData.equity)}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Margin:</span>
-                  <span className="text-sm">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">Margin</span>
+                  <span className="font-medium">
                     {formatCurrency(accountData.margin)}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    Margin level:
-                  </span>
-                  <span className="text-sm">{accountData.marginLevel}</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">Margin Level</span>
+                  <span className="font-medium">{accountData.marginLevel}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    Free Margin:
-                  </span>
-                  <span className="text-sm">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">Free Margin</span>
+                  <span className="font-medium">
                     {formatCurrency(accountData.freeMargin)}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    Lifetime PnL:
-                  </span>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">PnL</span>
                   <span
                     className={cn(
-                      "text-sm",
-                      accountData.lifetimePnl >= 0
-                        ? "text-green-500"
-                        : "text-red-500"
+                      "font-medium",
+                      accountData.pnl >= 0 ? "text-green-500" : "text-red-500"
                     )}
                   >
-                    {formatCurrency(accountData.lifetimePnl)}
+                    {accountData.pnl >= 0 ? "" : "-"}
+                    {formatCurrency(Math.abs(accountData.pnl))}
                   </span>
                 </div>
               </div>

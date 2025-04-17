@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { useMobile } from "@/hooks/use-mobile";
 import useTradeStore from "@/store/tradeStore";
 import type { Trade } from "@/store/tradeStore";
+import useAssetStore from "@/store/assetStore";
 
 import DesktopTradeTable from "@/components/trading/partials/DesktopTradeTable";
 import AccountSummary from "@/components/trading/partials/AccountSummary";
@@ -38,6 +39,8 @@ export default function OrderTable() {
     hasMoreOpenTrades,
     hasMoreClosedTrades,
   } = useTradeStore();
+
+  const { activeAsset } = useAssetStore();
 
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
@@ -154,35 +157,37 @@ export default function OrderTable() {
 
       {/* Account summary section */}
       <div className="sticky bottom-0 z-20 bg-background">
-        {isMobile ? (
-          <AccountSummary
-            accountData={accountSummary}
-            isDesktop={false}
-            // showAccountDetails={showAccountDetails}
-            // setShowAccountDetails={setShowAccountDetails}
-          >
-            <MobileSheet
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-              setShowFilters={setShowFilters}
-              openTrades={openTrades}
-              closedTrades={closedTrades}
-              isLoadingOpen={isLoadingOpen}
-              isLoadingClosed={isLoadingClosed}
-              expandedOrderId={expandedOrderId}
-              toggleOrderExpand={toggleOrderExpand}
-              loadMoreRef={loadMoreRef}
-              handleClosePosition={handleClosePosition}
-            />
-          </AccountSummary>
-        ) : (
-          <AccountSummary
-            accountData={accountSummary}
-            isDesktop={true}
-            isCollapsed={isCollapsed}
-            setIsCollapsed={setIsCollapsed}
-          />
-        )}
+        {isMobile
+          ? activeAsset && (
+              <AccountSummary
+                accountData={accountSummary}
+                asset={activeAsset}
+                isDesktop={false}
+              >
+                <MobileSheet
+                  activeTab={activeTab}
+                  setActiveTab={setActiveTab}
+                  setShowFilters={setShowFilters}
+                  openTrades={openTrades}
+                  closedTrades={closedTrades}
+                  isLoadingOpen={isLoadingOpen}
+                  isLoadingClosed={isLoadingClosed}
+                  expandedOrderId={expandedOrderId}
+                  toggleOrderExpand={toggleOrderExpand}
+                  loadMoreRef={loadMoreRef}
+                  handleClosePosition={handleClosePosition}
+                />
+              </AccountSummary>
+            )
+          : activeAsset && (
+              <AccountSummary
+                accountData={accountSummary}
+                asset={activeAsset}
+                isDesktop={true}
+                isCollapsed={isCollapsed}
+                setIsCollapsed={setIsCollapsed}
+              />
+            )}
       </div>
 
       <MobileFilterDialog open={showFilters} onOpenChange={setShowFilters} />
