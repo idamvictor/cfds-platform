@@ -6,6 +6,8 @@ import * as z from "zod";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "@/lib/axios";
 import useUserStore from "@/store/userStore";
+import { AxiosError } from "axios";
+import { toast } from "@/components/ui/sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -61,16 +63,36 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       const response = await axiosInstance.post("/auth/login", values);
-      console.log("Login successful:", response.data);
+
+      // Show success message
+      toast.success("Login successful! Redirecting...");
 
       // Store the user object and token in Zustand store
       const { user, token } = response.data.data;
       setUser(user, token);
-      console.log("User data stored in Zustand:", user, token);
 
-      navigate("/main");
+      // Short delay before redirect to show the success message
+      setTimeout(() => {
+        navigate("/main");
+      }, 1000);
     } catch (error) {
       console.error("Login failed:", error);
+
+      if (error instanceof AxiosError) {
+        if (error.response?.data?.message) {
+          toast.error(error.response.data.message);
+        } else if (error.message === "Network Error") {
+          toast.error(
+            "Unable to connect to the server. Please check your internet connection."
+          );
+        } else {
+          toast.error(error.message);
+        }
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
