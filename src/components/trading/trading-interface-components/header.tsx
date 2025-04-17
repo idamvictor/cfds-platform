@@ -146,8 +146,8 @@ export default function Header({
             <div className="flex items-center">
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="mr-2">
-                    <Menu className="h-5 w-5" />
+                  <Button variant="ghost" size="icon" className="mr-2 w-6 h-6">
+                    <Menu className="h-6 w-6" />
                   </Button>
                 </SheetTrigger>
                 <SheetContent
@@ -618,7 +618,7 @@ export default function Header({
                   className="text-red-500"
                   onClick={() => {
                     useUserStore.getState().clearUser();
-                    window.location.href = "/login";
+                    window.location.href = "/";
                   }}
                 >
                   Logout
