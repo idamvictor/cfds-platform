@@ -220,7 +220,7 @@ input, textarea, select {
 
 /* For visual consistency while maintaining the 16px minimum */
 @media (max-width: 768px) {
-  .text-xs, .text-sm {
+  .text-xs, .text-sm, .text-[10px], .text-[8px] {
   font-size: 16px !important;
   transform: scale(0.8);
   transform-origin: left center;
