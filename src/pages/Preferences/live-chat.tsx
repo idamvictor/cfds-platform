@@ -1,109 +1,116 @@
+import React, {  useState } from "react";
+import { useChat } from "@/hooks/useChat";
+import ChatMessageList from "@/components/chat/ChatMessageList";
 import { ChatInput } from "@/components/chat/chat-input";
-import { ChatMessage } from "@/components/chat/chat-message";
-import * as React from "react";
-
-// Message type
-type MessageRole = "agent" | "user";
-
-interface Message {
-    id: string;
-    content: string;
-    role: MessageRole;
-    timestamp: string;
-    attachment?: {
-        type: string;
-        name: string;
-    };
-}
+import { Loader2, AlertCircle } from "lucide-react";
+import useUserStore from "@/store/userStore";
 
 export default function LiveChat() {
-    const [messages, setMessages] = React.useState<Message[]>([
-        {
-            id: "msg-1",
-            content: "",
-            role: "agent",
-            timestamp: "6/18/2024, 12:07:32 PM",
-            attachment: {
-                type: "pdf",
-                name: "PDF attachment",
-            },
-        },
-        {
-            id: "msg-2",
-            content:
-                "You can make a transfer using these bank details and confirm that the funds have been credited to your trading account immediately upon submitting your successful transfer receipt.",
-            role: "agent",
-            timestamp: "6/18/2024, 12:08:01 PM",
-        },
-        {
-            id: "msg-3",
-            content: "Hello there,",
-            role: "user",
-            timestamp: "10/18/2024, 3:52:17 PM",
-        },
-        {
-            id: "msg-4",
-            content: "I just want why my account is not trading last few weeks?",
-            role: "user",
-            timestamp: "10/18/2024, 3:52:30 PM",
-        },
-    ]);
+    const user = useUserStore((state) => state.user);
+    const {
+        messages,
+        isLoading,
+        error,
+        connectionStatus,
+        sendMessage,
+        loadMoreMessages,
+        hasMoreMessages,
+        selectedFiles,
+        addFile,
+        removeFile
+    } = useChat();
 
-    const [newMessage, setNewMessage] = React.useState("");
+    const [inputValue, setInputValue] = useState("");
 
     const handleSendMessage = () => {
-        if (!newMessage.trim()) return;
-
-        const message: Message = {
-            id: `msg-${messages.length + 1}`,
-            content: newMessage,
-            role: "user",
-            timestamp: new Date().toLocaleString(),
-        };
-
-        setMessages([...messages, message]);
-        setNewMessage("");
-
-        // Simulate agent response after a delay
-        setTimeout(() => {
-            const response: Message = {
-                id: `msg-${messages.length + 2}`,
-                content:
-                    "Thank you for your inquiry. Let me check your account status and get back to you shortly.",
-                role: "agent",
-                timestamp: new Date().toLocaleString(),
-            };
-
-            setMessages((prev) => [...prev, response]);
-        }, 2000);
+        if (inputValue.trim() || selectedFiles.length > 0) {
+            sendMessage(inputValue);
+            setInputValue("");
+        }
     };
 
-    // Scroll to bottom when messages change
-    const messagesEndRef = React.useRef<HTMLDivElement>(null);
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(e.target.value);
+    };
 
-    React.useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages]);
+    const handleFileSelect = (file: File) => {
+        addFile(file);
+    };
+
+    if (isLoading && messages.length === 0) {
+        return (
+            <div className="container mx-auto p-6">
+                <div className="flex items-center justify-center h-[calc(100vh-200px)]">
+                    <div className="flex flex-col items-center">
+                        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+                        <p className="text-muted-foreground">Loading conversation history...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <div className="flex flex-col h-screen bg-background text-foreground">
-            <div className="p-4 border-b border-border">
-                <h1 className="text-2xl font-bold text-center">LIVE CHAT</h1>
-            </div>
+        <div className="container mx-auto p-6">
+            <div className="border border-border rounded-md h-[calc(100vh-180px)] flex flex-col bg-background shadow-sm overflow-hidden">
+                <div className="px-6 py-4 border-b border-border bg-muted/20 flex justify-between items-center">
+                    <div>
+                        <h2 className="text-xl font-semibold">Customer Support</h2>
+                        <p className="text-sm text-muted-foreground">Our team is here to help you</p>
+                    </div>
+                    <div className="flex items-center gap-2 bg-card px-3 py-1.5 rounded-full border border-border/40">
+            <span
+                className={`h-2.5 w-2.5 rounded-full ${
+                    connectionStatus === "connected"
+                        ? "bg-green-500"
+                        : connectionStatus === "connecting"
+                            ? "bg-yellow-500 animate-pulse"
+                            : "bg-red-500"
+                }`}
+            />
+                        <span className="text-xs text-muted-foreground">
+              {connectionStatus === "connected"
+                  ? "Connected"
+                  : connectionStatus === "connecting"
+                      ? "Connecting..."
+                      : "Disconnected"}
+            </span>
+                    </div>
+                </div>
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-6">
-                {messages.map((message) => (
-                    <ChatMessage key={message.id} message={message} />
-                ))}
-                <div ref={messagesEndRef} />
-            </div>
+                <div className="flex-1 flex flex-col overflow-hidden relative">
+                    {error && (
+                        <div className="absolute top-0 left-0 right-0 m-4 bg-red-500/10 border border-red-500/20 text-red-500 p-3 rounded-md flex items-start z-10">
+                            <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
+                            <div>
+                                <p className="font-medium">Connection Error</p>
+                                <p className="text-sm">{error}</p>
+                            </div>
+                        </div>
+                    )}
 
-            <div className="p-4 border-t border-border">
-                <ChatInput
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    onSend={handleSendMessage}
-                />
+                    <div className="px-6 flex-1 overflow-y-auto">
+                        <ChatMessageList
+                            messages={messages}
+                            currentUserId={user?.id || ""}
+                            isLoading={isLoading}
+                            onLoadMore={loadMoreMessages}
+                            hasMoreMessages={hasMoreMessages}
+                        />
+                    </div>
+
+                    <div className="p-4 border-t border-border bg-background">
+                        <ChatInput
+                            value={inputValue}
+                            onChange={handleInputChange}
+                            onSend={handleSendMessage}
+                            disabled={connectionStatus !== "connected"}
+                            onFileSelect={handleFileSelect}
+                            selectedFiles={selectedFiles}
+                            onFileRemove={removeFile}
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     );

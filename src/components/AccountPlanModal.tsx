@@ -95,7 +95,7 @@ const planFeatures = [
     { id: "leverage", label: "Leverage", accessor: "leverage" },
     { id: "signals", label: "Trading Signals", accessor: "tradingSignals" },
     { id: "withdrawals", label: "Expedite Withdrawals", accessor: "expediteWithdrawals" },
-    { id: "rewards", label: "Spreadex Trade Rewards", accessor: "tradeRewards" },
+    { id: "rewards", label: "Trade Nation Trade Rewards", accessor: "tradeRewards" },
     { id: "vip", label: "Access to VIP Room", accessor: "vipAccess" },
 ];
 
