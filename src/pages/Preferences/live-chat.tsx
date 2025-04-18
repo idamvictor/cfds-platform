@@ -89,7 +89,7 @@ export default function LiveChat() {
                         </div>
                     )}
 
-                    <div className="px-6 flex-1 overflow-hidden">
+                    <div className="px-6 flex-1 overflow-y-auto">
                         <ChatMessageList
                             messages={messages}
                             currentUserId={user?.id || ""}
