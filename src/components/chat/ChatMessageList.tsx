@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ChatMessage, MessageAttachment } from '@/hooks/useChat';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Loader2, FileText, Image as ImageIcon, Download, File } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Loader2, FileText, Image as ImageIcon, Download, File, ArrowDown } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -72,7 +72,7 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({
         try {
             return format(new Date(dateString), 'h:mm a');
         } catch (error) {
-            console.log('err', error)
+            console.log('Error formatting date:', error);
             return '';
         }
     };
@@ -113,12 +113,12 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({
     };
 
     // Render attachment
-    const renderAttachment = (attachment: MessageAttachment) => {
+    const renderAttachment = (attachment: MessageAttachment, isCurrentUser: boolean) => {
         const isImage = attachment.file_type.startsWith('image/');
 
         if (isImage) {
             return (
-                <div className="relative mt-2 rounded-md overflow-hidden max-w-xs">
+                <div className="mt-2 rounded-md overflow-hidden max-w-xs">
                     <a
                         href={attachment.download_url}
                         target="_blank"
@@ -131,7 +131,7 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({
                             className="max-w-full h-auto max-h-40 object-contain"
                         />
                     </a>
-                    <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs p-1 flex items-center justify-between">
+                    <div className="bg-black/50 text-white text-xs p-1 flex items-center justify-between">
                         <span className="truncate mr-2">{attachment.file_name}</span>
                         <a
                             href={attachment.download_url}
@@ -151,7 +151,10 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({
                 <a
                     href={attachment.download_url}
                     download={attachment.file_name}
-                    className="flex items-center gap-2 p-2 bg-muted/30 rounded-md hover:bg-muted/50 transition-colors"
+                    className={cn(
+                        "flex items-center gap-2 p-2 rounded-md hover:bg-muted/50 transition-colors",
+                        isCurrentUser ? "bg-primary/20" : "bg-muted/30"
+                    )}
                 >
                     {getFileIcon(attachment.file_type)}
                     <div className="flex-1 min-w-0">
@@ -212,70 +215,53 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({
                             <div
                                 key={message.id}
                                 className={cn(
-                                    "flex gap-3 max-w-[85%]",
-                                    isCurrentUser ? "ml-auto" : "mr-auto"
+                                    "flex items-start gap-3",
+                                    isCurrentUser ? "flex-row-reverse" : "flex-row"
                                 )}
                             >
-                                {!isCurrentUser && (
-                                    <Avatar className="h-8 w-8 flex-shrink-0">
-                                        <AvatarImage src={message.sender?.avatar} alt={message.sender?.first_name} />
-                                        <AvatarFallback className={isAdmin ? "bg-blue-500" : "bg-primary"}>
-                                            {isAdmin ? "A" : message.sender?.first_name?.[0] || "U"}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                )}
+                                <Avatar className="h-10 w-10 bg-muted">
+                                    <AvatarImage src={message.sender?.avatar} alt={message.sender?.first_name || ""} />
+                                    <AvatarFallback className="bg-muted flex items-center justify-center">
+                    <span className="text-muted-foreground text-xs">
+                      {isAdmin ? "A" : isCurrentUser ? "U" : message.sender?.first_name?.[0] || "?"}
+                    </span>
+                                    </AvatarFallback>
+                                </Avatar>
 
-                                <div className={cn("space-y-1", isCurrentUser && "text-right")}>
-                                    <div className="flex flex-col">
-                                        {message.message && (
-                                            <div className={cn(
-                                                "p-3 rounded-lg inline-block",
+                                <div className={cn("max-w-[80%]", isCurrentUser ? "items-end" : "items-start")}>
+                                    {message.message && (
+                                        <div
+                                            className={cn(
+                                                "rounded-lg p-3",
                                                 isCurrentUser
-                                                    ? "bg-primary text-primary-foreground ml-auto"
+                                                    ? "bg-primary/30 text-primary-foreground"
                                                     : isAdmin
-                                                        ? "bg-blue-600 text-blue-50"
-                                                        : "bg-muted text-foreground mr-auto"
-                                            )}>
-                                                <p className="text-sm whitespace-pre-wrap break-words">{message.message}</p>
-                                            </div>
-                                        )}
+                                                        ? "bg-blue-600/50 text-blue-50"
+                                                        : "bg-muted/50 text-foreground border border-border/40"
+                                            )}
+                                        >
+                                            <p className="whitespace-pre-wrap break-words">{message.message}</p>
+                                        </div>
+                                    )}
 
-                                        {/* Render attachments */}
-                                        {hasAttachments && (
-                                            <div className={cn("space-y-1", isCurrentUser ? "items-end ml-auto" : "items-start mr-auto")}>
-                                                {message.attachments.map((attachment) => (
-                                                    <div key={attachment.id} className={isCurrentUser ? "ml-auto" : "mr-auto"}>
-                                                        {renderAttachment(attachment)}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
+                                    {/* Render attachments */}
+                                    {hasAttachments && (
+                                        <div className="space-y-2 mt-2">
+                                            {message.attachments.map((attachment) => (
+                                                <div key={attachment.id}>
+                                                    {renderAttachment(attachment, isCurrentUser)}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
 
-                                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                        {!isCurrentUser && !isAdmin && (
-                                            <span className="font-medium">
-                        {message.sender?.first_name} {message.sender?.last_name}
-                      </span>
-                                        )}
-                                        {!isCurrentUser && isAdmin && (
-                                            <span className="font-medium">Support Agent</span>
-                                        )}
+                                    <div className="flex items-center mt-1 text-xs text-muted-foreground">
                                         <span>{formatMessageTime(message.created_at)}</span>
                                         {isCurrentUser && message.read_at && (
-                                            <span className="text-primary">• Read</span>
+                                            <span className="text-primary ml-1">• Read</span>
                                         )}
                                     </div>
                                 </div>
-
-                                {isCurrentUser && (
-                                    <Avatar className="h-8 w-8 flex-shrink-0">
-                                        <AvatarImage src={message.sender?.avatar} alt={message.sender?.first_name} />
-                                        <AvatarFallback className="bg-primary">
-                                            {message.sender?.first_name?.[0] || "U"}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                )}
                             </div>
                         );
                     })}
@@ -288,15 +274,13 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({
             {/* Jump to bottom button */}
             {userScrolled && messages.length > 0 && (
                 <button
-                    className="fixed bottom-24 right-6 bg-primary text-primary-foreground rounded-full p-2 shadow-lg z-10"
+                    className="fixed bottom-24 right-6 bg-primary/80 hover:bg-primary text-primary-foreground rounded-full p-2 shadow-lg z-10 transition-all"
                     onClick={() => {
                         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
                         setUserScrolled(false);
                     }}
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
+                    <ArrowDown className="h-5 w-5" />
                 </button>
             )}
         </div>

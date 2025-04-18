@@ -1,10 +1,9 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axiosInstance from '@/lib/axios';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 import useUserStore from '@/store/userStore';
-import { AxiosError } from 'axios';
-import { FileUpload } from '@/components/chat/chat-input';
+import type { AxiosError } from 'axios';
 
 export interface MessageAttachment {
     id: string;
@@ -35,13 +34,8 @@ export interface ChatMessage {
     };
 }
 
-interface MessageSentEvent {
-    message: ChatMessage;
-}
-
-interface MessageReadEvent {
-    message_id: string;
-}
+interface MessageSentEvent { message: ChatMessage }
+interface MessageReadEvent { message_id: string }
 
 interface MessagesPaginatedResponse {
     data: ChatMessage[];
@@ -64,6 +58,14 @@ interface MessageCreatedResponse {
 
 type ConnectionStatus = 'connected' | 'connecting' | 'disconnected';
 
+interface SelectedFile {
+    file: File;
+    preview?: string;
+    uploading: boolean;
+    progress: number;
+    error?: string;
+}
+
 interface ChatHook {
     messages: ChatMessage[];
     isLoading: boolean;
@@ -73,7 +75,7 @@ interface ChatHook {
     loadMoreMessages: () => Promise<void>;
     hasMoreMessages: boolean;
     uploadFile: (file: File) => Promise<string>;
-    selectedFiles: FileUpload[];
+    selectedFiles: SelectedFile[];
     addFile: (file: File) => void;
     removeFile: (index: number) => void;
 }
@@ -85,14 +87,39 @@ export function useChat(): ChatHook {
     const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('connecting');
     const [page, setPage] = useState(1);
     const [hasMoreMessages, setHasMoreMessages] = useState(true);
-    const [selectedFiles, setSelectedFiles] = useState<FileUpload[]>([]);
-    const user = useUserStore((state) => state.user);
-    const echoInstance = useRef<Echo | null>(null);
+    const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>([]);
+    const user = useUserStore(state => state.user);
 
-    // Initialize Echo
+    const fetchMessages = useCallback(async (pageToFetch = 1) => {
+        try {
+            setIsLoading(true);
+            setError(null);
+
+            const response = await axiosInstance.get<MessagesPaginatedResponse>(
+                `/chat/messages?page=${pageToFetch}`
+            );
+            const incoming = response.data.data;
+
+            if (pageToFetch === 1) {
+                setMessages(incoming);
+            } else {
+                setMessages(prev => [...incoming, ...prev]);
+            }
+
+            setHasMoreMessages(!!response.data.next_page_url);
+            setPage(pageToFetch);
+        } catch (err) {
+            const axiosErr = err as AxiosError<{ message: string }>;
+            const msg = axiosErr.response?.data?.message || 'Failed to load messages.';
+            setError(msg);
+            setConnectionStatus('disconnected');
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+
     useEffect(() => {
         const token = useUserStore.getState().token;
-
         if (!token) {
             setConnectionStatus('disconnected');
             setError('Authentication required.');
@@ -100,34 +127,28 @@ export function useChat(): ChatHook {
             return;
         }
 
-        // Initialize Laravel Echo with Pusher
         if (!window.Echo) {
             window.Pusher = Pusher;
             window.Echo = new Echo({
                 broadcaster: 'pusher',
-                key: import.meta.env.VITE_PUSHER_APP_KEY as string,
-                cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER as string,
+                key: import.meta.env.VITE_PUSHER_APP_KEY,
+                cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
                 forceTLS: true,
                 authEndpoint: '/broadcasting/auth',
                 auth: {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                    headers: { Authorization: `Bearer ${token}` },
                 },
             });
         }
 
-        echoInstance.current = window.Echo;
-
-        // Set up private channel for the user
         if (user) {
             const channel = window.Echo.private(`chat.user.${user.id}`);
 
             channel
-                .listen<MessageSentEvent>('.message.sent', (e: MessageSentEvent) => {
-                    setMessages(prev => [e.message, ...prev]);
+                .listen('.message.sent', (e: MessageSentEvent) => {
+                    setMessages(prev => [...prev, e.message]);
                 })
-                .listen<MessageReadEvent>('.message.read', (e: MessageReadEvent) => {
+                .listen('.message.read', (e: MessageReadEvent) => {
                     setMessages(prev =>
                         prev.map(msg =>
                             msg.id === e.message_id
@@ -140,177 +161,102 @@ export function useChat(): ChatHook {
             setConnectionStatus('connected');
         }
 
-        // Fetch initial messages
         fetchMessages();
 
-        // Cleanup
         return () => {
-            if (window.Echo) {
-                window.Echo.disconnect();
-            }
+            window.Echo?.disconnect();
         };
-    }, [user?.id]);
+    }, [user?.id, fetchMessages]);
 
-    // Function to fetch messages
-    const fetchMessages = async (pageToFetch = 1): Promise<void> => {
-        try {
-            setIsLoading(true);
-            setError(null);
-
-            const response = await axiosInstance.get<MessagesPaginatedResponse>(
-                `/chat/messages?page=${pageToFetch}`
-            );
-
-            if (response.data && response.data.data) {
-                if (pageToFetch === 1) {
-                    setMessages(response.data.data);
-                } else {
-                    setMessages(prev => [...prev, ...response.data.data]);
-                }
-
-                // Check if there are more pages
-                setHasMoreMessages(!!response.data.next_page_url);
-                setPage(pageToFetch);
-            }
-        } catch (err) {
-            const error = err as Error | AxiosError;
-            const errorMessage = 'response' in error
-                ? (error as AxiosError<{message: string}>).response?.data?.message || 'Failed to load messages.'
-                : 'Failed to load messages.';
-
-            setError(errorMessage);
-            setConnectionStatus('disconnected');
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    // Load more messages
-    const loadMoreMessages = useCallback(async (): Promise<void> => {
+    const loadMoreMessages = useCallback(async () => {
         if (!hasMoreMessages || isLoading) return;
+        await fetchMessages(page + 1);
+    }, [hasMoreMessages, isLoading, page, fetchMessages]);
 
-        const nextPage = page + 1;
-        await fetchMessages(nextPage);
-    }, [hasMoreMessages, isLoading, page]);
-
-    // Upload a file
     const uploadFile = async (file: File): Promise<string> => {
         const formData = new FormData();
         formData.append('file', file);
+        const idx = selectedFiles.findIndex(f => f.file === file);
 
         try {
             const response = await axiosInstance.post<{ url: string }>('/chat/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-                onUploadProgress: (progressEvent) => {
-                    const fileIndex = selectedFiles.findIndex(f => f.file === file);
-                    if (fileIndex !== -1 && progressEvent.total) {
-                        const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                headers: { 'Content-Type': 'multipart/form-data' },
+                onUploadProgress: ev => {
+                    if (ev.total && idx !== -1) {
+                        const pct = Math.round((ev.loaded * 100) / ev.total);
                         setSelectedFiles(prev => {
-                            const updated = [...prev];
-                            updated[fileIndex] = { ...updated[fileIndex], progress };
-                            return updated;
+                            const up = [...prev];
+                            up[idx].progress = pct;
+                            return up;
                         });
                     }
                 },
             });
-
             return response.data.url;
         } catch (err) {
-            const error = err as Error | AxiosError;
-            const errorMessage = 'response' in error
-                ? (error as AxiosError<{message: string}>).response?.data?.message || 'Failed to upload file.'
-                : 'Failed to upload file.';
-
-            const fileIndex = selectedFiles.findIndex(f => f.file === file);
-            if (fileIndex !== -1) {
+            const axiosErr = err as AxiosError<{ message: string }>;
+            const msg = axiosErr.response?.data?.message || 'Failed to upload file.';
+            if (idx !== -1) {
                 setSelectedFiles(prev => {
-                    const updated = [...prev];
-                    updated[fileIndex] = { ...updated[fileIndex], error: errorMessage, uploading: false };
-                    return updated;
+                    const up = [...prev];
+                    up[idx].error = msg;
+                    up[idx].uploading = false;
+                    return up;
                 });
             }
-
-            throw new Error(errorMessage);
+            throw new Error(msg);
         }
     };
 
-    // Add a file to the selected files
-    const addFile = (file: File): void => {
-        // Create preview URL for images
+    const addFile = (file: File) => {
         let preview: string | undefined;
         if (file.type.startsWith('image/')) {
             preview = URL.createObjectURL(file);
         }
-
         setSelectedFiles(prev => [
             ...prev,
-            { file, preview, uploading: false, progress: 0 }
+            { file, preview, uploading: false, progress: 0 },
         ]);
     };
 
-    // Remove a file from the selected files
-    const removeFile = (index: number): void => {
+    const removeFile = (index: number) => {
         setSelectedFiles(prev => {
-            const updated = [...prev];
-            // Revoke object URL if it exists to prevent memory leaks
-            if (updated[index].preview) {
-                URL.revokeObjectURL(updated[index].preview);
-            }
-            updated.splice(index, 1);
-            return updated;
+            const up = [...prev];
+            if (up[index].preview) URL.revokeObjectURL(up[index].preview!);
+            up.splice(index, 1);
+            return up;
         });
     };
 
-    // Send a message with optional file
-    const sendMessage = async (message: string, file?: File): Promise<void> => {
+    const sendMessage = async (message: string, file?: File) => {
         if (!user) {
             setError('You must be logged in to send messages.');
             return;
         }
-
         if (!message.trim() && !file && selectedFiles.length === 0) {
             return;
         }
 
         try {
-            // If there's a file or selectedFiles, process them first
             let attachments: string[] = [];
 
             if (file) {
-                // If a file is directly passed, upload it
-                const fileUrl = await uploadFile(file);
-                attachments.push(fileUrl);
-            } else if (selectedFiles.length > 0) {
-                // Mark all files as uploading
-                setSelectedFiles(prev =>
-                    prev.map(f => ({ ...f, uploading: true, progress: 0 }))
-                );
-
-                // Upload all selected files
-                const uploadPromises = selectedFiles.map(fileUpload => uploadFile(fileUpload.file));
-                const fileUrls = await Promise.all(uploadPromises);
-                attachments = fileUrls;
-
-                // Clear selected files after successful upload
+                attachments.push(await uploadFile(file));
+            } else if (selectedFiles.length) {
+                setSelectedFiles(prev => prev.map(f => ({ ...f, uploading: true, progress: 0 })));
+                attachments = await Promise.all(selectedFiles.map(f => uploadFile(f.file)));
                 setSelectedFiles([]);
             }
 
-            // Send the message with attachments
-            await axiosInstance.post<MessageCreatedResponse>('/chat/messages', {
-                message,
-                attachments
-            });
-
-            // Message will come through the WebSocket
+            const response = await axiosInstance.post<MessageCreatedResponse>(
+                '/chat/messages',
+                { message, attachments }
+            );
+            setMessages(prev => [...prev, response.data.data]);
         } catch (err) {
-            const error = err as Error | AxiosError;
-            const errorMessage = 'response' in error
-                ? (error as AxiosError<{message: string}>).response?.data?.message || 'Failed to send message.'
-                : 'Failed to send message.';
-
-            setError(errorMessage);
+            const axiosErr = err as AxiosError<{ message: string }>;
+            const msg = axiosErr.response?.data?.message || 'Failed to send message.';
+            setError(msg);
         }
     };
 
@@ -325,21 +271,6 @@ export function useChat(): ChatHook {
         uploadFile,
         selectedFiles,
         addFile,
-        removeFile
+        removeFile,
     };
-}
-
-// Add TypeScript declaration for Echo
-declare global {
-    interface Window {
-        Echo: Echo;
-        Pusher: typeof Pusher;
-    }
-}
-
-// Add type to Pusher's private channel listen method
-declare module 'laravel-echo' {
-    interface PrivateChannel {
-        listen<T>(event: string, callback: (data: T) => void): this;
-    }
 }

@@ -1,7 +1,7 @@
 import type * as React from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Paperclip, Send, Loader2, X } from "lucide-react";
+import { Paperclip, Send, Loader2, X, File, FileText, Image } from "lucide-react";
 import { useState, useRef } from "react";
 
 export interface FileUpload {
@@ -67,29 +67,45 @@ export function ChatInput({
         }
     };
 
+    const getFileIcon = (file: File) => {
+        if (file.type.startsWith('image/')) {
+            return <Image className="h-4 w-4" />;
+        } else if (file.type === 'application/pdf') {
+            return <FileText className="h-4 w-4" />;
+        } else {
+            return <File className="h-4 w-4" />;
+        }
+    };
+
     return (
         <div className="space-y-2">
             {/* File preview area */}
             {selectedFiles.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-2">
-                    {selectedFiles.map((file, index) => (
+                    {selectedFiles.map((fileUpload, index) => (
                         <div
                             key={index}
-                            className="relative bg-muted/50 rounded-md p-2 pr-8 flex items-center text-xs"
+                            className="relative bg-card border border-border/40 rounded-md p-2 pr-8 flex items-center text-xs"
                         >
-                            <div className="max-w-[150px] truncate">
-                                {file.file.name}
+                            <div className="flex items-center gap-2 max-w-[200px]">
+                                {getFileIcon(fileUpload.file)}
+                                <div className="truncate">
+                                    {fileUpload.file.name}
+                                </div>
                             </div>
-                            {file.uploading && (
+
+                            {fileUpload.uploading && (
                                 <div className="ml-2 text-primary text-xs">
-                                    {file.progress}%
+                                    {fileUpload.progress}%
                                 </div>
                             )}
-                            {file.error && (
+
+                            {fileUpload.error && (
                                 <div className="ml-2 text-destructive text-xs">
                                     Error
                                 </div>
                             )}
+
                             <button
                                 type="button"
                                 className="absolute right-1 top-1 text-muted-foreground hover:text-foreground"
@@ -126,7 +142,7 @@ export function ChatInput({
                     value={value}
                     onChange={onChange}
                     onKeyDown={handleKeyDown}
-                    placeholder={disabled ? "Reconnecting..." : "How can we help?"}
+                    placeholder={disabled ? "Reconnecting..." : "Type a message..."}
                     className="flex-1 bg-card border-card-foreground/10"
                     disabled={disabled || isSending}
                 />
