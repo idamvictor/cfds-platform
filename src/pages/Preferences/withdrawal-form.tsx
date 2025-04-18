@@ -24,18 +24,41 @@ import axiosInstance from "@/lib/axios";
 import { useState, useEffect } from "react";
 import useDataStore from "@/store/dataStore";
 
-const withdrawalFormSchema = z.object({
+const baseWithdrawalSchema = z.object({
   amount: z.string().min(1, "Amount is required"),
   method: z.string().min(1, "Payment method is required"),
-  network: z.string().optional(),
-  wallet_address: z.string().optional(),
-  bank_name: z.string().min(1, "Bank name is required"),
-  bank_address: z.string().min(1, "Bank address is required"),
+});
+
+const cryptoWithdrawalSchema = baseWithdrawalSchema.extend({
+  network: z.string().min(1, "Network is required"),
+  wallet_address: z.string().min(1, "Wallet address is required"),
+  // These fields should not be included in crypto validation
+  bank_name: z.string().optional(),
+  bank_address: z.string().optional(),
   iban_number: z.string().optional(),
-  account_number: z.string().min(1, "Account number is required"),
-  account_name: z.string().min(1, "Account name is required"),
+  account_number: z.string().optional(),
+  account_name: z.string().optional(),
   swiftcode: z.string().optional(),
 });
+
+const wireTransferWithdrawalSchema = baseWithdrawalSchema.extend({
+  bank_name: z.string().min(1, "Bank name is required"),
+  bank_address: z.string().min(1, "Bank address is required"),
+  account_number: z.string().min(1, "Account number is required"),
+  account_name: z.string().min(1, "Account name is required"),
+  iban_number: z.string().optional(),
+  swiftcode: z.string().optional(),
+  // These fields should not be included in wire transfer validation
+  network: z.string().optional(),
+  wallet_address: z.string().optional(),
+});
+
+const combinedSchema = z.discriminatedUnion("method", [
+  cryptoWithdrawalSchema.extend({ method: z.literal("crypto") }),
+  wireTransferWithdrawalSchema.extend({ method: z.literal("wire_transfer") }),
+]);
+
+type WithdrawalFormData = z.infer<typeof combinedSchema>;
 
 export default function WithdrawalForm() {
   const { data, fetchData } = useDataStore();
@@ -43,8 +66,8 @@ export default function WithdrawalForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  const form = useForm<z.infer<typeof withdrawalFormSchema>>({
-    resolver: zodResolver(withdrawalFormSchema),
+  const form = useForm<WithdrawalFormData>({
+    resolver: zodResolver(combinedSchema),
     defaultValues: {
       amount: "",
       method: "crypto",
@@ -80,7 +103,11 @@ export default function WithdrawalForm() {
     }
   }, [data?.wallets, form]);
 
-  async function onSubmit(values: z.infer<typeof withdrawalFormSchema>) {
+  async function onSubmit(
+    values:
+      | z.infer<typeof cryptoWithdrawalSchema>
+      | z.infer<typeof wireTransferWithdrawalSchema>
+  ) {
     try {
       setIsSubmitting(true);
       await axiosInstance.post("/user/withdrawal/store", values);
