@@ -498,6 +498,57 @@ export function TradingInterface() {
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
+
+              <div className="grid grid-cols-1 gap-1 mt-1">
+                <Button
+                  type="submit"
+                  className="bg-green-500 hover:bg-green-600 text-white h-8 px-1"
+                  onClick={() => {
+                    form.setValue("type", "buy");
+                    form.setValue("id", uuidv4());
+                    form.setValue(
+                      "amount",
+                      baseVolumeLots * tradingInfo.contractSize
+                    );
+                  }}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="h-4 w-4 animate-spin mr-1" />
+                  ) : (
+                    <div className="flex flex-col items-center">
+                      <span className="text-[10px] font-bold">BUY</span>
+                      <span className="text-[8px]">
+                        {tradingInfo.buyPrice.toFixed(5)}
+                      </span>
+                    </div>
+                  )}
+                </Button>
+                <Button
+                  type="submit"
+                  className="bg-red-500 hover:bg-red-600 text-white h-8 px-1"
+                  onClick={() => {
+                    form.setValue("type", "sell");
+                    form.setValue("id", uuidv4());
+                    form.setValue(
+                      "amount",
+                      baseVolumeLots * tradingInfo.contractSize
+                    );
+                  }}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="h-4 w-4 animate-spin mr-1" />
+                  ) : (
+                    <div className="flex flex-col items-center">
+                      <span className="text-[10px] font-bold">SELL</span>
+                      <span className="text-[8px]">
+                        {tradingInfo.sellPrice.toFixed(5)}
+                      </span>
+                    </div>
+                  )}
+                </Button>
+              </div>
             </div>
 
             {/* Section 2: Trading Info */}
@@ -587,7 +638,7 @@ export function TradingInterface() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-1 mt-1">
+              {/* <div className="grid grid-cols-2 gap-1 mt-1">
                 <Button
                   type="submit"
                   className="bg-green-500 hover:bg-green-600 text-white h-8 px-1"
@@ -636,7 +687,7 @@ export function TradingInterface() {
                     </div>
                   )}
                 </Button>
-              </div>
+              </div> */}
             </div>
           </div>
 
