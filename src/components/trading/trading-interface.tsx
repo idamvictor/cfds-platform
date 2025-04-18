@@ -600,13 +600,18 @@ export function TradingInterface() {
               <div className="space-y-1">
                 <Button
                   type="button"
-                  className="flex items-center justify-center py-1 w-full h-auto bg-secondary hover:bg-secondary/50"
+                  className="flex items-center justify-start py-1 w-full h-auto bg-secondary hover:bg-secondary/50"
                   onClick={() => setIsProfitCalculatorOpen(true)}
                 >
-                  <BarChart2 className="h-3 w-3 mr-1" />
-                  <span className="text-[10px] font-medium text-foreground">
-                    Profit Calculator
-                  </span>
+                  <BarChart2 className="h-3 w-3 mr-1 " />
+                  <div className="flex flex-col items-start justify-start">
+                    <span className="text-[10px] font-medium text-foreground">
+                      Profit{" "}
+                    </span>
+                    <span className="text-[10px] font-medium text-foreground">
+                      Calculator
+                    </span>
+                  </div>
                 </Button>
 
                 <div>
@@ -616,7 +621,7 @@ export function TradingInterface() {
                     onClick={() => setIsTpSlModalOpen(true)}
                   >
                     <div className="text-[8px] text-muted-foreground">
-                      Take Profit & Stop Loss
+                      TP & SL
                     </div>
                     <div className="text-[10px] text-foreground">
                       {getTpSlText()}
