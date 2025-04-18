@@ -62,7 +62,6 @@ type WithdrawalFormData = z.infer<typeof combinedSchema>;
 
 export default function WithdrawalForm() {
   const { data, fetchData } = useDataStore();
-  const [uniqueNetworks, setUniqueNetworks] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
@@ -88,32 +87,24 @@ export default function WithdrawalForm() {
     fetchData();
   }, [fetchData]);
 
+  // Set default network if available
   useEffect(() => {
-    if (data?.wallets) {
-      const networks = [
-        ...new Set(data.wallets.map((wallet) => wallet.crypto_network)),
-      ];
-      setUniqueNetworks(networks);
-
-      // Only set the default network if one isn't already set
+    if (data?.crypto_networks?.length) {
       const currentNetwork = form.getValues("network");
-      if (networks.length > 0 && !currentNetwork) {
-        form.setValue("network", networks[0], { shouldValidate: true });
+      if (!currentNetwork) {
+        form.setValue("network", data.crypto_networks[0], {
+          shouldValidate: true,
+        });
       }
     }
-  }, [data?.wallets, form]);
+  }, [data?.crypto_networks, form]);
 
-  async function onSubmit(
-    values:
-      | z.infer<typeof cryptoWithdrawalSchema>
-      | z.infer<typeof wireTransferWithdrawalSchema>
-  ) {
+  async function onSubmit(values: WithdrawalFormData) {
     try {
       setIsSubmitting(true);
       await axiosInstance.post("/user/withdrawal/store", values);
       toast.success("Withdrawal request submitted successfully");
       form.reset();
-      // Increment refresh trigger to force table update
       setRefreshTrigger((prev) => prev + 1);
     } catch (error: Error | unknown) {
       const errorMessage =
@@ -212,7 +203,7 @@ export default function WithdrawalForm() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {uniqueNetworks.map((network) => (
+                          {data?.crypto_networks?.map((network) => (
                             <SelectItem key={network} value={network}>
                               {network}
                             </SelectItem>
