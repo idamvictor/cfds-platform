@@ -33,6 +33,7 @@ import Logo from "@/components/Logo";
 import useTradeStore from "@/store/tradeStore";
 import { useCurrency } from "@/hooks/useCurrency";
 import AccountPlansModal from "@/components/AccountPlanModal";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 // Define the ActiveView type
 type ActiveView =
@@ -166,14 +167,25 @@ export default function Header({
                     {/* Account info in mobile menu */}
                     <div className="bg-muted/30 rounded-lg p-3 mx-3 mb-4">
                       <div className="flex items-center gap-2 mb-2">
-                        <Avatar className="h-8 w-8 border border-border">
-                          <AvatarImage src={user?.avatar} alt="avatar" />
-                          <AvatarFallback>
-                            {user
-                              ? `${user.first_name[0]}${user.last_name[0]}`.toUpperCase()
-                              : ""}
-                          </AvatarFallback>
-                        </Avatar>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Avatar className="h-8 w-8 border border-border cursor-pointer">
+                              <AvatarImage src={user?.avatar} alt="avatar" />
+                              <AvatarFallback>
+                                {user
+                                  ? `${user.first_name[0]}${user.last_name[0]}`.toUpperCase()
+                                  : ""}
+                              </AvatarFallback>
+                            </Avatar>
+                          </DialogTrigger>
+                          <DialogContent className="w-full h-full flex items-center justify-center">
+                            <img
+                              src={user?.avatar}
+                              className="w-full h-full object-cover"
+                              alt="Profile"
+                            />
+                          </DialogContent>
+                        </Dialog>
                         <div>
                           <div className="text-xs text-muted-foreground">
                             {user?.account_type?.name || "STANDARD"}
@@ -622,10 +634,14 @@ export default function Header({
                   size="icon"
                   className="rounded-full p-0 h-10 w-10"
                 >
-                  <img
-                    src={user?.avatar}
-                    className="w-8 h-8 md:w-10 md:h-10 rounded-full"
-                  />
+                  <Avatar className="w-8 h-8 md:w-10 md:h-10">
+                    <AvatarImage src={user?.avatar} alt="avatar" />
+                    <AvatarFallback>
+                      {user
+                        ? `${user.first_name[0]}${user.last_name[0]}`.toUpperCase()
+                        : ""}
+                    </AvatarFallback>
+                  </Avatar>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">

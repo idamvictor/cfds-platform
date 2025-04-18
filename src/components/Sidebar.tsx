@@ -15,6 +15,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import useUserStore from "@/store/userStore";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "./ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import AutoTraderModal from "./trading/trading-interface-components/auto-trader-modal";
 
 interface SidebarProps {
@@ -55,21 +56,32 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
     <aside className="bg-trading-dark h-full w-60 flex flex-col border-r border-trading-darker">
       <div className="flex flex-col items-center text-center p-6 border-b border-trading-darker">
         {" "}
-        <Avatar className="h-20 w-20 relative overflow-hidden">
-          <AvatarImage
-            src={user?.avatar}
-            alt={`${user?.first_name} ${user?.last_name}`}
-            className="object-cover w-full h-full"
-            style={{
-              objectPosition: "center",
-            }}
-          />
-          <AvatarFallback className="bg-sidebar-accent text-2xl font-semibold absolute inset-0 flex items-center justify-center">
-            {user
-              ? `${user.first_name[0]}${user.last_name[0]}`.toUpperCase()
-              : ""}
-          </AvatarFallback>
-        </Avatar>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Avatar className="h-20 w-20 relative overflow-hidden cursor-pointer">
+              <AvatarImage
+                src={user?.avatar}
+                alt={`${user?.first_name} ${user?.last_name}`}
+                className="object-cover w-full h-full"
+                style={{
+                  objectPosition: "center",
+                }}
+              />
+              <AvatarFallback className="bg-sidebar-accent text-2xl font-semibold absolute inset-0 flex items-center justify-center">
+                {user
+                  ? `${user.first_name[0]}${user.last_name[0]}`.toUpperCase()
+                  : ""}
+              </AvatarFallback>
+            </Avatar>
+          </DialogTrigger>
+          <DialogContent className="w-full h-full flex items-center justify-center">
+            <img
+              src={user?.avatar}
+              className="w-full h-full object-cover"
+              alt="Profile"
+            />
+          </DialogContent>
+        </Dialog>
         <h2 className="text-lg font-medium text-trading-light">
           {user ? `${user.first_name} ${user.last_name}` : ""}
         </h2>
