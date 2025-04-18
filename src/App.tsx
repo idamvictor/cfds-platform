@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
@@ -6,6 +6,7 @@ import { BaseLayout } from "@/components/BaseLayout.tsx";
 import { SiteProvider } from "@/components/provider/SiteProvider.tsx";
 import LoadingScreen from "./components/loading-screen";
 import WebSocketInitializer from "@/components/WebSocketInitializer.tsx";
+import useSiteSettingsStore from "@/store/siteSettingStore";
 
 const Test = lazy(() => import("./pages/test"));
 const Trading = lazy(() => import("./pages/trading"));
@@ -44,6 +45,21 @@ const CryptoWalletDeposit = lazy(
 const queryClient = new QueryClient();
 
 const App = () => {
+  const settings = useSiteSettingsStore((state) => state.settings);
+
+  // Update favicon when settings change
+  useEffect(() => {
+    if (settings?.logo) {
+      const link =
+        (document.querySelector("link[rel*='icon']") as HTMLLinkElement) ||
+        document.createElement("link");
+      link.type = "image/x-icon";
+      link.rel = "shortcut icon";
+      link.href = settings.logo;
+      document.getElementsByTagName("head")[0].appendChild(link);
+    }
+  }, [settings?.logo]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <Suspense fallback={<LoadingScreen />}>
