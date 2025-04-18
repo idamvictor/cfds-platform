@@ -37,6 +37,7 @@ export interface SiteData {
   currencies: Currency[];
   wallets: Wallet[];
   withdrawal_methods: WithdrawalMethod[];
+  crypto_networks: string[];
 }
 
 interface DataStore {
