@@ -181,7 +181,7 @@ export default function Header({
                           <DialogContent className="w-full h-full flex items-center justify-center">
                             <img
                               src={user?.avatar}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-cover p-4"
                               alt="Profile"
                             />
                           </DialogContent>
