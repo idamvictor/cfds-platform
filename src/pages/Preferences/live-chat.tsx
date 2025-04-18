@@ -52,8 +52,8 @@ export default function LiveChat() {
 
     return (
         <div className="container mx-auto p-6">
-            <div className="border border-border rounded-md h-[calc(100vh-180px)] flex flex-col bg-background shadow-sm overflow-hidden">
-                <div className="px-6 py-4 border-b border-border bg-muted/20 flex justify-between items-center">
+            <div className="border border-border rounded-md h-[calc(100vh-200px)] flex flex-col bg-background shadow-sm overflow-hidden">
+                <div className="px-6 py-4 hidden- flex border-b border-border bg-muted/20 justify-between items-center">
                     <div>
                         <h2 className="text-xl font-semibold">Customer Support</h2>
                         <p className="text-sm text-muted-foreground">Our team is here to help you</p>
