@@ -1,34 +1,58 @@
-import { useEffect } from "react";
-import { useAssetWebSocket } from "@/hooks/useAssetWebsocket";
-import PusherService from "@/services/PusherService";
-import useUserStore from "@/store/userStore";
-import { NotificationListener } from "./NotificationListener";
+import { useEffect, useState } from 'react';
+import PusherService from '@/services/PusherService';
+import useUserStore from '@/store/userStore';
+import { toast } from '@/components/ui/sonner';
 
 
-export default function WebSocketInitializer() {
-    const { user } = useUserStore();
+const WebSocketInitializer = () => {
+    const token = useUserStore((state) => state.token);
+    const [showReconnectingToast, setShowReconnectingToast] = useState(false);
 
-    // Initialize the Asset WebSocket
-    const { subscribeToAll, isConnected } = useAssetWebSocket({
-        onConnected: () => console.log("Asset WebSocket connected"),
-        onDisconnected: () => console.log("Asset WebSocket disconnected"),
-        onError: (error) => console.error("Asset WebSocket error:", error.message)
-    });
-
-    // Subscribe to all assets when the connection is established
     useEffect(() => {
-        if (isConnected) {
-            subscribeToAll();
-        }
-    }, [isConnected, subscribeToAll]);
+        if (!token) return;
 
-    // Initialize the Pusher service for user notifications when authenticated
-    useEffect(() => {
-        if (user) {
-            const pusherService = PusherService.getInstance();
+        const pusherService = PusherService.getInstance();
+        let reconnectToastId: string | number | undefined;
+
+        // Setup connection status handler
+        const unsubscribe = pusherService.onConnectionChange((status, error) => {
+            if (status === 'connecting' && !showReconnectingToast) {
+                setShowReconnectingToast(true);
+                reconnectToastId = toast.loading('Reconnecting to server...', {
+                    duration: 0, // Don't auto-dismiss
+                    id: 'websocket-reconnecting',
+                });
+            } else if (status === 'connected' && showReconnectingToast) {
+                setShowReconnectingToast(false);
+                toast.success('Connected to server', {
+                    id: reconnectToastId,
+                    duration: 2000,
+                });
+            } else if (status === 'failed') {
+                setShowReconnectingToast(false);
+                toast.error(`Connection failed: ${error || 'Unknown error'}`, {
+                    id: reconnectToastId,
+                    duration: 4000,
+                });
+            }
+        });
+
+        // Initialize connection
+        if (pusherService.getStatus() === 'disconnected') {
             pusherService.connect();
         }
-    }, [user]);
 
-    return user ? <NotificationListener /> : null;
-}
+        // Cleanup on unmount
+        return () => {
+            unsubscribe();
+            if (showReconnectingToast && reconnectToastId) {
+                toast.dismiss(reconnectToastId);
+            }
+        };
+    }, [token, showReconnectingToast]);
+
+    // No UI rendering
+    return null;
+};
+
+export default WebSocketInitializer;

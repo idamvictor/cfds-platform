@@ -9,7 +9,7 @@ export function usePusher() {
     // Get the singleton instance
     const pusherService = PusherService.getInstance();
 
-    // Connect to Pusher
+    // Connect to Pusher and monitor connection status
     useEffect(() => {
         // Setup connection status listener
         const unsubscribe = pusherService.onConnectionChange((status, err) => {
@@ -17,28 +17,35 @@ export function usePusher() {
             setError(err || null);
         });
 
-        // Initialize connection
-        pusherService.connect();
+        // Initialize connection if not already connected
+        if (pusherService.getStatus() === 'disconnected') {
+            pusherService.connect();
+        }
 
         // Cleanup on unmount
         return () => {
             unsubscribe();
-            // We don't disconnect here as other components might be using the connection
         };
     }, []);
 
-    const subscribeToPrivateChannel = useCallback(<T>(
+
+    const subscribeToPrivateChannel = useCallback(<T = unknown>(
         channelName: string,
         events: Record<string, (data: T) => void>
     ): void => {
         pusherService.subscribeToPrivateChannel<T>(channelName, events);
     }, []);
 
-
+    /**
+     * Unsubscribe from a channel
+     */
     const unsubscribeFromChannel = useCallback((channelName: string): void => {
         pusherService.unsubscribeFromChannel(channelName);
     }, []);
 
+    /**
+     * Force reconnect the WebSocket connection
+     */
     const reconnect = useCallback((): void => {
         pusherService.disconnect();
         pusherService.connect();

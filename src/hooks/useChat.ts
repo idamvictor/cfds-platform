@@ -34,15 +34,6 @@ export interface ChatMessage {
     };
 }
 
-// Event types
-interface MessageSentEvent {
-    message: ChatMessage;
-}
-
-interface MessageReadEvent {
-    message_id: string;
-}
-
 // API response types
 interface MessagesPaginatedResponse {
     data: ChatMessage[];
@@ -158,6 +149,16 @@ export function useChat(): ChatHook {
     // Setup channel subscription for chat messages
     useEffect(() => {
         if (connectionStatus === 'connected' && user) {
+            // TypeScript interface for the message sent event
+            interface MessageSentEvent {
+                message: ChatMessage;
+            }
+
+            // TypeScript interface for the message read event
+            interface MessageReadEvent {
+                message_id: string;
+            }
+
             // Subscribe to the user's chat channel
             subscribeToPrivateChannel<MessageSentEvent>(
                 `chat.customer.${user.id}`,

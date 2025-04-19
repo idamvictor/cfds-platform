@@ -1,58 +1,27 @@
-import LaravelEcho from 'laravel-echo';
 import Pusher from 'pusher-js';
+import Echo from 'laravel-echo';
 import useUserStore from '@/store/userStore';
 
-// Define proper types for Pusher and Echo
-interface PusherConnection {
-    state: string;
-    bind: (event: string, callback: (data?: unknown) => void) => void;
-    unbind: (event: string, callback?: (data?: unknown) => void) => void;
-}
-
-interface PusherInstance {
-    connection: PusherConnection;
-    disconnect: () => void;
-}
-
-export interface EchoChannel {
-    listen: <T>(event: string, callback: (data: T) => void) => EchoChannel;
-    stopListening: (event: string) => EchoChannel;
-    unsubscribe: () => void;
-    name?: string;
-}
-
-interface EchoConnector {
-    pusher: PusherInstance;
-}
-
-export interface EchoInstance {
-    connector: EchoConnector;
-    private: (channel: string) => EchoChannel;
-    channel: (channel: string) => EchoChannel | null;
-    leave: (channel: string) => void;
-    disconnect: () => void;
-}
-
-export type ConnectionStatus = 'connected' | 'connecting' | 'disconnected' | 'reconnecting';
-
-// Callback signature for connection state changes
+// Type definitions
+export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'failed';
 type ConnectionCallback = (status: ConnectionStatus, error?: string) => void;
-
 
 class PusherService {
     private static instance: PusherService;
-    private echo: EchoInstance | null = null;
-    private channels: Map<string, EchoChannel> = new Map();
-    private connectionCallbacks: Set<ConnectionCallback> = new Set();
-    private connectionStatus: ConnectionStatus = 'disconnected';
-    private connectionError: string | null = null;
+    private echo: Echo<'pusher'> | null = null;
+    private status: ConnectionStatus = 'disconnected';
+    private connectionCallbacks: ConnectionCallback[] = [];
+    private connectionAttempts: number = 0;
+    private maxConnectionAttempts: number = 5;
     private reconnectTimeout: number | null = null;
-    private isConnecting = false;
+    private channels: Set<string> = new Set();
 
-    private constructor() {
-        // Private constructor to enforce singleton pattern
-    }
+    // Private constructor ensures singleton pattern
+    private constructor() {}
 
+    /**
+     * Get the singleton instance
+     */
     public static getInstance(): PusherService {
         if (!PusherService.instance) {
             PusherService.instance = new PusherService();
@@ -60,241 +29,210 @@ class PusherService {
         return PusherService.instance;
     }
 
-    /**
-     * Connect to Pusher
-     */
+    public onConnectionChange(callback: ConnectionCallback): () => void {
+        this.connectionCallbacks.push(callback);
+
+        // Immediately notify of current status
+        callback(this.status);
+
+        // Return unsubscribe function
+        return () => {
+            this.connectionCallbacks = this.connectionCallbacks.filter(cb => cb !== callback);
+        };
+    }
+
+
+    private updateStatus(status: ConnectionStatus, error?: string): void {
+        this.status = status;
+        this.connectionCallbacks.forEach(callback => callback(status, error));
+    }
+
     public connect(): void {
-        if (this.echo || this.isConnecting) {
+        // Don't attempt to connect if already connecting or connected
+        if (this.status === 'connecting' || this.status === 'connected') {
             return;
         }
 
-        this.isConnecting = true;
-        this.updateConnectionStatus('connecting');
-
-        const token = useUserStore.getState().token;
-
-        if (!token) {
-            this.updateConnectionStatus('disconnected', 'No authentication token available');
-            this.isConnecting = false;
-            return;
+        // Clear any pending reconnect timeouts
+        if (this.reconnectTimeout !== null) {
+            clearTimeout(this.reconnectTimeout);
+            this.reconnectTimeout = null;
         }
+
+        this.updateStatus('connecting');
 
         try {
-            // Set up Pusher globally using type assertions without modifying Window interface
-            (window as any).Pusher = Pusher;
+            // Get auth token from user store
+            const token = useUserStore.getState().token;
 
-            // Configure Echo with proper auth endpoint
-            const echoInstance = new LaravelEcho({
+            if (!token) {
+                this.updateStatus('failed', 'Authentication token not available');
+                return;
+            }
+
+            // Initialize Echo with Pusher
+            this.echo = new Echo({
                 broadcaster: 'pusher',
-                key: import.meta.env.VITE_PUSHER_APP_KEY,
-                cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-                forceTLS: true,
-                // Ensure the full URL with base path is provided for auth endpoint
-                authEndpoint: `${import.meta.env.VITE_API_URL}/api/v1/broadcasting/auth`,
+                key: import.meta.env.VITE_PUSHER_APP_KEY || '',
+                cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER || 'mt1',
+                wsHost: import.meta.env.VITE_PUSHER_HOST,
+                wsPort: import.meta.env.VITE_PUSHER_PORT ? parseInt(import.meta.env.VITE_PUSHER_PORT) : 6001,
+                wssPort: import.meta.env.VITE_PUSHER_PORT ? parseInt(import.meta.env.VITE_PUSHER_PORT) : 6001,
+                forceTLS: import.meta.env.VITE_PUSHER_SCHEME === 'https',
+                disableStats: true,
+                enabledTransports: ['ws', 'wss'],
+                authEndpoint: '/api/v1/broadcasting/auth',
                 auth: {
                     headers: {
                         Authorization: `Bearer ${token}`,
-                        Accept: 'application/json'
-                    }
+                        Accept: 'application/json',
+                    },
                 },
-                // Pusher-specific configurations for better reliability
-                pusherOptions: {
-                    timeout: 20000, // 20 second connection timeout
-                    pongTimeout: 15000, // Wait 15 seconds for a pong response
-                    unavailableTimeout: 30000, // Time to wait if no connection is available
-                    activityTimeout: 300000 // How long before considering the connection idle (5 minutes)
-                }
             });
 
-            this.echo = echoInstance as EchoInstance;
+            // Set up connection event handlers on the underlying Pusher instance
+            if (this.echo.connector && this.echo.connector.pusher) {
+                const pusher = this.echo.connector.pusher as Pusher;
 
-            // Store Echo instance globally using type assertion
-            (window as any).Echo = this.echo;
-
-            if (this.echo.connector.pusher) {
-                // Log the connection attempt
-                console.log('PusherService: Connecting to Pusher...', {
-                    key: import.meta.env.VITE_PUSHER_APP_KEY,
-                    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-                    authEndpoint: `${import.meta.env.VITE_API_URL}/api/v1/broadcasting/auth`
+                // Connection established successfully
+                pusher.connection.bind('connected', () => {
+                    console.log('Pusher connection established');
+                    this.connectionAttempts = 0;
+                    this.updateStatus('connected');
                 });
 
-                // Set up connection event handlers
-                this.echo.connector.pusher.connection.bind('connected', () => {
-                    console.log('PusherService: Connected successfully');
-                    this.updateConnectionStatus('connected');
-                    this.isConnecting = false;
+                // Connection disconnected
+                pusher.connection.bind('disconnected', () => {
+                    console.log('Pusher disconnected');
+                    this.updateStatus('disconnected');
                 });
 
-                this.echo.connector.pusher.connection.bind('disconnected', () => {
-                    console.log('PusherService: Disconnected');
-                    this.updateConnectionStatus('disconnected');
-                    this.isConnecting = false;
-                    this.scheduleReconnect();
+                // Connection failed
+                pusher.connection.bind('failed', () => {
+                    console.error('Pusher connection failed');
+                    this.handleConnectionFailure();
                 });
 
-                this.echo.connector.pusher.connection.bind('error', (err: unknown) => {
-                    console.error('PusherService: Connection error:', err);
-                    this.updateConnectionStatus('disconnected', `Connection error: ${String(err)}`);
-                    this.isConnecting = false;
-                    this.scheduleReconnect();
+                // Additional error handling
+                pusher.connection.bind('error', (error: Error | undefined) => {
+                    console.error('Pusher connection error:', error);
+                    this.handleConnectionFailure(error?.message || 'Connection error');
                 });
-
-                // If already connected, manually update the state
-                if (this.echo.connector.pusher.connection.state === 'connected') {
-                    console.log('PusherService: Already connected');
-                    this.updateConnectionStatus('connected');
-                    this.isConnecting = false;
-                }
             }
-        } catch (err) {
-            console.error('PusherService: Error setting up Echo/Pusher:', err);
-            this.updateConnectionStatus('disconnected', `Connection setup failed: ${(err instanceof Error) ? err.message : String(err)}`);
-            this.isConnecting = false;
-            this.scheduleReconnect();
+        } catch (error) {
+            console.error('Failed to initialize Pusher connection:', error);
+            const errorMessage = error instanceof Error ? error.message : 'Failed to initialize connection';
+            this.handleConnectionFailure(errorMessage);
+        }
+    }
+
+    /**
+     * Handle connection failures with exponential backoff retry logic
+     */
+    private handleConnectionFailure(errorMessage?: string): void {
+        this.connectionAttempts++;
+
+        if (this.connectionAttempts <= this.maxConnectionAttempts) {
+            // Exponential backoff with max 30s
+            const delay = Math.min(1000 * Math.pow(2, this.connectionAttempts), 30000);
+
+            this.updateStatus(
+                'failed',
+                `Connection attempt ${this.connectionAttempts} failed. Retrying in ${delay/1000}s...`
+            );
+
+            // Schedule reconnection attempt
+            this.reconnectTimeout = window.setTimeout(() => {
+                this.reconnectTimeout = null;
+                this.connect();
+            }, delay);
+        } else {
+            // Max retries reached
+            this.updateStatus('failed', errorMessage || 'Maximum connection attempts reached');
         }
     }
 
     /**
      * Disconnect from Pusher
+     * Cleans up all connections and subscriptions
      */
     public disconnect(): void {
-        if (this.reconnectTimeout) {
-            window.clearTimeout(this.reconnectTimeout);
+        if (this.echo?.connector?.pusher) {
+            const pusher = this.echo.connector.pusher as Pusher;
+
+            // Clear all subscriptions
+            this.channels.clear();
+
+            // Disconnect the underlying Pusher connection
+            pusher.disconnect();
+        }
+
+        this.echo = null;
+        this.updateStatus('disconnected');
+
+        // Clear any pending reconnects
+        if (this.reconnectTimeout !== null) {
+            clearTimeout(this.reconnectTimeout);
             this.reconnectTimeout = null;
         }
-
-        // Unsubscribe from all channels first
-        this.channels.forEach((channel, name) => {
-            try {
-                channel.unsubscribe();
-            } catch (err) {
-                console.error(`PusherService: Error unsubscribing from channel ${name}:`, err);
-            }
-        });
-
-        this.channels.clear();
-
-        // Then disconnect Echo
-        if (this.echo) {
-            try {
-                this.echo.disconnect();
-            } catch (err) {
-                console.error('PusherService: Error disconnecting Echo:', err);
-            }
-
-            this.echo = null;
-        }
-
-        this.updateConnectionStatus('disconnected');
     }
 
     /**
      * Subscribe to a private channel
-     * @param channelName Channel name without "private-" prefix
-     * @param events Map of event names to event handlers
-     * @returns void
+     * Automatically handles channel prefix and registration
      */
-    public subscribeToPrivateChannel<T>(
+    public subscribeToPrivateChannel<T = unknown>(
         channelName: string,
         events: Record<string, (data: T) => void>
     ): void {
         if (!this.echo) {
-            this.updateConnectionStatus('disconnected', 'Not connected to Pusher');
+            console.warn(`Cannot subscribe to channel ${channelName} - Echo not initialized`);
             return;
         }
 
         try {
-            console.log(`PusherService: Subscribing to private channel ${channelName}`);
+            // Save channel name for potential reconnects
+            this.channels.add(channelName);
+
+            // Create channel subscription
             const channel = this.echo.private(channelName);
 
-            // Register event listeners
+            // Register all event handlers
             Object.entries(events).forEach(([event, callback]) => {
-                console.log(`PusherService: Listening to event ${event} on channel ${channelName}`);
-                channel.listen(event, callback);
+                // Remove the type parameter and use the callback directly
+                // This assumes the listen method will handle the data correctly
+                channel.listen(event, callback as (data: unknown) => void);
             });
 
-            this.channels.set(channelName, channel);
-        } catch (err) {
-            console.error(`PusherService: Error subscribing to channel ${channelName}:`, err);
+            console.log(`Subscribed to channel: ${channelName}`);
+        } catch (error) {
+            console.error(`Failed to subscribe to channel ${channelName}:`, error);
         }
     }
 
     /**
-     * Unsubscribe from a private channel
-     * @param channelName Channel name without "private-" prefix
+     * Unsubscribe from a channel
      */
     public unsubscribeFromChannel(channelName: string): void {
-        if (this.channels.has(channelName)) {
-            const channel = this.channels.get(channelName)!;
+        if (!this.echo) return;
 
-            try {
-                channel.unsubscribe();
-                this.channels.delete(channelName);
-                console.log(`PusherService: Unsubscribed from channel ${channelName}`);
-            } catch (err) {
-                console.error(`PusherService: Error unsubscribing from channel ${channelName}:`, err);
-            }
+        try {
+            // Remove from tracked channels
+            this.channels.delete(channelName);
+
+            // Leave the channel
+            this.echo.leave(channelName);
+            console.log(`Unsubscribed from channel: ${channelName}`);
+        } catch (error) {
+            console.error(`Failed to unsubscribe from channel ${channelName}:`, error);
         }
     }
 
-
-    public onConnectionChange(callback: ConnectionCallback): () => void {
-        this.connectionCallbacks.add(callback);
-
-        // Immediately notify of current state
-        callback(this.connectionStatus, this.connectionError || undefined);
-
-        // Return unsubscribe function
-        return () => {
-            this.connectionCallbacks.delete(callback);
-        };
-    }
-
     /**
-     * Update connection status and notify listeners
+     * Get the connection status
      */
-    private updateConnectionStatus(status: ConnectionStatus, error?: string): void {
-        this.connectionStatus = status;
-        this.connectionError = error || null;
-
-        this.connectionCallbacks.forEach(callback => {
-            callback(status, error);
-        });
-    }
-
-    /**
-     * Schedule a reconnection attempt
-     */
-    private scheduleReconnect(): void {
-        if (this.reconnectTimeout) {
-            window.clearTimeout(this.reconnectTimeout);
-        }
-
-        this.updateConnectionStatus('reconnecting');
-
-        this.reconnectTimeout = window.setTimeout(() => {
-            // Ensure we have a fresh token before reconnecting
-            const token = useUserStore.getState().token;
-            if (token) {
-                console.log('PusherService: Attempting reconnection...');
-                this.connect();
-            } else {
-                console.log('PusherService: No token available for reconnection, delaying...');
-                // Try again in a bit
-                this.scheduleReconnect();
-            }
-        }, 5000); // Fixed 5 second reconnect delay
-    }
-
-    /**
-     * Get current connection status
-     */
-    public getConnectionStatus(): { status: ConnectionStatus; error: string | null } {
-        return {
-            status: this.connectionStatus,
-            error: this.connectionError
-        };
+    public getStatus(): ConnectionStatus {
+        return this.status;
     }
 }
 
