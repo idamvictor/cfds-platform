@@ -1,8 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { usePusher } from '@/hooks/usePusher';
 import useUserStore from '@/store/userStore';
 import { toast } from 'sonner';
-
 
 interface NotificationData {
     id: string;
@@ -21,10 +20,21 @@ interface UserUpdateData {
 }
 
 export function NotificationListener() {
-    const { subscribeToPrivateChannel, connectionStatus } = usePusher();
-    const { user, getCurrentUser } = useUserStore();
+    const { subscribeToPrivateChannel, unsubscribeFromChannel, connectionStatus } = usePusher();
+    const userId = useUserStore(state => state.user?.id);
+    const getCurrentUser = useUserStore(state => state.getCurrentUser);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
+
+    const channelsSubscribed = useRef<{
+        notifications: boolean;
+        userUpdates: boolean;
+    }>({
+        notifications: false,
+        userUpdates: false
+    });
+
+    // Initialize audio
     useEffect(() => {
         audioRef.current = new Audio('/sounds/notification.mp3');
 
@@ -36,57 +46,82 @@ export function NotificationListener() {
         };
     }, []);
 
-    const playNotificationSound = () => {
+    const handleNotification = useCallback((data: NotificationData) => {
+        // Play notification sound
         if (audioRef.current) {
-            // Reset the audio to the beginning
             audioRef.current.currentTime = 0;
-
-            // Play the sound
             audioRef.current.play().catch(err => {
                 console.error('Failed to play notification sound:', err);
             });
         }
-    };
 
+        // Show toast notification
+        toast(data.message, {
+            description: data.data?.description as string,
+            // Include action if action URL is available
+            action: data.data?.action_url ? {
+                label: 'View',
+                onClick: () => window.open(data.data?.action_url as string, '_blank')
+            } : undefined
+        });
+
+        // Refresh user data
+        getCurrentUser();
+    }, [getCurrentUser]);
+
+    // Create a stable reference to the user update handler
+    const handleUserUpdate = useCallback(() => {
+        console.log('User data updated, refreshing...');
+        getCurrentUser();
+    }, [getCurrentUser]);
+
+    // Manage subscriptions based on connection status and user ID
     useEffect(() => {
-        if (connectionStatus === 'connected' && user) {
-            // Subscribe to user notifications channel
-            subscribeToPrivateChannel<NotificationData>(
-                `notifications.${user.id}`,
-                {
-                    '.new-notification': (data) => {
-                        // Play notification sound
-                        playNotificationSound();
-
-                        // Show toast notification
-                        toast(data.message, {
-                            description: data.data?.description as string,
-                            // Include action if action URL is available
-                            action: data.data?.action_url ? {
-                                label: 'View',
-                                onClick: () => window.open(data?.data?.action_url as string, '_blank')
-                            } : undefined
-                        });
-
-                        // Refetch current user to get updated data
-                        getCurrentUser();
-                    }
-                }
-            );
-
-            subscribeToPrivateChannel<UserUpdateData>(
-                `user.${user.id}`,
-                {
-                    '.user.updated': () => {
-                        console.log('hello', 'user updated');
-                        // Refetch current user to get updated data
-                        // getCurrentUser();
-                    }
-                }
-            );
+        // Only proceed if we're connected and have a user ID
+        if (connectionStatus !== 'connected' || !userId) {
+            return;
         }
-    }, [connectionStatus, user, subscribeToPrivateChannel, getCurrentUser]);
 
+        // Subscribe to notifications channel if not already subscribed
+        if (!channelsSubscribed.current.notifications) {
+            subscribeToPrivateChannel<NotificationData>(
+                `notifications.${userId}`,
+                { '.new-notification': handleNotification }
+            );
+            channelsSubscribed.current.notifications = true;
+        }
+
+        // Subscribe to user updates channel if not already subscribed
+        if (!channelsSubscribed.current.userUpdates) {
+            subscribeToPrivateChannel<UserUpdateData>(
+                `user.${userId}`,
+                { '.user.updated': handleUserUpdate }
+            );
+            channelsSubscribed.current.userUpdates = true;
+        }
+
+        // Cleanup function to unsubscribe when component unmounts or user changes
+        return () => {
+            if (channelsSubscribed.current.notifications) {
+                unsubscribeFromChannel(`notifications.${userId}`);
+                channelsSubscribed.current.notifications = false;
+            }
+
+            if (channelsSubscribed.current.userUpdates) {
+                unsubscribeFromChannel(`user.${userId}`);
+                channelsSubscribed.current.userUpdates = false;
+            }
+        };
+    }, [
+        connectionStatus,
+        userId,
+        subscribeToPrivateChannel,
+        unsubscribeFromChannel,
+        handleNotification,
+        handleUserUpdate
+    ]);
+
+    // This component doesn't render anything
     return null;
 }
 
