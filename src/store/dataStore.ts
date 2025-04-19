@@ -33,11 +33,22 @@ export interface WithdrawalMethod {
   max_amount: number;
 }
 
+export interface Plan {
+  id: string;
+  title: string;
+  color: string;
+  icon: string;
+  leverage: number;
+  features: string[];
+}
+
 export interface SiteData {
   currencies: Currency[];
   wallets: Wallet[];
   withdrawal_methods: WithdrawalMethod[];
   crypto_networks: string[];
+  plan_features: string[];
+  plans: Plan[];
 }
 
 interface DataStore {
