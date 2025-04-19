@@ -44,6 +44,7 @@ interface SavingsStore {
     roi: number;
     plan_id: string;
   }) => Promise<void>;
+  claimSaving: (savingId: string) => Promise<void>;
 }
 
 const useSavingsStore = create<SavingsStore>((set) => ({
@@ -91,6 +92,23 @@ const useSavingsStore = create<SavingsStore>((set) => ({
       console.error("Failed to create savings plan:", error);
       set({
         error: "Failed to create savings plan. Please try again later.",
+        isLoading: false,
+      });
+      throw error;
+    }
+  },
+
+  claimSaving: async (savingId) => {
+    set({ isLoading: true, error: null });
+    try {
+      await axiosInstance.post(`/savings/${savingId}/claim`);
+      // After claiming, fetch the updated list
+      const response = await axiosInstance.get("/savings");
+      set({ userSavings: response.data.data, isLoading: false });
+    } catch (error) {
+      console.error("Failed to claim savings:", error);
+      set({
+        error: "Failed to claim savings. Please try again later.",
         isLoading: false,
       });
       throw error;
