@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,6 +32,7 @@ export default function SavingsPage() {
     createSaving,
   } = useSavingsStore();
   const [expandedCurrency, setExpandedCurrency] = React.useState<string>("");
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(savingsFormSchema),
@@ -129,12 +130,15 @@ export default function SavingsPage() {
   // Handle form submission
   const onSubmit = async (data: FormData) => {
     try {
+      setIsSubmitting(true);
       await createSaving(data);
       toast.success("Savings plan created successfully");
       form.reset();
     } catch (error) {
       console.error("Error creating savings plan:", error);
       toast.error("Failed to create savings plan");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -158,11 +162,8 @@ export default function SavingsPage() {
     <div className="flex flex-col gap-8 p-6 bg-background text-foreground min-h-screen">
       <h1 className="text-2xl font-bold text-center">SAVINGS</h1>
 
-      {userSavings.length > 0 && <SavingsList savings={userSavings} />}
-
       <div className="space-y-4">
         <h2 className="text-lg font-medium">CREATE NEW SAVINGS PLAN</h2>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Left side - Currency and period selection */}
           <div className="space-y-2">
@@ -332,20 +333,37 @@ export default function SavingsPage() {
                 disabled={
                   !form.watch("amount") ||
                   !form.watch("plan_id") ||
-                  !form.watch("period")
+                  !form.watch("period") ||
+                  isSubmitting
                 }
               >
-                Open Savings Account and invest{" "}
-                {getCurrencySymbol(
-                  plans.find((p) => p.id === form.watch("plan_id"))?.currency ||
-                    ""
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    Open Savings Account and invest{" "}
+                    {getCurrencySymbol(
+                      plans.find((p) => p.id === form.watch("plan_id"))
+                        ?.currency || ""
+                    )}
+                    {form.watch("amount") || "0.00"}
+                  </>
                 )}
-                {form.watch("amount") || "0.00"}
               </Button>
             </div>
           </form>
         </div>
       </div>
+
+      {userSavings.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-lg font-medium mb-4">YOUR SAVINGS</h2>
+          <SavingsList savings={userSavings} />
+        </div>
+      )}
     </div>
   );
 }

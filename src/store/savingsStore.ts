@@ -68,49 +68,37 @@ const useSavingsStore = create<SavingsStore>((set) => ({
   },
 
   fetchUserSavings: async () => {
-    set({ isLoading: true, error: null });
     try {
       const response = await axiosInstance.get("/savings");
-      set({ userSavings: response.data.data, isLoading: false });
+      set({ userSavings: response.data.data });
     } catch (error) {
       console.error("Failed to fetch user savings:", error);
       set({
         error: "Failed to fetch your savings. Please try again later.",
-        isLoading: false,
       });
     }
   },
 
   createSaving: async (data) => {
-    set({ isLoading: true, error: null });
     try {
       await axiosInstance.post("/savings/store", data);
-      // After creating a new saving, fetch the updated list
+      // After creating, fetch the updated list without setting global loading state
       const response = await axiosInstance.get("/savings");
-      set({ userSavings: response.data.data, isLoading: false });
+      set({ userSavings: response.data.data, error: null });
     } catch (error) {
       console.error("Failed to create savings plan:", error);
-      set({
-        error: "Failed to create savings plan. Please try again later.",
-        isLoading: false,
-      });
       throw error;
     }
   },
 
   claimSaving: async (savingId) => {
-    set({ isLoading: true, error: null });
     try {
       await axiosInstance.post(`/savings/${savingId}/claim`);
-      // After claiming, fetch the updated list
+      // After claiming, fetch the updated list without setting global loading state
       const response = await axiosInstance.get("/savings");
-      set({ userSavings: response.data.data, isLoading: false });
+      set({ userSavings: response.data.data });
     } catch (error) {
       console.error("Failed to claim savings:", error);
-      set({
-        error: "Failed to claim savings. Please try again later.",
-        isLoading: false,
-      });
       throw error;
     }
   },
