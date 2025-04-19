@@ -1,27 +1,26 @@
 import Pusher from 'pusher-js';
 import Echo from 'laravel-echo';
-import useUserStore from '@/store/userStore';
+import axiosInstance from '@/lib/axios';
 
-// Type definitions
-export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'failed';
-type ConnectionCallback = (status: ConnectionStatus, error?: string) => void;
+// Connection status types
+export type ConnectionStatus = 'connected' | 'connecting' | 'disconnected' | 'failed';
+export type ConnectionChangeListener = (status: ConnectionStatus, error?: string) => void;
 
+// Global Pusher
+window.Pusher = Pusher;
+
+/**
+ * Simple singleton service to maintain a Laravel Echo connection
+ */
 class PusherService {
     private static instance: PusherService;
-    private echo: Echo<'pusher'> | null = null;
+    private echo: Echo | null = null;
     private status: ConnectionStatus = 'disconnected';
-    private connectionCallbacks: ConnectionCallback[] = [];
-    private connectionAttempts: number = 0;
-    private maxConnectionAttempts: number = 5;
-    private reconnectTimeout: number | null = null;
-    private channels: Set<string> = new Set();
+    private error: string | null = null;
+    private listeners: ConnectionChangeListener[] = [];
 
-    // Private constructor ensures singleton pattern
     private constructor() {}
 
-    /**
-     * Get the singleton instance
-     */
     public static getInstance(): PusherService {
         if (!PusherService.instance) {
             PusherService.instance = new PusherService();
@@ -29,210 +28,117 @@ class PusherService {
         return PusherService.instance;
     }
 
-    public onConnectionChange(callback: ConnectionCallback): () => void {
-        this.connectionCallbacks.push(callback);
-
-        // Immediately notify of current status
-        callback(this.status);
-
-        // Return unsubscribe function
-        return () => {
-            this.connectionCallbacks = this.connectionCallbacks.filter(cb => cb !== callback);
-        };
-    }
-
-
-    private updateStatus(status: ConnectionStatus, error?: string): void {
-        this.status = status;
-        this.connectionCallbacks.forEach(callback => callback(status, error));
-    }
-
     public connect(): void {
-        // Don't attempt to connect if already connecting or connected
-        if (this.status === 'connecting' || this.status === 'connected') {
-            return;
-        }
-
-        // Clear any pending reconnect timeouts
-        if (this.reconnectTimeout !== null) {
-            clearTimeout(this.reconnectTimeout);
-            this.reconnectTimeout = null;
-        }
-
-        this.updateStatus('connecting');
+        if (this.echo || this.status === 'connecting') return;
+        this.setStatus('connecting');
 
         try {
-            // Get auth token from user store
-            const token = useUserStore.getState().token;
-
-            if (!token) {
-                this.updateStatus('failed', 'Authentication token not available');
-                return;
-            }
-
-            // Initialize Echo with Pusher
+            // Create Echo instance
             this.echo = new Echo({
                 broadcaster: 'pusher',
-                key: import.meta.env.VITE_PUSHER_APP_KEY || '',
+                key: import.meta.env.VITE_PUSHER_APP_KEY,
                 cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER || 'mt1',
-                wsHost: import.meta.env.VITE_PUSHER_HOST,
-                wsPort: import.meta.env.VITE_PUSHER_PORT ? parseInt(import.meta.env.VITE_PUSHER_PORT) : 6001,
-                wssPort: import.meta.env.VITE_PUSHER_PORT ? parseInt(import.meta.env.VITE_PUSHER_PORT) : 6001,
-                forceTLS: import.meta.env.VITE_PUSHER_SCHEME === 'https',
-                disableStats: true,
-                enabledTransports: ['ws', 'wss'],
-                authEndpoint: '/api/v1/broadcasting/auth',
-                auth: {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        Accept: 'application/json',
-                    },
+                forceTLS: true,
+                authorizer: (channel: { name: string }) => {
+                    return {
+                        authorize: (socketId: string, callback: (error: boolean, response: unknown) => void) => {
+                            axiosInstance
+                                .post('/broadcasting/auth', {
+                                    socket_id: socketId,
+                                    channel_name: channel.name,
+                                })
+                                .then((response) => {
+                                    callback(false, response.data);
+                                })
+                                .catch((error) => {
+                                    callback(true, error);
+                                });
+                        },
+                    };
                 },
             });
 
-            // Set up connection event handlers on the underlying Pusher instance
-            if (this.echo.connector && this.echo.connector.pusher) {
-                const pusher = this.echo.connector.pusher as Pusher;
-
-                // Connection established successfully
-                pusher.connection.bind('connected', () => {
-                    console.log('Pusher connection established');
-                    this.connectionAttempts = 0;
-                    this.updateStatus('connected');
-                });
-
-                // Connection disconnected
-                pusher.connection.bind('disconnected', () => {
-                    console.log('Pusher disconnected');
-                    this.updateStatus('disconnected');
-                });
-
-                // Connection failed
-                pusher.connection.bind('failed', () => {
-                    console.error('Pusher connection failed');
-                    this.handleConnectionFailure();
-                });
-
-                // Additional error handling
-                pusher.connection.bind('error', (error: Error | undefined) => {
-                    console.error('Pusher connection error:', error);
-                    this.handleConnectionFailure(error?.message || 'Connection error');
-                });
-            }
-        } catch (error) {
-            console.error('Failed to initialize Pusher connection:', error);
-            const errorMessage = error instanceof Error ? error.message : 'Failed to initialize connection';
-            this.handleConnectionFailure(errorMessage);
+            this.setStatus('connected');
+        } catch (err) {
+            this.setStatus('failed', err instanceof Error ? err.message : 'Connection failed');
         }
     }
 
-    /**
-     * Handle connection failures with exponential backoff retry logic
-     */
-    private handleConnectionFailure(errorMessage?: string): void {
-        this.connectionAttempts++;
-
-        if (this.connectionAttempts <= this.maxConnectionAttempts) {
-            // Exponential backoff with max 30s
-            const delay = Math.min(1000 * Math.pow(2, this.connectionAttempts), 30000);
-
-            this.updateStatus(
-                'failed',
-                `Connection attempt ${this.connectionAttempts} failed. Retrying in ${delay/1000}s...`
-            );
-
-            // Schedule reconnection attempt
-            this.reconnectTimeout = window.setTimeout(() => {
-                this.reconnectTimeout = null;
-                this.connect();
-            }, delay);
-        } else {
-            // Max retries reached
-            this.updateStatus('failed', errorMessage || 'Maximum connection attempts reached');
-        }
-    }
-
-    /**
-     * Disconnect from Pusher
-     * Cleans up all connections and subscriptions
-     */
     public disconnect(): void {
-        if (this.echo?.connector?.pusher) {
-            const pusher = this.echo.connector.pusher as Pusher;
-
-            // Clear all subscriptions
-            this.channels.clear();
-
-            // Disconnect the underlying Pusher connection
-            pusher.disconnect();
-        }
-
+        if (!this.echo) return;
+        this.echo.disconnect();
         this.echo = null;
-        this.updateStatus('disconnected');
-
-        // Clear any pending reconnects
-        if (this.reconnectTimeout !== null) {
-            clearTimeout(this.reconnectTimeout);
-            this.reconnectTimeout = null;
-        }
+        this.setStatus('disconnected');
     }
 
-    /**
-     * Subscribe to a private channel
-     * Automatically handles channel prefix and registration
-     */
-    public subscribeToPrivateChannel<T = unknown>(
+    // Subscribe to a private channel
+    public subscribeToPrivateChannel<T>(
         channelName: string,
         events: Record<string, (data: T) => void>
     ): void {
-        if (!this.echo) {
-            console.warn(`Cannot subscribe to channel ${channelName} - Echo not initialized`);
-            return;
-        }
-
-        try {
-            // Save channel name for potential reconnects
-            this.channels.add(channelName);
-
-            // Create channel subscription
-            const channel = this.echo.private(channelName);
-
-            // Register all event handlers
-            Object.entries(events).forEach(([event, callback]) => {
-                // Remove the type parameter and use the callback directly
-                // This assumes the listen method will handle the data correctly
-                channel.listen(event, callback as (data: unknown) => void);
-            });
-
-            console.log(`Subscribed to channel: ${channelName}`);
-        } catch (error) {
-            console.error(`Failed to subscribe to channel ${channelName}:`, error);
-        }
-    }
-
-    /**
-     * Unsubscribe from a channel
-     */
-    public unsubscribeFromChannel(channelName: string): void {
+        if (!this.echo) this.connect();
         if (!this.echo) return;
 
-        try {
-            // Remove from tracked channels
-            this.channels.delete(channelName);
+        const normalizedName = channelName.replace(/^private-/, '');
+        const channel = this.echo.private(normalizedName);
 
-            // Leave the channel
-            this.echo.leave(channelName);
-            console.log(`Unsubscribed from channel: ${channelName}`);
-        } catch (error) {
-            console.error(`Failed to unsubscribe from channel ${channelName}:`, error);
-        }
+        Object.entries(events).forEach(([event, callback]) => {
+            channel.listen(event, callback);
+        });
     }
 
-    /**
-     * Get the connection status
-     */
+    // Subscribe to a public channel
+    public subscribeToChannel<T>(
+        channelName: string,
+        events: Record<string, (data: T) => void>
+    ): void {
+        if (!this.echo) this.connect();
+        if (!this.echo) return;
+
+        const channel = this.echo.channel(channelName);
+
+        Object.entries(events).forEach(([event, callback]) => {
+            channel.listen(event, callback);
+        });
+    }
+
+    // Unsubscribe from a channel
+    public unsubscribeFromChannel(channelName: string): void {
+        if (!this.echo) return;
+        this.echo.leave(channelName);
+    }
+
+    // Register for connection status changes
+    public onConnectionChange(listener: ConnectionChangeListener): () => void {
+        this.listeners.push(listener);
+        listener(this.status, this.error || undefined);
+        return () => {
+            this.listeners = this.listeners.filter(l => l !== listener);
+        };
+    }
+
+    // Get current status
     public getStatus(): ConnectionStatus {
         return this.status;
+    }
+
+    // Get current error if any
+    public getError(): string | null {
+        return this.error;
+    }
+
+    // Update status and notify listeners
+    private setStatus(status: ConnectionStatus, error?: string): void {
+        this.status = status;
+        this.error = error || null;
+        this.listeners.forEach(listener => listener(status, error));
+    }
+}
+
+// Type declaration for global Pusher
+declare global {
+    interface Window {
+        Pusher: typeof Pusher;
     }
 }
 

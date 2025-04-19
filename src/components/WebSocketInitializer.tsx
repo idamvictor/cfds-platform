@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import PusherService from '@/services/PusherService';
 import useUserStore from '@/store/userStore';
 import { toast } from '@/components/ui/sonner';
+import NotificationListener from "@/components/NotificationListener.tsx";
 
 
 const WebSocketInitializer = () => {
@@ -51,8 +52,8 @@ const WebSocketInitializer = () => {
         };
     }, [token, showReconnectingToast]);
 
-    // No UI rendering
-    return null;
+    return <NotificationListener />;
+
 };
 
 export default WebSocketInitializer;

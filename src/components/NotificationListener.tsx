@@ -80,7 +80,7 @@ export function NotificationListener() {
                     '.user.updated': () => {
                         console.log('hello', 'user updated');
                         // Refetch current user to get updated data
-                        getCurrentUser();
+                        // getCurrentUser();
                     }
                 }
             );
