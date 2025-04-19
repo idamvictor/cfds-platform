@@ -26,7 +26,7 @@ interface SavingsListProps {
 }
 
 export function SavingsList({ savings }: SavingsListProps) {
-  const { claimSaving, isLoading } = useSavingsStore();
+  const { claimSaving } = useSavingsStore();
   const [claimingId, setClaimingId] = React.useState<string | null>(null);
 
   const formatDate = (date: string) => {
@@ -49,12 +49,33 @@ export function SavingsList({ savings }: SavingsListProps) {
     return Math.max(diffDays, 0);
   };
 
-  const handleClaim = async (savingId: string) => {
+  const handleClaim = async (saving: Saving) => {
     try {
-      setClaimingId(savingId);
-      await claimSaving(savingId);
+      setClaimingId(saving.id);
+
+      const claimData = {
+        amount: saving.amount,
+        period:
+          saving.days === 30
+            ? "1_month"
+            : saving.days === 90
+            ? "3_months"
+            : saving.days === 180
+            ? "6_months"
+            : saving.days === 360
+            ? "12_months"
+            : "flexible",
+        roi: saving.roi,
+        plan_id: saving.id,
+      };
+
+      // Log the data for verification
+      //   console.log(claimData);
+
+      // Call the claim API with the data
+      await claimSaving(saving.id, claimData);
       toast.success("Earnings claimed successfully");
-    } catch (error: unknown) {
+    } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
       } else {
@@ -88,7 +109,7 @@ export function SavingsList({ savings }: SavingsListProps) {
                   >
                     <path
                       fill="currentColor"
-                      d="M23.638 14.904c-1.602 6.43-8.113 10.34-14.542 8.736C2.67 22.05-1.244 15.525.362 9.105 1.962 2.67 8.475-1.243 14.9.358c6.43 1.605 10.342 8.115 8.738 14.548v-.002zm-6.35-4.613c.24-1.59-.974-2.45-2.64-3.03l.54-2.153-1.315-.33-.525 2.107c-.345-.087-.705-.167-1.064-.25l.526-2.127-1.32-.33-.54 2.165c-.285-.067-.565-.132-.84-.2l-1.815-.45-.35 1.407s.974.225.955.236c.535.136.63.486.615.766l-1.477 5.92c-.075.18-.24.45-.614.35.015.02-.96-.24-.96-.24l-.66 1.51 1.71.426.93.236-.54 2.19 1.32.33.54-2.17c.36.1.705.19 1.05.273l-.51 2.154 1.32.33.545-2.19c2.24.427 3.93.257 4.64-1.774.57-1.637-.03-2.58-1.217-3.196.854-.193 1.5-.76 1.68-1.93h.01zm-3.01 4.22c-.404 1.64-3.157.75-4.05.53l.72-2.9c.896.23 3.757.67 3.33 2.37zm.41-4.24c-.37 1.49-2.662.735-3.405.55l.654-2.64c.744.18 3.137.524 2.75 2.084v.006z"
+                      d="M23.638 14.904c-1.602 6.43-8.113 10.34-14.542 8.736C2.67 22.05-1.244 15.525.362 9.105 1.962 2.67 8.475-1.243 14.9.358c6.43 1.605 10.342 8.115 8.738 14.548v-.002zm-6.35-4.613c.24-1.59-.974-2.45-2.64-3.03l.54-2.153-1.315-.33-.525 2.107c-.345-.087-.705-.167-1.064-.25l.526-2.127-1.32-.33-.54 2.165c-.285-.067-.565-.132-.84-.2l-1.815-.45-.35"
                     />
                   </svg>
                 ) : (
@@ -144,8 +165,8 @@ export function SavingsList({ savings }: SavingsListProps) {
                 </div>
                 <Button
                   className="w-full bg-primary hover:bg-[#5ac975] text-black font-semibold py-3 mt-2 rounded"
-                  onClick={() => handleClaim(saving.id)}
-                  disabled={claimingId === saving.id || isLoading}
+                  onClick={() => handleClaim(saving)}
+                  disabled={claimingId === saving.id}
                 >
                   {claimingId === saving.id ? (
                     <>
@@ -160,60 +181,17 @@ export function SavingsList({ savings }: SavingsListProps) {
             ) : (
               <>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Release Time:</span>
-                  <span>{formatDate(saving.end_date || "")}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Days Elapsed:</span>
-                  <span>{saving.days_elapsed} days</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Final earnings:</span>
-                  <span className="text-primary">
-                    {saving.currency === "BTC" ? "Ƀ" : "$"}
-                    {saving.earned}
+                  <span className="text-gray-400">Funds Released In:</span>
+                  <span>
+                    {calculateDaysRemaining(saving.end_date || "")} days
                   </span>
                 </div>
-                {calculateDaysRemaining(saving.end_date || "") === 0 ? (
-                  <>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-400">Status:</span>
-                      <span className="text-primary">Ready to claim</span>
-                    </div>
-                    <Button
-                      className="w-full bg-primary hover:bg-[#5ac975] text-black font-semibold py-3 mt-2 rounded"
-                      onClick={() => handleClaim(saving.id)}
-                      disabled={claimingId === saving.id || isLoading}
-                    >
-                      {claimingId === saving.id ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Claiming...
-                        </>
-                      ) : (
-                        "Claim"
-                      )}
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-400">Funds Released In:</span>
-                      <span>
-                        {calculateDaysRemaining(saving.end_date || "")} days
-                      </span>
-                    </div>
-                    <div className="mt-4 relative">
-                      <Progress
-                        value={calculateProgress(
-                          saving.days_elapsed,
-                          saving.days
-                        )}
-                        className="h-1.5 bg-gray-700"
-                      />
-                    </div>
-                  </>
-                )}
+                <div className="mt-4 relative">
+                  <Progress
+                    value={calculateProgress(saving.days_elapsed, saving.days)}
+                    className="h-1.5 bg-gray-700"
+                  />
+                </div>
               </>
             )}
           </div>

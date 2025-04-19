@@ -31,6 +31,13 @@ export interface UserSaving {
   created_at: string;
 }
 
+interface ClaimData {
+  amount: string;
+  period: string;
+  roi: string;
+  plan_id: string;
+}
+
 interface SavingsStore {
   plans: SavingsPlan[];
   userSavings: UserSaving[];
@@ -44,7 +51,7 @@ interface SavingsStore {
     roi: number;
     plan_id: string;
   }) => Promise<void>;
-  claimSaving: (savingId: string) => Promise<void>;
+  claimSaving: (savingId: string, claimData: ClaimData) => Promise<void>;
 }
 
 const useSavingsStore = create<SavingsStore>((set) => ({
@@ -91,15 +98,21 @@ const useSavingsStore = create<SavingsStore>((set) => ({
     }
   },
 
-  claimSaving: async (savingId) => {
+  claimSaving: async (savingId, claimData) => {
     try {
-      await axiosInstance.post(`/savings/${savingId}/claim`);
+      await axiosInstance.post(`/savings/claim/${savingId}`, claimData);
       // After claiming, fetch the updated list without setting global loading state
       const response = await axiosInstance.get("/savings");
       set({ userSavings: response.data.data });
     } catch (error) {
       console.error("Failed to claim savings:", error);
-      throw error;
+      // Pass through the API error message
+      const axiosError = error as {
+        response?: { data?: { message?: string } };
+      };
+      throw new Error(
+        axiosError.response?.data?.message || "Failed to claim savings"
+      );
     }
   },
 }));
