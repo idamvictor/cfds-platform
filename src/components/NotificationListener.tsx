@@ -77,7 +77,8 @@ export function NotificationListener() {
             subscribeToPrivateChannel<UserUpdateData>(
                 `user.${user.id}`,
                 {
-                    '.user-updated': () => {
+                    '.user.updated': () => {
+                        console.log('hello', 'user updated');
                         // Refetch current user to get updated data
                         getCurrentUser();
                     }
