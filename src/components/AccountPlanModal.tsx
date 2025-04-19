@@ -1,105 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { Check, Star, Crown } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-interface AccountPlan {
-    name: string;
-    headerClass: string;
-    icon?: React.ReactNode;
-    minimumDeposit: string;
-    welcomeBonus: string;
-    privateTraining: string;
-    insuredTrading: string;
-    leverage: string;
-    tradingSignals: string;
-    expediteWithdrawals: string;
-    tradeRewards: string;
-    vipAccess: string | React.ReactNode;
-    recommended?: boolean;
-}
+import useDataStore from "@/store/dataStore";
+import useUserStore from "@/store/userStore";
+import { useCurrency } from "@/hooks/useCurrency";
 
 interface AccountPlansModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
 }
 
-export const accountPlans: AccountPlan[] = [
-    {
-        name: "Basic",
-        headerClass: "bg-red-500",
-        minimumDeposit: "€553",
-        welcomeBonus: "Up to 3%",
-        privateTraining: "2 sessions / Month",
-        insuredTrading: "None",
-        leverage: "1:10",
-        tradingSignals: "Weekly",
-        expediteWithdrawals: "Up to 5 business days",
-        tradeRewards: "None",
-        vipAccess: "None",
-    },
-    {
-        name: "Gold",
-        headerClass: "bg-indigo-400",
-        minimumDeposit: "€12,732",
-        welcomeBonus: "Up to 5%",
-        privateTraining: "4 sessions / Month",
-        insuredTrading: "Account Manager discretion",
-        leverage: "1:50",
-        tradingSignals: "3 per Week",
-        expediteWithdrawals: "Up to 3 business days",
-        tradeRewards: "Up to €1000 in rewards",
-        vipAccess: "Special Events Only",
-    },
-    {
-        name: "Pro",
-        headerClass: "bg-gradient-to-r from-blue-400 to-blue-600",
-        icon: <Star className="h-4 w-4 text-white" />,
-        minimumDeposit: "€50,325",
-        welcomeBonus: "Up to 8%",
-        privateTraining: "6 sessions / Month",
-        insuredTrading: "Account Manager discretion",
-        leverage: "1:100",
-        tradingSignals: "Daily",
-        expediteWithdrawals: "Within 24 hours",
-        tradeRewards: "Up to €5000 in rewards",
-        vipAccess: <Check className="h-5 w-5 text-green-500" />,
-        recommended: true,
-    },
-    {
-        name: "VIP",
-        headerClass: "bg-gradient-to-r from-yellow-400 to-amber-500",
-        icon: <Crown className="h-4 w-4 text-white" />,
-        minimumDeposit: "€98,000",
-        welcomeBonus: "Up to 10%",
-        privateTraining: "8 sessions / Month",
-        insuredTrading: "Customed",
-        leverage: "1:200",
-        tradingSignals: "Daily",
-        expediteWithdrawals: "Immediate",
-        tradeRewards: "Up to €10000 in rewards",
-        vipAccess: <Check className="h-5 w-5 text-green-500" />,
-    },
-];
-
-const planFeatures = [
-    { id: "deposit", label: "Minimum Deposit: € / $ / £", accessor: "minimumDeposit" },
-    { id: "bonus", label: "Welcome Bonus", accessor: "welcomeBonus" },
-    { id: "training", label: "Private Training", accessor: "privateTraining" },
-    { id: "insured", label: "Insured Trading", accessor: "insuredTrading" },
-    { id: "leverage", label: "Leverage", accessor: "leverage" },
-    { id: "signals", label: "Trading Signals", accessor: "tradingSignals" },
-    { id: "withdrawals", label: "Expedite Withdrawals", accessor: "expediteWithdrawals" },
-    { id: "rewards", label: "Trade Nation Trade Rewards", accessor: "tradeRewards" },
-    { id: "vip", label: "Access to VIP Room", accessor: "vipAccess" },
-];
-
 export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps) {
+    const { data, isLoading } = useDataStore();
+    const user = useUserStore((state) => state.user);
+    const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
+    const { formatCurrency } = useCurrency();
+
+    // Get current user's plan title if available
+    const currentPlanTitle = user?.account_type?.name || "Basic";
+
+    // Handle plan selection
+    const handlePlanSelect = (planId: string) => {
+        setSelectedPlanId(planId);
+    };
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-5xl p-0 overflow-hidden bg-background border-border max-h-[90vh] overflow-y-auto">
@@ -108,63 +38,118 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
                         Account Plans
                     </DialogTitle>
                 </DialogHeader>
-                <div className="p-4 overflow-x-auto">
-                    <div className="min-w-[800px]">
-                        <div className="grid grid-cols-5 gap-px bg-muted/30 rounded-lg overflow-hidden shadow-sm">
-                            {/* Headers */}
-                            <div className="col-span-1 bg-background p-4 font-medium"></div>
-                            {accountPlans.map((plan) => (
-                                <div
-                                    key={`header-${plan.name}`}
-                                    className={cn(
-                                        "col-span-1 text-center p-3 text-white font-semibold relative",
-                                        plan.headerClass
-                                    )}
-                                >
-                                    <div className="flex items-center justify-center gap-1">
-                                        {plan.name} {plan.icon && <span className="ml-1">{plan.icon}</span>}
-                                    </div>
-                                    {plan.recommended && (
-                                        <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-xs py-0.5 px-2 rounded-full">
-                                            Recommended
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
 
-                            {/* Plan Features */}
-                            {planFeatures.map((feature, index) => (
-                                <React.Fragment key={feature.id}>
-                                    <div className={cn(
-                                        "col-span-1 p-4 font-medium",
-                                        index % 2 === 0 ? "bg-muted/30" : "bg-background"
-                                    )}>
-                                        {feature.label}
-                                    </div>
-                                    {accountPlans.map((plan) => {
-                                        const value = plan[feature.accessor as keyof AccountPlan];
+                {isLoading ? (
+                    <div className="flex items-center justify-center p-8">
+                        <Loader2 className="h-6 w-6 animate-spin mr-2" />
+                        <p>Loading plans...</p>
+                    </div>
+                ) : !data?.plans || data.plans.length === 0 ? (
+                    <div className="text-center p-6">
+                        <p>No plans available. Please try again later.</p>
+                    </div>
+                ) : (
+                    <>
+                        <div className="p-4 overflow-x-auto">
+                            <div className="min-w-[800px]">
+                                <div className="grid grid-cols-5 gap-px bg-muted/30 rounded-lg overflow-hidden shadow-sm">
+                                    {/* Headers */}
+                                    <div className="col-span-1 bg-background p-4 font-medium"></div>
+                                    {data.plans.map((plan) => {
+                                        const isRecommended = plan.title === "Pro";
+
+                                        // Determine header background style using plan's color
+                                        const headerStyle = {
+                                            backgroundColor: plan.color || "gray"
+                                        };
+
                                         return (
                                             <div
-                                                key={`${feature.id}-${plan.name}`}
+                                                key={`header-${plan.id}`}
                                                 className={cn(
-                                                    "col-span-1 p-4 text-center",
-                                                    index % 2 === 0 ? "bg-muted/30" : "bg-background",
-                                                    typeof value !== 'string' && "flex items-center justify-center"
+                                                    "col-span-1 text-center p-3 text-white font-semibold relative cursor-pointer",
+                                                    selectedPlanId === plan.id ? "ring-2 ring-primary" : ""
                                                 )}
+                                                style={headerStyle}
+                                                onClick={() => handlePlanSelect(plan.id)}
                                             >
-                                                {value}
+                                                <div className="flex items-center justify-center gap-1">
+                                                    {plan.icon && (
+                                                        <img
+                                                            src={plan.icon}
+                                                            alt={`${plan.title} icon`}
+                                                            className="w-5 h-5 object-contain mr-1"
+                                                        />
+                                                    )}
+                                                    {plan.title}
+                                                </div>
+                                                {isRecommended && (
+                                                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-xs py-0.5 px-2 rounded-full">
+                                                        Recommended
+                                                    </div>
+                                                )}
+                                                {plan.title === currentPlanTitle && (
+                                                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-primary text-white text-xs py-0.5 px-2 rounded-full">
+                                                        Current
+                                                    </div>
+                                                )}
                                             </div>
                                         );
                                     })}
-                                </React.Fragment>
-                            ))}
 
-                            {/* Action Buttons */}
-                            <div className="col-span-1 p-4 bg-background"></div>
+                                    {/* Plan Features */}
+                                    {data.plan_features.map((feature, index) => (
+                                        <React.Fragment key={feature}>
+                                            <div className={cn(
+                                                "col-span-1 p-4 font-medium",
+                                                index % 2 === 0 ? "bg-muted/30" : "bg-background"
+                                            )}>
+                                                {feature}
+                                            </div>
+                                            {data.plans.map((plan) => {
+                                                // Get feature value, ensuring we don't exceed array bounds
+                                                const value = index < plan.features.length
+                                                    ? plan.features[index]
+                                                    : '';
 
+                                                // Determine how to render this value
+                                                let displayValue;
+
+                                                // Handle min_deposit (first row)
+                                                if (index === 0 && !isNaN(Number(value.replace(/[€$,]/g, '')))) {
+                                                    displayValue = formatCurrency(Number(value.replace(/[€$,]/g, '')));
+                                                }
+                                                // Handle checkmark entries
+                                                else if (value === "Enabled" || value === "Yes") {
+                                                    displayValue = <Check className="h-5 w-5 text-green-500" />;
+                                                }
+                                                // Default case
+                                                else {
+                                                    displayValue = value;
+                                                }
+
+                                                return (
+                                                    <div
+                                                        key={`${feature}-${plan.id}`}
+                                                        className={cn(
+                                                            "col-span-1 p-4 text-center",
+                                                            index % 2 === 0 ? "bg-muted/30" : "bg-background",
+                                                            selectedPlanId === plan.id ? "bg-primary/10" : "",
+                                                            plan.title === currentPlanTitle ? "bg-primary/5" : ""
+                                                        )}
+                                                        onClick={() => handlePlanSelect(plan.id)}
+                                                    >
+                                                        {displayValue}
+                                                    </div>
+                                                );
+                                            })}
+                                        </React.Fragment>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    </>
+                )}
             </DialogContent>
         </Dialog>
     );

@@ -7,6 +7,7 @@ import useUserStore from "@/store/userStore";
 
 export default function LiveChat() {
     const user = useUserStore((state) => state.user);
+
     const {
         messages,
         isLoading,

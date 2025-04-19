@@ -1,38 +1,8 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axiosInstance from '@/lib/axios';
-import LaravelEcho from 'laravel-echo';
-import Pusher from 'pusher-js';
+import { usePusher } from '@/hooks/usePusher';
 import useUserStore from '@/store/userStore';
 import type { AxiosError } from 'axios';
-
-// Define proper types for Pusher and Echo
-interface PusherConnection {
-    state: string;
-    bind: (event: string, callback: (data?: unknown) => void) => void;
-    unbind: (event: string, callback?: (data?: unknown) => void) => void;
-}
-
-interface PusherInstance {
-    connection: PusherConnection;
-    disconnect: () => void;
-}
-
-interface EchoChannel {
-    listen: <T>(event: string, callback: (data: T) => void) => EchoChannel;
-    stopListening: (event: string) => EchoChannel;
-    unsubscribe: () => void;
-    name?: string;
-}
-
-interface EchoConnector {
-    pusher: PusherInstance;
-}
-
-interface EchoInstance {
-    connector: EchoConnector;
-    private: (channel: string) => EchoChannel;
-    disconnect: () => void;
-}
 
 // Message and attachment types
 export interface MessageAttachment {
@@ -64,6 +34,7 @@ export interface ChatMessage {
     };
 }
 
+// Event types
 interface MessageSentEvent {
     message: ChatMessage;
 }
@@ -72,6 +43,7 @@ interface MessageReadEvent {
     message_id: string;
 }
 
+// API response types
 interface MessagesPaginatedResponse {
     data: ChatMessage[];
     next_page_url: string | null;
@@ -91,8 +63,7 @@ interface MessageCreatedResponse {
     data: ChatMessage;
 }
 
-type ConnectionStatus = 'connected' | 'connecting' | 'disconnected' | 'reconnecting';
-
+// File upload tracking
 interface SelectedFile {
     file: File;
     preview?: string;
@@ -101,11 +72,12 @@ interface SelectedFile {
     error?: string;
 }
 
+// Hook return type
 interface ChatHook {
     messages: ChatMessage[];
     isLoading: boolean;
     error: string | null;
-    connectionStatus: ConnectionStatus;
+    connectionStatus: string;
     sendMessage: (message: string, file?: File) => Promise<void>;
     loadMoreMessages: () => Promise<void>;
     hasMoreMessages: boolean;
@@ -113,22 +85,15 @@ interface ChatHook {
     selectedFiles: SelectedFile[];
     addFile: (file: File) => void;
     removeFile: (index: number) => void;
-    reconnect: () => void;
 }
 
-// Declare global variables for TypeScript
-declare global {
-    interface Window {
-        Echo?: EchoInstance;
-        Pusher?: typeof Pusher;
-    }
-}
-
+/**
+ * Hook for chat functionality using PusherService
+ */
 export function useChat(): ChatHook {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('connecting');
     const [page, setPage] = useState(1);
     const [hasMoreMessages, setHasMoreMessages] = useState(true);
     const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>([]);
@@ -136,20 +101,12 @@ export function useChat(): ChatHook {
     // Get user from store
     const user = useUserStore(state => state.user);
 
-    // Use refs to store connection objects
-    const echoRef = useRef<EchoInstance | null>(null);
-    const channelRef = useRef<EchoChannel | null>(null);
-    const connectedRef = useRef<boolean>(false);
-    const attemptingConnectionRef = useRef<boolean>(false);
-    const autoReconnectTimeoutRef = useRef<number | null>(null);
-
-    // Clear any auto-reconnect timeouts
-    const clearAutoReconnectTimeout = useCallback(() => {
-        if (autoReconnectTimeoutRef.current !== null) {
-            window.clearTimeout(autoReconnectTimeoutRef.current);
-            autoReconnectTimeoutRef.current = null;
-        }
-    }, []);
+    // Use our Pusher hook that manages the connection
+    const {
+        connectionStatus,
+        error: connectionError,
+        subscribeToPrivateChannel
+    } = usePusher();
 
     // Function to fetch chat messages
     const fetchMessages = useCallback(async (pageToFetch = 1, showLoading = true) => {
@@ -191,241 +148,64 @@ export function useChat(): ChatHook {
         }
     }, []);
 
-    // Function to clean up connection
-    const cleanupConnection = useCallback(() => {
-        clearAutoReconnectTimeout();
-
-        // Clean up channel first
-        if (channelRef.current) {
-            try {
-                channelRef.current.stopListening('.message.sent');
-                channelRef.current.stopListening('.message.read');
-                channelRef.current.unsubscribe();
-            } catch (e) {
-                console.error('Error cleaning up channel:', e);
-            }
-            channelRef.current = null;
-        }
-
-        // Then clean up Echo
-        if (echoRef.current) {
-            try {
-                echoRef.current.disconnect();
-            } catch (e) {
-                console.error('Error disconnecting Echo:', e);
-            }
-            echoRef.current = null;
-        }
-
-        // Reset connection flags
-        connectedRef.current = false;
-        attemptingConnectionRef.current = false;
-    }, [clearAutoReconnectTimeout]);
-
-    // Connect to Echo with a simplified, robust approach
-    const connect = useCallback(() => {
-        // If already attempting a connection, don't try again
-        if (attemptingConnectionRef.current) {
-            console.log('Already attempting connection, skipping');
-            return;
-        }
-
-        // If already connected, don't reconnect
-        if (connectedRef.current && echoRef.current && channelRef.current) {
-            console.log('Already connected, skipping connection attempt');
-            return;
-        }
-
-        // Clean up any existing connection first
-        cleanupConnection();
-
-        // Get the auth token
-        const token = useUserStore.getState().token;
-        if (!token || !user) {
-            setConnectionStatus('disconnected');
-            setError('Authentication required.');
-            setIsLoading(false);
-            return;
-        }
-
-        // Set the connecting state
-        attemptingConnectionRef.current = true;
-        setConnectionStatus('connecting');
-
-        try {
-            // Set up Pusher globally
-            window.Pusher = Pusher;
-
-            // Create Echo instance with minimal configuration
-            echoRef.current = new LaravelEcho({
-                broadcaster: 'pusher',
-                key: import.meta.env.VITE_PUSHER_APP_KEY,
-                cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-                forceTLS: true,
-                authEndpoint: import.meta.env.VITE_API_URL+'/api/v1/broadcasting/auth',
-                auth: {
-                    headers: { Authorization: `Bearer ${token}` }
-                }
-            });
-
-            // Wait for connection to establish
-            if (echoRef.current.connector.pusher) {
-                const connection = echoRef.current.connector.pusher.connection;
-
-                const onConnected = () => {
-                    console.log('Connected to Pusher');
-                    setConnectionStatus('connected');
-                    connectedRef.current = true;
-                    attemptingConnectionRef.current = false;
-
-                    // Subscribe to channel only after connected
-                    subscribeToChannel();
-                };
-
-                const onDisconnected = () => {
-                    console.log('Disconnected from Pusher');
-                    setConnectionStatus('disconnected');
-                    connectedRef.current = false;
-                    attemptingConnectionRef.current = false;
-
-                    // Auto reconnect after a short delay
-                    clearAutoReconnectTimeout();
-                    autoReconnectTimeoutRef.current = window.setTimeout(() => {
-                        if (!connectedRef.current) {
-                            console.log('Attempting auto-reconnect...');
-                            connect();
-                        }
-                    }, 5000);
-                };
-
-                const onError = (err: unknown) => {
-                    console.error('Pusher connection error:', err);
-                    setConnectionStatus('disconnected');
-                    setError(`Connection error: ${String(err)}`);
-                    connectedRef.current = false;
-                    attemptingConnectionRef.current = false;
-                };
-
-                // Bind connection events
-                connection.bind('connected', onConnected);
-                connection.bind('disconnected', onDisconnected);
-                connection.bind('error', onError);
-
-                // If already connected, manually trigger the connected handler
-                if (connection.state === 'connected') {
-                    onConnected();
-                }
-            } else {
-                throw new Error('Failed to initialize Pusher connection');
-            }
-        } catch (err) {
-            console.error('Error setting up Echo:', err);
-            setConnectionStatus('disconnected');
-            setError(`Connection failed: ${String(err)}`);
-            attemptingConnectionRef.current = false;
-
-            // Try to reconnect after a delay
-            clearAutoReconnectTimeout();
-            autoReconnectTimeoutRef.current = window.setTimeout(() => {
-                connect();
-            }, 5000);
-        }
-    }, [user, cleanupConnection, clearAutoReconnectTimeout]);
-
-    // Function to subscribe to the channel
-    const subscribeToChannel = useCallback(() => {
-        if (!echoRef.current || !user || !connectedRef.current) {
-            console.error('Cannot subscribe to channel - not connected or no user');
-            return;
-        }
-
-        try {
-            // Subscribe to the private chat channel
-            const channelName = `chat.customer.${user.id}`;
-            channelRef.current = echoRef.current.private(channelName);
-
-            // Listen for new messages
-            channelRef.current.listen<MessageSentEvent>('.message.sent', (e) => {
-                if (e && e.message) {
-                    setMessages(prev => {
-                        // Check if message already exists to prevent duplicates
-                        if (!prev.some(msg => msg.id === e.message.id)) {
-                            return [...prev, e.message];
-                        }
-                        return prev;
-                    });
-                }
-            });
-
-            // Listen for read receipts
-            channelRef.current.listen<MessageReadEvent>('.message.read', (e) => {
-                if (e && e.message_id) {
-                    setMessages(prev =>
-                        prev.map(msg =>
-                            msg.id === e.message_id
-                                ? { ...msg, read_at: new Date().toISOString() }
-                                : msg
-                        )
-                    );
-                }
-            });
-
-            console.log(`Subscribed to channel: ${channelName}`);
-        } catch (err) {
-            console.error('Error subscribing to channel:', err);
-            // Don't set connection to disconnected, just log the error
-        }
-    }, [user]);
-
-    // Initial setup
+    // Effect to set connection error if present
     useEffect(() => {
-        // Initialize connection
-        connect();
-
-        // Fetch initial messages
-        fetchMessages().catch(err => {
-            console.error('Error fetching initial messages:', err);
-        });
-
-        // Cleanup on unmount
-        return () => {
-            cleanupConnection();
-        };
-    }, [connect, fetchMessages, cleanupConnection]);
-
-    // Reconnect if user changes
-    useEffect(() => {
-        if (user) {
-            // Only reconnect if we need to (if disconnected or wrong channel)
-            const needsReconnect =
-                !connectedRef.current ||
-                !channelRef.current ||
-                (channelRef.current.name && !channelRef.current.name.includes(`chat.customer.${user.id}`));
-
-            if (needsReconnect) {
-                cleanupConnection();
-                connect();
-            }
+        if (connectionError) {
+            setError(connectionError);
         }
-    }, [user, connect, cleanupConnection]);
+    }, [connectionError]);
+
+    // Setup channel subscription for chat messages
+    useEffect(() => {
+        if (connectionStatus === 'connected' && user) {
+            // Subscribe to the user's chat channel
+            subscribeToPrivateChannel<MessageSentEvent>(
+                `chat.customer.${user.id}`,
+                {
+                    '.message.sent': (event) => {
+                        if (event && event.message) {
+                            setMessages(prev => {
+                                // Check if message already exists to prevent duplicates
+                                if (!prev.some(msg => msg.id === event.message.id)) {
+                                    return [...prev, event.message];
+                                }
+                                return prev;
+                            });
+                        }
+                    }
+                }
+            );
+
+            // Subscribe to read receipts
+            subscribeToPrivateChannel<MessageReadEvent>(
+                `chat.customer.${user.id}`,
+                {
+                    '.message.read': (event) => {
+                        if (event && event.message_id) {
+                            setMessages(prev =>
+                                prev.map(msg =>
+                                    msg.id === event.message_id
+                                        ? { ...msg, read_at: new Date().toISOString() }
+                                        : msg
+                                )
+                            );
+                        }
+                    }
+                }
+            );
+
+            // Fetch initial messages when connected
+            fetchMessages().catch(err => {
+                console.error('Error fetching initial messages:', err);
+            });
+        }
+    }, [connectionStatus, user, subscribeToPrivateChannel, fetchMessages]);
 
     // Function to load more messages
     const loadMoreMessages = useCallback(async () => {
         if (!hasMoreMessages || isLoading) return;
-        await fetchMessages(page + 1);
+        await fetchMessages(page + 1, false);
     }, [hasMoreMessages, isLoading, page, fetchMessages]);
-
-    // Public reconnect function
-    const reconnect = useCallback(() => {
-        if (attemptingConnectionRef.current) {
-            console.log('Already attempting to connect, skipping reconnect');
-            return;
-        }
-
-        console.log('Manually reconnecting...');
-        cleanupConnection();
-        connect();
-    }, [cleanupConnection, connect]);
 
     // Function to upload a file
     const uploadFile = async (file: File): Promise<string> => {
@@ -440,11 +220,14 @@ export function useChat(): ChatHook {
                     if (ev.total && idx !== -1) {
                         const pct = Math.round((ev.loaded * 100) / ev.total);
                         setSelectedFiles(prev => {
-                            const up = [...prev];
-                            if (idx >= 0 && idx < up.length) {
-                                up[idx].progress = pct;
+                            const updatedFiles = [...prev];
+                            if (idx >= 0 && idx < updatedFiles.length) {
+                                updatedFiles[idx] = {
+                                    ...updatedFiles[idx],
+                                    progress: pct
+                                };
                             }
-                            return up;
+                            return updatedFiles;
                         });
                     }
                 },
@@ -455,19 +238,22 @@ export function useChat(): ChatHook {
             const msg = axiosErr.response?.data?.message || 'Failed to upload file.';
             if (idx !== -1) {
                 setSelectedFiles(prev => {
-                    const up = [...prev];
-                    if (idx >= 0 && idx < up.length) {
-                        up[idx].error = msg;
-                        up[idx].uploading = false;
+                    const updatedFiles = [...prev];
+                    if (idx >= 0 && idx < updatedFiles.length) {
+                        updatedFiles[idx] = {
+                            ...updatedFiles[idx],
+                            error: msg,
+                            uploading: false
+                        };
                     }
-                    return up;
+                    return updatedFiles;
                 });
             }
             throw new Error(msg);
         }
     };
 
-    // Function to add a file
+    // Function to add a file to the selected files
     const addFile = useCallback((file: File) => {
         let preview: string | undefined;
         if (file.type.startsWith('image/')) {
@@ -479,17 +265,18 @@ export function useChat(): ChatHook {
         ]);
     }, []);
 
-    // Function to remove a file
+    // Function to remove a file from the selected files
     const removeFile = useCallback((index: number) => {
         setSelectedFiles(prev => {
-            const up = [...prev];
-            if (index >= 0 && index < up.length) {
-                if (up[index].preview) {
-                    URL.revokeObjectURL(up[index].preview!);
+            const updatedFiles = [...prev];
+            if (index >= 0 && index < updatedFiles.length) {
+                // Release object URL if it exists to prevent memory leaks
+                if (updatedFiles[index].preview) {
+                    URL.revokeObjectURL(updatedFiles[index].preview!);
                 }
-                up.splice(index, 1);
+                updatedFiles.splice(index, 1);
             }
-            return up;
+            return updatedFiles;
         });
     }, []);
 
@@ -506,9 +293,7 @@ export function useChat(): ChatHook {
 
         // Check connection status
         if (connectionStatus !== 'connected') {
-            console.log('Not connected. Attempting reconnect...');
-            reconnect();
-            setError('Connection lost. Attempting to reconnect...');
+            setError('Connection lost. Messages cannot be sent at this time.');
             return;
         }
 
@@ -551,11 +336,6 @@ export function useChat(): ChatHook {
             const msg = axiosErr.response?.data?.message || 'Failed to send message.';
             console.error('Error sending message:', err);
             setError(msg);
-
-            // If network error, try to reconnect
-            if (axiosErr.message === 'Network Error') {
-                reconnect();
-            }
         }
     };
 
@@ -570,7 +350,6 @@ export function useChat(): ChatHook {
         uploadFile,
         selectedFiles,
         addFile,
-        removeFile,
-        reconnect
+        removeFile
     };
 }
