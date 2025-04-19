@@ -1,6 +1,7 @@
 import Pusher from 'pusher-js';
 import Echo from 'laravel-echo';
 import axiosInstance from '@/lib/axios';
+import type { BroadcastDriver } from 'laravel-echo';
 
 // Connection status types
 export type ConnectionStatus = 'connected' | 'connecting' | 'disconnected' | 'failed';
@@ -14,7 +15,7 @@ window.Pusher = Pusher;
  */
 class PusherService {
     private static instance: PusherService;
-    private echo: Echo | null = null;
+    private echo: Echo<BroadcastDriver> | null = null;
     private status: ConnectionStatus = 'disconnected';
     private error: string | null = null;
     private listeners: ConnectionChangeListener[] = [];
