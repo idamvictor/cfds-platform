@@ -16,11 +16,28 @@ export interface SavingsPlan {
   periods: SavingsPeriod[];
 }
 
+export interface UserSaving {
+  id: string;
+  currency: string;
+  roi: string;
+  days: number;
+  is_flexible: number;
+  amount: string;
+  earned: string;
+  start_date: string;
+  end_date: string | null;
+  usd_amount: string;
+  days_elapsed: number;
+  created_at: string;
+}
+
 interface SavingsStore {
   plans: SavingsPlan[];
+  userSavings: UserSaving[];
   isLoading: boolean;
   error: string | null;
   fetchPlans: () => Promise<void>;
+  fetchUserSavings: () => Promise<void>;
   createSaving: (data: {
     amount: number;
     period: string;
@@ -31,6 +48,7 @@ interface SavingsStore {
 
 const useSavingsStore = create<SavingsStore>((set) => ({
   plans: [],
+  userSavings: [],
   isLoading: false,
   error: null,
 
@@ -48,11 +66,27 @@ const useSavingsStore = create<SavingsStore>((set) => ({
     }
   },
 
+  fetchUserSavings: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await axiosInstance.get("/savings");
+      set({ userSavings: response.data.data, isLoading: false });
+    } catch (error) {
+      console.error("Failed to fetch user savings:", error);
+      set({
+        error: "Failed to fetch your savings. Please try again later.",
+        isLoading: false,
+      });
+    }
+  },
+
   createSaving: async (data) => {
     set({ isLoading: true, error: null });
     try {
       await axiosInstance.post("/savings/store", data);
-      set({ isLoading: false });
+      // After creating a new saving, fetch the updated list
+      const response = await axiosInstance.get("/savings");
+      set({ userSavings: response.data.data, isLoading: false });
     } catch (error) {
       console.error("Failed to create savings plan:", error);
       set({

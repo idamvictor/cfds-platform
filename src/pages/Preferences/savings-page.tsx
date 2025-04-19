@@ -9,6 +9,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useSavingsStore from "@/store/savingsStore";
 import { toast } from "sonner";
+import { SavingsList } from "@/components/savings/SavingsList";
 
 // Form schema
 const savingsFormSchema = z.object({
@@ -21,8 +22,15 @@ const savingsFormSchema = z.object({
 type FormData = z.infer<typeof savingsFormSchema>;
 
 export default function SavingsPage() {
-  const { plans, isLoading, error, fetchPlans, createSaving } =
-    useSavingsStore();
+  const {
+    plans,
+    userSavings,
+    isLoading,
+    error,
+    fetchPlans,
+    fetchUserSavings,
+    createSaving,
+  } = useSavingsStore();
   const [expandedCurrency, setExpandedCurrency] = React.useState<string>("");
 
   const form = useForm<FormData>({
@@ -37,7 +45,8 @@ export default function SavingsPage() {
 
   React.useEffect(() => {
     fetchPlans();
-  }, [fetchPlans]);
+    fetchUserSavings();
+  }, [fetchPlans, fetchUserSavings]);
 
   // Calculate release date (current date + lock period)
   const calculateReleaseDate = (period: string): string => {
@@ -149,8 +158,10 @@ export default function SavingsPage() {
     <div className="flex flex-col gap-8 p-6 bg-background text-foreground min-h-screen">
       <h1 className="text-2xl font-bold text-center">SAVINGS</h1>
 
+      {userSavings.length > 0 && <SavingsList savings={userSavings} />}
+
       <div className="space-y-4">
-        <h2 className="text-lg font-medium">DETAILED INFORMATION</h2>
+        <h2 className="text-lg font-medium">CREATE NEW SAVINGS PLAN</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Left side - Currency and period selection */}
