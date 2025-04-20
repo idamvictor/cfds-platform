@@ -34,7 +34,6 @@ import useTradeStore from "@/store/tradeStore";
 import { useCurrency } from "@/hooks/useCurrency";
 import AccountPlansModal from "@/components/AccountPlanModal";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import {OnlineStatus} from "@/components/OnlineStatus.tsx";
 
 // Define the ActiveView type
 type ActiveView =
@@ -178,14 +177,6 @@ export default function Header({
                                   : ""}
                               </AvatarFallback>
                             </Avatar>
-
-                            {user && (
-                                <OnlineStatus
-                                    userId={user.id}
-                                    className="absolute -bottom-0.5 -right-0.5 ring-2 ring-background"
-                                />
-                            )}
-
                           </DialogTrigger>
                           <DialogContent className="w-full h-full flex items-center justify-center">
                             <img
@@ -319,6 +310,7 @@ export default function Header({
                         </h3>
                         <div className="space-y-2">
                           {activePairs.map((pair, index) => (
+                            <>
                               <div
                                 key={index}
                                 className={`flex items-center justify-between p-2 rounded-md ${
@@ -344,6 +336,7 @@ export default function Header({
                                   </button>
                                 )}
                               </div>
+                            </>
                           ))}
                           {/* <Button
                             variant="outline"
@@ -643,11 +636,6 @@ export default function Header({
                 >
                   <Avatar className="w-8 h-8 md:w-10 md:h-10">
                     <AvatarImage src={user?.avatar} alt="avatar" />
-                    <AvatarFallback>
-                      {user
-                        ? `${user.first_name[0]}${user.last_name[0]}`.toUpperCase()
-                        : ""}
-                    </AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
