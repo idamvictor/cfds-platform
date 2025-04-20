@@ -259,7 +259,7 @@ export default function PersonalInformation() {
           </label>
           <Input
             id="account_type"
-            value={user?.account_type?.name || "Basic Plan"}
+            value={user?.account_type?.title || "Basic Plan"}
             disabled
             className="bg-card border-card-foreground/10 opacity-70 cursor-not-allowed"
           />
