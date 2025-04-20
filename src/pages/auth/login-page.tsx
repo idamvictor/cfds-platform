@@ -8,6 +8,7 @@ import axiosInstance from "@/lib/axios";
 import useUserStore from "@/store/userStore";
 import { AxiosError } from "axios";
 import { toast } from "@/components/ui/sonner";
+import { OTPVerification } from "@/components/auth/OTPVerification";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,6 +38,12 @@ const formSchema = z.object({
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [requireOTP, setRequireOTP] = useState(false);
+  const [loginCredentials, setLoginCredentials] = useState<{
+    email: string;
+    password: string;
+  } | null>(null);
+
   const navigate = useNavigate();
   const setUser = useUserStore((state) => state.setUser);
   const user = useUserStore((state) => state.user);
@@ -58,11 +65,46 @@ export default function LoginPage() {
     },
   });
 
+  const handleOTPVerification = async (code: string) => {
+    if (!loginCredentials) return;
+
+    try {
+      const response = await axiosInstance.post("/auth/login", {
+        ...loginCredentials,
+        otp: code,
+      });
+
+      toast.success("Login successful! Redirecting...");
+
+      const { user, token } = response.data.data;
+      setUser(user, token);
+
+      setTimeout(() => {
+        navigate("/main");
+      }, 1000);
+    } catch (error) {
+      console.error("OTP verification failed:", error);
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message || "Invalid security code");
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
+      }
+      throw error;
+    }
+  };
+
   // Form submission handler
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
       const response = await axiosInstance.post("/auth/login", values);
+
+      if (response.data.data.require_otp) {
+        setRequireOTP(true);
+        setLoginCredentials(values);
+        toast.success("Security code sent to your email");
+        return;
+      }
 
       // Show success message
       toast.success("Login successful! Redirecting...");
@@ -96,6 +138,18 @@ export default function LoginPage() {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  if (requireOTP && loginCredentials) {
+    return (
+      <div className="relative min-h-screen flex items-center justify-center p-4">
+        <AnimatedBackground />
+        <OTPVerification
+          email={loginCredentials.email}
+          onVerify={handleOTPVerification}
+        />
+      </div>
+    );
   }
 
   return (
