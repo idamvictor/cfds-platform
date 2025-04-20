@@ -44,8 +44,9 @@ export function TakeProfitStopLossModal({
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("Applied TP/SL values:", values);
+    // console.log("Applied TP/SL values:", values);
     onOpenChange(false);
   };
 

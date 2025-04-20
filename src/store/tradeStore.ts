@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import axiosInstance from "@/lib/axios";
-import { io, Socket } from 'socket.io-client';
+import { io, Socket } from "socket.io-client";
 import useUserStore from "@/store/userStore.ts";
 
 export interface Trade {
@@ -92,7 +92,8 @@ let socket: Socket | null = null;
 // Helper function to calculate PnL
 const calculatePnL = (trade: Trade, currentPrice: number): number => {
   // const contractSize = 100000;
-  const priceDifference = trade.trade_type === 'buy'
+  const priceDifference =
+    trade.trade_type === "buy"
       ? currentPrice - trade.opening_price
       : trade.opening_price - currentPrice;
 
@@ -112,12 +113,13 @@ const calculateMargin = (trade: Trade, currentPrice: number): number => {
 // Type guard for AssetUpdate
 function isAssetUpdate(data: unknown): data is AssetUpdate {
   const asset = data as Partial<AssetUpdate>;
-  return typeof asset === 'object' &&
-      asset !== null &&
-      typeof asset.id === 'string' &&
-      typeof asset.price === 'number';
+  return (
+    typeof asset === "object" &&
+    asset !== null &&
+    typeof asset.id === "string" &&
+    typeof asset.price === "number"
+  );
 }
-
 
 const useTradeStore = create<TradeStore>((set, get) => ({
   openTrades: [],
@@ -253,9 +255,9 @@ const useTradeStore = create<TradeStore>((set, get) => ({
   updateTradesWithPrices: (prices: Record<string, number>) => {
     if (Object.keys(prices).length === 0) return;
 
-    set(state => {
+    set((state) => {
       // Update open trades with new prices
-      const updatedTrades = state.openTrades.map(trade => {
+      const updatedTrades = state.openTrades.map((trade) => {
         const newPrice = prices[trade.asset_id];
         if (newPrice !== undefined) {
           // Calculate new PnL
@@ -265,7 +267,7 @@ const useTradeStore = create<TradeStore>((set, get) => ({
           return {
             ...trade,
             closing_price: newPrice,
-            pnl: newPnL
+            pnl: newPnL,
           };
         }
         return trade;
@@ -296,9 +298,8 @@ const useTradeStore = create<TradeStore>((set, get) => ({
     const freeMargin = equity - totalMargin;
 
     // Calculate margin level - handle division by zero
-    const marginLevel = totalMargin > 0
-        ? ((equity / totalMargin) * 100).toFixed(2) + '%'
-        : '∞';
+    const marginLevel =
+      totalMargin > 0 ? ((equity / totalMargin) * 100).toFixed(2) + "%" : "∞";
 
     set({
       accountSummary: {
@@ -309,10 +310,10 @@ const useTradeStore = create<TradeStore>((set, get) => ({
         marginLevel,
         freeMargin,
         pnl: totalPnL,
-        lifetimePnl: 460.05 // Placeholder value
-      }
+        lifetimePnl: 460.05, // Placeholder value
+      },
     });
-  }
+  },
 }));
 
 // Initialize WebSocket connection
@@ -329,29 +330,29 @@ function initWebSocket() {
     // Create new socket
     socket = io("https://asset-data.surdonline.com", {
       auth: { apiKey: "9e37abad-04e9-47fb-bbd5-b8e344ff7e5a" },
-      transports: ['websocket'],
+      transports: ["websocket"],
       reconnectionAttempts: 5,
-      reconnectionDelay: 2000
+      reconnectionDelay: 2000,
     });
 
     // Get store methods
     const { updateTradesWithPrices } = useTradeStore.getState();
 
     // Handle connection events
-    socket.on('connect', () => {
-      console.log('WebSocket connected');
+    socket.on("connect", () => {
+      console.log("WebSocket connected");
       useTradeStore.setState({ wsConnected: true });
 
       // Subscribe to all data
-      socket?.emit('subscribe:all');
+      socket?.emit("subscribe:all");
     });
 
-    socket.on('disconnect', () => {
-      console.log('WebSocket disconnected');
+    socket.on("disconnect", () => {
+      console.log("WebSocket disconnected");
       useTradeStore.setState({ wsConnected: false });
     });
 
-    socket.on('data:update', (assetUpdates: unknown) => {
+    socket.on("data:update", (assetUpdates: unknown) => {
       try {
         if (Array.isArray(assetUpdates)) {
           const prices: Record<string, number> = {};
@@ -369,12 +370,11 @@ function initWebSocket() {
           }
         }
       } catch (err) {
-        console.error('Error processing batch update:', err);
+        console.error("Error processing batch update:", err);
       }
     });
-
   } catch (err) {
-    console.error('WebSocket initialization error:', err);
+    console.error("WebSocket initialization error:", err);
   }
 }
 

@@ -6,7 +6,7 @@ import useAssetStore from "@/store/assetStore";
 import useTradeStore from "@/store/tradeStore";
 import AssetInitializer from "../asset-initializer";
 import { useMobile } from "@/hooks/use-mobile";
-import {addClickSound} from "@/lib/addClickSound.ts";
+import { addClickSound } from "@/lib/addClickSound.ts";
 import Footer from "@/components/footer";
 
 export type ActiveView =
@@ -23,21 +23,20 @@ export default function TradingPlatform() {
   const [activeView, setActiveView] = useState<ActiveView>(null); // Set to null by default (panels closed)
   const [activePairs, setActivePairs] = useState<string[]>(["AUD/JPY"]);
   const [activePair, setActivePair] = useState("AUD/JPY");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const isMobile = useMobile(768);
-  console.log("isMobile", isMobile);
+  // console.log("isMobile", isMobile);
 
   const { setActiveAsset, assets, fetchAssets, activeAsset } = useAssetStore();
   const { fetchOpenTrades, fetchClosedTrades } = useTradeStore();
-
 
   useEffect(() => {
     addClickSound();
   }, []);
 
-
   // Fetch assets and trades when component mounts
   useEffect(() => {
-    console.log("TradingPlatform - Fetching assets and trades");
+    // console.log("TradingPlatform - Fetching assets and trades");
     fetchAssets();
     fetchOpenTrades();
     fetchClosedTrades();
@@ -72,7 +71,7 @@ export default function TradingPlatform() {
   const addCurrencyPair = (pair: string) => {
     // Find the asset by sy
     const asset = assets.find((a) => a.sy === pair);
-    console.log("Adding currency pair:", pair, "Found asset:", asset);
+    // console.log("Adding currency pair:", pair, "Found asset:", asset);
 
     if (asset) {
       setActiveAsset(asset);

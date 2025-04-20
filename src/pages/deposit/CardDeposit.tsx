@@ -22,8 +22,9 @@ export default function CardDeposit() {
     currency: "USD",
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  console.log(focusedField);
+  // console.log(focusedField);
 
   const handleInputChange = (field: string, value: string) => {
     setCardDetails({
@@ -244,4 +245,3 @@ export default function CardDeposit() {
     </div>
   );
 }
-

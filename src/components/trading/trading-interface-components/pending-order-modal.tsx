@@ -46,8 +46,9 @@ export function PendingOrderModal({
     }
   }, [open, form]);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("Applied pending order:", values);
+    // console.log("Applied pending order:", values);
     onOpenChange(false);
   };
 

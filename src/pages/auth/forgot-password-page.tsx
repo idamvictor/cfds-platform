@@ -45,8 +45,9 @@ export default function ForgotPasswordPage() {
   });
 
   // Form submission handler
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    // console.log(values);
     // Here you would typically send a password reset email
   }
 

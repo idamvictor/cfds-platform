@@ -39,9 +39,11 @@ export default function Sidebar({
   addCurrencyPair,
 }: SidebarProps) {
   const isMobile = useMobile();
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  console.log("isMobile", isMobileMenuOpen);
-  console.log("is active view", activeView);
+  // console.log("isMobile", isMobileMenuOpen);
+  // console.log("is active view", activeView);
 
   // Close mobile menu when switching to desktop
   useEffect(() => {
