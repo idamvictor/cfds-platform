@@ -18,7 +18,6 @@ interface MainContentProps {
 }
 
 export default function MainContent({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   sidebarExpanded,
   activeView,
   addCurrencyPair,
@@ -27,7 +26,7 @@ export default function MainContent({
   const isLargeScreen = useMobile(1024);
 
   // const { activeAsset } = useAssetStore();
-  // console.log('sidebarExtended', sidebarExpanded);
+  console.log("sidebarExtended", sidebarExpanded);
 
   // Log when active asset changes
   // useEffect(() => {

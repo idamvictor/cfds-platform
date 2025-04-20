@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 
 export default function AnimatedBackground() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [windowSize, setWindowSize] = useState({
     width: typeof window !== "undefined" ? window.innerWidth : 1200,
     height: typeof window !== "undefined" ? window.innerHeight : 800,
   });
-  // console.log(windowSize);
+  console.log(windowSize);
 
   useEffect(() => {
     const handleResize = () => {

@@ -373,10 +373,9 @@ export function TradingInterface() {
     };
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const response = await axiosInstance.post("/trades/store", tradeData);
 
-      // console.log("Trade executed successfully:", response.data);
+      console.log("Trade executed successfully:", response.data);
 
       playSuccessSound();
 

@@ -23,9 +23,8 @@ export default function TradingPlatform() {
   const [activeView, setActiveView] = useState<ActiveView>(null); // Set to null by default (panels closed)
   const [activePairs, setActivePairs] = useState<string[]>(["AUD/JPY"]);
   const [activePair, setActivePair] = useState("AUD/JPY");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const isMobile = useMobile(768);
-  // console.log("isMobile", isMobile);
+  console.log("isMobile", isMobile);
 
   const { setActiveAsset, assets, fetchAssets, activeAsset } = useAssetStore();
   const { fetchOpenTrades, fetchClosedTrades } = useTradeStore();
