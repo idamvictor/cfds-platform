@@ -42,6 +42,7 @@ export default function OrderTable() {
 
   const { activeAsset } = useAssetStore();
 
+
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
 

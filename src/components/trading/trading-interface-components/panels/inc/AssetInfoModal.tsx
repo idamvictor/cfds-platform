@@ -155,7 +155,7 @@ export default function AssetInfoModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="p-0 bg-background max-h-[90vh] overflow-y-auto w-[95vw] max-w-5xl">
+      <DialogContent className="p-0 bg-background max-h-[90vh] overflow-y-auto w-[95vw] min-w-5xl">
         <DialogHeader className="sticky top-0 z-10 bg-slate-700 py-3 px-2 sm:px-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 ">
             <div className="flex items-center gap-3">

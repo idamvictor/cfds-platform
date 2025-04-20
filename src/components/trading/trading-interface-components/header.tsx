@@ -34,6 +34,7 @@ import useTradeStore from "@/store/tradeStore";
 import { useCurrency } from "@/hooks/useCurrency";
 import AccountPlansModal from "@/components/AccountPlanModal";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {OnlineStatus} from "@/components/OnlineStatus.tsx";
 
 // Define the ActiveView type
 type ActiveView =
@@ -177,6 +178,14 @@ export default function Header({
                                   : ""}
                               </AvatarFallback>
                             </Avatar>
+
+                            {user && (
+                                <OnlineStatus
+                                    userId={user.id}
+                                    className="absolute -bottom-0.5 -right-0.5 ring-2 ring-background"
+                                />
+                            )}
+
                           </DialogTrigger>
                           <DialogContent className="w-full h-full flex items-center justify-center">
                             <img
@@ -188,7 +197,7 @@ export default function Header({
                         </Dialog>
                         <div>
                           <div className="text-xs text-muted-foreground">
-                            {user?.account_type?.name || "STANDARD"}
+                            {user?.account_type?.title || "STANDARD"}
                           </div>
                           <div className="text-green-500 font-bold">
                             {formatCurrency(user?.balance || 0)}
@@ -310,7 +319,6 @@ export default function Header({
                         </h3>
                         <div className="space-y-2">
                           {activePairs.map((pair, index) => (
-                            <>
                               <div
                                 key={index}
                                 className={`flex items-center justify-between p-2 rounded-md ${
@@ -336,7 +344,6 @@ export default function Header({
                                   </button>
                                 )}
                               </div>
-                            </>
                           ))}
                           {/* <Button
                             variant="outline"
@@ -524,7 +531,7 @@ export default function Header({
 
               <div className="flex flex-col items-center gap-1">
                 <div className="text-xs font-bold text-primary">
-                  {user?.account_type?.name || "STANDARD"}
+                  {user?.account_type?.title || "STANDARD"}
                 </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -624,7 +631,7 @@ export default function Header({
                 user?.account_type?.icon ||
                 "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744370355/main_plate_exi8jv.png"
               }
-              alt={`${user?.account_type?.name || "Basic"} Badge`}
+              alt={`${user?.account_type?.title || "Basic"} Badge`}
               className="w-10 h-10 md:w-12 md:h-12"
             />
             <DropdownMenu>

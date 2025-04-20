@@ -23,7 +23,7 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
     const { formatCurrency } = useCurrency();
 
     // Get current user's plan title if available
-    const currentPlanTitle = user?.account_type?.name || "Basic";
+    const currentPlanTitle = user?.account_type?.title || "Basic";
 
     // Handle plan selection
     const handlePlanSelect = (planId: string) => {

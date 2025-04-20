@@ -12,6 +12,19 @@ export interface UserAccount {
   currency: string;
 }
 
+export interface UserNotification {
+  id: string;
+  title: string;
+  message: string;
+  image: string | null;
+  color: 'danger' | 'success' | 'warning' | null;
+  type: string;
+  time: string;
+  read_at: string | null;
+  created_at: string | null;
+  read: boolean;
+}
+
 export interface User {
   id: string;
   account_id: string;
@@ -27,14 +40,20 @@ export interface User {
   credit_balance: number;
   birth_date?: string;
   copy_trader: number;
+  autotrader: boolean;
+  autotrader_status: string;
+  can_open_trade: boolean;
+  can_close_trade: boolean;
   account_type: {
-    id: number;
-    name: string;
-    price: number;
+    id: string;
+    title: string;
     leverage: number;
     icon: string;
+    color: string;
+    image: string;
   };
   accounts: UserAccount[];
+  notifications: UserNotification[];
 }
 
 interface UserStore {

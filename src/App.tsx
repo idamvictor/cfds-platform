@@ -7,6 +7,7 @@ import { SiteProvider } from "@/components/provider/SiteProvider.tsx";
 import LoadingScreen from "./components/loading-screen";
 import WebSocketInitializer from "@/components/WebSocketInitializer.tsx";
 import useSiteSettingsStore from "@/store/siteSettingStore";
+import {OnlineStatusInitializer} from "@/components/OnlineStatusInitializer.tsx";
 
 const Test = lazy(() => import("./pages/test"));
 const Trading = lazy(() => import("./pages/trading"));
@@ -68,6 +69,7 @@ const App = () => {
           <SiteProvider>
             <BaseLayout>
               <WebSocketInitializer />
+              <OnlineStatusInitializer />
               <Routes>
                 <Route
                   path="/main"

@@ -11,6 +11,7 @@ import {
     TableCell,
 } from "@/components/ui/table";
 import type { Trade } from "@/store/tradeStore";
+import useUserStore from "@/store/userStore.ts";
 
 interface DesktopTradeTableProps {
     trades: Trade[];
@@ -29,6 +30,9 @@ export function DesktopTradeTable({
                                       loadMoreRef,
                                       handleClosePosition,
                                   }: DesktopTradeTableProps) {
+
+    const user = useUserStore((state) => state.user);
+
     if (error) {
         return <div className="w-full p-4 text-center text-red-500">{error}</div>;
     }
@@ -83,7 +87,7 @@ export function DesktopTradeTable({
                             <TableHead className="h-8 text-xs font-medium text-muted-foreground">
                                 PnL
                             </TableHead>
-                            {activeTab === "active" && (
+                            {activeTab === "active" && user?.can_open_trade && (
                                 <TableHead className="h-8 text-xs font-medium text-muted-foreground">
                                     Actions
                                 </TableHead>
@@ -104,7 +108,7 @@ export function DesktopTradeTable({
                                     trade.trade_type === "buy"
                                         ? "text-primary"
                                         : "text-destructive"
-                                )} >
+                                )}>
                                     {trade.trade_type.toUpperCase()}
                                 </TableCell>
                                 <TableCell className="py-1 text-xs text-muted-foreground">
@@ -141,7 +145,7 @@ export function DesktopTradeTable({
                                         ? `$${trade.pnl.toFixed(2)}`
                                         : `-$${Math.abs(trade.pnl).toFixed(2)}`}
                                 </TableCell>
-                                {activeTab === "active" && handleClosePosition && (
+                                {activeTab === "active" && handleClosePosition && user?.can_open_trade && (
                                     <TableCell className="py-1">
                                         <div className="flex gap-1">
                                             <Button
