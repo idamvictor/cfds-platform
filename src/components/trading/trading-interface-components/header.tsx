@@ -621,7 +621,7 @@ export default function Header({
           <div className="flex items-center gap-2">
             <img
               src={
-                user?.account_type?.icon ||
+                user?.account_type?.image ||
                 "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744370355/main_plate_exi8jv.png"
               }
               alt={`${user?.account_type?.title || "Basic"} Badge`}

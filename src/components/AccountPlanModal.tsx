@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
     Dialog,
     DialogContent,
@@ -19,16 +19,12 @@ interface AccountPlansModalProps {
 export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps) {
     const { data, isLoading } = useDataStore();
     const user = useUserStore((state) => state.user);
-    const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
     const { formatCurrency } = useCurrency();
 
     // Get current user's plan title if available
     const currentPlanTitle = user?.account_type?.title || "Basic";
 
-    // Handle plan selection
-    const handlePlanSelect = (planId: string) => {
-        setSelectedPlanId(planId);
-    };
+
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -68,10 +64,9 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
                                                 key={`header-${plan.id}`}
                                                 className={cn(
                                                     "col-span-1 text-center p-3 text-white font-semibold relative cursor-pointer",
-                                                    selectedPlanId === plan.id ? "ring-2 ring-primary" : ""
+                                                    user?.account_type?.id === plan.id ? "ring-2 ring-primary" : ""
                                                 )}
                                                 style={headerStyle}
-                                                onClick={() => handlePlanSelect(plan.id)}
                                             >
                                                 <div className="flex items-center justify-center gap-1">
                                                     {plan.icon && (
@@ -134,10 +129,9 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
                                                         className={cn(
                                                             "col-span-1 p-4 text-center",
                                                             index % 2 === 0 ? "bg-muted/30" : "bg-background",
-                                                            selectedPlanId === plan.id ? "bg-primary/10" : "",
+                                                            user?.account_type?.id === plan.id ? "bg-primary/10" : "",
                                                             plan.title === currentPlanTitle ? "bg-primary/5" : ""
                                                         )}
-                                                        onClick={() => handlePlanSelect(plan.id)}
                                                     >
                                                         {displayValue}
                                                     </div>

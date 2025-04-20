@@ -2,11 +2,13 @@ import { useEffect, useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import useDataStore from "@/store/dataStore";
 import useUserStore from "@/store/userStore";
+import {AccountDisabled} from "@/components/site/AccountDisabled.tsx";
 
 export function BaseLayout({ children }: { children: React.ReactNode }) {
     const location = useLocation();
     const fetchSiteData = useDataStore(state => state.fetchData);
     const token = useUserStore(state => state.token);
+    const user = useUserStore(state => state.user);
     const getCurrentUser = useUserStore(state => state.getCurrentUser);
     const [isStoreHydrated, setIsStoreHydrated] = useState(false);
     const dataFetchedRef = useRef(false);
@@ -74,6 +76,12 @@ export function BaseLayout({ children }: { children: React.ReactNode }) {
             fetchUserAndSiteData();
         }
     }, [isAuthRoute, token, getCurrentUser, fetchSiteData, isStoreHydrated]);
+
+
+    if (user?.status === "deactivated") {
+        return <AccountDisabled />;
+    }
+
 
     return <>{children}</>;
 }
