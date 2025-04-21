@@ -181,18 +181,33 @@ export function WithdrawalHistory({
           {selectedRequest && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-2 text-sm">
-                {Object.entries(JSON.parse(selectedRequest.details)).map(
-                  ([key, value]) => (
-                    <div key={key} className="contents">
-                      <div className="font-medium capitalize">
-                        {key.replace(/_/g, " ")}:
-                      </div>
-                      <div className="text-muted-foreground">
-                        {String(value)}
-                      </div>
-                    </div>
-                  )
-                )}
+                {selectedRequest.details &&
+                  (() => {
+                    try {
+                      const details =
+                        typeof selectedRequest.details === "string"
+                          ? JSON.parse(selectedRequest.details)
+                          : selectedRequest.details;
+
+                      return Object.entries(details).map(([key, value]) => (
+                        <div key={key} className="contents">
+                          <div className="font-medium capitalize">
+                            {key.replace(/_/g, " ")}:
+                          </div>
+                          <div className="text-muted-foreground">
+                            {String(value)}
+                          </div>
+                        </div>
+                      ));
+                    } catch (error) {
+                      console.error("Error parsing details:", error);
+                      return (
+                        <div className="col-span-2 text-destructive">
+                          Unable to display additional details
+                        </div>
+                      );
+                    }
+                  })()}
                 <div className="font-medium">Status:</div>
                 <div>
                   <StatusBadge status={selectedRequest.status} />

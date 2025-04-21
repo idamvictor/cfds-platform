@@ -161,20 +161,34 @@ const DepositHistory: React.FC = () => {
           {selectedTransaction && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-2 text-sm">
-                {selectedTransaction.details ? (
-                  Object.entries(JSON.parse(selectedTransaction.details)).map(
-                    ([key, value]) => (
-                      <div key={key} className="contents">
-                        <div className="font-medium capitalize">
-                          {key.replace(/_/g, " ")}:
+                {selectedTransaction.details &&
+                  (() => {
+                    try {
+                      const details =
+                        typeof selectedTransaction.details === "string"
+                          ? JSON.parse(selectedTransaction.details)
+                          : selectedTransaction.details;
+
+                      return Object.entries(details).map(([key, value]) => (
+                        <div key={key} className="contents">
+                          <div className="font-medium capitalize">
+                            {key.replace(/_/g, " ")}:
+                          </div>
+                          <div className="text-muted-foreground">
+                            {String(value)}
+                          </div>
                         </div>
-                        <div className="text-muted-foreground">
-                          {String(value)}
+                      ));
+                    } catch (error) {
+                      console.error("Error parsing details:", error);
+                      return (
+                        <div className="col-span-2 text-muted-foreground text-center">
+                          Unable to display additional details
                         </div>
-                      </div>
-                    )
-                  )
-                ) : (
+                      );
+                    }
+                  })()}
+                {!selectedTransaction.details && (
                   <div className="col-span-2 text-muted-foreground text-center">
                     No additional details available
                   </div>
