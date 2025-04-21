@@ -3,7 +3,6 @@ import { Card } from "@/components/ui/card";
 import { useCurrency } from "@/hooks/useCurrency";
 import useUserStore from "@/store/userStore";
 import { useNavigate } from "react-router-dom";
-import type React from "react";
 
 export function AccountSection() {
   const user = useUserStore((state) => state.user);
