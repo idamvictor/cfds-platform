@@ -87,7 +87,7 @@ export function DesktopTradeTable({
                             <TableHead className="h-8 text-xs font-medium text-muted-foreground">
                                 PnL
                             </TableHead>
-                            {activeTab === "active" && user?.can_open_trade && (
+                            {activeTab === "active" && user?.can_close_trade && (
                                 <TableHead className="h-8 text-xs font-medium text-muted-foreground">
                                     Actions
                                 </TableHead>
@@ -145,7 +145,7 @@ export function DesktopTradeTable({
                                         ? `$${trade.pnl.toFixed(2)}`
                                         : `-$${Math.abs(trade.pnl).toFixed(2)}`}
                                 </TableCell>
-                                {activeTab === "active" && handleClosePosition && user?.can_open_trade && (
+                                {activeTab === "active" && handleClosePosition && user?.can_close_trade && (
                                     <TableCell className="py-1">
                                         <div className="flex gap-1">
                                             <Button

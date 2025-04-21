@@ -9,7 +9,7 @@ const Logo: React.FC = () => {
       <img
         src={settings?.logo}
         alt="Logo"
-        className="w-20 h-15 rounded flex items-center justify-center"
+        className="w-auto h-12 rounded flex items-center justify-center"
       />
     </div>
   );

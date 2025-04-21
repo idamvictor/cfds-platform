@@ -42,6 +42,7 @@ export interface User {
   copy_trader: number;
   autotrader: boolean;
   autotrader_status: string;
+  status: string;
   can_open_trade: boolean;
   can_close_trade: boolean;
   account_type: {
