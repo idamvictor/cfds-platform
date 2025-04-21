@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 export function AccountSection() {
   const user = useUserStore((state) => state.user);
   const { formatCurrency } = useCurrency();
-  const balance = user?.balance || 610.05;  // Fallback to original value if no user
+  const balance = user?.balance || 0;  // Fallback to original value if no user
   const navigate = useNavigate()
 
   return (
@@ -25,12 +25,12 @@ export function AccountSection() {
           </div>
           <div className="flex justify-between items-center">
             <span className="text-muted-foreground">Leverage</span>
-            <span className="text-primary font-medium">1:20</span>
+            <span className="text-primary font-medium">1:{ user?.account_type?.leverage }</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-muted-foreground">Credit</span>
             <span className="text-primary font-medium">
-              {formatCurrency(0)}
+              {formatCurrency(user?.credit_balance ?? 0)}
             </span>
           </div>
           <div className="flex items-center justify-center">

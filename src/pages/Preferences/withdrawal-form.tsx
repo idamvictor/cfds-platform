@@ -166,6 +166,7 @@ export default function WithdrawalForm() {
                                 <Input
                                     placeholder="Enter amount"
                                     {...field}
+                                    type="number"
                                     className="pr-8"
                                 />
                                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
