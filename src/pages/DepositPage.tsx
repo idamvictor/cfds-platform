@@ -68,7 +68,11 @@ const staticPaymentMethods: PaymentMethod[] = [
   },
 ];
 
-export default function DepositPage() {
+export default function DepositPage({
+  onDepositSuccess,
+}: {
+  onDepositSuccess?: () => void;
+}) {
   const { data, fetchData, isLoading } = useDataStore();
   const [selectedMethodId, setSelectedMethodId] = useState<string | null>(null);
 
@@ -82,6 +86,7 @@ export default function DepositPage() {
         "/user/deposit/store",
         {
           amount,
+          method: "crypto",
           wallet_id: selectedWallet?.id,
         },
         {
@@ -92,6 +97,7 @@ export default function DepositPage() {
       );
 
       toast.success("Deposit request submitted successfully");
+      onDepositSuccess?.(); // Call the success callback
     } catch (error) {
       const axiosError = error as AxiosError<{ message: string }>;
       toast.error(
@@ -104,13 +110,12 @@ export default function DepositPage() {
   const cryptoPaymentMethods: PaymentMethod[] = useMemo(() => {
     if (!data?.wallets) return [];
 
-    return data.wallets
-      .map((wallet) => ({
-        id: wallet.id,
-        name: `${wallet.crypto} Wallet (${wallet.address.substring(0, 8)}...)`,
-        icon: <Cloud className="h-5 w-5 opacity-70" />,
-        processingTime: "5-10 minutes",
-      }));
+    return data.wallets.map((wallet) => ({
+      id: wallet.id,
+      name: `${wallet.crypto} Wallet (${wallet.address.substring(0, 8)}...)`,
+      icon: <Cloud className="h-5 w-5 opacity-70" />,
+      processingTime: "5-10 minutes",
+    }));
   }, [data?.wallets]);
 
   const paymentMethods = useMemo(() => {
@@ -174,13 +179,13 @@ export default function DepositPage() {
 
         {/* Right content area */}
         <Card className="items-start flex-1 rounded-none">
-          <CardContent className="md:p-6 min-h-screen w-full">
+          <CardContent className="md:p-6 w-full">
             {isLoading && !data ? (
               <div className="flex justify-center items-center h-full">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>
             ) : selectedMethodId === "credit-card" ? (
-              <CardDeposit />
+              <CardDeposit onDepositSuccess={onDepositSuccess} />
             ) : selectedWallet ? (
               <QRCodeDeposit
                 address={selectedWallet.address}
@@ -189,6 +194,7 @@ export default function DepositPage() {
                 qrTitle={`${selectedWallet.crypto} QR CODE`}
                 addressTitle={`${selectedWallet.crypto} ADDRESS`}
                 onSubmit={handleSubmit}
+                onDepositSuccess={onDepositSuccess}
               />
             ) : (
               <div className="flex justify-center items-center h-full">

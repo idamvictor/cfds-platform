@@ -578,7 +578,9 @@ export default function Header({
                         </div>
                         <div className="flex justify-between">
                           <span>Invested</span>
-                          <span>{formatCurrency(0)}</span>
+                          <span>
+                            {formatCurrency(user?.savings_balance || 0)}
+                          </span>
                         </div>
                         <div className="flex justify-between">
                           <span>Profit</span>

@@ -31,18 +31,43 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function PieChartComponent() {
-  const [activeIndex, setActiveIndex] = React.useState<number | undefined>();
+type PieChartProps = {
+  activeIndex?: number;
+  onPieEnter?: (_: unknown, index: number) => void;
+  onPieLeave?: () => void;
+};
+
+export function PieChartComponent({
+  activeIndex: externalActiveIndex,
+  onPieEnter: externalOnPieEnter,
+  onPieLeave: externalOnPieLeave,
+}: PieChartProps) {
+  const [internalActiveIndex, setInternalActiveIndex] = React.useState<
+    number | undefined
+  >();
+  const activeIndex =
+    externalActiveIndex !== undefined
+      ? externalActiveIndex
+      : internalActiveIndex;
+
   const totalVisitors = React.useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
   }, []);
 
   const onPieEnter = (_: unknown, index: number) => {
-    setActiveIndex(index);
+    if (externalOnPieEnter) {
+      externalOnPieEnter(_, index);
+    } else {
+      setInternalActiveIndex(index);
+    }
   };
 
   const onPieLeave = () => {
-    setActiveIndex(undefined);
+    if (externalOnPieLeave) {
+      externalOnPieLeave();
+    } else {
+      setInternalActiveIndex(undefined);
+    }
   };
 
   return (
@@ -195,7 +220,7 @@ export function PieChartComponent() {
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
+                          className="fill-foreground text-xl font-bold"
                         >
                           {winRate}%
                         </tspan>
@@ -203,9 +228,7 @@ export function PieChartComponent() {
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
-                        >
-                          Win Rate
-                        </tspan>
+                        ></tspan>
                       </text>
                     );
                   }

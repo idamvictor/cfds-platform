@@ -1,3 +1,4 @@
+import TransactionHistory from "@/components/deposit-history";
 import useUserStore from "@/store/userStore";
 
 export default function Test() {
@@ -27,6 +28,7 @@ export default function Test() {
         <p>No user logged in</p>
       )}
 
+      <TransactionHistory />
     </div>
   );
 }

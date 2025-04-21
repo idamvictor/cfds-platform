@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,13 +18,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-interface WithdrawalRequest {
+interface Transaction {
   id: string;
   amount: string;
   date: string;
   type: string;
   status: string;
-  details: string;
+  details: string | null;
 }
 
 interface ApiResponse {
@@ -32,7 +32,7 @@ interface ApiResponse {
   message: string;
   data: {
     current_page: number;
-    data: WithdrawalRequest[];
+    data: Transaction[];
     first_page_url: string;
     from: number;
     next_page_url: string | null;
@@ -43,77 +43,35 @@ interface ApiResponse {
   };
 }
 
-interface WithdrawalHistoryProps {
-  refreshTrigger?: number;
-}
-
-export function WithdrawalHistory({
-  refreshTrigger = 0,
-}: WithdrawalHistoryProps) {
-  const [withdrawals, setWithdrawals] = useState<WithdrawalRequest[]>([]);
+const DepositHistory: React.FC = () => {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedRequest, setSelectedRequest] =
-    useState<WithdrawalRequest | null>(null);
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   useEffect(() => {
-    const fetchWithdrawals = async () => {
+    const fetchTransactions = async () => {
       try {
-        const response = await axiosInstance.get<ApiResponse>(
-          "/user/withdrawals"
-        );
-        setWithdrawals(response.data.data.data);
+        const response = await axiosInstance.get<ApiResponse>("/user/deposits");
+        setTransactions(response.data.data.data);
         setError(null);
       } catch (err) {
-        setError("Failed to load withdrawal history");
-        console.error("Error fetching withdrawals:", err);
+        setError("Failed to load deposit history");
+        console.error("Error fetching deposits:", err);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchWithdrawals();
-  }, [refreshTrigger]);
-
-  if (isLoading) {
-    return (
-      <div className="rounded-md border border-border/40 overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-card hover:bg-card">
-              <TableHead className="text-foreground font-bold">DATE</TableHead>
-              <TableHead className="text-foreground font-bold">
-                AMOUNT
-              </TableHead>
-              <TableHead className="text-foreground font-bold">TYPE</TableHead>
-              <TableHead className="text-foreground font-bold">
-                DETAILS
-              </TableHead>
-              <TableHead className="text-foreground font-bold">
-                STATUS
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableCell colSpan={5} className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white mx-auto"></div>
-                <p>Loading withdrawal history...</p>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </div>
-    );
-  }
-
-  if (error) {
-    return <div className="p-4 text-center text-destructive">{error}</div>;
-  }
+    fetchTransactions();
+  }, []);
 
   return (
-    <>
+    <div className="mt-12">
+      <h2 className="text-lg font-medium mb-6">Deposit History</h2>
+
       <div className="rounded-md border border-border/40 overflow-hidden">
         <Table>
           <TableHeader>
@@ -132,30 +90,41 @@ export function WithdrawalHistory({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {withdrawals.length === 0 ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white mx-auto"></div>
+                  <p>Loading deposit history...</p>
+                </TableCell>
+              </TableRow>
+            ) : error ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center text-destructive">
+                  {error}
+                </TableCell>
+              </TableRow>
+            ) : transactions.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={5}
                   className="text-center text-muted-foreground"
                 >
-                  No withdrawal history found
+                  No deposit history found
                 </TableCell>
               </TableRow>
             ) : (
-              withdrawals.map((request) => (
-                <TableRow key={request.id} className="bg-card/50 hover:bg-card">
-                  <TableCell className="text-muted-foreground">
-                    {request.date}
-                  </TableCell>
-                  <TableCell>{request.amount}</TableCell>
-                  <TableCell className="capitalize">{request.type}</TableCell>
+              transactions.map((tx) => (
+                <TableRow key={tx.id} className="bg-card/50 hover:bg-card">
+                  <TableCell>{tx.date}</TableCell>
+                  <TableCell>{tx.amount}</TableCell>
+                  <TableCell className="capitalize">{tx.type}</TableCell>
                   <TableCell>
                     <Button
                       variant="ghost"
                       size="sm"
                       className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
                       onClick={() => {
-                        setSelectedRequest(request);
+                        setSelectedTransaction(tx);
                         setIsDetailsOpen(true);
                       }}
                     >
@@ -164,7 +133,18 @@ export function WithdrawalHistory({
                     </Button>
                   </TableCell>
                   <TableCell>
-                    <StatusBadge status={request.status} />
+                    <span
+                      className={cn(
+                        "px-2 py-1 rounded text-xs",
+                        tx.status === "approved"
+                          ? "bg-green-500/20 text-green-400"
+                          : tx.status === "rejected"
+                          ? "bg-red-500/20 text-red-400"
+                          : "bg-yellow-500/20 text-yellow-400"
+                      )}
+                    >
+                      {tx.status.charAt(0).toUpperCase() + tx.status.slice(1)}
+                    </span>
                   </TableCell>
                 </TableRow>
               ))
@@ -176,18 +156,18 @@ export function WithdrawalHistory({
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Withdrawal Details</DialogTitle>
+            <DialogTitle>Deposit Details</DialogTitle>
           </DialogHeader>
-          {selectedRequest && (
+          {selectedTransaction && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-2 text-sm">
-                {selectedRequest.details &&
+                {selectedTransaction.details &&
                   (() => {
                     try {
                       const details =
-                        typeof selectedRequest.details === "string"
-                          ? JSON.parse(selectedRequest.details)
-                          : selectedRequest.details;
+                        typeof selectedTransaction.details === "string"
+                          ? JSON.parse(selectedTransaction.details)
+                          : selectedTransaction.details;
 
                       return Object.entries(details).map(([key, value]) => (
                         <div key={key} className="contents">
@@ -202,23 +182,40 @@ export function WithdrawalHistory({
                     } catch (error) {
                       console.error("Error parsing details:", error);
                       return (
-                        <div className="col-span-2 text-destructive">
+                        <div className="col-span-2 text-muted-foreground text-center">
                           Unable to display additional details
                         </div>
                       );
                     }
                   })()}
+                {!selectedTransaction.details && (
+                  <div className="col-span-2 text-muted-foreground text-center">
+                    No additional details available
+                  </div>
+                )}
                 <div className="font-medium">Status:</div>
                 <div>
-                  <StatusBadge status={selectedRequest.status} />
+                  <span
+                    className={cn(
+                      "px-2 py-1 rounded text-xs",
+                      selectedTransaction.status === "approved"
+                        ? "bg-green-500/20 text-green-400"
+                        : selectedTransaction.status === "rejected"
+                        ? "bg-red-500/20 text-red-400"
+                        : "bg-yellow-500/20 text-yellow-400"
+                    )}
+                  >
+                    {selectedTransaction.status.charAt(0).toUpperCase() +
+                      selectedTransaction.status.slice(1)}
+                  </span>
                 </div>
                 <div className="font-medium">Amount:</div>
                 <div className="text-muted-foreground">
-                  {selectedRequest.amount}
+                  {selectedTransaction.amount}
                 </div>
                 <div className="font-medium">Date:</div>
                 <div className="text-muted-foreground">
-                  {selectedRequest.date}
+                  {selectedTransaction.date}
                 </div>
               </div>
               <div className="flex justify-end">
@@ -233,44 +230,8 @@ export function WithdrawalHistory({
           )}
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
-}
+};
 
-function StatusBadge({ status }: { status: string }) {
-  switch (status.toLowerCase()) {
-    case "pending":
-      return (
-        <Badge
-          variant="outline"
-          className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
-        >
-          Pending
-        </Badge>
-      );
-    case "completed":
-      return (
-        <Badge
-          variant="outline"
-          className="bg-success/10 text-success border-success/20"
-        >
-          Completed
-        </Badge>
-      );
-    case "rejected":
-      return (
-        <Badge
-          variant="outline"
-          className="bg-destructive/10 text-destructive border-destructive/20"
-        >
-          Rejected
-        </Badge>
-      );
-    default:
-      return (
-        <Badge variant="outline">
-          {status.charAt(0).toUpperCase() + status.slice(1)}
-        </Badge>
-      );
-  }
-}
+export default DepositHistory;

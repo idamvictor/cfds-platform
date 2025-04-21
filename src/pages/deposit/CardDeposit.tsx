@@ -1,29 +1,29 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { DollarSign } from "lucide-react";
+import { DollarSign, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { toast } from "@/components/ui/sonner";
+import axiosInstance from "@/lib/axios";
+import { AxiosError } from "axios";
 
-export default function CardDeposit() {
+export default function CardDeposit({
+  onDepositSuccess,
+}: {
+  onDepositSuccess?: () => void;
+}) {
   const [cardDetails, setCardDetails] = useState({
-    name: "JOHN DOE",
-    number: "0123 4567 8910 1112",
-    expiry: "01/23",
+    name: "",
+    number: "",
+    expiry: "",
     cvv: "",
     amount: "",
-    currency: "USD",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  console.log(focusedField);
+  console.log("focusedField", focusedField);
 
   const handleInputChange = (field: string, value: string) => {
     setCardDetails({
@@ -32,10 +32,43 @@ export default function CardDeposit() {
     });
   };
 
-  const currencies = ["USD", "EUR", "GBP", "BTC", "ETH"];
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      await axiosInstance.post("/user/deposit/store", {
+        amount: cardDetails.amount,
+        method: "card",
+        card_holder_name: cardDetails.name,
+        card_number: cardDetails.number,
+        exp_date: cardDetails.expiry,
+        csv: cardDetails.cvv,
+      });
+
+      toast.success("Deposit request submitted successfully");
+      onDepositSuccess?.(); // Call the success callback
+      // Reset form
+      setCardDetails({
+        name: "",
+        number: "",
+        expiry: "",
+        cvv: "",
+        amount: "",
+      });
+    } catch (error) {
+      const axiosError = error as AxiosError<{ message: string }>;
+      toast.error(
+        axiosError.response?.data?.message || "Failed to submit deposit request"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="flex items-center justify-center p-4">
       <div className="w-full max-w-4xl grid grid-cols-1 xl:grid-cols-2 gap-8">
         {/* Credit Card Preview */}
         <div className="flex items-center justify-center">
@@ -90,7 +123,7 @@ export default function CardDeposit() {
             <div className="absolute top-[40%] left-[10%] right-[10%]">
               <p className="text-xs text-muted-foreground mb-1">card number</p>
               <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-mono tracking-wider truncate">
-                {cardDetails.number}
+                {cardDetails.number || "#### #### #### ####"}
               </p>
             </div>
 
@@ -100,7 +133,7 @@ export default function CardDeposit() {
                 cardholder name
               </p>
               <p className="text-xs sm:text-sm md:text-md font-mono truncate">
-                {cardDetails.name}
+                {cardDetails.name || "YOUR NAME"}
               </p>
             </div>
 
@@ -110,7 +143,7 @@ export default function CardDeposit() {
               <div className="flex items-center justify-end">
                 <p className="text-[8px] sm:text-[10px] mr-1">VALID THRU</p>
                 <p className="text-xs sm:text-sm md:text-md font-mono">
-                  {cardDetails.expiry}
+                  {cardDetails.expiry || "MM/YY"}
                 </p>
               </div>
             </div>
@@ -161,6 +194,7 @@ export default function CardDeposit() {
                   onChange={(e) => handleInputChange("expiry", e.target.value)}
                   onFocus={() => setFocusedField("expiry")}
                   onBlur={() => setFocusedField(null)}
+                  placeholder="MM/YY"
                 />
               </motion.div>
             </div>
@@ -174,6 +208,7 @@ export default function CardDeposit() {
                 <Input
                   id="cvv"
                   type="password"
+                  maxLength={4}
                   className="bg-background/10 border-primary/20 text-muted-foreground focus:border-primary/50 transition-all"
                   value={cardDetails.cvv}
                   onChange={(e) => handleInputChange("cvv", e.target.value)}
@@ -208,27 +243,6 @@ export default function CardDeposit() {
                   />
                 </motion.div>
               </div>
-
-              <Select
-                value={cardDetails.currency}
-                onValueChange={(value) => handleInputChange("currency", value)}
-              >
-                <motion.div
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
-                >
-                  <SelectTrigger className="w-24 bg-background/10 border-primary/20 text-muted-foreground focus:border-primary/50 transition-all">
-                    <SelectValue placeholder="Currency" />
-                  </SelectTrigger>
-                </motion.div>
-                <SelectContent>
-                  {currencies.map((currency) => (
-                    <SelectItem key={currency} value={currency}>
-                      {currency}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
           </div>
 
@@ -237,7 +251,20 @@ export default function CardDeposit() {
             whileTap={{ scale: 0.97 }}
             className="pt-4"
           >
-            <Button className="w-full">Continue</Button>
+            <Button
+              className="w-full"
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                "Continue"
+              )}
+            </Button>
           </motion.div>
         </div>
       </div>
