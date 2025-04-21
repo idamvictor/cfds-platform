@@ -42,9 +42,9 @@ export function WireTransferConfirmationModal({
                     <Button variant="outline" onClick={() => onOpenChange(false)}>
                         Cancel
                     </Button>
-                    <Button onClick={onConfirm} disabled={isSubmitting}>
-                        {isSubmitting ? "Processing..." : "Continue Anyway"}
-                    </Button>
+                    {/*<Button onClick={onConfirm} disabled={isSubmitting}>*/}
+                    {/*    {isSubmitting ? "Processing..." : "Continue Anyway"}*/}
+                    {/*</Button>*/}
                 </DialogFooter>
             </DialogContent>
         </Dialog>
