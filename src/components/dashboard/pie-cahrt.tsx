@@ -16,8 +16,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 const chartData = [
-  { browser: "profit", visitors: 90, fill: "var(--primary)" },
-  { browser: "loss", visitors: 10, fill: "var(--destructive)" },
+  { browser: "profit", visitors: 90, fill: "url(#primaryGradient)" },
+  { browser: "loss", visitors: 10, fill: "url(#lossGradient)" },
 ];
 
 const chartConfig = {
@@ -48,6 +48,16 @@ export function PieChartComponent() {
           className="mx-auto aspect-square max-h-[200px]"
         >
           <PieChart>
+            <defs>
+              <linearGradient id="primaryGradient" x1="0" y1="1" x2="0" y2="0">
+                <stop offset="0%" stopColor="var(--primary)" />
+                <stop offset="100%" stopColor="#ced920" />
+              </linearGradient>
+              <linearGradient id="lossGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#a91d26" />
+                <stop offset="100%" stopColor="#4361A7" />
+              </linearGradient>
+            </defs>
             <ChartTooltip
               cursor={true}
               content={<ChartTooltipContent hideLabel />}
@@ -97,8 +107,7 @@ export function PieChartComponent() {
           </PieChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-      </CardFooter>
+      <CardFooter className="flex-col gap-2 text-sm"></CardFooter>
     </Card>
   );
 }
