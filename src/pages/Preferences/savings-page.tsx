@@ -8,8 +8,17 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useSavingsStore from "@/store/savingsStore";
+import useUserStore from "@/store/userStore";
 import { toast } from "sonner";
 import { SavingsList } from "@/components/savings/SavingsList";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Form } from "@/components/ui/form";
 
 // Form schema
 const savingsFormSchema = z.object({
@@ -31,8 +40,12 @@ export default function SavingsPage() {
     fetchUserSavings,
     createSaving,
   } = useSavingsStore();
+  const user = useUserStore((state) => state.user);
   const [expandedCurrency, setExpandedCurrency] = React.useState<string>("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  const toAccounts =
+    user?.accounts.filter((acc) => acc.transfer_type === "to") || [];
 
   const form = useForm<FormData>({
     resolver: zodResolver(savingsFormSchema),
@@ -232,132 +245,160 @@ export default function SavingsPage() {
           </div>
 
           {/* Right side - Savings details */}
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="bg-card/50 p-6 rounded-md space-y-4"
-          >
-            <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">Current Time:</span>
-              <span>{new Date().toLocaleString()}</span>
-            </div>
-
-            {form.watch("period") !== "flexible" && (
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="bg-card/50 p-6 rounded-md space-y-4"
+            >
               <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Release Time:</span>
-                <span>{calculateReleaseDate(form.watch("period"))}</span>
+                <span className="text-muted-foreground">Current Time:</span>
+                <span>{new Date().toLocaleString()}</span>
               </div>
-            )}
 
-            {form.watch("plan_id") && (
-              <>
+              {form.watch("period") !== "flexible" && (
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">
-                    Currency Chosen:
-                  </span>
-                  <span>
-                    {
-                      plans.find((p) => p.id === form.watch("plan_id"))
-                        ?.currency
-                    }
-                  </span>
+                  <span className="text-muted-foreground">Release Time:</span>
+                  <span>{calculateReleaseDate(form.watch("period"))}</span>
                 </div>
+              )}
 
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Period Chosen:</span>
-                  <span>
-                    {
-                      plans
-                        .find((p) => p.id === form.watch("plan_id"))
-                        ?.periods.find((p) => p.period === form.watch("period"))
-                        ?.title
-                    }
-                  </span>
-                </div>
-
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Your Rate:</span>
-                  <span className="text-success">{form.watch("roi")}%</span>
-                </div>
-              </>
-            )}
-
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">
-                  Enter Amount{" "}
-                  {form.watch("plan_id")
-                    ? `(in ${
+              {form.watch("plan_id") && (
+                <>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">
+                      Currency Chosen:
+                    </span>
+                    <span>
+                      {
                         plans.find((p) => p.id === form.watch("plan_id"))
                           ?.currency
-                      })`
-                    : ""}
-                  :
-                </span>
-              </div>
-              <Input
-                {...form.register("amount", { valueAsNumber: true })}
-                className="bg-card border-card-foreground/10"
-                type="number"
-                min="0"
-                step="0.01"
-              />
-              {form.formState.errors.amount && (
-                <p className="text-red-500 text-sm">
-                  {form.formState.errors.amount.message}
-                </p>
+                      }
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">
+                      Period Chosen:
+                    </span>
+                    <span>
+                      {
+                        plans
+                          .find((p) => p.id === form.watch("plan_id"))
+                          ?.periods.find(
+                            (p) => p.period === form.watch("period")
+                          )?.title
+                      }
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Your Rate:</span>
+                    <span className="text-success">{form.watch("roi")}%</span>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <div className="text-muted-foreground flex-1">Account</div>
+                    <Select
+                      value={toAccounts[0]?.type}
+                      onValueChange={() => {}}
+                    >
+                      <SelectTrigger className="bg-card border-card-foreground/10">
+                        <SelectValue>
+                          {toAccounts[0]?.title} &nbsp;&nbsp;&nbsp;&nbsp;($
+                          {toAccounts[0]?.balance})
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {toAccounts.map((account) => (
+                          <SelectItem key={account.type} value={account.type}>
+                            {account.title} &nbsp;&nbsp;&nbsp;&nbsp;($
+                            {account.balance})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </>
               )}
-            </div>
 
-            {form.watch("amount") > 0 && form.watch("roi") > 0 && (
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">
-                  {form.watch("period") === "flexible"
-                    ? "Daily earnings:"
-                    : "Total earnings at maturity:"}
-                </span>
-                <span>
-                  {getCurrencySymbol(
-                    plans.find((p) => p.id === form.watch("plan_id"))
-                      ?.currency || ""
-                  )}
-                  {calculateEarnings(
-                    form.watch("amount"),
-                    form.watch("roi"),
-                    form.watch("period")
-                  )}
-                </span>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">
+                    Enter Amount{" "}
+                    {form.watch("plan_id")
+                      ? `(in ${
+                          plans.find((p) => p.id === form.watch("plan_id"))
+                            ?.currency
+                        })`
+                      : ""}
+                    :
+                  </span>
+                </div>
+                <Input
+                  {...form.register("amount", { valueAsNumber: true })}
+                  className="bg-card border-card-foreground/10"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                />
+                {form.formState.errors.amount && (
+                  <p className="text-red-500 text-sm">
+                    {form.formState.errors.amount.message}
+                  </p>
+                )}
               </div>
-            )}
 
-            <div className="flex justify-center mt-6">
-              <Button
-                type="submit"
-                className="bg-primary hover:bg-success/90 text-success-foreground"
-                disabled={
-                  !form.watch("amount") ||
-                  !form.watch("plan_id") ||
-                  !form.watch("period") ||
-                  isSubmitting
-                }
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating...
-                  </>
-                ) : (
-                  <>
-                    Open Savings Account and invest{" "}
+              {form.watch("amount") > 0 && form.watch("roi") > 0 && (
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">
+                    {form.watch("period") === "flexible"
+                      ? "Daily earnings:"
+                      : "Total earnings at maturity:"}
+                  </span>
+                  <span>
                     {getCurrencySymbol(
                       plans.find((p) => p.id === form.watch("plan_id"))
                         ?.currency || ""
                     )}
-                    {form.watch("amount") || "0.00"}
-                  </>
-                )}
-              </Button>
-            </div>
-          </form>
+                    {calculateEarnings(
+                      form.watch("amount"),
+                      form.watch("roi"),
+                      form.watch("period")
+                    )}
+                  </span>
+                </div>
+              )}
+
+              <div className="flex justify-center mt-6">
+                <Button
+                  type="submit"
+                  className="bg-primary hover:bg-success/90 text-success-foreground"
+                  disabled={
+                    !form.watch("amount") ||
+                    !form.watch("plan_id") ||
+                    !form.watch("period") ||
+                    isSubmitting
+                  }
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    <>
+                      Open Savings Account and invest{" "}
+                      {getCurrencySymbol(
+                        plans.find((p) => p.id === form.watch("plan_id"))
+                          ?.currency || ""
+                      )}
+                      {form.watch("amount") || "0.00"}
+                    </>
+                  )}
+                </Button>
+              </div>
+            </form>
+          </Form>
         </div>
       </div>
 
