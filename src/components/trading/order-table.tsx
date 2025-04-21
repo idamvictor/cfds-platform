@@ -12,12 +12,15 @@ import AccountSummary from "@/components/trading/partials/AccountSummary";
 import ClosePositionDialog from "@/components/trading/partials/ClosePositionDialog";
 import MobileFilterDialog from "@/components/trading/partials/MobileFilterDialog";
 import MobileSheet from "@/components/trading/partials/MobileSheet";
+import axiosInstance from "@/lib/axios.ts";
+import {toast} from "sonner";
 
 export default function OrderTable() {
   // UI state
   const [activeTab, setActiveTab] = useState<"active" | "history">("active");
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showCloseDialog, setShowCloseDialog] = useState(false);
+  const [closingTrade, setClosingTrade] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Trade | null>(null);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
@@ -34,6 +37,7 @@ export default function OrderTable() {
     isLoadingClosed,
     errorOpen,
     errorClosed,
+      fetchOpenTrades,
     fetchMoreOpenTrades,
     fetchMoreClosedTrades,
     hasMoreOpenTrades,
@@ -92,9 +96,43 @@ export default function OrderTable() {
     setShowCloseDialog(true);
   };
 
-  const confirmClose = () => {
+  const confirmClose = async () => {
     // Logic to close the position would go here
     // In a real implementation, you would call an API endpoint
+
+    setClosingTrade(true)
+    try {
+
+      const response = await axiosInstance.post("/trade/"+selectedOrder?.id+"/close");
+
+      console.log("Trade closed successfully:", response.data);
+
+      // playSuccessSound();
+
+      await fetchOpenTrades();
+
+      setClosingTrade(false);
+
+      // Show success toast notification
+      toast.success(`Position successfully closed`, {
+        // description: `${}`,
+        position: "bottom-left",
+        duration: 3000,
+      });
+
+    } catch (error) {
+      console.error("Error executing trade:", error);
+      // playErrorSound();
+      toast.error("Failed to close trade", {
+        description:
+            "There was an error processing your trade. Please try again.",
+        position: "top-right",
+        duration: 5000,
+      });
+    } finally {
+      setClosingTrade(false);
+    }
+
     setShowCloseDialog(false);
   };
 
@@ -197,6 +235,7 @@ export default function OrderTable() {
         open={showCloseDialog}
         onOpenChange={setShowCloseDialog}
         selectedOrder={selectedOrder}
+        isClosing={closingTrade}
         onConfirm={confirmClose}
       />
     </div>

@@ -9,6 +9,7 @@ export interface SiteSettings {
     logo?: string;
     theme?: string;
     contactEmail?: string;
+    website_url?: string;
     maintenanceMessage?: string;
     // Add other settings as needed
     lastFetched: number;

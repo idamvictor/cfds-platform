@@ -24,7 +24,7 @@ export default function CryptoWalletDeposit() {
         // Find the specific wallet by ID
         const selectedWallet = wallets.find(
           (w: Wallet) =>
-            w.id === walletId && w.is_general === 1 && w.is_active === 1
+            w.id === walletId
         );
 
         if (!selectedWallet) {

@@ -66,7 +66,7 @@ export function MobileOrderCard({
           <div className="grid grid-cols-2 gap-1.5">
             <div>
               <div className="text-xs text-muted-foreground">ID</div>
-              <div className="text-sm">{order.id.substring(0, 8)}...</div>
+              <div className="text-sm">{order.trade_id}</div>
             </div>
             <div>
               <div className="text-xs text-muted-foreground">Volume</div>
@@ -105,8 +105,8 @@ export function MobileOrderCard({
               </div>
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Amount</div>
-              <div className="text-sm">${order.amount.toFixed(2)}</div>
+              <div className="text-xs text-muted-foreground">Margin</div>
+              <div className="text-sm">${order.margin}</div>
             </div>
           </div>
 
@@ -120,13 +120,13 @@ export function MobileOrderCard({
               >
                 Close
               </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                className="flex-1 text-xs h-7"
-              >
-                Edit
-              </Button>
+              {/*<Button*/}
+              {/*  size="sm"*/}
+              {/*  variant="outline"*/}
+              {/*  className="flex-1 text-xs h-7"*/}
+              {/*>*/}
+              {/*  Edit*/}
+              {/*</Button>*/}
             </div>
           )}
         </div>
