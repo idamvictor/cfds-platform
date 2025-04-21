@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { Loader2, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -68,33 +68,9 @@ const DepositHistory: React.FC = () => {
     fetchTransactions();
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="mt-12">
-        <h3 className="text-sm uppercase tracking-wider text-muted mb-4">
-          Last Deposits
-        </h3>
-        <div className="flex justify-center items-center p-8">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="mt-12">
-        <h3 className="text-sm uppercase tracking-wider text-muted mb-4">
-          Last Deposits
-        </h3>
-        <div className="text-destructive text-center p-4">{error}</div>
-      </div>
-    );
-  }
-
   return (
     <div className="mt-12">
-      <h3 className="text-sm uppercase tracking-wider mb-4">Last Deposits</h3>
+      <h2 className="text-lg font-medium mb-6">Deposit History</h2>
 
       <div className="rounded-md border border-border/40 overflow-hidden">
         <Table>
@@ -114,7 +90,20 @@ const DepositHistory: React.FC = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {transactions.length === 0 ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white mx-auto"></div>
+                  <p>Loading deposit history...</p>
+                </TableCell>
+              </TableRow>
+            ) : error ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center text-destructive">
+                  {error}
+                </TableCell>
+              </TableRow>
+            ) : transactions.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={5}

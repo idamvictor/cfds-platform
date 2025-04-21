@@ -35,7 +35,7 @@ export default function CardDeposit() {
   const currencies = ["USD", "EUR", "GBP", "BTC", "ETH"];
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="flex items-center justify-center p-4">
       <div className="w-full max-w-4xl grid grid-cols-1 xl:grid-cols-2 gap-8">
         {/* Credit Card Preview */}
         <div className="flex items-center justify-center">
