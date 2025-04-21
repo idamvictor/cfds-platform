@@ -22,10 +22,7 @@ export default function CryptoWalletDeposit() {
         const wallets = response.data.data.wallets;
 
         // Find the specific wallet by ID
-        const selectedWallet = wallets.find(
-          (w: Wallet) =>
-            w.id === walletId
-        );
+        const selectedWallet = wallets.find((w: Wallet) => w.id === walletId);
 
         if (!selectedWallet) {
           toast.error(`No active wallet found with ID ${walletId}`);
