@@ -201,7 +201,7 @@ export function TradingInterface() {
       const assetRate = Number.parseFloat(activeAsset.rate || "0");
       const buySpread = Number.parseFloat(activeAsset.buy_spread || "0.0001");
       const sellSpread = Number.parseFloat(activeAsset.sell_spread || "0.0001");
-      const leverage = activeAsset.leverage || 20;
+      const leverage = user?.account_type?.leverage || 20;
 
       // Calculate buy and sell prices
       const buyPrice = activeAsset.buy_price || assetRate * (1 + buySpread);
@@ -210,7 +210,7 @@ export function TradingInterface() {
       // Calculate margin based on volume and leverage
       const calculatedMargin =
         (baseVolumeLots * tradingInfo.contractSize * assetRate) / leverage;
-      const userBalance = user?.balance || 610.05;
+      const userBalance = user?.balance || 0;
 
       setTradingInfo({
         contractSize: activeAsset.contract_size,
@@ -360,7 +360,7 @@ export function TradingInterface() {
 
     const tradeData = {
       type: values.type,
-      leverage: tradingInfo.leverage,
+      leverage: user?.account_type?.leverage || 20,
       amount: calculatedAmount,
       qty: calculatedAmount,
       volume: baseVolumeLots,

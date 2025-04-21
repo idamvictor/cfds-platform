@@ -87,6 +87,7 @@ export default function CryptoWalletDeposit() {
   return (
     <QRCodeDeposit
       address={wallet.address}
+      barcode={wallet.barcode}
       title={`${wallet.crypto} Deposit`}
       qrTitle={`${wallet.crypto} QR CODE`}
       addressTitle={`${wallet.crypto} ADDRESS`}

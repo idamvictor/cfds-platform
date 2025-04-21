@@ -105,7 +105,6 @@ export default function DepositPage() {
     if (!data?.wallets) return [];
 
     return data.wallets
-      .filter((wallet) => wallet.is_general === 1 && wallet.is_active === 1)
       .map((wallet) => ({
         id: wallet.id,
         name: `${wallet.crypto} Wallet (${wallet.address.substring(0, 8)}...)`,
@@ -185,6 +184,7 @@ export default function DepositPage() {
             ) : selectedWallet ? (
               <QRCodeDeposit
                 address={selectedWallet.address}
+                barcode={selectedWallet.barcode}
                 title={`${selectedWallet.crypto} Deposit`}
                 qrTitle={`${selectedWallet.crypto} QR CODE`}
                 addressTitle={`${selectedWallet.crypto} ADDRESS`}
