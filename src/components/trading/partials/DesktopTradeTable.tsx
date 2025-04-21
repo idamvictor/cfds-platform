@@ -82,7 +82,7 @@ export function DesktopTradeTable({
                                 Leverage
                             </TableHead>
                             <TableHead className="h-8 text-xs font-medium text-muted-foreground">
-                                Amount
+                                Margin
                             </TableHead>
                             <TableHead className="h-8 text-xs font-medium text-muted-foreground">
                                 PnL
@@ -101,7 +101,7 @@ export function DesktopTradeTable({
                                     {trade.asset_symbol}
                                 </TableCell>
                                 <TableCell className="py-1 text-xs text-muted-foreground">
-                                    {trade.id.substring(0, 8)}...
+                                    {trade.trade_id}
                                 </TableCell>
                                 <TableCell  className={cn(
                                     "py-1 ",
@@ -133,7 +133,7 @@ export function DesktopTradeTable({
                                     x{trade.leverage}
                                 </TableCell>
                                 <TableCell className="py-1 text-xs text-muted-foreground">
-                                    ${trade.amount.toFixed(2)}
+                                    ${trade.margin}
                                 </TableCell>
                                 <TableCell
                                     className={cn(
@@ -156,13 +156,13 @@ export function DesktopTradeTable({
                                             >
                                                 Close
                                             </Button>
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                className="h-6 text-xs px-2"
-                                            >
-                                                Edit
-                                            </Button>
+                                            {/*<Button*/}
+                                            {/*    size="sm"*/}
+                                            {/*    variant="outline"*/}
+                                            {/*    className="h-6 text-xs px-2"*/}
+                                            {/*>*/}
+                                            {/*    Edit*/}
+                                            {/*</Button>*/}
                                         </div>
                                     </TableCell>
                                 )}

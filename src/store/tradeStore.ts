@@ -5,8 +5,10 @@ import useUserStore from "@/store/userStore.ts";
 
 export interface Trade {
   id: string;
+  trade_id: string;
   trade_type: "buy" | "sell";
   leverage: number;
+  margin: number;
   amount: number;
   volume: number;
   opening_price: number;

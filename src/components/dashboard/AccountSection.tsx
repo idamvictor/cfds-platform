@@ -15,7 +15,19 @@ export function AccountSection() {
       <div className="flex items-center gap-2"></div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 ">
         <Card className="space-y-4 p-4 border-secondary shadow-lg shadow-primary w-[250px] flex gap-2">
-          <h2 className="text-xl font-semibold">Account</h2>
+
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-semibold">Account</h2>
+            <img
+                src={
+                    user?.account_type?.image ||
+                    "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744370355/main_plate_exi8jv.png"
+                }
+                alt={`${user?.account_type?.title || "Basic"} Badge`}
+                className="w-8 h-8"
+            />
+
+          </div>
 
           <div className="flex justify-between items-center">
             <span className="text-muted-foreground">Balance</span>

@@ -354,6 +354,7 @@ export function TradingInterface() {
     setIsSubmitting(true);
 
     const calculatedAmount = baseVolumeLots * tradingInfo.contractSize;
+    const calculatedMargin = tradingInfo.margin;
 
     const price =
       values.type === "buy" ? tradingInfo.buyPrice : tradingInfo.sellPrice;
@@ -363,7 +364,8 @@ export function TradingInterface() {
       leverage: user?.account_type?.leverage || 20,
       amount: calculatedAmount,
       qty: calculatedAmount,
-      volume: baseVolumeLots,
+      volume: calculatedAmount,
+      margin: calculatedMargin,
       opening_price: price,
       take_profit: values.takeProfit || 0,
       stop_loss: values.stopLoss || 0,
