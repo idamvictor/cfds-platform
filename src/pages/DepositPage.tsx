@@ -82,6 +82,7 @@ export default function DepositPage() {
         "/user/deposit/store",
         {
           amount,
+          method: "crypto",
           wallet_id: selectedWallet?.id,
         },
         {

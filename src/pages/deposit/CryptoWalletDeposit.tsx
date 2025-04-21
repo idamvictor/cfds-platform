@@ -53,6 +53,7 @@ export default function CryptoWalletDeposit() {
         "/user/deposit/store",
         {
           amount,
+          method: "crypto",
           wallet_id: wallet?.id,
         },
         {
