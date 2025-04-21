@@ -17,7 +17,7 @@ export interface UserNotification {
   title: string;
   message: string;
   image: string | null;
-  color: 'danger' | 'success' | 'warning' | null;
+  color: "danger" | "success" | "warning" | null;
   type: string;
   time: string;
   read_at: string | null;
@@ -37,6 +37,7 @@ export interface User {
   username: string | null;
   avatar: string;
   balance: number;
+  savings_balance: number;
   credit_balance: number;
   birth_date?: string;
   copy_trader: number;
