@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChartComponent } from "./pie-cahrt";
 
-
 export function SuccessRateCard() {
   return (
     <Card className="bg-card text-card-foreground row-span-2">
