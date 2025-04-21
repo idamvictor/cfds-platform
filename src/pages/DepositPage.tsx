@@ -68,7 +68,11 @@ const staticPaymentMethods: PaymentMethod[] = [
   },
 ];
 
-export default function DepositPage() {
+export default function DepositPage({
+  onDepositSuccess,
+}: {
+  onDepositSuccess?: () => void;
+}) {
   const { data, fetchData, isLoading } = useDataStore();
   const [selectedMethodId, setSelectedMethodId] = useState<string | null>(null);
 
@@ -93,6 +97,7 @@ export default function DepositPage() {
       );
 
       toast.success("Deposit request submitted successfully");
+      onDepositSuccess?.(); // Call the success callback
     } catch (error) {
       const axiosError = error as AxiosError<{ message: string }>;
       toast.error(
@@ -180,7 +185,7 @@ export default function DepositPage() {
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>
             ) : selectedMethodId === "credit-card" ? (
-              <CardDeposit />
+              <CardDeposit onDepositSuccess={onDepositSuccess} />
             ) : selectedWallet ? (
               <QRCodeDeposit
                 address={selectedWallet.address}
@@ -189,6 +194,7 @@ export default function DepositPage() {
                 qrTitle={`${selectedWallet.crypto} QR CODE`}
                 addressTitle={`${selectedWallet.crypto} ADDRESS`}
                 onSubmit={handleSubmit}
+                onDepositSuccess={onDepositSuccess}
               />
             ) : (
               <div className="flex justify-center items-center h-full">

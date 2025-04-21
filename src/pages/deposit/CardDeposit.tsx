@@ -8,7 +8,11 @@ import { toast } from "@/components/ui/sonner";
 import axiosInstance from "@/lib/axios";
 import { AxiosError } from "axios";
 
-export default function CardDeposit() {
+export default function CardDeposit({
+  onDepositSuccess,
+}: {
+  onDepositSuccess?: () => void;
+}) {
   const [cardDetails, setCardDetails] = useState({
     name: "",
     number: "",
@@ -28,20 +32,12 @@ export default function CardDeposit() {
     });
   };
 
-  const handleSubmit = async () => {
-    if (
-      !cardDetails.amount ||
-      !cardDetails.name ||
-      !cardDetails.number ||
-      !cardDetails.expiry ||
-      !cardDetails.cvv
-    ) {
-      toast.error("Please fill in all fields");
-      return;
-    }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSubmitting) return;
 
+    setIsSubmitting(true);
     try {
-      setIsSubmitting(true);
       await axiosInstance.post("/user/deposit/store", {
         amount: cardDetails.amount,
         method: "card",
@@ -52,6 +48,7 @@ export default function CardDeposit() {
       });
 
       toast.success("Deposit request submitted successfully");
+      onDepositSuccess?.(); // Call the success callback
       // Reset form
       setCardDetails({
         name: "",

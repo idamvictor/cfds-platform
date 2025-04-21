@@ -34,6 +34,7 @@ interface QRCodeDepositProps {
   qrTitle?: string;
   addressTitle?: string;
   onSubmit?: (amount: string) => Promise<void> | void;
+  onDepositSuccess?: () => void;
 }
 
 export default function QRCodeDeposit({
@@ -43,6 +44,7 @@ export default function QRCodeDeposit({
   qrTitle = "QR CODE",
   addressTitle = "DEPOSIT ADDRESS",
   onSubmit,
+  onDepositSuccess,
 }: QRCodeDepositProps) {
   const [copied, setCopied] = React.useState(false);
 
@@ -64,6 +66,7 @@ export default function QRCodeDeposit({
     if (!onSubmit) return;
     try {
       await onSubmit(values.amount);
+      onDepositSuccess?.(); // Call the success callback
       form.reset();
     } catch (error) {
       console.error("Error submitting transfer:", error);
