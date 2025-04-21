@@ -220,7 +220,18 @@ export default function SavingsPage() {
                       {plan.periods.map((period) => (
                         <div
                           key={period.period}
-                          className="flex items-center justify-between p-3 border-t border-border/10"
+                          className="flex items-center justify-between p-3 border-t border-border/10 cursor-pointer hover:bg-card/50"
+                          onClick={() => {
+                            const period_value = period.period;
+                            const period_data = plan.periods.find(
+                              (p) => p.period === period_value
+                            );
+                            if (period_data) {
+                              form.setValue("plan_id", plan.id);
+                              form.setValue("period", period_value);
+                              form.setValue("roi", period_data.roi);
+                            }
+                          }}
                         >
                           <div className="flex items-center gap-3">
                             <RadioGroupItem
