@@ -28,6 +28,16 @@ interface SavingsListProps {
 export function SavingsList({ savings }: SavingsListProps) {
   const { claimSaving } = useSavingsStore();
   const [claimingId, setClaimingId] = React.useState<string | null>(null);
+  const [, setUpdateTrigger] = React.useState(0);
+
+  // Update progress every minute
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setUpdateTrigger((prev) => prev + 1);
+    }, 60000); // Update every minute
+
+    return () => clearInterval(interval);
+  }, []);
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("en-GB", {
@@ -37,8 +47,14 @@ export function SavingsList({ savings }: SavingsListProps) {
     });
   };
 
-  const calculateProgress = (elapsed: number, total: number) => {
-    return Math.min((elapsed / total) * 100, 100);
+  const calculateProgress = (startDate: string, totalDays: number) => {
+    if (!startDate || totalDays === 0) return 0;
+    const start = new Date(startDate);
+    const now = new Date();
+    const diffTime = now.getTime() - start.getTime();
+    const daysElapsed = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const progress = (daysElapsed / totalDays) * 100;
+    return Math.min(Math.max(progress, 0), 100);
   };
 
   const calculateDaysRemaining = (endDate: string) => {
@@ -68,9 +84,6 @@ export function SavingsList({ savings }: SavingsListProps) {
         roi: saving.roi,
         plan_id: saving.id,
       };
-
-      // Log the data for verification
-      //   console.log(claimData);
 
       // Call the claim API with the data
       await claimSaving(saving.id, claimData);
@@ -188,7 +201,7 @@ export function SavingsList({ savings }: SavingsListProps) {
                 </div>
                 <div className="mt-4 relative">
                   <Progress
-                    value={calculateProgress(saving.days_elapsed, saving.days)}
+                    value={calculateProgress(saving.start_date, saving.days)}
                     className="h-1.5 bg-gray-700"
                   />
                 </div>
