@@ -19,8 +19,6 @@ interface WireTransferConfirmationModalProps {
 export function WireTransferConfirmationModal({
                                                   open,
                                                   onOpenChange,
-                                                  onConfirm,
-                                                  isSubmitting,
                                               }: WireTransferConfirmationModalProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
