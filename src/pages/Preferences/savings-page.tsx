@@ -94,26 +94,16 @@ export default function SavingsPage() {
   ): string => {
     if (!amount || isNaN(amount)) return "0.00";
 
-    let timeInYears = 0;
-    switch (period) {
-      case "flexible":
-        timeInYears = 1 / 12;
-        break;
-      case "1_month":
-        timeInYears = 1 / 12;
-        break;
-      case "3_months":
-        timeInYears = 3 / 12;
-        break;
-      case "6_months":
-        timeInYears = 6 / 12;
-        break;
-      case "12_months":
-        timeInYears = 1;
-        break;
+    // For flexible savings, calculate daily earnings (assuming annual ROI)
+    if (period === "flexible") {
+      // Convert annual ROI to daily rate and calculate for one day
+      const dailyROI = roi / 365;
+      const earnings = amount * (dailyROI / 100);
+      return earnings.toFixed(2);
     }
 
-    const earnings = amount * (roi / 100) * timeInYears;
+    // For fixed term savings, calculate total earnings at maturity
+    const earnings = amount * (roi / 100);
     return earnings.toFixed(2);
   };
 
@@ -293,7 +283,16 @@ export default function SavingsPage() {
 
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Enter Amount:</span>
+                <span className="text-muted-foreground">
+                  Enter Amount{" "}
+                  {form.watch("plan_id")
+                    ? `(in ${
+                        plans.find((p) => p.id === form.watch("plan_id"))
+                          ?.currency
+                      })`
+                    : ""}
+                  :
+                </span>
               </div>
               <Input
                 {...form.register("amount", { valueAsNumber: true })}
@@ -311,7 +310,11 @@ export default function SavingsPage() {
 
             {form.watch("amount") > 0 && form.watch("roi") > 0 && (
               <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Your earnings:</span>
+                <span className="text-muted-foreground">
+                  {form.watch("period") === "flexible"
+                    ? "Daily earnings:"
+                    : "Total earnings at maturity:"}
+                </span>
                 <span>
                   {getCurrencySymbol(
                     plans.find((p) => p.id === form.watch("plan_id"))
