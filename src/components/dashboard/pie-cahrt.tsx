@@ -13,10 +13,31 @@ import {
   ChartContainer,
   ChartTooltip,
 } from "@/components/ui/chart";
-const chartData = [
-  { browser: "profit", visitors: 90, fill: "url(#primaryGradient)" },
-  { browser: "loss", visitors: 10, fill: "url(#lossGradient)" },
-];
+import useUserStore from "@/store/userStore";
+
+const getChartData = (wins: number, losses: number) => {
+  // If both are 0, show 50-50 split to indicate no data
+  if (wins === 0 && losses === 0) {
+    return [
+      { browser: "profit", visitors: 50, fill: "url(#primaryGradient)" },
+      { browser: "loss", visitors: 50, fill: "url(#lossGradient)" },
+    ];
+  }
+
+  const total = wins + losses;
+  return [
+    {
+      browser: "profit",
+      visitors: (wins / total) * 100,
+      fill: "url(#primaryGradient)",
+    },
+    {
+      browser: "loss",
+      visitors: (losses / total) * 100,
+      fill: "url(#lossGradient)",
+    },
+  ];
+};
 
 const chartConfig = {
   safari: {
@@ -70,6 +91,16 @@ export function PieChartComponent({
   onPieEnter: externalOnPieEnter,
   onPieLeave: externalOnPieLeave,
 }: PieChartProps) {
+  const user = useUserStore((state) => state.user);
+  const tradesSummary = user?.trades_summary || {
+    total_wins: 0,
+    total_losses: 0,
+  };
+
+  const chartData = getChartData(
+    tradesSummary.total_wins,
+    tradesSummary.total_losses
+  );
   const [internalActiveIndex, setInternalActiveIndex] = React.useState<
     number | undefined
   >();
@@ -80,7 +111,7 @@ export function PieChartComponent({
 
   const totalVisitors = React.useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
-  }, []);
+  }, [chartData]);
 
   const onPieEnter = (_: unknown, index: number) => {
     if (externalOnPieEnter) {
