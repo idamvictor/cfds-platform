@@ -155,8 +155,8 @@ export default function AssetInfoModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="p-0 bg-background max-h-[90vh] overflow-y-auto w-[95vw] min-w-5xl">
-        <DialogHeader className="sticky top-0 z-10 bg-slate-700 py-3 px-2 sm:px-4">
+      <DialogContent className="p-0 bg-background max-h-[95vh] overflow-y-auto w-[100vw] sm:w-[95vw] md:min-w-[40rem] lg:min-w-5xl">
+        <DialogHeader className="sticky top-0 z-10 bg-slate-700 py-2 px-2 sm:py-3 sm:px-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 ">
             <div className="flex items-center gap-3">
               <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full overflow-hidden bg-blue-500 flex items-center justify-center">
@@ -220,16 +220,16 @@ export default function AssetInfoModal({
           </div>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 p-3 sm:p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 p-2 sm:gap-6 sm:p-6">
           {/* Left column */}
-          <div className="space-y-4 sm:space-y-6">
+          <div className="space-y-3 sm:space-y-6">
             <div>
               <h3 className="text-sm font-medium mb-2 sm:mb-3 text-primary">
                 Asset Information
               </h3>
               <div className="bg-muted/30 rounded-lg">
-                <div className="grid grid-cols-2 gap-x-3 sm:gap-x-4 p-3 sm:p-4">
-                  <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-x-2 gap-y-2 sm:gap-x-4 p-2 sm:p-4">
+                  <div className="space-y-3 sm:space-y-4">
                     <div>
                       <p className="text-xs text-muted-foreground">Symbol</p>
                       <p className="text-sm font-medium">{asset.symbol}</p>
@@ -251,7 +251,7 @@ export default function AssetInfoModal({
                       <p className="text-sm font-medium">{asset.buy_spread}</p>
                     </div>
                   </div>
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     <div>
                       <p className="text-xs text-muted-foreground">
                         24h Change
@@ -285,7 +285,7 @@ export default function AssetInfoModal({
                   symbol={asset?.tv_symbol || "NASDAQ:AAPL"}
                   interval="15m"
                   width="100%"
-                  height="300px"
+                  height="250px"
                   colorTheme="dark"
                   showIntervalTabs={true}
                   isTransparent={true}
@@ -295,12 +295,12 @@ export default function AssetInfoModal({
           </div>
 
           {/* Right column */}
-          <div className="space-y-4 sm:space-y-6">
+          <div className="space-y-3 sm:space-y-6">
             <div>
               <h3 className="text-sm font-medium mb-2 sm:mb-3 text-primary">
                 Trading Schedule
               </h3>
-              <div className="bg-muted/30 rounded-lg p-3 sm:p-4">
+              <div className="bg-muted/30 rounded-lg p-2 sm:p-4">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between py-1">
                     <div className="flex items-center">
@@ -338,7 +338,7 @@ export default function AssetInfoModal({
               <h3 className="text-sm font-medium mb-2 sm:mb-3 text-primary">
                 Contract Specifications
               </h3>
-              <div className="bg-muted/30 rounded-lg p-3 sm:p-4">
+              <div className="bg-muted/30 rounded-lg p-2 sm:p-4">
                 <div className="space-y-1">
                   <div className="flex items-center justify-between py-1">
                     <span className="text-xs text-muted-foreground">
@@ -400,7 +400,7 @@ export default function AssetInfoModal({
           </div>
         </div>
 
-        <div className="bg-muted/30 p-3 sm:p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
+        <div className="bg-muted/30 p-2 sm:p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
           <p className="text-xs text-muted-foreground">
             Last updated: {new Date(asset.updated_at).toLocaleString()}
           </p>
