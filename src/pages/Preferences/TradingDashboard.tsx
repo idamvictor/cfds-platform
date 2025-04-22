@@ -53,7 +53,7 @@ export default function TradingDashboard() {
 
           <StatCard
             title="Total Deposits"
-            value={formatCurrency(tradesSummary.total_deposit)} 
+            value={formatCurrency(tradesSummary.total_deposit || 0)} 
             icon={<Building2 className="h-10 w-10 text-accent" />}
             valueClassName="text-success"
           />
