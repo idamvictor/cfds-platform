@@ -18,6 +18,7 @@ import { ProfitCalculatorModal } from "./trading-interface-components/profit-cal
 import { TakeProfitStopLossModal } from "./trading-interface-components/take-profit-stop-loss-modal";
 import { PendingOrderModal } from "./trading-interface-components/pending-order-modal";
 import { useCurrency } from "@/hooks/useCurrency.ts";
+import {cn} from "@/lib/utils.ts";
 // import TechnicalAnalysisWidget from "@/components/trading/partials/TechnicalAnalysisWidget";
 
 // AudioContext type for sound effects
@@ -36,7 +37,7 @@ export function TradingInterface() {
   // Get asset and user data
   const { activeAsset } = useAssetStore();
   const user = useUserStore((state) => state.user);
-  const { fetchOpenTrades } = useTradeStore();
+  const { fetchOpenTrades, accountSummary } = useTradeStore();
 
   // State
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -56,8 +57,8 @@ export function TradingInterface() {
   const [tradingInfo, setTradingInfo] = useState({
     contractSize: 100000,
     position: 1000,
-    margin: 30.91,
-    freeMargin: (user?.balance || 610.05) - 30.91,
+    margin: 0,
+    freeMargin: (user?.balance || 0),
     spread: 0.00006,
     leverage: 20,
     buyPrice: 0.51954,
@@ -212,11 +213,12 @@ export function TradingInterface() {
         (baseVolumeLots * tradingInfo.contractSize * assetRate) / leverage;
       const userBalance = user?.balance || 0;
 
+      console.log(accountSummary?.freeMargin)
       setTradingInfo({
         contractSize: activeAsset.contract_size,
         position: activeAsset.position,
         margin: calculatedMargin,
-        freeMargin: userBalance - calculatedMargin,
+        freeMargin: accountSummary?.freeMargin || userBalance,
         spread: buySpread + sellSpread,
         leverage: leverage,
         buyPrice: buyPrice,
@@ -569,20 +571,22 @@ export function TradingInterface() {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Margin:</span>
-                  <span className="text-primary">
-                    {formatCurrencyValue(
-                      parseFloat(tradingInfo.margin.toFixed(2))
-                    )}
-                  </span>
+                  <span className="text-muted-foreground">Margin d:</span>
+                  <span className={cn(
+                      tradingInfo.margin > tradingInfo.freeMargin ? "text-red-500" : "text-primary"
+                  )}>
+    {formatCurrencyValue(
+        parseFloat(tradingInfo.margin.toFixed(2))
+    )}
+  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Free Margin:</span>
-                  <span className="text-primary">
-                    {formatCurrencyValue(
-                      parseFloat(tradingInfo.freeMargin.toFixed(2))
-                    )}
-                  </span>
+                  <span className={tradingInfo.freeMargin < 0 ? "text-red-500" : "text-primary"}>
+    {formatCurrencyValue(
+        parseFloat(tradingInfo.freeMargin.toFixed(2))
+    )}
+  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Spread:</span>
@@ -788,11 +792,14 @@ export function TradingInterface() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Margin:</span>
-                  <span className="text-primary">
-                    {formatCurrencyValue(
-                      parseFloat(tradingInfo.margin.toFixed(2))
-                    )}
-                  </span>
+                  <span className={cn(
+                      tradingInfo.margin > tradingInfo.freeMargin ? "text-red-500" : "text-primary"
+                  )}>
+    {formatCurrencyValue(
+        parseFloat(tradingInfo.margin.toFixed(2))
+    )}
+  </span>
+
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Free Margin:</span>
