@@ -48,6 +48,14 @@ export interface User {
   status: string;
   can_open_trade: boolean;
   can_close_trade: boolean;
+  trades_summary: {
+    total_pnl: number;
+    total_wins: number;
+    total_losses: number;
+    total_deposit: number;
+    trades_count: number;
+    win_rate: number;
+  };
   account_type: {
     id: string;
     title: string;
