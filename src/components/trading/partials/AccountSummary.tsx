@@ -136,7 +136,7 @@ export function AccountSummary({
                 accountData.pnl >= 0 ? "text-green-500" : "text-red-500"
               )}
             >
-              {accountData.pnl >= 0 ? "" : "-"}
+              {/*{accountData.pnl >= 0 ? "" : "-"}*/}
               {formatCurrency(Math.abs(accountData.pnl))}
             </span>
           </div>
@@ -218,7 +218,7 @@ export function AccountSummary({
                       accountData.pnl >= 0 ? "text-green-500" : "text-red-500"
                     )}
                   >
-                    {accountData.pnl >= 0 ? "" : "-"}
+                    {/*{accountData.pnl >= 0 ? "" : "-"}*/}
                     {formatCurrency(Math.abs(accountData.pnl))}
                   </span>
                 </div>
