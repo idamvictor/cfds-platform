@@ -23,6 +23,7 @@ interface Transaction {
   amount: string;
   date: string;
   type: string;
+  account: string;
   status: string;
   details: string | null;
 }
@@ -81,6 +82,7 @@ const DepositHistory: React.FC = () => {
                 AMOUNT
               </TableHead>
               <TableHead className="text-foreground font-bold">TYPE</TableHead>
+              <TableHead className="text-foreground font-bold">ACCOUNT</TableHead>
               <TableHead className="text-foreground font-bold">
                 DETAILS
               </TableHead>
@@ -118,6 +120,7 @@ const DepositHistory: React.FC = () => {
                   <TableCell>{tx.date}</TableCell>
                   <TableCell>{tx.amount}</TableCell>
                   <TableCell className="capitalize">{tx.type}</TableCell>
+                  <TableCell className="capitalize">{tx.account}</TableCell>
                   <TableCell>
                     <Button
                       variant="ghost"
