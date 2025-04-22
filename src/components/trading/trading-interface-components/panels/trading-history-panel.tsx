@@ -147,13 +147,22 @@ function TradeHistoryItem({ trade }: { trade: Trade }) {
           <div className="flex justify-between">
             <span className="text-muted-foreground">Type:</span>
             <span
-              className={
-                trade.trade_type === "buy" ? "text-green-500" : "text-red-500"
-              }
+                className={
+                  trade.trade_type === "buy" ? "text-green-500" : "text-red-500"
+                }
             >
               {trade.trade_type.toUpperCase()}
             </span>
           </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Open Time : </span>
+            <span className="font-mono">{trade.open_time}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Close Time :</span>
+            <span className="font-mono">{trade.close_time}</span>
+          </div>
+
           <div className="flex justify-between">
             <span className="text-muted-foreground">Margin:</span>
             <span>${trade.margin.toFixed(2)}</span>
@@ -162,6 +171,15 @@ function TradeHistoryItem({ trade }: { trade: Trade }) {
             <span className="text-muted-foreground">Leverage:</span>
             <span>x{trade.leverage}</span>
           </div>
+
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Open Price:</span>
+            <span>{trade.opening_price}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Closed Price:</span>
+            <span>{trade.closing_price}</span>
+          </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Take Profit:</span>
             <span>{trade.take_profit > 0 ? trade.take_profit : "-"}</span>
@@ -169,6 +187,10 @@ function TradeHistoryItem({ trade }: { trade: Trade }) {
           <div className="flex justify-between">
             <span className="text-muted-foreground">Stop Loss:</span>
             <span>{trade.stop_loss > 0 ? trade.stop_loss : "-"}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Volume:</span>
+            <span>${trade.volume.toFixed(2)}</span>
           </div>
         </div>
       )}
