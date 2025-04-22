@@ -85,20 +85,20 @@ export default function ActiveOrdersPanel() {
               ACTIVE
             </span>
           </TabsTrigger>
-          <TabsTrigger
-            value="pending"
-            className="flex-1 rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent h-full"
-          >
-            <span
-              className={`text-xs font-medium ${
-                activeTab === "pending"
-                  ? "text-primary"
-                  : "text-muted-foreground"
-              }`}
-            >
-              PENDING
-            </span>
-          </TabsTrigger>
+          {/*<TabsTrigger*/}
+          {/*  value="pending"*/}
+          {/*  className="flex-1 rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent h-full"*/}
+          {/*>*/}
+          {/*  <span*/}
+          {/*    className={`text-xs font-medium ${*/}
+          {/*      activeTab === "pending"*/}
+          {/*        ? "text-primary"*/}
+          {/*        : "text-muted-foreground"*/}
+          {/*    }`}*/}
+          {/*  >*/}
+          {/*    PENDING*/}
+          {/*  </span>*/}
+          {/*</TabsTrigger>*/}
         </TabsList>
 
         <div className="p-3 overflow-y-auto">
@@ -158,7 +158,7 @@ function TradeItem({ trade }: { trade: Trade }) {
     <div className="border-b border-border pb-3 text-xs">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <CryptoIcon type={trade.asset_id.split("-")[0]} />
+          <CryptoIcon type={trade.asset_id} />
           <span className="">{trade.asset_name}</span>
         </div>
         <span
@@ -193,7 +193,7 @@ function TradeItem({ trade }: { trade: Trade }) {
         <div className="mt-2 pt-2 border-t border-border/50 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
           <div className="flex justify-between">
             <span className="text-muted-foreground">ID:</span>
-            <span className="font-mono">{trade.trade_id }...</span>
+            <span className="font-mono">{trade.trade_id }</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Type:</span>
