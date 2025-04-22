@@ -94,10 +94,10 @@ export function AccountSummary({
             <span
               className={cn(
                 "text-xs",
-                accountData.lifetimePnl >= 0 ? "text-green-500" : "text-red-500"
+                  accountData.pnl >= 0 ? "text-green-500" : "text-red-500"
               )}
             >
-              {accountData.pnl >= 0 ? "" : "-"}
+              {/*{accountData.pnl >= 0 ? "" : "-"}*/}
               {formatCurrency(accountData.pnl)}
             </span>
           </div>
