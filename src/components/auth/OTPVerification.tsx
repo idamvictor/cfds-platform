@@ -49,7 +49,7 @@ export function OTPVerification({ email, onVerify }: OTPVerificationProps) {
   };
 
   return (
-    <Card className="w-full max-w-md bg-card/90 backdrop-blur-md border-border shadow-xl">
+    <Card className="w-full max-w-[500px] bg-card/90 backdrop-blur-md border-border shadow-xl">
       <CardHeader className="space-y-1 text-center pb-2">
         <h1 className="text-xl font-bold tracking-wider text-card-foreground">
           VERIFY LOGIN
