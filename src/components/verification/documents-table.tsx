@@ -98,8 +98,8 @@ export function DocumentsTable({
                 )}
               </TableCell>
               <TableCell>
-                {findSelfie()?.status === "verified" ? (
-                  <span className="text-success">Verified</span>
+                {findSelfie()?.status === "approved" ? (
+                  <span className="text-success">Approved</span>
                 ) : findSelfie()?.status === "pending" ? (
                   <span className="text-amber-500">Pending</span>
                 ) : (
