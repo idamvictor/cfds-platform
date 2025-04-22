@@ -84,10 +84,14 @@ export function MobileOrderCard({
             </div>
             <div>
               <div className="text-xs text-muted-foreground">Open Time</div>
-              <div className="text-sm">
-                {new Date(order.open_time).toLocaleString()}
-              </div>
+              <div className="text-sm">{order.open_time}</div>
             </div>
+            {isHistory && (
+              <div>
+                <div className="text-xs text-muted-foreground">Close Time</div>
+                <div className="text-sm">{order.close_time || "-"}</div>
+              </div>
+            )}
             <div>
               <div className="text-xs text-muted-foreground">Leverage</div>
               <div className="text-sm">x{order.leverage}</div>

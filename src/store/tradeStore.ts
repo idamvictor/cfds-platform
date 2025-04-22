@@ -18,6 +18,7 @@ export interface Trade {
   stop_loss: number;
   is_closed: boolean;
   open_time: string;
+  close_time: string;
   asset_id: string;
   asset_symbol: string;
   asset_name: string;
