@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Label, Pie, PieChart, Cell } from "recharts";
-
 import {
   Card,
   CardContent,
@@ -13,7 +12,6 @@ import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent,
 } from "@/components/ui/chart";
 const chartData = [
   { browser: "profit", visitors: 90, fill: "url(#primaryGradient)" },
@@ -35,6 +33,36 @@ type PieChartProps = {
   activeIndex?: number;
   onPieEnter?: (_: unknown, index: number) => void;
   onPieLeave?: () => void;
+};
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    payload: {
+      browser: string;
+      visitors: number;
+    };
+  }>;
+}
+
+const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    return (
+      <div className="bg-white/95 p-3 rounded-md shadow-sm border flex flex-col items-center">
+        <p className="text-xs text-background/80">
+          {data.browser === "profit"
+            ? "Closed With Profit"
+            : "Closed With Loss"}
+        </p>
+        <p className="text-sm  text-background/80">
+          {" "}
+          Orders: <span className="font-semibold">{data.visitors}%</span>
+        </p>
+      </div>
+    );
+  }
+  return null;
 };
 
 export function PieChartComponent({
@@ -162,10 +190,7 @@ export function PieChartComponent({
                 <stop offset="100%" stopColor="#4361A7" stopOpacity="0.3" />
               </linearGradient>
             </defs>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
+            <ChartTooltip cursor={false} content={<CustomTooltip />} />
             <Pie
               data={chartData}
               dataKey="visitors"
@@ -220,7 +245,7 @@ export function PieChartComponent({
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-foreground text-xl font-bold"
+                          className="fill-[#92B8F1] text-[16px] font-light"
                         >
                           {winRate}%
                         </tspan>

@@ -41,7 +41,7 @@ export function SuccessRateCard() {
                   "linear-gradient(to bottom, var(--primary), #ced920)",
               }}
             ></div>
-            <span className="text-sm">Closed With Profit</span>
+            <span className="text-xs">Closed With Profit</span>
           </div>
           <div
             className="flex items-center gap-2 cursor-pointer transition-opacity duration-300"
@@ -58,7 +58,7 @@ export function SuccessRateCard() {
                 background: "linear-gradient(to bottom, #a91d26, #4361A7)",
               }}
             ></div>
-            <span className="text-sm">Closed With Loss</span>
+            <span className="text-xs">Closed With Loss</span>
           </div>
         </div>
       </CardContent>
