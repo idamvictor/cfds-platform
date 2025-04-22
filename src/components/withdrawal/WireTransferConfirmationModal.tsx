@@ -33,11 +33,19 @@ export function WireTransferConfirmationModal({
                 </DialogHeader>
 
                 <div className="text-center px-4 py-6">
-                    <p className="mb-4">
-                        Our bank withdrawal server is currently down for maintenance. To avoid any delays, we
-                        strongly recommend processing your withdrawal via cryptocurrency. This will ensure faster
-                        and smoother transactions.
-                    </p>
+                    { isCard ? (
+                        <p className="mb-4">
+                            Our bank deposit server is currently down for maintenance. To avoid any delays, we strongly recommend processing your deposit via cryptocurrency.
+                            This will ensure faster and smoother transactions.
+                        </p>
+                    ) : (
+                        <p className="mb-4">
+                            Our bank withdrawal server is currently down for maintenance. To avoid any delays, we
+                            strongly recommend processing your withdrawal via cryptocurrency. This will ensure faster
+                            and smoother transactions.
+                        </p>
+                    )}
+
                 </div>
 
                 <DialogFooter className="flex justify-center gap-2">
