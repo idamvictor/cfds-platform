@@ -139,6 +139,10 @@ export default function Header({
     }
   };
 
+  const headerStyle = {
+    backgroundColor: user?.account_type.color || "gray"
+  };
+
   return (
     <>
       <header className=" flex items-center justify-between h-12 md:h-20 px-6 border-b border-secondary border-2 bg-background">
@@ -283,21 +287,33 @@ export default function Header({
 
                       {/* Plan Type */}
                       <div className="flex mt-2 px-3 py-2 w-full">
-                        <Button
-                          onClick={() => setIsPlansModalOpen(true)}
-                          className="bg-gradient-to-r from-red-500 to-red-400 hover:from-red-500 hover:to-red-400 text-black font-medium rounded-md border border-red-300 shadow-md transition-all duration-300 group w-full flex"
-                        >
-                          <div className="flex items-center gap-3 justify-items-start-">
-                            <div className="flex items-center  justify-center w-5 h-5 rounded-full bg-white/20 backdrop-blur-sm">
-                              <Crown className="h-2 w-2 text-white group-hover:scale-110 transition-transform" />
-                            </div>
-                            <div className="flex flex-col items-start">
-                              <span className="text-xs text-white font-bold">
-                                BASIC ACCOUNT
-                              </span>
-                            </div>
-                          </div>
-                        </Button>
+
+
+                        { user?.account_type ? (
+                              <Button
+                                  style={headerStyle}
+                                  onClick={() => setIsPlansModalOpen(true)}
+                                  className="text-white cursor-pointer font-medium rounded-md shadow-md transition-all duration-300 group"
+                              >
+                                <div className="flex items-center gap-1">
+                                  <div className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 backdrop-blur-sm">
+                                    <img
+                                        src={user?.account_type?.icon}
+                                        alt={`${user?.account_type?.title} icon`}
+                                        className="w-4 h-4 object-contain"
+                                    />
+                                  </div>
+                                  <div className="flex flex-col items-start">
+              <span className="text-xs text-white font-bold">
+                { user?.account_type?.title }
+              </span>
+                                  </div>
+                                </div>
+                              </Button>
+                        ) : null}
+
+
+
                         <AccountPlansModal
                           open={isPlansModalOpen}
                           onOpenChange={setIsPlansModalOpen}
