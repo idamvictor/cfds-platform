@@ -11,6 +11,7 @@ import {
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import axiosInstance from "@/lib/axios";
+import useUserStore from "@/store/userStore.ts";
 
 type Document = {
   id: string;
@@ -30,6 +31,9 @@ export function DocumentsTable({
   onDocumentsChange,
 }: DocumentsTableProps) {
   const [documents, setDocuments] = useState<Document[]>([]);
+
+  const user = useUserStore((state) => state.user);
+
 
   const fetchDocuments = useCallback(async () => {
     try {
@@ -68,7 +72,8 @@ export function DocumentsTable({
               <TableHead>Time Uploaded</TableHead>
               <TableHead>File</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Action</TableHead>
+              { user?.verification_status != 'approved' && (<TableHead>Action</TableHead>)}
+
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -93,8 +98,8 @@ export function DocumentsTable({
                 )}
               </TableCell>
               <TableCell>
-                {findSelfie()?.status === "verified" ? (
-                  <span className="text-success">Verified</span>
+                {findSelfie()?.status === "approved" ? (
+                  <span className="text-success">Approved</span>
                 ) : findSelfie()?.status === "pending" ? (
                   <span className="text-amber-500">Pending</span>
                 ) : (
@@ -102,7 +107,7 @@ export function DocumentsTable({
                 )}
               </TableCell>
               <TableCell>
-                {findSelfie() && findSelfie()?.status !== "verified" && (
+                {findSelfie() && findSelfie()?.status !== "approved" && (
                   <Button
                     variant="ghost"
                     size="sm"
@@ -135,8 +140,8 @@ export function DocumentsTable({
                 )}
               </TableCell>
               <TableCell>
-                {findId()?.status === "verified" ? (
-                  <span className="text-success">Verified</span>
+                {findId()?.status === "approved" ? (
+                  <span className="text-success">Approved</span>
                 ) : findId()?.status === "pending" ? (
                   <span className="text-amber-500">Pending</span>
                 ) : (
@@ -144,7 +149,7 @@ export function DocumentsTable({
                 )}
               </TableCell>
               <TableCell>
-                {findId()?.document[0] && findId()?.status !== "verified" && (
+                {findId()?.document[0] && findId()?.status !== "approved" && (
                   <Button
                     variant="ghost"
                     size="sm"
@@ -177,8 +182,8 @@ export function DocumentsTable({
                 )}
               </TableCell>
               <TableCell>
-                {findId()?.status === "verified" ? (
-                  <span className="text-success">Verified</span>
+                {findId()?.status === "approved" ? (
+                  <span className="text-success">Approved</span>
                 ) : findId()?.status === "pending" ? (
                   <span className="text-amber-500">Pending</span>
                 ) : (
@@ -186,7 +191,7 @@ export function DocumentsTable({
                 )}
               </TableCell>
               <TableCell>
-                {findId()?.document[1] && findId()?.status !== "verified" && (
+                {findId()?.document[1] && findId()?.status !== "approved" && (
                   <Button
                     variant="ghost"
                     size="sm"
@@ -219,8 +224,8 @@ export function DocumentsTable({
                 )}
               </TableCell>
               <TableCell>
-                {findProofOfAddress()?.status === "verified" ? (
-                  <span className="text-success">Verified</span>
+                {findProofOfAddress()?.status === "approved" ? (
+                  <span className="text-success">Approved</span>
                 ) : findProofOfAddress()?.status === "pending" ? (
                   <span className="text-amber-500">Pending</span>
                 ) : (
@@ -229,7 +234,7 @@ export function DocumentsTable({
               </TableCell>
               <TableCell>
                 {findProofOfAddress() &&
-                  findProofOfAddress()?.status !== "verified" && (
+                  findProofOfAddress()?.status !== "approved" && (
                     <Button
                       variant="ghost"
                       size="sm"

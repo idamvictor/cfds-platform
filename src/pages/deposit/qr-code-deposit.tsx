@@ -178,7 +178,7 @@ export default function QRCodeDeposit({
                     htmlFor="confirm"
                     className="text-sm leading-relaxed cursor-pointer inline-block"
                   >
-                    I confirm I have transferred{" "}
+                    I confirm that I have transferred the {" "}
                     <span className="font-medium text-primary">
                       {form.watch("amount") || "[amount]"}
                     </span>{" "}

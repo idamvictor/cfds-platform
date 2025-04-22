@@ -77,6 +77,23 @@ export default function LoginPage() {
       toast.success("Login successful! Redirecting...");
 
       const { user, token } = response.data.data;
+
+      if (user.notification_msg) {
+        toast.error(user.notification_msg, {
+          duration: 10000,
+          position: "top-right",
+          className: "bg-red-500 text-white border-red-600",
+          style: {
+            backgroundColor: "rgb(239, 68, 68)",
+            color: "white",
+            border: "1px solid rgb(220, 38, 38)"
+          }
+        });
+      }
+
+
+
+
       setUser(user, token);
 
       setTimeout(() => {
