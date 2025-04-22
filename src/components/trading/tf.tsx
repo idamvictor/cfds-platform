@@ -35,7 +35,7 @@ export function TradingInterface() {
     // Get asset and user data
     const { activeAsset } = useAssetStore();
     const user = useUserStore(state => state.user);
-    const { fetchOpenTrades } = useTradeStore();
+    const { fetchOpenTrades, accountSummary } = useTradeStore();
 
     // State
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,8 +53,8 @@ export function TradingInterface() {
     const [tradingInfo, setTradingInfo] = useState({
         contractSize: 100000,
         position: 1000,
-        margin: 30.91,
-        freeMargin: (user?.balance || 610.05) - 30.91,
+        margin: 0,
+        freeMargin: accountSummary.freeMargin,
         spread: 0.00006,
         leverage: 20,
         buyPrice: 0.51954,
@@ -179,7 +179,7 @@ export function TradingInterface() {
 
             // Calculate margin based on volume and leverage
             const calculatedMargin = (baseVolumeLots * tradingInfo.contractSize * assetRate) / leverage;
-            const userBalance = user?.balance || 610.05;
+            const userBalance = user?.balance || 0;
 
             setTradingInfo({
                 contractSize: 100000,
