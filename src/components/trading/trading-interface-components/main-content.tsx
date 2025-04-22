@@ -18,7 +18,7 @@ interface MainContentProps {
 }
 
 export default function MainContent({
-  sidebarExpanded,
+  // sidebarExpanded,
   activeView,
   addCurrencyPair,
 }: MainContentProps) {
@@ -26,7 +26,7 @@ export default function MainContent({
   const isLargeScreen = useMobile(1024);
 
   // const { activeAsset } = useAssetStore();
-  console.log("sidebarExtended", sidebarExpanded);
+  // console.log("sidebarExtended", sidebarExpanded);
 
   // Log when active asset changes
   // useEffect(() => {

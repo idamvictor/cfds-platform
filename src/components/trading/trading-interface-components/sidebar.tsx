@@ -41,8 +41,6 @@ export default function Sidebar({
   const isMobile = useMobile();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  console.log("isMobile", isMobileMenuOpen);
-  // console.log("is active view", activeView);
 
   // Close mobile menu when switching to desktop
   useEffect(() => {
@@ -91,7 +89,10 @@ export default function Sidebar({
         {/* Mobile sidebar - expanded state (overlay) */}
         {activeView && (
           <div
-            className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 lg:hidden"
+            className={cn(
+              "fixed inset-0 bg-background backdrop-blur-sm z-50 lg:hidden",
+              isMobileMenuOpen ? "" : ""
+            )}
             onClick={() => toggleView(activeView)}
           >
             <div

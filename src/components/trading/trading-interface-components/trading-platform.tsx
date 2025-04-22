@@ -5,7 +5,7 @@ import MainContent from "./main-content";
 import useAssetStore from "@/store/assetStore";
 import useTradeStore from "@/store/tradeStore";
 import AssetInitializer from "../asset-initializer";
-import { useMobile } from "@/hooks/use-mobile";
+// import { useMobile } from "@/hooks/use-mobile";
 import { addClickSound } from "@/lib/addClickSound.ts";
 import Footer from "@/components/footer";
 
@@ -23,8 +23,8 @@ export default function TradingPlatform() {
   const [activeView, setActiveView] = useState<ActiveView>(null); // Set to null by default (panels closed)
   const [activePairs, setActivePairs] = useState<string[]>(["AUD/JPY"]);
   const [activePair, setActivePair] = useState("AUD/JPY");
-  const isMobile = useMobile(768);
-  console.log("isMobile", isMobile);
+  // const isMobile = useMobile(768);
+  // console.log("isMobile", isMobile);
 
   const { setActiveAsset, assets, fetchAssets, activeAsset } = useAssetStore();
   const { fetchOpenTrades, fetchClosedTrades } = useTradeStore();

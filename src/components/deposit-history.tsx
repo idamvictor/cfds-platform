@@ -174,7 +174,7 @@ const DepositHistory: React.FC = () => {
                           <div className="font-medium capitalize">
                             {key.replace(/_/g, " ")}:
                           </div>
-                          <div className="text-muted-foreground">
+                          <div className="text-muted-foreground break-all">
                             {String(value)}
                           </div>
                         </div>
