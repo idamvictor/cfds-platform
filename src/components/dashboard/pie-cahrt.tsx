@@ -78,7 +78,8 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
         </p>
         <p className="text-sm  text-background/80">
           {" "}
-          Orders: <span className="font-semibold">{data.visitors}%</span>
+          Orders:{" "}
+          <span className="font-semibold">{data.visitors.toFixed(2)}%</span>
         </p>
       </div>
     );
