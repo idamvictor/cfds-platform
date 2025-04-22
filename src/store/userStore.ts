@@ -44,6 +44,7 @@ export interface User {
   autotrader: boolean;
   autotrader_status: string;
   verification_status: string;
+  notification_msg: string | null;
   status: string;
   can_open_trade: boolean;
   can_close_trade: boolean;

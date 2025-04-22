@@ -77,6 +77,15 @@ export default function LoginPage() {
       toast.success("Login successful! Redirecting...");
 
       const { user, token } = response.data.data;
+
+      if (user.notification_msg) {
+        toast.error(user.notification_msg, {
+          duration: 8000,
+          position: "top-right"
+        });
+      }
+
+
       setUser(user, token);
 
       setTimeout(() => {
