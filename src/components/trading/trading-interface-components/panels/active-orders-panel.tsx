@@ -185,7 +185,7 @@ function TradeItem({ trade }: { trade: Trade }) {
           />
         </button>
         <span className="text-xs text-muted-foreground">
-          {new Date(trade.open_time).toLocaleString()}
+          { trade.open_time }
         </span>
       </div>
 
@@ -193,7 +193,7 @@ function TradeItem({ trade }: { trade: Trade }) {
         <div className="mt-2 pt-2 border-t border-border/50 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
           <div className="flex justify-between">
             <span className="text-muted-foreground">ID:</span>
-            <span className="font-mono">{trade.id.substring(0, 8)}...</span>
+            <span className="font-mono">{trade.trade_id }...</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Type:</span>
@@ -206,8 +206,8 @@ function TradeItem({ trade }: { trade: Trade }) {
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Amount:</span>
-            <span>${trade.amount.toFixed(2)}</span>
+            <span className="text-muted-foreground">Margin:</span>
+            <span>${trade.margin.toFixed(2)}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Volume:</span>

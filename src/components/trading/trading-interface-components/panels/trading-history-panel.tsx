@@ -87,24 +87,14 @@ function TradeHistoryItem({ trade }: { trade: Trade }) {
   const formattedPnl = trade.pnl.toFixed(2);
   const isPnlPositive = trade.pnl >= 0;
 
-  // Format date for display
-  const openDate = new Date(trade.open_time);
-  const time = openDate.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-  const date = openDate.toLocaleDateString([], {
-    month: "short",
-    day: "numeric",
-  });
 
   return (
     <div className="p-3 border-b border-slate-700 hover:bg-muted/30">
       <div className="flex justify-between items-start">
         <div>
           <div className="flex items-center gap-1">
-            <span className="text-xs font-medium">{time}</span>
-            <span className="text-xs text-muted-foreground">{date}</span>
+            <span className="text-xs font-medium">{trade?.open_time}</span>
+            {/*<span className="text-xs text-muted-foreground">{date}</span>*/}
           </div>
           <div className="flex items-center gap-2 mt-1">
             <CurrencyFlag
@@ -152,7 +142,7 @@ function TradeHistoryItem({ trade }: { trade: Trade }) {
         <div className="mt-2 pt-2 border-t border-border/50 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
           <div className="flex justify-between">
             <span className="text-muted-foreground">ID:</span>
-            <span className="font-mono">{trade.id.substring(0, 8)}...</span>
+            <span className="font-mono">{trade.trade_id}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Type:</span>
@@ -165,8 +155,8 @@ function TradeHistoryItem({ trade }: { trade: Trade }) {
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Amount:</span>
-            <span>${trade.amount.toFixed(2)}</span>
+            <span className="text-muted-foreground">Margin:</span>
+            <span>${trade.margin.toFixed(2)}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Leverage:</span>
