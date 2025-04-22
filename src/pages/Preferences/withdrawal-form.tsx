@@ -378,6 +378,7 @@ export default function WithdrawalForm() {
         {/* Wire Transfer Confirmation Modal */}
         <WireTransferConfirmationModal
             open={showConfirmationModal}
+            isCard={false}
             onOpenChange={setShowConfirmationModal}
             onConfirm={handleConfirm}
             isSubmitting={isSubmitting}

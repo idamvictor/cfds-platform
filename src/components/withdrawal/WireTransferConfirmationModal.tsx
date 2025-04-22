@@ -14,10 +14,14 @@ interface WireTransferConfirmationModalProps {
     onOpenChange: (open: boolean) => void;
     onConfirm: () => void;
     isSubmitting: boolean;
+    isCard: boolean;
 }
 
 export function WireTransferConfirmationModal({
                                                   open,
+                                                  isCard = false,
+                                                  onConfirm,
+                                                    isSubmitting,
                                                   onOpenChange,
                                               }: WireTransferConfirmationModalProps) {
     return (
@@ -40,9 +44,12 @@ export function WireTransferConfirmationModal({
                     <Button variant="outline" onClick={() => onOpenChange(false)}>
                         Cancel
                     </Button>
-                    {/*<Button onClick={onConfirm} disabled={isSubmitting}>*/}
-                    {/*    {isSubmitting ? "Processing..." : "Continue Anyway"}*/}
-                    {/*</Button>*/}
+                    { isCard ? (
+                        <Button onClick={onConfirm} disabled={isSubmitting}>
+                            {isSubmitting ? "Processing..." : "Continue Anyway"}
+                        </Button>
+                    ) : null}
+
                 </DialogFooter>
             </DialogContent>
         </Dialog>

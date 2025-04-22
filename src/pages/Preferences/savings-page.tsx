@@ -112,12 +112,12 @@ export default function SavingsPage() {
       // Convert annual ROI to daily rate and calculate for one day
       const dailyROI = roi / 365;
       const earnings = amount * (dailyROI / 100);
-      return earnings.toFixed(2);
+      return earnings.toFixed(6);
     }
 
     // For fixed term savings, calculate total earnings at maturity
     const earnings = amount * (roi / 100);
-    return earnings.toFixed(2);
+    return earnings.toFixed(6);
   };
 
   // Toggle currency expansion

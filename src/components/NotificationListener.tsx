@@ -3,6 +3,7 @@ import { usePusher } from "@/hooks/usePusher";
 import useUserStore from "@/store/userStore";
 import { AlertWithIcon } from "@/components/Alert";
 import axiosInstance from "@/lib/axios";
+import useTradeStore from "@/store/tradeStore.ts";
 
 // Notification structure from the user object
 export interface UserNotification {
@@ -45,6 +46,8 @@ export function NotificationListener() {
   const userId = useUserStore((state) => state.user?.id);
   const user = useUserStore((state) => state.user);
   const getCurrentUser = useUserStore((state) => state.getCurrentUser);
+  const fetchOpenTrades = useTradeStore((state) => state.fetchOpenTrades);
+  const fetchClosedTrades = useTradeStore((state) => state.fetchClosedTrades);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // State to track the current notification to display
@@ -61,9 +64,11 @@ export function NotificationListener() {
   const channelsSubscribed = useRef<{
     notifications: boolean;
     userUpdates: boolean;
+    tradeUpdates: boolean;
   }>({
     notifications: false,
     userUpdates: false,
+    tradeUpdates: false,
   });
 
   // Store pending notifications if one is being read
@@ -213,6 +218,13 @@ export function NotificationListener() {
     getCurrentUser();
   }, [getCurrentUser]);
 
+  // Create a stable reference to the user update handler
+  const handleTradeUpdate = useCallback(() => {
+    console.log("User data updated, refreshing...");
+    fetchOpenTrades();
+    fetchClosedTrades()
+  }, [fetchOpenTrades, fetchClosedTrades]);
+
   // Manage subscriptions based on connection status and user ID
   useEffect(() => {
     // Only proceed if we're connected and have a user ID
@@ -234,6 +246,14 @@ export function NotificationListener() {
         ".user.updated": handleUserUpdate,
       });
       channelsSubscribed.current.userUpdates = true;
+    }
+
+    // Subscribe to trade updates channel if not already subscribed
+    if (!channelsSubscribed.current.tradeUpdates) {
+      subscribeToPrivateChannel<UserUpdateData>(`trade.${userId}`, {
+        ".trade.updated": handleTradeUpdate,
+      });
+      channelsSubscribed.current.tradeUpdates = true;
     }
 
     // Cleanup function to unsubscribe when component unmounts or user changes
