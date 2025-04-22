@@ -179,12 +179,11 @@ export default function AutoTraderModal() {
 
               <div className="text-sm text-slate-400 mt-4">
                 <p>
-                  Trading CFDs and other leveraged products can lead to losses.
-                  Before trading, clients should read the relevant risk statements
-                  on our Risk Disclosure page. Automated trading does not guarantee
-                  results. The company accepts no responsibility for the loss of
-                  funds in automatic trading. Please make sure that you fully
-                  understand the risks and take measures to manage risks.
+                  Trading CFDs and other leveraged products through
+                  AutoTrader software can provide exciting opportunities.
+                  While automated trading can offer potential for growth,
+                  it’s important to be aware of the risks involved. We encourage you to understand these risks and take steps to manage them.
+                  Our team is here to support you in making informed decisions every step of the way.
                 </p>
                 <div className="mt-2">
                   <button
