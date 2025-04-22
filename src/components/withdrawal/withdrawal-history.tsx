@@ -23,6 +23,7 @@ interface WithdrawalRequest {
   amount: string;
   date: string;
   type: string;
+  account: string;
   status: string;
   details: string;
 }
@@ -87,6 +88,7 @@ export function WithdrawalHistory({
                 AMOUNT
               </TableHead>
               <TableHead className="text-foreground font-bold">TYPE</TableHead>
+              <TableHead className="text-foreground font-bold">ACCOUNT</TableHead>
               <TableHead className="text-foreground font-bold">
                 DETAILS
               </TableHead>
@@ -123,6 +125,7 @@ export function WithdrawalHistory({
                 AMOUNT
               </TableHead>
               <TableHead className="text-foreground font-bold">TYPE</TableHead>
+              <TableHead className="text-foreground font-bold">ACCOUNT</TableHead>
               <TableHead className="text-foreground font-bold">
                 DETAILS
               </TableHead>
@@ -149,6 +152,7 @@ export function WithdrawalHistory({
                   </TableCell>
                   <TableCell>{request.amount}</TableCell>
                   <TableCell className="capitalize">{request.type}</TableCell>
+                  <TableCell className="capitalize">{request.account}</TableCell>
                   <TableCell>
                     <Button
                       variant="ghost"
