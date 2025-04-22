@@ -571,7 +571,7 @@ export function TradingInterface() {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Margin d:</span>
+                  <span className="text-muted-foreground">Margin:</span>
                   <span className={cn(
                       tradingInfo.margin > tradingInfo.freeMargin ? "text-red-500" : "text-primary"
                   )}>
