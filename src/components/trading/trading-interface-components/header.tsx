@@ -13,7 +13,6 @@ import {
   Calendar,
   Newspaper,
   LogOut,
-  Crown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
