@@ -3,7 +3,6 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Search, Loader2, MessageCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import useOnlineStatusStore from "@/store/OnlineStatusState";
 import { cn } from "@/lib/utils";
 
 interface ChatUser {
@@ -14,6 +13,7 @@ interface ChatUser {
     avatar?: string;
     account_id: string;
     last_activity?: string;
+    is_online: boolean;
     unread_count?: number;
 }
 
@@ -38,19 +38,18 @@ export function UserList({
                              setSelectedUser,
                              isInitialLoading,
                          }: UserListProps) {
-    const isUserOnline = useOnlineStatusStore(state => state.isUserOnline);
+    // const isUserOnline = useOnlineStatusStore(state => state.isUserOnline);
 
     // Filter users based on search and tab
     const filteredUsers = users.filter(user => {
         const matchesSearch = searchQuery === "" ||
             user.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             user.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.account_id.toLowerCase().includes(searchQuery.toLowerCase());
+            user.email.toLowerCase().includes(searchQuery.toLowerCase());
 
         let matchesTab = true;
         if (selectedTab === "online") {
-            matchesTab = isUserOnline(user.id);
+            matchesTab = user.is_online;
         } else if (selectedTab === "unread") {
             matchesTab = (user.unread_count || 0) > 0;
         }
@@ -115,7 +114,7 @@ export function UserList({
                                             {user.first_name[0]}{user.last_name[0]}
                                         </AvatarFallback>
                                     </Avatar>
-                                    {isUserOnline(user.id) && (
+                                    {user.is_online && (
                                         <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-background"></div>
                                     )}
                                 </div>

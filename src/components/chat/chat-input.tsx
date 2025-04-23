@@ -148,7 +148,7 @@ export function ChatInput({
                 />
 
                 <Button
-                    onClick={onSend}
+                    // REMOVED: onClick={onSend}
                     size="icon"
                     className="bg-primary text-primary-foreground"
                     disabled={(!value.trim() && selectedFiles.length === 0) || disabled || isSending}

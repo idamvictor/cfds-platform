@@ -139,7 +139,7 @@ export default function Header({
   };
 
   const headerStyle = {
-    backgroundColor: user?.account_type.color || "gray"
+    backgroundColor: user?.account_type?.color || "gray"
   };
 
   return (

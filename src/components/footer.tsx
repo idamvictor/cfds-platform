@@ -35,7 +35,7 @@ export default function Footer() {
   };
 
   const headerStyle = {
-    backgroundColor: user?.account_type.color || "gray"
+    backgroundColor: user?.account_type?.color || "gray"
   };
 
   return (
