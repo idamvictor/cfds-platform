@@ -315,7 +315,8 @@ export default function SavingsPage() {
                     >
                       <SelectTrigger className="bg-card border-card-foreground/10">
                         <SelectValue>
-                          {toAccounts[0]?.title} &nbsp;&nbsp;&nbsp;&nbsp;($
+                          <span className="hidden lg:flex">{toAccounts[0]?.title} </span>
+                          &nbsp;&nbsp;&nbsp;&nbsp;($
                           {toAccounts[0]?.balance})
                         </SelectValue>
                       </SelectTrigger>
