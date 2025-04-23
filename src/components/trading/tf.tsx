@@ -179,13 +179,13 @@ export function TradingInterface() {
 
             // Calculate margin based on volume and leverage
             const calculatedMargin = (baseVolumeLots * tradingInfo.contractSize * assetRate) / leverage;
-            const userBalance = user?.balance || 0;
+            // const userBalance = user?.balance || 0;
 
             setTradingInfo({
                 contractSize: 100000,
                 position: Math.round(baseVolumeLots * 100000),
                 margin: calculatedMargin,
-                freeMargin: userBalance - calculatedMargin,
+                freeMargin: accountSummary.freeMargin,
                 spread: buySpread + sellSpread,
                 leverage: leverage,
                 buyPrice: buyPrice,
@@ -436,7 +436,7 @@ export function TradingInterface() {
                                 <div className="flex justify-between">
                                     <span className="text-muted-foreground">Free Margin:</span>
                                     <span className="text-primary">
-                    ${tradingInfo.freeMargin.toFixed(2)}
+                    ${accountSummary.freeMargin}
                   </span>
                                 </div>
                                 <div className="flex justify-between">
@@ -645,7 +645,7 @@ export function TradingInterface() {
                                 <div className="flex justify-between">
                                     <span className="text-muted-foreground">Free Margin:</span>
                                     <span className="text-primary">
-                    ${tradingInfo.freeMargin.toFixed(2)}
+                    ${accountSummary.freeMargin}
                   </span>
                                 </div>
                                 <div className="flex justify-between">

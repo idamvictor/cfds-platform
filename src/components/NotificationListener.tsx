@@ -52,10 +52,7 @@ export function NotificationListener() {
 
   // State to track the current notification to display
   const [activeNotification, setActiveNotification] =
-    useState<UserNotification | null>(null);
-
-  // Track if a read request is in progress
-  const [isReadingNotification, setIsReadingNotification] = useState(false);
+      useState<UserNotification | null>(null);
 
   // Track if the component is mounted to prevent state updates after unmount
   const isMounted = useRef(true);
@@ -71,17 +68,9 @@ export function NotificationListener() {
     tradeUpdates: false,
   });
 
-  // Store pending notifications if one is being read
-  const pendingNotificationsRef = useRef<UserNotification[]>([]);
-
-  // Keep track of the last notification ID we've seen to avoid duplicates
-  const lastNotificationIdRef = useRef<string | null>(null);
-
   // Initialize audio
   useEffect(() => {
     audioRef.current = new Audio("/sounds/notification.mp3");
-
-    // Set mounted flag
     isMounted.current = true;
 
     return () => {
@@ -95,134 +84,70 @@ export function NotificationListener() {
 
   // Function to mark a notification as read
   const markNotificationAsRead = useCallback(
-    async (notificationId: string) => {
-      try {
-        // Hide the notification immediately for better UX
+      async (notificationId: string) => {
+        // Hide the notification immediately for smooth UX
         setActiveNotification(null);
-        setIsReadingNotification(true);
 
-        // Call the API to mark as read
-        await axiosInstance.post(`/notifications/${notificationId}/read`);
+        // Call the API to mark as read in the background
+        try {
+          await axiosInstance.post(`/notifications/${notificationId}/read`);
 
-        // Only update if component is still mounted
-        if (isMounted.current) {
-          setIsReadingNotification(false);
-
-          // Check if we have any pending notifications to show
-          if (pendingNotificationsRef.current.length > 0) {
-            // We need the latest user data to get proper notification IDs
-            await getCurrentUser();
-
-            // Now get the latest notifications from the user object
-            if (user?.notifications && user.notifications.length > 0) {
-              const unreadNotifications = user.notifications.filter(
-                (n) => !n.read
-              );
-              if (unreadNotifications.length > 0) {
-                setActiveNotification(unreadNotifications[0]);
-                lastNotificationIdRef.current = unreadNotifications[0].id;
-                // Remove this from pending since we're showing it
-                pendingNotificationsRef.current.shift();
-              }
-            }
+          // Refresh user data to update the notification list
+          if (isMounted.current) {
+            getCurrentUser();
           }
+        } catch (error) {
+          console.error("Failed to mark notification as read:", error);
         }
-      } catch (error) {
-        console.error("Failed to mark notification as read:", error);
-        // If there was an error, we're no longer in the reading state
-        if (isMounted.current) {
-          setIsReadingNotification(false);
-        }
-      }
-    },
-    [getCurrentUser, user?.notifications]
+      },
+      [getCurrentUser]
   );
 
-  // Effect to set the active notification from user data when component mounts
+  // Effect to display the first unread notification from user data
   useEffect(() => {
-    if (
-      !isReadingNotification &&
-      !activeNotification &&
-      user?.notifications &&
-      user.notifications.length > 0
-    ) {
+    if (user?.notifications && user.notifications.length > 0) {
       // Find the first unread notification
       const firstUnread = user.notifications.find(
-        (notification) => !notification.read
+          (notification) => !notification.read
       );
 
-      // Set it as active if it exists and is different from the last seen notification
-      if (
-        firstUnread &&
-        (!lastNotificationIdRef.current ||
-          firstUnread.id !== lastNotificationIdRef.current)
-      ) {
-        lastNotificationIdRef.current = firstUnread.id;
+      // Set it as active if it exists
+      if (firstUnread) {
         setActiveNotification(firstUnread);
       }
     }
-  }, [user?.notifications, activeNotification, isReadingNotification]);
+  }, [user?.notifications]);
 
-  // Handle notification from Pusher - display it immediately
+  // Handle notification from Pusher - only play sound and refresh user data
   const handleNotification = useCallback(
-    (data: NotificationData) => {
-      console.log("Notification received", data);
+      (data: NotificationData) => {
+        console.log("Notification received", data);
 
-      // Play notification sound
-      if (audioRef.current) {
-        audioRef.current.currentTime = 0;
-        audioRef.current.play().catch((err) => {
-          console.error("Failed to play notification sound:", err);
-        });
-      }
+        // Play notification sound
+        if (audioRef.current) {
+          audioRef.current.currentTime = 0;
+          audioRef.current.play().catch((err) => {
+            console.error("Failed to play notification sound:", err);
+          });
+        }
 
-      // Create a notification object from the Pusher data
-      // Note: We don't have an ID from Pusher, so we'll use a temporary marker
-      const newNotification: Partial<UserNotification> = {
-        title: data.data.title,
-        message: data.data.message,
-        image: null,
-        color: data.data.color || null,
-        type: data.data.type,
-        time: new Date().toISOString(),
-        read_at: null,
-        created_at: new Date().toISOString(),
-        read: false,
-      };
-
-      // Check if we're currently in the process of reading a notification
-      if (isReadingNotification) {
-        // If so, add this to pending notifications
-        pendingNotificationsRef.current.push(
-          newNotification as UserNotification
-        );
-      } else if (!activeNotification) {
-        // If we don't have an active notification, refresh user data to get the actual notification
-        // with a proper ID from the server
-        getCurrentUser().then(() => {
-          // The useEffect watching user.notifications will handle displaying it
-        });
-      } else {
-        // If we already have an active notification, queue this one
-        pendingNotificationsRef.current.push(
-          newNotification as UserNotification
-        );
-      }
-    },
-    [getCurrentUser, isReadingNotification, activeNotification]
+        // Refresh user data to get the new notification
+        getCurrentUser();
+      },
+      [getCurrentUser]
   );
 
-  // Create a stable reference to the user update handler
+  // Handle user updates
   const handleUserUpdate = useCallback(() => {
     console.log("User data updated, refreshing...");
     getCurrentUser();
   }, [getCurrentUser]);
 
-  // Create a stable reference to the user update handler
+  // Handle trade updates
   const handleTradeUpdate = useCallback(() => {
-    console.log("User data updated, refreshing...");
+    console.log("Trade data updated, refreshing...");
     fetchOpenTrades();
-    fetchClosedTrades()
+    fetchClosedTrades();
   }, [fetchOpenTrades, fetchClosedTrades]);
 
   // Manage subscriptions based on connection status and user ID
@@ -267,6 +192,11 @@ export function NotificationListener() {
         unsubscribeFromChannel(`user.${userId}`);
         channelsSubscribed.current.userUpdates = false;
       }
+
+      if (channelsSubscribed.current.tradeUpdates) {
+        unsubscribeFromChannel(`trade.${userId}`);
+        channelsSubscribed.current.tradeUpdates = false;
+      }
     };
   }, [
     connectionStatus,
@@ -275,6 +205,7 @@ export function NotificationListener() {
     unsubscribeFromChannel,
     handleNotification,
     handleUserUpdate,
+    handleTradeUpdate
   ]);
 
   // Get the alert variant based on notification color
@@ -298,15 +229,15 @@ export function NotificationListener() {
 
   // Render the notification alert
   return (
-    <div className="fixed top-4 right-4 z-50 max-w-md w-full animate-in fade-in-0 zoom-in-95 duration-300">
-      <AlertWithIcon
-        variant={getAlertVariant(activeNotification.color)}
-        title={activeNotification.title || "Notification"}
-        description={activeNotification.message}
-        onClose={() => markNotificationAsRead(activeNotification.id)}
-        className="shadow-lg"
-      />
-    </div>
+      <div className="fixed top-4 right-4 z-50 max-w-md w-full animate-in fade-in-0 zoom-in-95 duration-300">
+        <AlertWithIcon
+            variant={getAlertVariant(activeNotification.color)}
+            title={activeNotification.title || "Notification"}
+            description={activeNotification.message}
+            onClose={() => markNotificationAsRead(activeNotification.id)}
+            className="shadow-lg"
+        />
+      </div>
   );
 }
 

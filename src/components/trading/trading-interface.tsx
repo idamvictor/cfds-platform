@@ -573,7 +573,7 @@ export function TradingInterface() {
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Margin:</span>
                   <span className={cn(
-                      tradingInfo.margin > tradingInfo.freeMargin ? "text-red-500" : "text-primary"
+                      tradingInfo.margin > accountSummary.freeMargin ? "text-red-500" : "text-primary"
                   )}>
     {formatCurrencyValue(
         parseFloat(tradingInfo.margin.toFixed(2))
@@ -582,9 +582,9 @@ export function TradingInterface() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Free Margin:</span>
-                  <span className={tradingInfo.freeMargin < 0 ? "text-red-500" : "text-primary"}>
+                  <span className={accountSummary.freeMargin < 0 ? "text-red-500" : "text-primary"}>
     {formatCurrencyValue(
-        parseFloat(tradingInfo.freeMargin.toFixed(2))
+        parseFloat(accountSummary.freeMargin.toFixed(2))
     )}
   </span>
                 </div>
@@ -793,7 +793,7 @@ export function TradingInterface() {
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Margin:</span>
                   <span className={cn(
-                      tradingInfo.margin > tradingInfo.freeMargin ? "text-red-500" : "text-primary"
+                      tradingInfo.margin > accountSummary.freeMargin ? "text-red-500" : "text-primary"
                   )}>
     {formatCurrencyValue(
         parseFloat(tradingInfo.margin.toFixed(2))
@@ -805,7 +805,7 @@ export function TradingInterface() {
                   <span className="text-muted-foreground">Free Margin:</span>
                   <span className="text-primary">
                     {formatCurrencyValue(
-                      parseFloat(tradingInfo.freeMargin.toFixed(2))
+                      parseFloat(accountSummary.freeMargin.toFixed(2))
                     )}
                   </span>
                 </div>
