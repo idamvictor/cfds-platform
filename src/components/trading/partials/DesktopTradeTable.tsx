@@ -110,7 +110,7 @@ export function DesktopTradeTable({
           <TableBody className="overflow-y-auto">
             {trades.map((trade) => (
               <TableRow key={trade.id} className="h-8 hover:bg-muted/30">
-                <TableCell 
+                <TableCell
                   className="py-1 text-xs text-muted-foreground cursor-pointer hover:text-primary"
                   onClick={() => handleAssetClick(trade.asset_symbol)}
                 >
