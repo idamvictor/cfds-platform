@@ -2,63 +2,23 @@ import { useState, useEffect, useCallback } from 'react';
 import axiosInstance from '@/lib/axios';
 import { usePusher } from '@/hooks/usePusher';
 import useUserStore from '@/store/userStore';
-import type { AxiosError } from 'axios';
+import type { ChatMessage } from '@/hooks/useChat';
 
-// Message and attachment types
-export interface MessageAttachment {
-    id: string;
-    message_id: string;
-    file_name: string;
-    file_path: string;
-    file_size: number;
-    file_type: string;
-    created_at: string;
-    updated_at: string;
-    download_url: string;
-}
-
-export interface ChatMessage {
-    id: string;
-    message: string;
-    sender_id: string;
-    receiver_id: string | null;
-    is_admin: boolean;
-    read_at: string | null;
-    created_at: string;
-    attachments: MessageAttachment[];
-    sender?: {
-        id: string;
-        first_name: string;
-        last_name: string;
-        avatar: string;
-    };
-}
-
-// API response types
-interface MessagesPaginatedResponse {
-    data: ChatMessage[];
-    next_page_url: string | null;
-    prev_page_url: string | null;
-    first_page_url: string;
-    last_page_url: string;
-    from: number;
-    to: number;
-    total: number;
-    current_page: number;
-    last_page: number;
-    per_page: number;
-}
-
-interface MessageCreatedResponse {
-    success: boolean;
-    data: ChatMessage;
-}
-
-// Message payload interface
-interface MessagePayload {
-    message: string;
-    attachments: string[];
-    customer_id?: string;
+// Interface for admin chat hook
+interface AdminChatHook {
+    messages: ChatMessage[];
+    isLoading: boolean;
+    error: string | null;
+    connectionStatus: string;
+    sendMessage: (message: string, customerId: string, file?: File) => Promise<void>;
+    loadMoreMessages: (customerId: string) => Promise<void>;
+    hasMoreMessages: boolean;
+    uploadFile: (file: File) => Promise<string>;
+    selectedFiles: SelectedFile[];
+    addFile: (file: File) => void;
+    removeFile: (index: number) => void;
+    setActiveCustomer: (customerId: string) => void;
+    activeCustomerId: string | null;
 }
 
 // File upload tracking
@@ -70,34 +30,20 @@ interface SelectedFile {
     error?: string;
 }
 
-// Hook return type
-interface ChatHook {
-    messages: ChatMessage[];
-    isLoading: boolean;
-    error: string | null;
-    connectionStatus: string;
-    sendMessage: (message: string, file?: File) => Promise<void>;
-    loadMoreMessages: () => Promise<void>;
-    hasMoreMessages: boolean;
-    uploadFile: (file: File) => Promise<string>;
-    selectedFiles: SelectedFile[];
-    addFile: (file: File) => void;
-    removeFile: (index: number) => void;
-}
-
-export function useChat(customerId?: string): ChatHook {
+/**
+ * Custom hook for admin chat functionality
+ */
+export function useAdminChat(): AdminChatHook {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [page, setPage] = useState(1);
     const [hasMoreMessages, setHasMoreMessages] = useState(true);
     const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>([]);
+    const [activeCustomerId, setActiveCustomerId] = useState<string | null>(null);
 
-    // Get user from store
+    // Get admin user from store
     const user = useUserStore(state => state.user);
-
-    // Determine which user ID to use for the chat channel
-    const targetUserId = customerId || user?.id;
 
     // Use our Pusher hook that manages the connection
     const {
@@ -106,18 +52,34 @@ export function useChat(customerId?: string): ChatHook {
         subscribeToPrivateChannel
     } = usePusher();
 
-    // Function to fetch chat messages
-    const fetchMessages = useCallback(async (pageToFetch = 1, showLoading = true) => {
+    // Function to set active customer and load their messages
+    const setActiveCustomer = useCallback(async (customerId: string) => {
+        setActiveCustomerId(customerId);
+        setMessages([]);
+        setPage(1);
+        setHasMoreMessages(true);
+
+        try {
+            setIsLoading(true);
+            await fetchMessages(customerId, 1);
+        } catch (error) {
+            console.error("Error setting active customer:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+
+    // Function to fetch chat messages for a specific customer
+    const fetchMessages = useCallback(async (customerId: string, pageToFetch = 1, showLoading = true) => {
+        if (!customerId) return;
+
         try {
             if (showLoading) setIsLoading(true);
             setError(null);
 
-            // Customize the endpoint based on whether we have a customerId (admin view)
-            const endpoint = customerId
-                ? `/chat/messages?customer_id=${customerId}&page=${pageToFetch}`
-                : `/chat/messages?page=${pageToFetch}`;
-
-            const response = await axiosInstance.get<MessagesPaginatedResponse>(endpoint);
+            const response = await axiosInstance.get(
+                `/admin/chat/messages/${customerId}?page=${pageToFetch}`
+            );
 
             if (response.data && Array.isArray(response.data.data)) {
                 const incoming = response.data.data;
@@ -128,7 +90,7 @@ export function useChat(customerId?: string): ChatHook {
                     // Add new messages without duplicates
                     setMessages(prev => {
                         const existingIds = new Set(prev.map(msg => msg.id));
-                        const newMessages = incoming.filter(msg => !existingIds.has(msg.id));
+                        const newMessages = incoming.filter((msg: { id: string; }) => !existingIds.has(msg.id));
                         return [...newMessages, ...prev]; // Prepend new messages
                     });
                 }
@@ -140,14 +102,13 @@ export function useChat(customerId?: string): ChatHook {
                 setError('Invalid response from server');
             }
         } catch (err) {
-            const axiosErr = err as AxiosError<{ message: string }>;
-            const msg = axiosErr.response?.data?.message || 'Failed to load messages.';
-            console.error('Error fetching messages:', msg);
+            const msg = 'Failed to load messages.';
+            console.error('Error fetching messages:', err);
             setError(msg);
         } finally {
             if (showLoading) setIsLoading(false);
         }
-    }, [customerId]);
+    }, []);
 
     // Effect to set connection error if present
     useEffect(() => {
@@ -156,9 +117,9 @@ export function useChat(customerId?: string): ChatHook {
         }
     }, [connectionError]);
 
-    // Setup channel subscription for chat messages
+    // Setup channel subscription for admin chat messages
     useEffect(() => {
-        if (connectionStatus === 'connected' && targetUserId) {
+        if (connectionStatus === 'connected' && user && activeCustomerId) {
             // TypeScript interface for the message sent event
             interface MessageSentEvent {
                 message: ChatMessage;
@@ -169,11 +130,9 @@ export function useChat(customerId?: string): ChatHook {
                 message_id: string;
             }
 
-            // Subscribe to the chat channel for the target user
-            const channelName = `chat.customer.${targetUserId}`;
-
+            // Subscribe to the admin's channel for the specific customer
             subscribeToPrivateChannel<MessageSentEvent>(
-                channelName,
+                `chat.admin.${user.id}.customer.${activeCustomerId}`,
                 {
                     '.message.sent': (event) => {
                         if (event && event.message) {
@@ -191,7 +150,7 @@ export function useChat(customerId?: string): ChatHook {
 
             // Subscribe to read receipts
             subscribeToPrivateChannel<MessageReadEvent>(
-                channelName,
+                `chat.admin.${user.id}.customer.${activeCustomerId}`,
                 {
                     '.message.read': (event) => {
                         if (event && event.message_id) {
@@ -207,28 +166,40 @@ export function useChat(customerId?: string): ChatHook {
                 }
             );
 
-            // Fetch initial messages when connected
-            fetchMessages().catch(err => {
+            // Fetch initial messages when connected and customer is selected
+            fetchMessages(activeCustomerId).catch(err => {
                 console.error('Error fetching initial messages:', err);
             });
         }
-    }, [connectionStatus, targetUserId, subscribeToPrivateChannel, fetchMessages]);
+    }, [connectionStatus, user, activeCustomerId, subscribeToPrivateChannel, fetchMessages]);
 
     // Function to load more messages
-    const loadMoreMessages = useCallback(async () => {
-        if (!hasMoreMessages || isLoading) return;
-        await fetchMessages(page + 1, false);
-    }, [hasMoreMessages, isLoading, page, fetchMessages]);
+    const loadMoreMessages = useCallback(async (customerId: string) => {
+        if (!hasMoreMessages || isLoading || !customerId) return;
+
+        // Make sure we're loading messages for the correct customer
+        if (customerId !== activeCustomerId) {
+            return;
+        }
+
+        await fetchMessages(customerId, page + 1, false);
+    }, [hasMoreMessages, isLoading, page, fetchMessages, activeCustomerId]);
 
     // Function to upload a file
     const uploadFile = async (file: File): Promise<string> => {
         const formData = new FormData();
         formData.append('file', file);
 
+        if (!activeCustomerId) {
+            throw new Error('No customer selected for file upload');
+        }
+
+        formData.append('customer_id', activeCustomerId);
+
         const idx = selectedFiles.findIndex(f => f.file === file);
 
         try {
-            const response = await axiosInstance.post<{ url: string }>('/chat/upload', formData, {
+            const response = await axiosInstance.post<{ url: string }>('/admin/chat/upload', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
                 onUploadProgress: ev => {
                     if (ev.total && idx !== -1) {
@@ -247,9 +218,8 @@ export function useChat(customerId?: string): ChatHook {
                 },
             });
             return response.data.url;
-        } catch (err) {
-            const axiosErr = err as AxiosError<{ message: string }>;
-            const msg = axiosErr.response?.data?.message || 'Failed to upload file.';
+        } catch (err: any) {
+            const msg = err.response?.data?.message || 'Failed to upload file.';
             if (idx !== -1) {
                 setSelectedFiles(prev => {
                     const updatedFiles = [...prev];
@@ -295,9 +265,15 @@ export function useChat(customerId?: string): ChatHook {
     }, []);
 
     // Function to send a message
-    const sendMessage = async (message: string, file?: File) => {
+    const sendMessage = async (message: string, customerId: string, file?: File) => {
         if (!user) {
             setError('You must be logged in to send messages.');
+            return;
+        }
+
+        // Ensure we have a customer ID
+        if (!customerId) {
+            setError('No customer selected to send message to.');
             return;
         }
 
@@ -328,22 +304,12 @@ export function useChat(customerId?: string): ChatHook {
                 }
             }
 
-            // Prepare the message payload with proper typing
-            const payload: MessagePayload = {
-                message,
-                attachments
-            };
-
-            // If this is admin viewing a customer chat, include the customer_id
-            if (customerId) {
-                payload.customer_id = customerId;
-            }
-
             // Send the message to the server
-            const response = await axiosInstance.post<MessageCreatedResponse>(
-                '/chat/messages',
-                payload
-            );
+            const response = await axiosInstance.post('/admin/chat/messages', {
+                message,
+                attachments,
+                customer_id: customerId
+            });
 
             // Add the message to the UI
             if (response.data && response.data.data) {
@@ -356,11 +322,11 @@ export function useChat(customerId?: string): ChatHook {
             }
 
             setError(null);
-        } catch (err) {
-            const axiosErr = err as AxiosError<{ message: string }>;
-            const msg = axiosErr.response?.data?.message || 'Failed to send message.';
+        } catch (err: any) {
+            const msg = err.response?.data?.message || 'Failed to send message.';
             console.error('Error sending message:', err);
             setError(msg);
+            throw err;
         }
     };
 
@@ -375,6 +341,8 @@ export function useChat(customerId?: string): ChatHook {
         uploadFile,
         selectedFiles,
         addFile,
-        removeFile
+        removeFile,
+        setActiveCustomer,
+        activeCustomerId
     };
 }
