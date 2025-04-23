@@ -19,6 +19,7 @@ interface ChatUser {
     avatar?: string;
     account_id: string;
     last_activity?: string;
+    is_online: boolean;
     unread_count?: number;
 }
 
@@ -35,9 +36,7 @@ export default function AdminChat() {
     // Current admin user
     const currentUser = useUserStore((state) => state.user);
 
-    // Online status store
-    const isUserOnline = useOnlineStatusStore(state => state.isUserOnline);
-    const startHeartbeat = useOnlineStatusStore(state => state.startHeartbeat);
+   const startHeartbeat = useOnlineStatusStore(state => state.startHeartbeat);
 
     // Chat functionality using the updated hook
     const {
@@ -171,7 +170,7 @@ export default function AdminChat() {
                                             {selectedUser.first_name} {selectedUser.last_name}
                                         </div>
                                         <div className="text-sm text-muted-foreground">
-                                            {isUserOnline(selectedUser.id) ? 'Online' : 'Offline'}
+                                            {selectedUser.is_online ? 'Online' : 'Offline'}
                                         </div>
                                     </div>
                                 </div>

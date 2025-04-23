@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import useUserStore from '@/store/userStore';
-import useOnlineStatusStore from "@/store/OnlineStatusState.ts";
+import useOnlineStatusStore from "@/store/OnlineStatusState";
 
 export function OnlineStatusInitializer() {
     const startHeartbeat = useOnlineStatusStore(state => state.startHeartbeat);
@@ -11,8 +11,6 @@ export function OnlineStatusInitializer() {
         if (user) {
             startHeartbeat();
         }
-
-        // Cleanup on unmount
         return () => {
             stopHeartbeat();
         };
