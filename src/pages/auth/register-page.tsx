@@ -113,7 +113,7 @@ export default function RegisterPage() {
     try {
       const response = await axiosInstance.post("/auth/register", values);
       console.log("Registration successful:", response.data);
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       console.error("Registration failed:", error);
     } finally {
