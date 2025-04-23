@@ -54,6 +54,13 @@ interface MessageCreatedResponse {
     data: ChatMessage;
 }
 
+// Message payload interface
+interface MessagePayload {
+    message: string;
+    attachments: string[];
+    customer_id?: string;
+}
+
 // File upload tracking
 interface SelectedFile {
     file: File;
@@ -78,10 +85,7 @@ interface ChatHook {
     removeFile: (index: number) => void;
 }
 
-/**
- * Hook for chat functionality using PusherService
- */
-export function useChat(): ChatHook {
+export function useChat(customerId?: string): ChatHook {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -91,6 +95,9 @@ export function useChat(): ChatHook {
 
     // Get user from store
     const user = useUserStore(state => state.user);
+
+    // Determine which user ID to use for the chat channel
+    const targetUserId = customerId || user?.id;
 
     // Use our Pusher hook that manages the connection
     const {
@@ -105,9 +112,12 @@ export function useChat(): ChatHook {
             if (showLoading) setIsLoading(true);
             setError(null);
 
-            const response = await axiosInstance.get<MessagesPaginatedResponse>(
-                `/chat/messages?page=${pageToFetch}`
-            );
+            // Customize the endpoint based on whether we have a customerId (admin view)
+            const endpoint = customerId
+                ? `/chat/messages?customer_id=${customerId}&page=${pageToFetch}`
+                : `/chat/messages?page=${pageToFetch}`;
+
+            const response = await axiosInstance.get<MessagesPaginatedResponse>(endpoint);
 
             if (response.data && Array.isArray(response.data.data)) {
                 const incoming = response.data.data;
@@ -137,7 +147,7 @@ export function useChat(): ChatHook {
         } finally {
             if (showLoading) setIsLoading(false);
         }
-    }, []);
+    }, [customerId]);
 
     // Effect to set connection error if present
     useEffect(() => {
@@ -148,7 +158,7 @@ export function useChat(): ChatHook {
 
     // Setup channel subscription for chat messages
     useEffect(() => {
-        if (connectionStatus === 'connected' && user) {
+        if (connectionStatus === 'connected' && targetUserId) {
             // TypeScript interface for the message sent event
             interface MessageSentEvent {
                 message: ChatMessage;
@@ -159,9 +169,11 @@ export function useChat(): ChatHook {
                 message_id: string;
             }
 
-            // Subscribe to the user's chat channel
+            // Subscribe to the chat channel for the target user
+            const channelName = `chat.customer.${targetUserId}`;
+
             subscribeToPrivateChannel<MessageSentEvent>(
-                `chat.customer.${user.id}`,
+                channelName,
                 {
                     '.message.sent': (event) => {
                         if (event && event.message) {
@@ -179,7 +191,7 @@ export function useChat(): ChatHook {
 
             // Subscribe to read receipts
             subscribeToPrivateChannel<MessageReadEvent>(
-                `chat.customer.${user.id}`,
+                channelName,
                 {
                     '.message.read': (event) => {
                         if (event && event.message_id) {
@@ -200,7 +212,7 @@ export function useChat(): ChatHook {
                 console.error('Error fetching initial messages:', err);
             });
         }
-    }, [connectionStatus, user, subscribeToPrivateChannel, fetchMessages]);
+    }, [connectionStatus, targetUserId, subscribeToPrivateChannel, fetchMessages]);
 
     // Function to load more messages
     const loadMoreMessages = useCallback(async () => {
@@ -212,6 +224,7 @@ export function useChat(): ChatHook {
     const uploadFile = async (file: File): Promise<string> => {
         const formData = new FormData();
         formData.append('file', file);
+
         const idx = selectedFiles.findIndex(f => f.file === file);
 
         try {
@@ -315,10 +328,21 @@ export function useChat(): ChatHook {
                 }
             }
 
+            // Prepare the message payload with proper typing
+            const payload: MessagePayload = {
+                message,
+                attachments
+            };
+
+            // If this is admin viewing a customer chat, include the customer_id
+            if (customerId) {
+                payload.customer_id = customerId;
+            }
+
             // Send the message to the server
             const response = await axiosInstance.post<MessageCreatedResponse>(
                 '/chat/messages',
-                { message, attachments }
+                payload
             );
 
             // Add the message to the UI

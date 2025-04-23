@@ -8,6 +8,10 @@ import LoadingScreen from "./components/loading-screen";
 import WebSocketInitializer from "@/components/WebSocketInitializer.tsx";
 import useSiteSettingsStore from "@/store/siteSettingStore";
 import {OnlineStatusInitializer} from "@/components/OnlineStatusInitializer.tsx";
+import AdminChat from "@/pages/admin/AdminChat.tsx";
+
+const AutoLoginPage = lazy(() => import("./pages/auth/auto-login"));
+
 
 const Test = lazy(() => import("./pages/test"));
 const Trading = lazy(() => import("./pages/trading"));
@@ -71,6 +75,16 @@ const App = () => {
               <WebSocketInitializer />
               <OnlineStatusInitializer />
               <Routes>
+
+                <Route
+                    path="/admin/chat"
+                    element={
+                      <ProtectedRoute>
+                        <AdminChat />
+                      </ProtectedRoute>
+                    }
+                />
+
                 <Route
                   path="/main"
                   element={
@@ -145,6 +159,7 @@ const App = () => {
 
                 {/* Authentication Routes */}
                 <Route path="/" element={<LoginPage />} />
+                <Route path="/auto-login" element={<AutoLoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route
                   path="/forgot-password"
