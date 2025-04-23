@@ -139,7 +139,13 @@ export default function SavingsPage() {
       form.reset();
     } catch (error) {
       console.error("Error creating savings plan:", error);
-      toast.error("Failed to create savings plan");
+      // Show the actual error message from the API if available
+      const axiosError = error as {
+        response?: { data?: { message?: string } };
+      };
+      toast.error(
+        axiosError.response?.data?.message || "Failed to create savings plan"
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -315,7 +321,9 @@ export default function SavingsPage() {
                     >
                       <SelectTrigger className="bg-card border-card-foreground/10">
                         <SelectValue>
-                          <span className="hidden lg:flex">{toAccounts[0]?.title} </span>
+                          <span className="hidden lg:flex">
+                            {toAccounts[0]?.title}{" "}
+                          </span>
                           &nbsp;&nbsp;&nbsp;&nbsp;($
                           {toAccounts[0]?.balance})
                         </SelectValue>
