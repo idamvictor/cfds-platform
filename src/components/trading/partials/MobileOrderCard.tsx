@@ -4,6 +4,7 @@ import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Trade } from "@/store/tradeStore";
 import useAssetStore from "@/store/assetStore";
+import useUserStore from "@/store/userStore.ts";
 
 
 interface MobileOrderCardProps {
@@ -24,6 +25,8 @@ export function MobileOrderCard({
   const isExpanded = expandedOrderId === order.id;
 
     const { setActiveAsset, assets } = useAssetStore();
+
+    const { user } = useUserStore();
 
     const handleAssetClick = (e: React.MouseEvent, symbol: string) => {
       e.stopPropagation(); // Prevent expanding the card when clicking the symbol
@@ -135,14 +138,17 @@ export function MobileOrderCard({
 
           {!isHistory && handleClosePosition && (
             <div className="flex gap-1.5 mt-2">
-              <Button
-                size="sm"
-                variant="destructive"
-                className="flex-1 text-xs h-7"
-                onClick={() => handleClosePosition(order)}
-              >
-                Close
-              </Button>
+              { user?.autotrader ? null : (
+                  <Button
+                      size="sm"
+                      variant="destructive"
+                      className="flex-1 text-xs h-7"
+                      onClick={() => handleClosePosition(order)}
+                  >
+                    Close
+                  </Button>
+              )}
+
               {/*<Button*/}
               {/*  size="sm"*/}
               {/*  variant="outline"*/}

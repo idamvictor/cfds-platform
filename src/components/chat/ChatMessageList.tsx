@@ -219,25 +219,37 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({
                                     isCurrentUser ? "flex-row-reverse" : "flex-row"
                                 )}
                             >
-                                <Avatar className="h-10 w-10 bg-muted">
-                                    <AvatarImage src={message.sender?.avatar} alt={message.sender?.first_name || ""} />
-                                    <AvatarFallback className="bg-muted flex items-center justify-center">
-                    <span className="text-muted-foreground text-xs">
-                      {isAdmin ? "A" : isCurrentUser ? "U" : message.sender?.first_name?.[0] || "?"}
-                    </span>
+                                <Avatar className="h-12 w-12 ring-2 ring-background shadow-sm">
+                                    <AvatarImage
+                                        src={message.sender?.avatar}
+                                        alt={message.sender?.first_name || ""}
+                                        className="object-cover rounded-full"
+                                    />
+                                    <AvatarFallback className="bg-muted text-base font-medium rounded-full">
+                                        {isAdmin ? "A" : isCurrentUser ? "U" : message.sender?.first_name?.[0] || "?"}
                                     </AvatarFallback>
                                 </Avatar>
 
-                                <div className={cn("max-w-[80%]", isCurrentUser ? "items-end" : "items-start")}>
+                                <div className={cn("max-w-[80%] space-y-1", isCurrentUser ? "items-end" : "items-start")}>
+                                    {/* Show sender name only for received messages, not for current user messages */}
+                                    {!isCurrentUser && message.sender?.first_name && (
+                                        <div className={cn(
+                                            "text-sm font-medium",
+                                            isAdmin ? "text-blue-400" : "text-foreground"
+                                        )}>
+                                            {message.sender.name}
+                                        </div>
+                                    )}
+
                                     {message.message && (
                                         <div
                                             className={cn(
                                                 "rounded-lg p-3",
                                                 isCurrentUser
-                                                    ? "bg-primary/30 text-primary-foreground"
+                                                    ? "bg-primary text-primary-foreground rounded-tr-sm"
                                                     : isAdmin
-                                                        ? "bg-blue-600/50 text-blue-50"
-                                                        : "bg-muted/50 text-foreground border border-border/40"
+                                                        ? "bg-blue-600/80 text-blue-50 rounded-tl-sm"
+                                                        : "bg-muted/80 text-foreground border border-border/40 rounded-tl-sm"
                                             )}
                                         >
                                             <p className="whitespace-pre-wrap break-words">{message.message}</p>
