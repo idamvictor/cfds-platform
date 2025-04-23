@@ -71,7 +71,9 @@ export default function VerificationPage() {
           break;
       }
 
-      toast.loading(`Uploading ${getTypeLabel(type).toLowerCase()}...`);
+      toast.loading(`Uploading ${getTypeLabel(type).toLowerCase()}...`, {
+        id: "upload-toast",
+      });
 
       await axiosInstance.post("/update/kyc", formData, {
         headers: {
@@ -79,6 +81,7 @@ export default function VerificationPage() {
         },
       });
 
+      toast.dismiss("upload-toast");
       setEditingType(null);
       toast.success(`${getTypeLabel(type)} uploaded successfully`);
     } catch (error: unknown) {
@@ -91,6 +94,7 @@ export default function VerificationPage() {
           type
         ).toLowerCase()}. Please try again.`;
 
+      toast.dismiss("upload-toast");
       toast.error(errorMessage);
     }
   };
