@@ -45,8 +45,7 @@ export function UserList({
         const matchesSearch = searchQuery === "" ||
             user.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             user.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.account_id.toLowerCase().includes(searchQuery.toLowerCase());
+            user.email.toLowerCase().includes(searchQuery.toLowerCase());
 
         let matchesTab = true;
         if (selectedTab === "online") {

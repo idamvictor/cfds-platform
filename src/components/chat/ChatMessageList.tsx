@@ -114,7 +114,7 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({
 
     // Render attachment
     const renderAttachment = (attachment: MessageAttachment, isCurrentUser: boolean) => {
-        const isImage = attachment.file_type.startsWith('image/');
+        const isImage = attachment.is_image || true;
 
         if (isImage) {
             return (

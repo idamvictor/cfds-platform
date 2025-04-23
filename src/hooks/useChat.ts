@@ -12,6 +12,7 @@ export interface MessageAttachment {
     file_path: string;
     file_size: number;
     file_type: string;
+    is_image?: boolean;
     created_at: string;
     updated_at: string;
     download_url: string;

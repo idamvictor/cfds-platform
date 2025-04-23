@@ -70,6 +70,7 @@ const App = () => {
       <Suspense fallback={<LoadingScreen />}>
         <Toaster />
         <BrowserRouter>
+
           <SiteProvider>
             <BaseLayout>
               <WebSocketInitializer />
@@ -158,8 +159,8 @@ const App = () => {
                 />
 
                 {/* Authentication Routes */}
-                <Route path="/" element={<LoginPage />} />
                 <Route path="/auto-login" element={<AutoLoginPage />} />
+                <Route path="/" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route
                   path="/forgot-password"

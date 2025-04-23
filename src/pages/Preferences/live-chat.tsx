@@ -4,7 +4,6 @@ import { ChatInput } from '@/components/chat/chat-input';
 import ChatMessageList from '@/components/chat/ChatMessageList';
 import { useChat } from '@/hooks/useChat';
 import useUserStore from '@/store/userStore';
-import ConnectionStatusIndicator from '@/components/websocket/ConnectionStatusIndicator';
 
 /**
  * Live Chat page that provides real-time communication with support
@@ -45,7 +44,6 @@ const LiveChat = () => {
             <div className="flex flex-col h-[calc(100vh-120px)]">
                 <div className="mb-4 flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Live Chat Support</h1>
-                    <ConnectionStatusIndicator />
                 </div>
 
                 <Card className="flex flex-col flex-1 overflow-hidden bg-card/50">

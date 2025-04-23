@@ -180,7 +180,7 @@ export default function AdminChat() {
                             </div>
 
                             {/* Chat Messages */}
-                            <div className="flex-1 overflow-hidden">
+                            <div className="flex-1 overflow-y-auto p-4">
                                 {chatLoading && messages.length === 0 ? (
                                     <div className="flex justify-center items-center h-full">
                                         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />

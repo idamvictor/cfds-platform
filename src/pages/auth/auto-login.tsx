@@ -67,6 +67,8 @@ export default function AutoLoginPage() {
 
                 setUser(dummyUser, token);
 
+                console.log('token', token)
+
                 await getCurrentUser();
 
                 navigate(redirectPath);
