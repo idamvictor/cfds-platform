@@ -3,6 +3,8 @@ import { Badge } from "@/components/ui/badge";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Trade } from "@/store/tradeStore";
+import useAssetStore from "@/store/assetStore";
+
 
 interface MobileOrderCardProps {
   order: Trade;
@@ -21,6 +23,17 @@ export function MobileOrderCard({
 }: MobileOrderCardProps) {
   const isExpanded = expandedOrderId === order.id;
 
+    const { setActiveAsset, assets } = useAssetStore();
+
+    const handleAssetClick = (e: React.MouseEvent, symbol: string) => {
+      e.stopPropagation(); // Prevent expanding the card when clicking the symbol
+      const asset = assets.find((a) => a.symbol_display === symbol);
+      if (asset) {
+        setActiveAsset(asset);
+      }
+    };
+
+
   return (
     <div
       className="mb-1 border border-muted rounded-sm overflow-hidden"
@@ -37,7 +50,13 @@ export function MobileOrderCard({
           >
             {order.trade_type.toUpperCase()}
           </Badge>
-          <span className="text-sm font-medium">{order.asset_symbol}</span>
+          <Button
+            className="text-sm font-medium "
+            variant="ghost"
+            onClick={(e) => handleAssetClick(e, order.asset_symbol)}
+          >
+            {order.asset_symbol}
+          </Button>
         </div>
         <div className="flex items-center gap-1">
           <span

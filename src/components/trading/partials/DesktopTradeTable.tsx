@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import type { Trade } from "@/store/tradeStore";
 import useUserStore from "@/store/userStore.ts";
+import useAssetStore from "@/store/assetStore";
 
 interface DesktopTradeTableProps {
   trades: Trade[];
@@ -31,6 +32,14 @@ export function DesktopTradeTable({
   handleClosePosition,
 }: DesktopTradeTableProps) {
   const user = useUserStore((state) => state.user);
+  const { setActiveAsset, assets } = useAssetStore();
+
+  const handleAssetClick = (assetSymbol: string) => {
+    const asset = assets.find((a) => a.symbol_display === assetSymbol);
+    if (asset) {
+      setActiveAsset(asset);
+    }
+  };
 
   if (error) {
     return <div className="w-full p-4 text-center text-red-500">{error}</div>;
@@ -101,7 +110,10 @@ export function DesktopTradeTable({
           <TableBody className="overflow-y-auto">
             {trades.map((trade) => (
               <TableRow key={trade.id} className="h-8 hover:bg-muted/30">
-                <TableCell className="py-1 text-xs text-muted-foreground">
+                <TableCell 
+                  className="py-1 text-xs text-muted-foreground cursor-pointer hover:text-primary"
+                  onClick={() => handleAssetClick(trade.asset_symbol)}
+                >
                   {trade.asset_symbol}
                 </TableCell>
                 <TableCell className="py-1 text-xs text-muted-foreground">

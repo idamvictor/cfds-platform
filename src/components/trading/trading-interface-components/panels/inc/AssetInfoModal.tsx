@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Asset } from "@/store/assetStore";
 import TechnicalAnalysisWidget from "@/components/trading/partials/TechnicalAnalysisWidget";
+import useAssetStore from "@/store/assetStore";
 
 interface AssetInfoModalProps {
   asset: Asset;
@@ -26,7 +27,12 @@ export default function AssetInfoModal({
   onOpenChange,
   onTradeClick,
 }: AssetInfoModalProps) {
+
+    const { setActiveAsset } = useAssetStore();
+
   if (!asset) return null;
+
+  
 
   const changePercent = asset.change_percent
     ? Number.parseFloat(asset.change_percent)
@@ -200,6 +206,7 @@ export default function AssetInfoModal({
                   size="sm"
                   className="bg-green-500 hover:bg-green-600 text-white text-xs sm:text-sm px-2 sm:px-3"
                   onClick={() => {
+                    setActiveAsset(asset);
                     onTradeClick();
                     onOpenChange(false);
                   }}

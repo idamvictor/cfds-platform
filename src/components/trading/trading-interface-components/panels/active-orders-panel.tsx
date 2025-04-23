@@ -3,6 +3,8 @@ import { ChevronDown, X, Loader2 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import useTradeStore from "@/store/tradeStore";
 import type { Trade } from "@/store/tradeStore";
+import useAssetStore from "@/store/assetStore";
+import { Button } from "@/components/ui/button";
 
 export default function ActiveOrdersPanel() {
   const [activeTab, setActiveTab] = useState("active");
@@ -154,13 +156,26 @@ function TradeItem({ trade }: { trade: Trade }) {
   const formattedPnl = trade.pnl.toFixed(2);
   const isPnlPositive = trade.pnl >= 0;
 
+  const { setActiveAsset, assets } = useAssetStore();
+
+  const handleAssetClick = (assetSymbol: string) => {
+    const asset = assets.find((a) => a.symbol_display === assetSymbol);
+    if (asset) {
+      setActiveAsset(asset);
+    }
+  };
+
   return (
     <div className="border-b border-border pb-3 text-xs">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          className="flex items-center gap-2 pl-0"
+          onClick={() => handleAssetClick(trade.asset_symbol)}
+        >
           <CryptoIcon type={trade.asset_id} />
           <span className="">{trade.asset_name}</span>
-        </div>
+        </Button>
         <span
           className={`font-medium ${
             isPnlPositive ? "text-green-500" : "text-red-500"
@@ -184,16 +199,14 @@ function TradeItem({ trade }: { trade: Trade }) {
             }`}
           />
         </button>
-        <span className="text-xs text-muted-foreground">
-          { trade.open_time }
-        </span>
+        <span className="text-xs text-muted-foreground">{trade.open_time}</span>
       </div>
 
       {isExpanded && (
         <div className="mt-2 pt-2 border-t border-border/50 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
           <div className="flex justify-between">
             <span className="text-muted-foreground">ID:</span>
-            <span className="font-mono">{trade.trade_id }</span>
+            <span className="font-mono">{trade.trade_id}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Type:</span>

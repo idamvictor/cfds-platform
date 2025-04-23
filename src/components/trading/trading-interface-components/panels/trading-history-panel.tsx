@@ -2,6 +2,9 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { ChevronDown, X, Loader2 } from "lucide-react";
 import useTradeStore from "@/store/tradeStore";
 import type { Trade } from "@/store/tradeStore";
+import useAssetStore from "@/store/assetStore";
+import { Button } from "@/components/ui/button";
+
 
 export default function TradingHistoryPanel() {
   const {
@@ -87,6 +90,15 @@ function TradeHistoryItem({ trade }: { trade: Trade }) {
   const formattedPnl = trade.pnl.toFixed(2);
   const isPnlPositive = trade.pnl >= 0;
 
+  const { setActiveAsset, assets } = useAssetStore();
+
+  const handleAssetClick = (assetSymbol: string) => {
+    const asset = assets.find((a) => a.symbol_display === assetSymbol);
+    if (asset) {
+      setActiveAsset(asset);
+    }
+  };
+
 
   return (
     <div className="p-3 border-b border-slate-700 hover:bg-muted/30">
@@ -96,13 +108,17 @@ function TradeHistoryItem({ trade }: { trade: Trade }) {
             <span className="text-xs font-medium">{trade?.open_time}</span>
             {/*<span className="text-xs text-muted-foreground">{date}</span>*/}
           </div>
-          <div className="flex items-center gap-2 mt-1">
+          <Button
+            variant="ghost"
+            className="flex items-center gap-2 mt-1 pl-0"
+            onClick={() => handleAssetClick(trade.asset_symbol)}
+          >
             <CurrencyFlag
               assetId={trade.asset_id}
               symbol={trade.asset_symbol}
             />
             <span className="text-xs">{trade.asset_symbol}</span>
-          </div>
+          </Button>
           <div className="text-xs text-muted-foreground mt-1">
             {trade.asset_id.split("-")[0].toUpperCase()}
           </div>
@@ -147,9 +163,9 @@ function TradeHistoryItem({ trade }: { trade: Trade }) {
           <div className="flex justify-between">
             <span className="text-muted-foreground">Type:</span>
             <span
-                className={
-                  trade.trade_type === "buy" ? "text-green-500" : "text-red-500"
-                }
+              className={
+                trade.trade_type === "buy" ? "text-green-500" : "text-red-500"
+              }
             >
               {trade.trade_type.toUpperCase()}
             </span>
