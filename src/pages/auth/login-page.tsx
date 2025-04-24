@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import useUserStore from "@/store/userStore";
 import LoginTradeNation from "@/pages/auth/themes/LoginTradeNation.tsx";
 import LoginBasic from "@/pages/auth/themes/LoginBasic.tsx";
+import LoginRegisterTradeNation from "@/pages/auth/themes/LoginRegisterTradeNation.tsx";
 
 
 export default function LoginPage() {
@@ -12,7 +13,7 @@ export default function LoginPage() {
   const [searchParams] = useSearchParams();
 
 
-  const loginType = searchParams.get("type") || "tradenation";
+  const loginType = searchParams.get("type") || "trade_nation_two";
 
   useEffect(() => {
     if (user && token) {
@@ -22,6 +23,10 @@ export default function LoginPage() {
 
   if (loginType === "basic") {
     return <LoginBasic />;
+  }
+
+  if (loginType === "trade_nation_two") {
+    return <LoginRegisterTradeNation />;
   }
 
   return <LoginTradeNation />;
