@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/form";
 import { Link } from "react-router-dom";
 
-// Define the form schema with validation
 const formSchema = z.object({
     email: z.string().email({ message: "Please enter a valid email address" }),
     password: z.string().min(1, { message: "Password is required" }),
