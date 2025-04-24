@@ -351,7 +351,7 @@ export default function LoginRegisterTradeNation() {
                                 />
 
                                 <div className="mt-2">
-                                    <Link to="/forgot/password" className="text-white underline hover:text-white/80">Forgot Password</Link>
+                                    <Link to="/forgot-password" className="text-white underline hover:text-white/80">Forgot Password</Link>
                                 </div>
 
 
@@ -588,7 +588,7 @@ export default function LoginRegisterTradeNation() {
                                         />
 
                                         <div className="mt-2">
-                                            <Link to="/forgot/password" className="text-white underline hover:text-white/80">Forgot Password</Link>
+                                            <Link to="/forgot-password" className="text-white underline hover:text-white/80">Forgot Password</Link>
                                         </div>
 
 
