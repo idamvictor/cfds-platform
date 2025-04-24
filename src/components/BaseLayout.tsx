@@ -13,7 +13,7 @@ export function BaseLayout({ children }: { children: React.ReactNode }) {
     const [isStoreHydrated, setIsStoreHydrated] = useState(false);
     const dataFetchedRef = useRef(false);
 
-    const authRoutes = ["/", "/login", "/auto-login", "/register", "/forgot-password"];
+    const authRoutes = ["/register/country-residence","/signup","/", "/login", "/auto-login", "/register", "/forgot-password"];
     const isAuthRoute = authRoutes.some(route => location.pathname === route);
 
     // Wait for store hydration

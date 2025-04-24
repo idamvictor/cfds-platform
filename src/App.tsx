@@ -9,6 +9,8 @@ import WebSocketInitializer from "@/components/WebSocketInitializer.tsx";
 import useSiteSettingsStore from "@/store/siteSettingStore";
 import {OnlineStatusInitializer} from "@/components/OnlineStatusInitializer.tsx";
 import AdminChat from "@/pages/admin/AdminChat.tsx";
+import SignUpPage from "@/pages/auth/signup-page.tsx";
+import CountryResidencePage from "@/pages/auth/country-page.tsx";
 
 const AutoLoginPage = lazy(() => import("./pages/auth/auto-login"));
 
@@ -160,7 +162,9 @@ const App = () => {
 
                 {/* Authentication Routes */}
                 <Route path="/auto-login" element={<AutoLoginPage />} />
+                <Route path="/signup" element={<SignUpPage />} />
                 <Route path="/" element={<LoginPage />} />
+                <Route path="/register/country-residence" element={<CountryResidencePage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route
                   path="/forgot-password"

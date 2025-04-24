@@ -2,6 +2,7 @@ import type React from "react";
 
 import { useEffect, useState } from "react";
 import { BarChart3, LineChart, TrendingUp } from "lucide-react";
+import useSiteSettingsStore from "@/store/siteSettingStore.ts";
 
 interface LoadingScreenProps {
   onLoaded?: () => void;
@@ -9,6 +10,8 @@ interface LoadingScreenProps {
 
 export default function LoadingScreen({ onLoaded }: LoadingScreenProps) {
   const [progress, setProgress] = useState(0);
+
+  const { settings } = useSiteSettingsStore()
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -29,7 +32,7 @@ export default function LoadingScreen({ onLoaded }: LoadingScreenProps) {
     <div className="fixed inset-0 flex flex-col items-center justify-center bg-background text-white">
       <div className="mb-8 flex items-center gap-2">
         <TrendingUp className="h-8 w-8 text-emerald-500" />
-        <h1 className="text-3xl font-bold">Capital</h1>
+        <h1 className="text-3xl font-bold">{ settings?.name ?? 'Trade Nation'}</h1>
       </div>
 
       <div className="mb-12 flex items-center gap-6">
