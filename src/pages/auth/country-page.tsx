@@ -54,7 +54,6 @@ export default function CountryResidencePage() {
 
     setIsLoading(true);
 
-    // Update registration data with country info
     const updatedData = {
       ...registrationData,
       countryOfResidence,
@@ -64,13 +63,11 @@ export default function CountryResidencePage() {
 
     localStorage.setItem('registration_data', JSON.stringify(updatedData));
 
-    // Navigate to the next step (Financial Profile)
-    navigate('/register/financial-profile');
+    navigate('/register');
   };
 
   return (
       <div className="min-h-screen bg-[#0A1A2A]_ flex flex-col">
-        {/* Header with risk warning */}
         <div className="w-full bg-[#0C1E32] text-white/80 py-4 px-4 text-center text-sm">
           Trading CFDs carries a high level of risk to your capital, and you should only trade with money you can afford to lose.
         </div>
