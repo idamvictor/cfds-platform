@@ -234,7 +234,7 @@ export default function LoginRegisterTradeNation() {
             {/* Warning banner - Mobile version */}
             <div className="md:hidden">
                 {showWarning ? (
-                    <div className="w-full bg-[#0C1E32] text-white/80 py-2 px-4 text-center text-sm flex items-center justify-between">
+                    <div className="w-full bg-[#0C1E32] text-white/80 py-2 px-4 text-center text-xs flex items-center justify-between">
                         <span>Financial Spread Trades and CFDs are complex instruments and come with a high risk
                             of losing money rapidly due to leverage.
                             82.4% of retail investor accounts lose money when trading CFDs with this provider. You should consider whether you understand how
