@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 
-// Define the structure of our site settings
+
 export interface SiteSettings {
     status: "active" | "disabled";
     name: string;
@@ -28,12 +28,6 @@ interface SiteSettingsState {
     setInitialized: (value: boolean) => void;
 }
 
-const settingsAxios = axios.create({
-    headers: {
-        "Content-Type": "application/json",
-    },
-    timeout: 15000, // 15 second timeout for settings request
-});
 
 const useSiteSettingsStore = create<SiteSettingsState>()(
     persist(
@@ -46,8 +40,6 @@ const useSiteSettingsStore = create<SiteSettingsState>()(
 
             setBaseUrl: (url: string) => {
                 set({ baseUrl: url });
-                // Update the axios instance baseURL
-                settingsAxios.defaults.baseURL = url;
             },
 
             setInitialized: (value: boolean) => {
@@ -70,8 +62,8 @@ const useSiteSettingsStore = create<SiteSettingsState>()(
                 set({ isLoading: true, error: null });
 
                 try {
-                    // Make the request to get settings
-                    const response = await settingsAxios.get("/settings");
+                    // Make the request to get settings using the existing axios instance
+                    const response = await axiosInstance.get("/settings");
 
                     // Update the store with the fetched settings
                     set({
@@ -113,4 +105,3 @@ const useSiteSettingsStore = create<SiteSettingsState>()(
 );
 
 export default useSiteSettingsStore;
-export { settingsAxios };

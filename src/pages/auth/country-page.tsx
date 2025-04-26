@@ -214,7 +214,7 @@ export default function CountryResidencePage() {
                     className="border-[#FF5B22] data-[state=checked]:bg-[#FF5B22] data-[state=checked]:border-[#FF5B22] mt-1"
                 />
                 <label htmlFor="privacy" className="text-gray-700 text-sm leading-tight">
-                  I agree to the <a href="#" className="text-gray-900 underline">Privacy Policy</a> and I am over 18.
+                  I agree to the <span className="text-gray-900 font-bold">Privacy Policy</span> and I am over 18.
                 </label>
               </div>
 

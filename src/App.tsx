@@ -11,6 +11,7 @@ import {OnlineStatusInitializer} from "@/components/OnlineStatusInitializer.tsx"
 import AdminChat from "@/pages/admin/AdminChat.tsx";
 import SignUpPage from "@/pages/auth/signup-page.tsx";
 import CountryResidencePage from "@/pages/auth/country-page.tsx";
+import {ChatNotificationListener} from "@/components/ChatNotificationListener.tsx";
 
 const AutoLoginPage = lazy(() => import("./pages/auth/auto-login"));
 
@@ -70,13 +71,14 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <Suspense fallback={<LoadingScreen />}>
-        <Toaster />
+        <Toaster position="top-right" />
         <BrowserRouter>
 
           <SiteProvider>
             <BaseLayout>
               <WebSocketInitializer />
               <OnlineStatusInitializer />
+              <ChatNotificationListener />
               <Routes>
 
                 <Route

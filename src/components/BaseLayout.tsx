@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import useDataStore from "@/store/dataStore";
 import useUserStore from "@/store/userStore";
 import {AccountDisabled} from "@/components/site/AccountDisabled.tsx";
+import {SitePending} from "@/components/site/SitePending.tsx";
 
 export function BaseLayout({ children }: { children: React.ReactNode }) {
     const location = useLocation();
@@ -78,8 +79,12 @@ export function BaseLayout({ children }: { children: React.ReactNode }) {
     }, [isAuthRoute, token, getCurrentUser, fetchSiteData, isStoreHydrated]);
 
 
-    if (user?.status === "deactivated" && !authRoutes) {
+    if (user?.status === "deactivated" && !isAuthRoute) {
         return <AccountDisabled />;
+    }
+
+    if (user?.status === "pending" && !isAuthRoute) {
+        return <SitePending />;
     }
 
 

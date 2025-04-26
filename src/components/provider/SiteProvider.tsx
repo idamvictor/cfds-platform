@@ -6,7 +6,6 @@ import {SiteUnreachable} from "@/components/site/SiteUnreachable.tsx";
 import {SiteDisabled} from "@/components/site/SiteDisabled.tsx";
 import LoadingScreen from "@/components/loading-screen.tsx";
 
-
 interface SiteProviderProps {
     children: React.ReactNode;
 }
@@ -27,28 +26,41 @@ export function SiteProvider({ children }: SiteProviderProps) {
     useEffect(() => {
         if (typeof window !== "undefined") {
             const origin = window.location.origin;
+            const hostname = window.location.hostname;
             let apiUrl = "";
 
+            // Add debugging
+            console.log('SiteProvider - Current origin:', origin);
+            console.log('SiteProvider - Current hostname:', hostname);
+
             // Special handling for localhost environments
-            if (origin.includes('localhost') || origin.includes('127.0.0.1') || origin.includes('cfds-platform.vercel.app')) {
+            if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.includes('cfds-platform.vercel.app')) {
                 apiUrl = "https://cfd.surdonline.com/api/v1";
-                console.log("Development environment detected. Using production API URL.");
-            } else {
+                console.log("SiteProvider - Development environment detected. Using:", apiUrl);
+            }
+            // Special handling for tradenation-cfd.com domains
+            else if (hostname === 'tradenation-cfd.com' || hostname.endsWith('.tradenation-cfd.com')) {
+                apiUrl = 'https://online.tradenation-cfd.com/api/v1';
+                console.log("SiteProvider - Trade Nation CFD domain detected. Using:");
+            }
+            else {
                 apiUrl = `${origin}/api/v1`;
+                console.log("SiteProvider - Using default URL:", apiUrl);
             }
 
-            console.log(`Setting API base URL to: ${apiUrl}`);
+            console.log(`SiteProvider - Setting API base URL to: ${apiUrl}`);
             setBaseUrl(apiUrl);
             setApiBaseUrl(apiUrl);
         }
-    }, []);
+    }, [setBaseUrl]);
 
     useEffect(() => {
         const loadSettings = async () => {
             try {
+                console.log('SiteProvider - Fetching settings with baseUrl:', baseUrl);
                 await fetchSettings();
             } catch (error) {
-                console.error("Error fetching settings:", error);
+                console.error("SiteProvider - Error fetching settings:", error);
             } finally {
                 setInitialLoadComplete(true);
             }
@@ -81,5 +93,5 @@ export function SiteProvider({ children }: SiteProviderProps) {
         return <>{children}</>;
     }
 
-    return;
+    return null;
 }

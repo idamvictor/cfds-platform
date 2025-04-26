@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/form";
 import { Link } from "react-router-dom";
 import {toast} from "@/components/ui/sonner.tsx";
+import {AxiosError} from "axios";
 
 // Define the form schema with validation
 const formSchema = z
@@ -71,12 +72,12 @@ const countries = [
 ];
 
 // Country code options
-const countryCodes = [
-    { value: "+234", label: "+234" },
-    { value: "+44", label: "+44" },
-    { value: "+1", label: "+1" },
-    { value: "+61", label: "+61" },
-];
+// const countryCodes = [
+//     { value: "+234", label: "+234" },
+//     { value: "+44", label: "+44" },
+//     { value: "+1", label: "+1" },
+//     { value: "+61", label: "+61" },
+// ];
 
 export default function RegisterPage() {
     const [showPassword, setShowPassword] = useState(false);
@@ -136,7 +137,7 @@ export default function RegisterPage() {
             username: "",
             email: "",
             phone: "",
-            country_code: "+234",
+            country_code: "+1",
             country: "",
             nationality: "",
             password: "",
@@ -168,8 +169,14 @@ export default function RegisterPage() {
 
             navigate("/");
         } catch (error) {
-            console.error("Registration failed:", error);
-            toast.error("Registration failed. Please try again.");
+            if (error instanceof AxiosError) {
+                const msg = error.response?.data?.message || "Registration failed. Please try again.";
+                toast.error(msg);
+            } else if (error instanceof Error) {
+                toast.error(error.message);
+            } else {
+                toast.error("Registration failed. Please try again.");
+            }
         } finally {
             setIsLoading(false);
         }
@@ -288,32 +295,32 @@ export default function RegisterPage() {
                                     Phone
                                 </div>
                                 <div className="flex gap-2">
-                                    <FormField
-                                        control={form.control}
-                                        name="country_code"
-                                        render={({ field }) => (
-                                            <FormItem className="w-[100px] flex-shrink-0">
-                                                <Select
-                                                    onValueChange={field.onChange}
-                                                    defaultValue={field.value}
-                                                >
-                                                    <FormControl>
-                                                        <SelectTrigger className="bg-muted border border-border text-card-foreground focus:ring-primary">
-                                                            <SelectValue placeholder="Code" />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent className="bg-card border-border text-card-foreground">
-                                                        {countryCodes.map((code) => (
-                                                            <SelectItem key={code.value} value={code.value}>
-                                                                {code.label}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
+                                    {/*<FormField*/}
+                                    {/*    control={form.control}*/}
+                                    {/*    name="country_code"*/}
+                                    {/*    render={({ field }) => (*/}
+                                    {/*        <FormItem className="w-[100px] flex-shrink-0">*/}
+                                    {/*            <Select*/}
+                                    {/*                onValueChange={field.onChange}*/}
+                                    {/*                defaultValue={field.value}*/}
+                                    {/*            >*/}
+                                    {/*                <FormControl>*/}
+                                    {/*                    <SelectTrigger className="bg-muted border border-border text-card-foreground focus:ring-primary">*/}
+                                    {/*                        <SelectValue placeholder="Code" />*/}
+                                    {/*                    </SelectTrigger>*/}
+                                    {/*                </FormControl>*/}
+                                    {/*                <SelectContent className="bg-card border-border text-card-foreground">*/}
+                                    {/*                    {countryCodes.map((code) => (*/}
+                                    {/*                        <SelectItem key={code.value} value={code.value}>*/}
+                                    {/*                            {code.label}*/}
+                                    {/*                        </SelectItem>*/}
+                                    {/*                    ))}*/}
+                                    {/*                </SelectContent>*/}
+                                    {/*            </Select>*/}
+                                    {/*            <FormMessage />*/}
+                                    {/*        </FormItem>*/}
+                                    {/*    )}*/}
+                                    {/*/>*/}
 
                                     <FormField
                                         control={form.control}
