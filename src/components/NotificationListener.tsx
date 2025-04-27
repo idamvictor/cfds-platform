@@ -37,6 +37,10 @@ interface UserUpdateData {
   data: Record<string, unknown>;
 }
 
+// Polling intervals
+const POLLING_INTERVAL = 30000; // 30 seconds
+const FAST_POLLING_INTERVAL = 5000; // 5 seconds for critical updates
+
 export function NotificationListener() {
   const {
     subscribeToPrivateChannel,
@@ -51,8 +55,9 @@ export function NotificationListener() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // State to track the current notification to display
-  const [activeNotification, setActiveNotification] =
-      useState<UserNotification | null>(null);
+  const [activeNotification, setActiveNotification] = useState<UserNotification | null>(null);
+  const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
+  const [isPolling, setIsPolling] = useState(false);
 
   // Track if the component is mounted to prevent state updates after unmount
   const isMounted = useRef(true);
@@ -82,22 +87,70 @@ export function NotificationListener() {
     };
   }, []);
 
+  // Polling function
+  const pollForUpdates = useCallback(async () => {
+    if (!isMounted.current || !userId || isPolling) return;
+
+    setIsPolling(true);
+    try {
+      // Parallel fetch to reduce latency
+      await Promise.all([
+        // getCurrentUser(),
+        fetchOpenTrades(),
+        fetchClosedTrades()
+      ]);
+    } catch (error) {
+      console.error("Polling error:", error);
+    } finally {
+      setIsPolling(false);
+    }
+  }, [userId, fetchOpenTrades, fetchClosedTrades, isPolling]);
+
+  // Set up polling when WebSocket is not connected
+  useEffect(() => {
+    if (connectionStatus !== "connected" && userId) {
+      // Start polling
+      const interval = setInterval(pollForUpdates, POLLING_INTERVAL);
+      setPollingInterval(interval);
+
+      // Initial poll
+      pollForUpdates();
+
+      return () => {
+        if (interval) {
+          clearInterval(interval);
+          setPollingInterval(null);
+        }
+      };
+    } else {
+      // Clear polling when WebSocket is connected
+      if (pollingInterval) {
+        clearInterval(pollingInterval);
+        setPollingInterval(null);
+      }
+    }
+  }, [connectionStatus, userId, pollForUpdates]);
+
   // Function to mark a notification as read
   const markNotificationAsRead = useCallback(
       async (notificationId: string) => {
-        // Hide the notification immediately for smooth UX
         setActiveNotification(null);
-
-        // Call the API to mark as read in the background
         try {
           await axiosInstance.post(`/notifications/${notificationId}/read`);
 
           // Refresh user data to update the notification list
           if (isMounted.current) {
-            getCurrentUser();
+            console.log('isMounted.current', true)
+            await getCurrentUser();
+          }else {
+            console.log('isMounted.current', true)
           }
         } catch (error) {
           console.error("Failed to mark notification as read:", error);
+          // If marking as read fails, refetch user data anyway to ensure consistency
+          if (isMounted.current) {
+            getCurrentUser();
+          }
         }
       },
       [getCurrentUser]
@@ -111,16 +164,16 @@ export function NotificationListener() {
           (notification) => !notification.read
       );
 
-      // Set it as active if it exists
-      if (firstUnread) {
+      // Set it as active if it exists and is different from current active
+      if (firstUnread && (!activeNotification || firstUnread.id !== activeNotification.id)) {
         setActiveNotification(firstUnread);
       }
     }
-  }, [user?.notifications]);
+  }, [user?.notifications, activeNotification]);
 
-  // Handle notification from Pusher - only play sound and refresh user data
+  // Handle notification from Pusher - play sound and refresh user data
   const handleNotification = useCallback(
-      (data: NotificationData) => {
+      async (data: NotificationData) => {
         console.log("Notification received", data);
 
         // Play notification sound
@@ -131,28 +184,47 @@ export function NotificationListener() {
           });
         }
 
-        // Refresh user data to get the new notification
-        getCurrentUser();
+
+        await getCurrentUser();
+
+
       },
       [getCurrentUser]
   );
 
   // Handle user updates
-  const handleUserUpdate = useCallback(() => {
+  const handleUserUpdate = useCallback(async () => {
     console.log("User data updated, refreshing...");
-    getCurrentUser();
+    try {
+      await getCurrentUser();
+    } catch (error) {
+      console.error("Failed to refresh user data:", error);
+      // Retry on failure
+      setTimeout(() => {
+        if (isMounted.current) {
+          getCurrentUser();
+        }
+      }, FAST_POLLING_INTERVAL);
+    }
   }, [getCurrentUser]);
 
   // Handle trade updates
-  const handleTradeUpdate = useCallback(() => {
-    console.log("Trade data updated, refreshing...");
-    fetchOpenTrades();
-    fetchClosedTrades();
+  const handleTradeUpdate = useCallback(async () => {
+    try {
+      await Promise.all([fetchOpenTrades(), fetchClosedTrades()]);
+    } catch (error) {
+      console.error("Failed to refresh trade data:", error);
+      // Retry on failure
+      setTimeout(() => {
+        if (isMounted.current) {
+          fetchOpenTrades();
+          fetchClosedTrades();
+        }
+      }, FAST_POLLING_INTERVAL);
+    }
   }, [fetchOpenTrades, fetchClosedTrades]);
 
-  // Manage subscriptions based on connection status and user ID
   useEffect(() => {
-    // Only proceed if we're connected and have a user ID
     if (connectionStatus !== "connected" || !userId) {
       return;
     }
@@ -234,7 +306,14 @@ export function NotificationListener() {
             variant={getAlertVariant(activeNotification.color)}
             title={activeNotification.title || "Notification"}
             description={activeNotification.message}
-            onClose={() => markNotificationAsRead(activeNotification.id)}
+            onClose={() => {
+              // If it's a temporary notification, just hide it
+              if (activeNotification.id.startsWith('temp-')) {
+                setActiveNotification(null);
+              } else {
+                markNotificationAsRead(activeNotification.id);
+              }
+            }}
             className="shadow-lg"
         />
       </div>

@@ -181,6 +181,18 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({
         );
     }
 
+    // Add a real-time indicator for new messages
+    const [showNewMessageIndicator, setShowNewMessageIndicator] = useState(false);
+
+    // Show indicator when new messages arrive while scrolled up
+    useEffect(() => {
+        if (userScrolled && messages.length > 0) {
+            setShowNewMessageIndicator(true);
+        } else {
+            setShowNewMessageIndicator(false);
+        }
+    }, [messages.length, userScrolled]);
+
     return (
         <div
             ref={containerRef}
@@ -286,13 +298,17 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({
             {/* Jump to bottom button */}
             {userScrolled && messages.length > 0 && (
                 <button
-                    className="fixed bottom-24 right-6 bg-primary/80 hover:bg-primary text-primary-foreground rounded-full p-2 shadow-lg z-10 transition-all"
+                    className="fixed bottom-24 right-6 bg-primary/80 hover:bg-primary text-primary-foreground rounded-full p-2 shadow-lg z-10 transition-all flex items-center gap-2"
                     onClick={() => {
                         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
                         setUserScrolled(false);
+                        setShowNewMessageIndicator(false);
                     }}
                 >
                     <ArrowDown className="h-5 w-5" />
+                    {showNewMessageIndicator && (
+                        <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" />
+                    )}
                 </button>
             )}
         </div>

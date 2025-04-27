@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import axiosInstance from '@/lib/axios';
 import { usePusher } from '@/hooks/usePusher';
 import useUserStore from '@/store/userStore';
@@ -85,6 +85,8 @@ interface ChatHook {
     selectedFiles: SelectedFile[];
     addFile: (file: File) => void;
     removeFile: (index: number) => void;
+    isPolling: boolean;
+    lastMessageTimestamp: string | null;
 }
 
 export function useChat(customerId?: string): ChatHook {
@@ -94,6 +96,13 @@ export function useChat(customerId?: string): ChatHook {
     const [page, setPage] = useState(1);
     const [hasMoreMessages, setHasMoreMessages] = useState(true);
     const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>([]);
+    const [isPolling, setIsPolling] = useState(false);
+    const [lastMessageTimestamp, setLastMessageTimestamp] = useState<string | null>(null);
+
+    // Refs for cleanup and polling
+    const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+    const isComponentMounted = useRef(true);
+    const failedMessageRetryCount = useRef<Map<string, number>>(new Map());
 
     // Get user from store
     const user = useUserStore(state => state.user);
@@ -105,33 +114,45 @@ export function useChat(customerId?: string): ChatHook {
     const {
         connectionStatus,
         error: connectionError,
-        subscribeToPrivateChannel
+        subscribeToPrivateChannel,
+        unsubscribeFromChannel
     } = usePusher();
 
     // Function to fetch chat messages
-    const fetchMessages = useCallback(async (pageToFetch = 1, showLoading = true) => {
+    const fetchMessages = useCallback(async (pageToFetch = 1, showLoading = true, isPolling = false) => {
         try {
             if (showLoading) setIsLoading(true);
             setError(null);
 
             // Customize the endpoint based on whether we have a customerId (admin view)
-            const endpoint = customerId
+            let endpoint = customerId
                 ? `/chat/messages?customer_id=${customerId}&page=${pageToFetch}`
                 : `/chat/messages?page=${pageToFetch}`;
+
+            // If polling, only fetch messages newer than the last one
+            if (isPolling && lastMessageTimestamp) {
+                endpoint += `&after=${encodeURIComponent(lastMessageTimestamp)}`;
+            }
 
             const response = await axiosInstance.get<MessagesPaginatedResponse>(endpoint);
 
             if (response.data && Array.isArray(response.data.data)) {
                 const incoming = response.data.data;
 
-                if (pageToFetch === 1) {
+                if (incoming.length > 0) {
+                    // Update last message timestamp for polling
+                    const newestMessage = incoming[incoming.length - 1];
+                    setLastMessageTimestamp(newestMessage.created_at);
+                }
+
+                if (pageToFetch === 1 && !isPolling) {
                     setMessages(incoming);
                 } else {
                     // Add new messages without duplicates
                     setMessages(prev => {
                         const existingIds = new Set(prev.map(msg => msg.id));
                         const newMessages = incoming.filter(msg => !existingIds.has(msg.id));
-                        return [...newMessages, ...prev]; // Prepend new messages
+                        return isPolling ? [...prev, ...newMessages] : [...newMessages, ...prev];
                     });
                 }
 
@@ -145,11 +166,38 @@ export function useChat(customerId?: string): ChatHook {
             const axiosErr = err as AxiosError<{ message: string }>;
             const msg = axiosErr.response?.data?.message || 'Failed to load messages.';
             console.error('Error fetching messages:', msg);
-            setError(msg);
+
+            // Only set error if not polling
+            if (!isPolling) {
+                setError(msg);
+            }
         } finally {
             if (showLoading) setIsLoading(false);
         }
-    }, [customerId]);
+    }, [customerId, lastMessageTimestamp]);
+
+    // Polling function
+    const startPolling = useCallback(() => {
+        if (pollingIntervalRef.current) return;
+
+        setIsPolling(true);
+        pollingIntervalRef.current = setInterval(() => {
+            if (isComponentMounted.current) {
+                fetchMessages(1, false, true).catch(err => {
+                    console.error('Polling error:', err);
+                });
+            }
+        }, 5000); // Poll every 5 seconds
+    }, [fetchMessages]);
+
+    // Stop polling function
+    const stopPolling = useCallback(() => {
+        if (pollingIntervalRef.current) {
+            clearInterval(pollingIntervalRef.current);
+            pollingIntervalRef.current = null;
+            setIsPolling(false);
+        }
+    }, []);
 
     // Effect to set connection error if present
     useEffect(() => {
@@ -160,7 +208,11 @@ export function useChat(customerId?: string): ChatHook {
 
     // Setup channel subscription for chat messages
     useEffect(() => {
-        if (connectionStatus === 'connected' && targetUserId) {
+        if (!targetUserId) return;
+
+        if (connectionStatus === 'connected') {
+            stopPolling(); // Stop polling when connected
+
             // TypeScript interface for the message sent event
             interface MessageSentEvent {
                 message: ChatMessage;
@@ -182,6 +234,7 @@ export function useChat(customerId?: string): ChatHook {
                             setMessages(prev => {
                                 // Check if message already exists to prevent duplicates
                                 if (!prev.some(msg => msg.id === event.message.id)) {
+                                    setLastMessageTimestamp(event.message.created_at);
                                     return [...prev, event.message];
                                 }
                                 return prev;
@@ -213,8 +266,28 @@ export function useChat(customerId?: string): ChatHook {
             fetchMessages().catch(err => {
                 console.error('Error fetching initial messages:', err);
             });
+        } else {
+            // Start polling when disconnected
+            startPolling();
         }
-    }, [connectionStatus, targetUserId, subscribeToPrivateChannel, fetchMessages]);
+
+        // Cleanup on unmount or when dependencies change
+        return () => {
+            if (targetUserId) {
+                unsubscribeFromChannel(`chat.customer.${targetUserId}`);
+            }
+            stopPolling();
+        };
+    }, [connectionStatus, targetUserId, subscribeToPrivateChannel, unsubscribeFromChannel, fetchMessages, startPolling, stopPolling]);
+
+    // Component lifecycle cleanup
+    useEffect(() => {
+        isComponentMounted.current = true;
+        return () => {
+            isComponentMounted.current = false;
+            stopPolling();
+        };
+    }, [stopPolling]);
 
     // Function to load more messages
     const loadMoreMessages = useCallback(async () => {
@@ -296,7 +369,7 @@ export function useChat(customerId?: string): ChatHook {
         });
     }, []);
 
-    // Function to send a message
+    // Function to send a message with retry mechanism
     const sendMessage = async (message: string, file?: File) => {
         if (!user) {
             setError('You must be logged in to send messages.');
@@ -307,11 +380,28 @@ export function useChat(customerId?: string): ChatHook {
             return;
         }
 
-        // Check connection status
-        if (connectionStatus !== 'connected') {
-            setError('Connection lost. Messages cannot be sent at this time.');
-            return;
-        }
+        // Generate temporary ID for optimistic update
+        const tempId = `temp-${Date.now()}`;
+        const optimisticMessage: ChatMessage = {
+            id: tempId,
+            message,
+            sender_id: user.id,
+            receiver_id: customerId || null,
+            is_admin: !!customerId,
+            read_at: null,
+            created_at: new Date().toISOString(),
+            attachments: [],
+            sender: {
+                id: user.id,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                name: `${user.first_name} ${user.last_name}`,
+                avatar: user.avatar
+            }
+        };
+
+        // Add optimistic message
+        setMessages(prev => [...prev, optimisticMessage]);
 
         try {
             let attachments: string[] = [];
@@ -347,22 +437,35 @@ export function useChat(customerId?: string): ChatHook {
                 payload
             );
 
-            // Add the message to the UI
+            // Replace optimistic message with real one
             if (response.data && response.data.data) {
                 setMessages(prev => {
-                    if (!prev.some(msg => msg.id === response.data.data.id)) {
-                        return [...prev, response.data.data];
-                    }
-                    return prev;
+                    const withoutTemp = prev.filter(msg => msg.id !== tempId);
+                    return [...withoutTemp, response.data.data];
                 });
+                setLastMessageTimestamp(response.data.data.created_at);
             }
 
             setError(null);
+            failedMessageRetryCount.current.delete(tempId);
         } catch (err) {
             const axiosErr = err as AxiosError<{ message: string }>;
             const msg = axiosErr.response?.data?.message || 'Failed to send message.';
             console.error('Error sending message:', err);
-            setError(msg);
+
+            // Retry mechanism
+            const retryCount = failedMessageRetryCount.current.get(tempId) || 0;
+            if (retryCount < 3) {
+                failedMessageRetryCount.current.set(tempId, retryCount + 1);
+                setTimeout(() => {
+                    sendMessage(message, file).catch(console.error);
+                }, 1000 * Math.pow(2, retryCount)); // Exponential backoff
+            } else {
+                // Remove failed message after max retries
+                setMessages(prev => prev.filter(msg => msg.id !== tempId));
+                failedMessageRetryCount.current.delete(tempId);
+                setError(msg);
+            }
         }
     };
 
@@ -377,6 +480,8 @@ export function useChat(customerId?: string): ChatHook {
         uploadFile,
         selectedFiles,
         addFile,
-        removeFile
+        removeFile,
+        isPolling,
+        lastMessageTimestamp
     };
 }

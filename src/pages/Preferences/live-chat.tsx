@@ -23,7 +23,8 @@ const LiveChat = () => {
         hasMoreMessages,
         selectedFiles,
         addFile,
-        removeFile
+        removeFile,
+        isPolling
     } = useChat();
 
     const handleSendMessage = async () => {
@@ -38,12 +39,40 @@ const LiveChat = () => {
         }, 100);
     };
 
+    // Get connection status display
+    const getConnectionStatus = () => {
+        if (connectionStatus === 'connected') {
+            return {
+                text: 'Connected',
+                className: 'text-green-500',
+                icon: <span className="w-2 h-2 bg-green-500 rounded-full inline-block mr-2" />
+            };
+        } else if (isPolling) {
+            return {
+                text: 'Reconnecting...',
+                className: 'text-yellow-500',
+                icon: <span className="w-2 h-2 bg-yellow-500 rounded-full inline-block mr-2 animate-pulse" />
+            };
+        } else {
+            return {
+                text: 'Disconnected',
+                className: 'text-red-500',
+                icon: <span className="w-2 h-2 bg-red-500 rounded-full inline-block mr-2" />
+            };
+        }
+    };
+
+    const status = getConnectionStatus();
 
     return (
         <div className="container mx-auto py-6">
             <div className="flex flex-col h-[calc(100vh-120px)]">
                 <div className="mb-4 flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Live Chat Support</h1>
+                    <div className={`flex items-center text-sm ${status.className}`}>
+                        {status.icon}
+                        {status.text}
+                    </div>
                 </div>
 
                 <Card className="flex flex-col flex-1 overflow-hidden bg-card/50">
@@ -72,10 +101,15 @@ const LiveChat = () => {
                                 onChange={(e) => setMessageText(e.target.value)}
                                 onSend={handleSendMessage}
                                 onFileSelect={addFile}
-                                disabled={connectionStatus !== 'connected'}
+                                disabled={false}
                                 selectedFiles={selectedFiles}
                                 onFileRemove={removeFile}
                             />
+                            {isPolling && (
+                                <div className="text-xs text-yellow-500 mt-1">
+                                    Using backup connection - messages may be slightly delayed
+                                </div>
+                            )}
                         </div>
                     </CardContent>
                 </Card>

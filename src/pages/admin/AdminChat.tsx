@@ -32,11 +32,14 @@ export default function AdminChat() {
     const [selectedUser, setSelectedUser] = useState<ChatUser | null>(null);
     const [messageText, setMessageText] = useState("");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [usersFetchError, setUsersFetchError] = useState<string | null>(null);
 
     // Current admin user
     const currentUser = useUserStore((state) => state.user);
 
-   const startHeartbeat = useOnlineStatusStore(state => state.startHeartbeat);
+    const startHeartbeat = useOnlineStatusStore(state => state.startHeartbeat);
+
+    console.log(usersFetchError);
 
     // Chat functionality using the updated hook
     const {
@@ -49,7 +52,8 @@ export default function AdminChat() {
         connectionStatus,
         selectedFiles,
         addFile,
-        removeFile
+        removeFile,
+        isPolling
     } = useChat(selectedUser?.id);
 
     // Start heartbeat to track online users
@@ -57,16 +61,28 @@ export default function AdminChat() {
         startHeartbeat();
     }, [startHeartbeat]);
 
-    // Fetch users
+    // Fetch users with enhanced error handling
     useEffect(() => {
         const fetchUsers = async () => {
             try {
                 const response = await axiosInstance.get("/admin/users");
                 if (response.data && Array.isArray(response.data.data)) {
-                    setUsers(response.data.data);
+                    const newUsers = response.data.data;
+                    setUsers(newUsers);
+                    setUsersFetchError(null);
+
+                    // Update selected user if it exists in the new data
+                    setSelectedUser(prevSelected => {
+                        if (prevSelected) {
+                            const updatedSelectedUser = newUsers.find((u: { id: string; }) => u.id === prevSelected.id);
+                            return updatedSelectedUser || prevSelected;
+                        }
+                        return prevSelected;
+                    });
                 }
             } catch (error) {
                 console.error("Failed to fetch users:", error);
+                setUsersFetchError("Failed to load users. Retrying...");
             } finally {
                 if (isInitialLoading) {
                     setIsInitialLoading(false);
@@ -101,6 +117,31 @@ export default function AdminChat() {
         // Close mobile menu when user is selected
         setIsMobileMenuOpen(false);
     };
+
+    // Get connection status display
+    const getConnectionStatus = () => {
+        if (connectionStatus === 'connected') {
+            return {
+                text: 'Connected',
+                className: 'text-green-500',
+                icon: <span className="w-2 h-2 bg-green-500 rounded-full inline-block mr-2" />
+            };
+        } else if (isPolling) {
+            return {
+                text: 'Reconnecting...',
+                className: 'text-yellow-500',
+                icon: <span className="w-2 h-2 bg-yellow-500 rounded-full inline-block mr-2 animate-pulse" />
+            };
+        } else {
+            return {
+                text: 'Disconnected',
+                className: 'text-red-500',
+                icon: <span className="w-2 h-2 bg-red-500 rounded-full inline-block mr-2" />
+            };
+        }
+    };
+
+    const status = getConnectionStatus();
 
     return (
         <div className="h-screen flex flex-col bg-background">
@@ -174,8 +215,14 @@ export default function AdminChat() {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="hidden sm:block text-sm text-muted-foreground flex-shrink-0">
-                                    ID: {selectedUser.account_id}
+                                <div className="flex items-center gap-4">
+                                    <div className={`hidden sm:flex items-center text-xs ${status.className}`}>
+                                        {status.icon}
+                                        {status.text}
+                                    </div>
+                                    <div className="hidden sm:block text-sm text-muted-foreground flex-shrink-0">
+                                        ID: {selectedUser.account_id}
+                                    </div>
                                 </div>
                             </div>
 
@@ -202,11 +249,16 @@ export default function AdminChat() {
                                     value={messageText}
                                     onChange={(e) => setMessageText(e.target.value)}
                                     onSend={handleSendMessage}
-                                    disabled={connectionStatus !== "connected"}
+                                    disabled={false}
                                     onFileSelect={addFile}
                                     selectedFiles={selectedFiles}
                                     onFileRemove={removeFile}
                                 />
+                                {isPolling && (
+                                    <div className="text-xs text-yellow-500 mt-1">
+                                        Using backup connection - messages may be slightly delayed
+                                    </div>
+                                )}
                                 {chatError && (
                                     <div className="mt-2 text-xs text-destructive">
                                         {chatError}

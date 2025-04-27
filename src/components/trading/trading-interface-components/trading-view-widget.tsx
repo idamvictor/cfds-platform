@@ -45,7 +45,7 @@ function TradingViewWidget() {
     script.innerHTML = JSON.stringify({
       autosize: true,
       symbol: currentSymbol,
-      interval: "D",
+      interval: "1",
       timezone: "Etc/UTC",
       theme: "dark",
       style: "1",
