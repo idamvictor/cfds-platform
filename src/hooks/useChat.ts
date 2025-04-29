@@ -102,7 +102,7 @@ export function useChat(customerId?: string): ChatHook {
     // Refs for cleanup and polling
     const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
     const isComponentMounted = useRef(true);
-    const failedMessageRetryCount = useRef<Map<string, number>>(new Map());
+    // const failedMessageRetryCount = useRef<Map<string, number>>(new Map());
 
     // Get user from store
     const user = useUserStore(state => state.user);
@@ -369,7 +369,7 @@ export function useChat(customerId?: string): ChatHook {
         });
     }, []);
 
-    // Function to send a message with retry mechanism
+
     const sendMessage = async (message: string, file?: File) => {
         if (!user) {
             setError('You must be logged in to send messages.');
@@ -380,28 +380,11 @@ export function useChat(customerId?: string): ChatHook {
             return;
         }
 
-        // Generate temporary ID for optimistic update
-        const tempId = `temp-${Date.now()}`;
-        const optimisticMessage: ChatMessage = {
-            id: tempId,
-            message,
-            sender_id: user.id,
-            receiver_id: customerId || null,
-            is_admin: !!customerId,
-            read_at: null,
-            created_at: new Date().toISOString(),
-            attachments: [],
-            sender: {
-                id: user.id,
-                first_name: user.first_name,
-                last_name: user.last_name,
-                name: `${user.first_name} ${user.last_name}`,
-                avatar: user.avatar
-            }
-        };
-
-        // Add optimistic message
-        setMessages(prev => [...prev, optimisticMessage]);
+        // Check connection status
+        if (connectionStatus !== 'connected') {
+            setError('Connection lost. Messages cannot be sent at this time.');
+            return;
+        }
 
         try {
             let attachments: string[] = [];
@@ -437,35 +420,22 @@ export function useChat(customerId?: string): ChatHook {
                 payload
             );
 
-            // Replace optimistic message with real one
+            // Add the message to the UI
             if (response.data && response.data.data) {
                 setMessages(prev => {
-                    const withoutTemp = prev.filter(msg => msg.id !== tempId);
-                    return [...withoutTemp, response.data.data];
+                    if (!prev.some(msg => msg.id === response.data.data.id)) {
+                        return [...prev, response.data.data];
+                    }
+                    return prev;
                 });
-                setLastMessageTimestamp(response.data.data.created_at);
             }
 
             setError(null);
-            failedMessageRetryCount.current.delete(tempId);
         } catch (err) {
             const axiosErr = err as AxiosError<{ message: string }>;
             const msg = axiosErr.response?.data?.message || 'Failed to send message.';
             console.error('Error sending message:', err);
-
-            // Retry mechanism
-            const retryCount = failedMessageRetryCount.current.get(tempId) || 0;
-            if (retryCount < 3) {
-                failedMessageRetryCount.current.set(tempId, retryCount + 1);
-                setTimeout(() => {
-                    sendMessage(message, file).catch(console.error);
-                }, 1000 * Math.pow(2, retryCount)); // Exponential backoff
-            } else {
-                // Remove failed message after max retries
-                setMessages(prev => prev.filter(msg => msg.id !== tempId));
-                failedMessageRetryCount.current.delete(tempId);
-                setError(msg);
-            }
+            setError(msg);
         }
     };
 

@@ -42,6 +42,8 @@ export default function AdminChat() {
     console.log(usersFetchError);
 
     // Chat functionality using the updated hook
+    // Fix: Always pass a stable value to useChat
+    const selectedUserId = selectedUser?.id || "";
     const {
         messages,
         sendMessage,
@@ -54,7 +56,7 @@ export default function AdminChat() {
         addFile,
         removeFile,
         isPolling
-    } = useChat(selectedUser?.id);
+    } = useChat(selectedUserId);
 
     // Start heartbeat to track online users
     useEffect(() => {
@@ -116,6 +118,8 @@ export default function AdminChat() {
         setSelectedUser(user);
         // Close mobile menu when user is selected
         setIsMobileMenuOpen(false);
+        // Clear message text when switching users
+        setMessageText("");
     };
 
     // Get connection status display

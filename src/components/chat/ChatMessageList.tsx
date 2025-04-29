@@ -20,11 +20,15 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({
                                                              onLoadMore,
                                                              hasMoreMessages
                                                          }) => {
+    // ALL HOOKS MUST BE DECLARED BEFORE ANY CONDITIONAL RETURNS
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const [userScrolled, setUserScrolled] = useState(false);
     const loadTriggerRef = useRef<HTMLDivElement>(null);
     const [loadingMore, setLoadingMore] = useState(false);
+
+    // Add a real-time indicator for new messages
+    const [showNewMessageIndicator, setShowNewMessageIndicator] = useState(false);
 
     // Scroll to bottom on initial load and new messages (if user hasn't scrolled up)
     useEffect(() => {
@@ -54,6 +58,15 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({
             container.removeEventListener('scroll', handleScroll);
         };
     }, [hasMoreMessages, loadingMore]);
+
+    // Show indicator when new messages arrive while scrolled up
+    useEffect(() => {
+        if (userScrolled && messages.length > 0) {
+            setShowNewMessageIndicator(true);
+        } else {
+            setShowNewMessageIndicator(false);
+        }
+    }, [messages.length, userScrolled]);
 
     // Load more messages when scrolling to the top
     const loadMoreMessages = async () => {
@@ -167,8 +180,6 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({
         );
     };
 
-    const messageGroups = groupMessagesByDate(messages);
-
     // Render empty state if no messages
     if (messages.length === 0 && !isLoading) {
         return (
@@ -181,17 +192,7 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({
         );
     }
 
-    // Add a real-time indicator for new messages
-    const [showNewMessageIndicator, setShowNewMessageIndicator] = useState(false);
-
-    // Show indicator when new messages arrive while scrolled up
-    useEffect(() => {
-        if (userScrolled && messages.length > 0) {
-            setShowNewMessageIndicator(true);
-        } else {
-            setShowNewMessageIndicator(false);
-        }
-    }, [messages.length, userScrolled]);
+    const messageGroups = groupMessagesByDate(messages);
 
     return (
         <div

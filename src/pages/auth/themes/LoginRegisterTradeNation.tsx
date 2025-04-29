@@ -262,7 +262,7 @@ export default function LoginRegisterTradeNation() {
 
             {/* Header */}
             <div className="w-full px-4 md:px-8 py-4 md:py-6 flex justify-between items-center">
-                <div className="hidden md:block">
+                <div className="hidden-md: block">
                     <Logo />
                 </div>
                 <div className="ml-auto">

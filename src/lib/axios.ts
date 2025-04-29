@@ -15,14 +15,7 @@ const getBaseUrl = () => {
         const url = "https://cfd.surdonline.com/api/v1";
         console.log('Development environment detected. Using:', url);
         return url;
-    }
-
-    else if (hostname === 'tradenation-cfd.com' || hostname.endsWith('.tradenation-cfd.com')) {
-        const url = 'https://online.tradenation-cfd.com/api/v1';
-        console.log('Trade Nation CFD domain detected. Using:', url);
-        return url;
-    }
-    else {
+    } else {
         const url = `${origin}/api/v1`;
         console.log('Using default URL:', url);
         return url;

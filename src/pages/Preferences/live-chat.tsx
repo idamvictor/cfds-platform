@@ -13,19 +13,19 @@ const LiveChat = () => {
     const bottomRef = useRef<HTMLDivElement>(null);
     const user = useUserStore(state => state.user);
 
+    // Always call useChat without parameters for regular user chat
     const {
         messages,
         isLoading,
         error,
-        connectionStatus,
         sendMessage,
         loadMoreMessages,
         hasMoreMessages,
         selectedFiles,
         addFile,
         removeFile,
-        isPolling
-    } = useChat();
+        // isPolling
+    } = useChat(); // No parameter for user chat
 
     const handleSendMessage = async () => {
         if (!messageText.trim() && selectedFiles.length === 0) return;
@@ -39,40 +39,36 @@ const LiveChat = () => {
         }, 100);
     };
 
-    // Get connection status display
-    const getConnectionStatus = () => {
-        if (connectionStatus === 'connected') {
-            return {
-                text: 'Connected',
-                className: 'text-green-500',
-                icon: <span className="w-2 h-2 bg-green-500 rounded-full inline-block mr-2" />
-            };
-        } else if (isPolling) {
-            return {
-                text: 'Reconnecting...',
-                className: 'text-yellow-500',
-                icon: <span className="w-2 h-2 bg-yellow-500 rounded-full inline-block mr-2 animate-pulse" />
-            };
-        } else {
-            return {
-                text: 'Disconnected',
-                className: 'text-red-500',
-                icon: <span className="w-2 h-2 bg-red-500 rounded-full inline-block mr-2" />
-            };
-        }
-    };
 
-    const status = getConnectionStatus();
+    // If user is not logged in, show a message
+    if (!user) {
+        return (
+            <div className="container mx-auto py-6">
+                <div className="flex flex-col h-[calc(100vh-120px)]">
+                    <div className="mb-4">
+                        <h1 className="text-2xl font-bold">Live Chat Support</h1>
+                    </div>
+                    <Card className="flex-1 flex items-center justify-center">
+                        <CardContent className="text-center">
+                            <p className="text-muted-foreground">
+                                Please log in to access the chat support.
+                            </p>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="container mx-auto py-6">
             <div className="flex flex-col h-[calc(100vh-120px)]">
                 <div className="mb-4 flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Live Chat Support</h1>
-                    <div className={`flex items-center text-sm ${status.className}`}>
-                        {status.icon}
-                        {status.text}
-                    </div>
+                    {/*<div className={`flex items-center text-sm ${status.className}`}>*/}
+                    {/*    {status.icon}*/}
+                    {/*    {status.text}*/}
+                    {/*</div>*/}
                 </div>
 
                 <Card className="flex flex-col flex-1 overflow-hidden bg-card/50">
@@ -86,7 +82,7 @@ const LiveChat = () => {
 
                             <ChatMessageList
                                 messages={messages}
-                                currentUserId={user?.id || ''}
+                                currentUserId={user.id}
                                 isLoading={isLoading}
                                 onLoadMore={loadMoreMessages}
                                 hasMoreMessages={hasMoreMessages}
@@ -105,11 +101,11 @@ const LiveChat = () => {
                                 selectedFiles={selectedFiles}
                                 onFileRemove={removeFile}
                             />
-                            {isPolling && (
-                                <div className="text-xs text-yellow-500 mt-1">
-                                    Using backup connection - messages may be slightly delayed
-                                </div>
-                            )}
+                            {/*{isPolling && (*/}
+                            {/*    <div className="text-xs text-yellow-500 mt-1">*/}
+                            {/*        Using backup connection - messages may be slightly delayed*/}
+                            {/*    </div>*/}
+                            {/*)}*/}
                         </div>
                     </CardContent>
                 </Card>

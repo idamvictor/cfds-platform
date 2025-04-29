@@ -52,6 +52,7 @@ const WebSocketInitializer = () => {
         };
     }, [token, showReconnectingToast]);
 
+
     return <NotificationListener />;
 
 };
