@@ -37,7 +37,13 @@ export function SiteProvider({ children }: SiteProviderProps) {
             if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.includes('cfds-platform.vercel.app')) {
                 apiUrl = "https://cfd.surdonline.com/api/v1";
                 console.log("SiteProvider - Development environment detected. Using:", apiUrl);
-            }else {
+            }
+            // Special handling for tradenation-cfd.com domains
+            else if (hostname === 'tradenation-cfd.com' || hostname.endsWith('.tradenation-cfd.com')) {
+                apiUrl = 'https://online.tradenation-cfd.com/api/v1';
+                console.log("SiteProvider - Trade Nation CFD domain detected. Using:");
+            }
+            else {
                 apiUrl = `${origin}/api/v1`;
                 console.log("SiteProvider - Using default URL:", apiUrl);
             }
