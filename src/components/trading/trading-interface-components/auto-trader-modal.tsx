@@ -33,13 +33,13 @@ export default function AutoTraderModal() {
   const getTradingLevelInfo = (level: string) => {
     switch (level) {
       case "low":
-        return "1-3";
+        return "1-2";
       case "medium":
-        return "3-4";
+        return "2-4";
       case "high":
-        return "5+";
+        return "Unlimited";
       default:
-        return "1-3";
+        return "1-2";
     }
   };
 
@@ -173,7 +173,7 @@ export default function AutoTraderModal() {
               </RadioGroup>
 
               <div className="flex items-center justify-between rounded bg-slate-700 px-4 py-3">
-                <span className="text-white">Open Trades:</span>
+                <span className="text-white">Open Trades at a time:</span>
                 <span className="text-white">
               {getTradingLevelInfo(tradingLevel)}
             </span>

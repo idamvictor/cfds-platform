@@ -34,6 +34,7 @@ export interface User {
   phone: string;
   country_code: string | null;
   country: string | null;
+  address: string | null;
   username: string | null;
   avatar: string;
   balance: number;
