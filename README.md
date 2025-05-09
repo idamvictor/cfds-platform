@@ -1,54 +1,163 @@
-# React + TypeScript + Vite
+# CFDS Trading Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, full-featured trading platform for Contract for Differences (CFDs) built with React, TypeScript, and Vite. This platform provides real-time trading capabilities, account management, live support, and comprehensive financial tools.
 
-Currently, two official plugins are available:
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- 💹 Real-time Trading Dashboard
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+  - Live price updates via WebSocket
+  - Trading charts and analysis tools
+  - Order management system
+  - Account balance and PnL tracking
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- 🔐 Secure Authentication
+
+  - Email-based login
+  - Two-factor authentication (OTP)
+  - Session management
+  - Auto-login capability
+
+- 💬 Live Support
+
+  - Real-time chat with support staff
+  - File sharing capabilities
+  - Message history
+  - Notification system
+
+- 💰 Financial Management
+
+  - Multiple account types
+  - Deposit and withdrawal system
+  - Inter-account transfers
+  - Savings accounts
+  - Transaction history
+
+- 🌐 User Experience
+  - Responsive design
+  - Dark/Light mode
+  - Multi-language support
+  - Currency preferences
+  - Sound notifications
+
+## Tech Stack
+
+- **Frontend Framework**: React with TypeScript
+- **Build Tool**: Vite
+- **State Management**: Zustand
+- **UI Components**: Custom components with Tailwind CSS
+- **Real-time Communication**: Pusher / WebSocket
+- **HTTP Client**: Axios
+- **Authentication**: JWT with OTP support
+
+## Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn
+- Modern web browser
+
+## Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+VITE_API_URL=your_api_url
+VITE_PUSHER_APP_KEY=your_pusher_key
+VITE_PUSHER_APP_CLUSTER=your_pusher_cluster
+VITE_MAX_UPLOAD_SIZE=maximum_upload_size
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Installation
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. Clone the repository:
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+git clone [repository-url]
+cd cfds-platform
 ```
+
+2. Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Start the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+## Project Structure
+
+```
+src/
+├── components/        # Reusable UI components
+├── pages/            # Application pages/routes
+├── store/            # Zustand state management
+├── hooks/            # Custom React hooks
+├── services/         # API and external services
+├── types/            # TypeScript type definitions
+├── lib/              # Utility functions
+└── assets/          # Static assets
+```
+
+## Key Components
+
+- `TradingDashboard`: Main trading interface with real-time updates
+- `LiveChat`: Customer support system
+- `AccountSection`: User account management
+- `WebSocketInitializer`: Real-time data connection handler
+- `AuthProvider`: Authentication state management
+
+## Features in Detail
+
+### Trading System
+
+- Real-time price updates
+- Multiple order types
+- Risk management tools
+- Trading history
+- Performance analytics
+
+### Account Management
+
+- Multiple account types
+- Balance tracking
+- Deposit/Withdrawal system
+- Transaction history
+- Account verification
+
+### Security Features
+
+- Two-factor authentication
+- Session management
+- Secure API communication
+- Input validation
+- Rate limiting
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## ⚠️ Important Notice
+
+Trading CFDs carries a high level of risk to your capital and you should only trade with money you can afford to lose. These products may not be suitable for all investors, therefore ensure you understand the risks involved and seek independent advice if necessary.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Support
+
+For support, please contact support@example.com
