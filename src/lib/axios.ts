@@ -12,7 +12,7 @@ const getBaseUrl = () => {
 
     // Special handling for localhost environments
     if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.includes('cfds-platform.vercel.app')) {
-        const url = "https://cfd.surdonline.com/api/v1";
+        const url = "https://online.tradenation-cfd.com/api/v1";
         console.log('Development environment detected. Using:', url);
         return url;
     }

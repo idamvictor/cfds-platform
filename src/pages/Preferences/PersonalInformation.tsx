@@ -18,6 +18,7 @@ import axiosInstance from "@/lib/axios";
 import { toast } from "sonner";
 import useUserStore from "@/store/userStore";
 import { countries } from "@/data/countries";
+import {useEffect} from "react";
 
 const formSchema = z.object({
   first_name: z.string().min(2, "First name must be at least 2 characters"),
@@ -48,7 +49,7 @@ export default function PersonalInformation() {
     defaultValues: {
       first_name: user?.first_name || "",
       last_name: user?.last_name || "",
-      address: "Gowerflower / GN, Fuvahmulah",
+      address: user?.address || "",
       country: user?.country || "maldives",
       birth_date: user?.birth_date || "",
       email: user?.email || "",
@@ -56,6 +57,12 @@ export default function PersonalInformation() {
       avatar: user?.avatar || null,
     },
   });
+
+  useEffect(() => {
+    if(user){
+      setImage(user?.avatar || null);
+    }
+  }, []);
 
   const onSubmit = async (data: FormValues) => {
     try {
@@ -77,6 +84,7 @@ export default function PersonalInformation() {
               country: data.country,
               birth_date: data.birth_date,
               email: data.email,
+              address: data.address,
               phone: data.phone,
               avatar: image || user.avatar,
             },
@@ -189,7 +197,7 @@ export default function PersonalInformation() {
             Country
           </label>
           <Select
-            defaultValue="maldives"
+            defaultValue={ user?.country || "maldives" }
             onValueChange={(value) => setValue("country", value)}
           >
             <SelectTrigger className="bg-card border-card-foreground/10">
