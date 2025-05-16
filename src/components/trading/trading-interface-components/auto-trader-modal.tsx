@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {BotIcon as Robot, Check} from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import useUserStore from "@/store/userStore.ts";
 
-export default function AutoTraderModal() {
+interface Props {
+  isMini?: boolean;
+}
+
+const AutoTraderModal : React.FC<Props> = ({ isMini = false }) => {
   const [open, setOpen] = useState(false);
   const [enabled, setEnabled] = useState(true);
   const [tradingLevel, setTradingLevel] = useState("medium");
@@ -72,19 +76,36 @@ export default function AutoTraderModal() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          className={`flex-1 h-full gap-3 text-primary border-primary hover:bg-trading-green/10 w-full ${
-            showRobot ? "justify-start" : "justify-center"
-          }`}
-        >
+      { isMini ? (
+          <DialogTrigger asChild>
+            <Button
+                variant="outline"
+                className={`flex-1 h-full border-primary hover:bg-trading-green/10 w-full ${
+                    showRobot ? "justify-start" : "justify-center"
+                }`}
+            >
+    <span className="flex flex-col items-center gap-2 max-w-full">
+      <Robot className="h-6 w-6" />
+      <span className="text-primary text-[10px] truncate">Auto Trader</span>
+    </span>
+            </Button>
+          </DialogTrigger>
+          ) : (
+          <DialogTrigger asChild>
+            <Button
+                variant="outline"
+                className={`flex-1 h-full gap-3 text-primary border-primary hover:bg-trading-green/10 w-full ${
+                    showRobot ? "justify-start" : "justify-center"
+                }`}
+            >
           <span className="flex items-center gap-2 max-w-full">
             <Robot className="h-5 w-5 flex-shrink-0" />
             <span className="truncate">Auto Trader</span>
           </span>
-        </Button>
-      </DialogTrigger>
+            </Button>
+          </DialogTrigger>
+      )}
+
       { user?.autotrader ? (
           <DialogContent className="max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-primary/20 [&::-webkit-scrollbar-track]:bg-transparent">
             <DialogHeader className="flex flex-row mt-5 justify-between bg-slate-700 px-4 py-3 ">
@@ -294,3 +315,5 @@ export default function AutoTraderModal() {
     </Dialog>
   );
 }
+
+export default AutoTraderModal

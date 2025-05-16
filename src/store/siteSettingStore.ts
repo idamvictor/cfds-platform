@@ -7,10 +7,21 @@ export interface SiteSettings {
     status: "active" | "disabled";
     name: string;
     logo?: string;
+    r_page?: string;
+    l_page?: string;
+    logo_sm?: string;
     favicon?: string;
     theme?: string;
     contactEmail?: string;
     website_url?: string;
+    privacy_url?: string;
+    terms_url?: string;
+    help_url?: string;
+    risk_url?: string;
+    login_page_header?: string;
+    login_page_footer?: string;
+    register_page_header?: string;
+    register_page_footer?: string;
     maintenanceMessage?: string;
     // Add other settings as needed
     lastFetched: number;

@@ -24,7 +24,7 @@ export function SuccessRateCard() {
           onPieEnter={handlePieEnter}
           onPieLeave={handlePieLeave}
         />
-        <div className="flex items-center justify-center gap-4 mt-2">
+        <div className="flex items-center justify-center gap-2 mt-1">
           <div
             className="flex items-center gap-2 cursor-pointer transition-opacity duration-300"
             style={{

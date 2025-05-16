@@ -34,13 +34,13 @@ export function SiteProvider({ children }: SiteProviderProps) {
             console.log('SiteProvider - Current hostname:', hostname);
 
             // Special handling for localhost environments
-            if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.includes('cfds-platform.vercel.app')) {
-                apiUrl = "https://online.tradenation-cfd.com/api/v1";
+            if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                apiUrl = "https://demo.13i7.com/api/v1";
                 console.log("SiteProvider - Development environment detected. Using:", apiUrl);
             }
             // Special handling for tradenation-cfd.com domains
-            else if (hostname === 'tradenation-cfd.com' || hostname.endsWith('.tradenation-cfd.com')) {
-                apiUrl = 'https://online.tradenation-cfd.com/api/v1';
+            else if (hostname.includes('cfds-platform.vercel.app')) {
+                apiUrl = 'https://demo.13i7.com/api/v1';
                 console.log("SiteProvider - Trade Nation CFD domain detected. Using:");
             }
             else {

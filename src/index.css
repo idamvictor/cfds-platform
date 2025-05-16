@@ -46,6 +46,7 @@
   --trading-light: oklch(0.984 0.003 247.858);
   --trading-accent: oklch(0.66 0.178 142);
   --trading-muted: oklch(0.65 0.0106 273.28);
+  --trading-sidebar-bg: #353E6C; /* Your new color */
 }
 
 .dark {
@@ -90,13 +91,13 @@
   --trading-muted: oklch(0.656 0.0082 260.73);  */
 
 
-  /* custom color */
   --trading-dark: oklch(0.3 0.0283 270.28);
   --trading-darker: oklch(0.24 0.0279 269.07);
   --trading-green: oklch(0.79 0.1165 179.7);
   --trading-light: oklch(0.984 0.003 247.858);
   --trading-accent: oklch(0.66 0.178 142);
   --trading-muted: oklch(0.65 0.0106 273.28);
+  --trading-sidebar-bg: #353E6C; /* Your new color */
 }
 
 @theme inline {
@@ -142,6 +143,7 @@
   --color-trading-light: var(--trading-light);
   --color-trading-accent: var(--trading-accent);
   --color-trading-muted: var(--trading-muted);
+  --color-trading-sidebar-bg: var(--trading-sidebar-bg); /* Add this line */
   --color-trading-accent-foreground: var(--trading-accent);
 }
 
@@ -225,4 +227,52 @@ input, textarea, select {
   transform: scale(0.8);
   transform-origin: left center;
 }
+}
+
+
+:root {
+  --card-border-glow: rgba(102, 178, 255, 0.4);
+  --dashboard-bg: oklch(0.22 0.03 270); /* Slightly darker background */
+  --card-bg: oklch(0.28 0.0279 269.07); /* Slightly lighter than background */
+  --accent-glow: oklch(0.66 0.178 142);
+  --text-highlight: oklch(0.79 0.1165 179.7);
+}
+
+/* Header buttons */
+.header-action-button {
+  font-weight: 500;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+  padding: 0.5rem 1rem;
+  height: auto;
+}
+
+.deposit-button {
+  background-color: var(--accent-glow);
+  color: black;
+  border: 1px solid var(--accent-glow);
+}
+
+.deposit-button:hover {
+  background-color: oklch(0.72 0.18 142);
+}
+
+.withdraw-button {
+  background-color: transparent;
+  color: var(--accent-glow);
+  border: 1px solid var(--accent-glow);
+}
+
+.withdraw-button:hover {
+  background-color: rgba(102, 255, 178, 0.1);
+}
+
+.trade-button {
+  background-color: oklch(0.79 0.1165 179.7);
+  color: black;
+  border: 1px solid oklch(0.79 0.1165 179.7);
+}
+
+.trade-button:hover {
+  background-color: oklch(0.84 0.12 179.7);
 }

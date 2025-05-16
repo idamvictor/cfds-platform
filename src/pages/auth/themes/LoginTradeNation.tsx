@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Eye, EyeOff, ChevronUp, ChevronDown } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -10,6 +10,7 @@ import { AxiosError } from "axios";
 import { toast } from "@/components/ui/sonner";
 import { OTPVerification } from "@/components/auth/OTPVerification";
 import Logo from "@/components/Logo";
+import useSiteSettingsStore from "@/store/siteSettingStore.ts";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,10 +29,13 @@ const formSchema = z.object({
 });
 
 export default function LoginTradeNation() {
+
+    const settings = useSiteSettingsStore((state) => state.settings);
+
+
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [requireOTP, setRequireOTP] = useState(false);
-    const [showWarning, setShowWarning] = useState(true);
     const [loginCredentials, setLoginCredentials] = useState<{
         email: string;
         password: string;
@@ -151,28 +155,16 @@ export default function LoginTradeNation() {
 
     return (
         <div className="min-h-screen bg-[#0A1A2A] flex flex-col">
-            <div className="md:hidden">
-                {showWarning ? (
-                    <div className="w-full bg-[#0C1E32] text-white/80 py-2 px-4 text-center text-sm flex items-center justify-between">
-                        <span>Trading CFDs carries a high level of risk to your capital, and you should only trade with money you can afford to lose.</span>
-                        <button onClick={() => setShowWarning(false)} className="ml-2">
-                            <ChevronUp className="h-4 w-4" />
-                        </button>
-                    </div>
-                ) : (
-                    <button
-                        onClick={() => setShowWarning(true)}
-                        className="w-full bg-[#0C1E32] text-white/80 py-2 px-4 flex items-center justify-center"
-                    >
-                        <ChevronDown className="h-4 w-4 mr-2" />
-                        <span className="text-sm">Show risk warning</span>
-                    </button>
-                )}
-            </div>
+            { settings?.login_page_header ? (
+                <div className=" w-full bg-[#0C1E32] text-white/80 py-2 px-4 text-center text-sm">
+                    { settings?.login_page_header }
+                </div>
+            ) : (
+                <div className=" w-full bg-[#0C1E32] text-white/80 py-2 px-4 text-center text-sm">
+                    Trading CFDs carries a high level of risk to your capital, and you should only trade with money you can afford to lose.
+                </div>
+            )}
 
-            <div className="hidden md:block w-full bg-[#0C1E32] text-white/80 py-2 px-4 text-center text-sm">
-                Trading CFDs carries a high level of risk to your capital, and you should only trade with money you can afford to lose.
-            </div>
 
             <div className="w-full px-4 md:px-8 py-4 md:py-6 flex justify-between items-center">
                 <div className="hidden md:block">

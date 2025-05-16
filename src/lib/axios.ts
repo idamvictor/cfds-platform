@@ -11,18 +11,13 @@ const getBaseUrl = () => {
     console.log('Current hostname:', hostname);
 
     // Special handling for localhost environments
-    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.includes('cfds-platform.vercel.app')) {
-        const url = "https://online.tradenation-cfd.com/api/v1";
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        const url = "https://demo.13i7.com/api/v1";
         console.log('Development environment detected. Using:', url);
         return url;
-    }
-
-    else if (hostname === 'tradenation-cfd.com' || hostname.endsWith('.tradenation-cfd.com')) {
-        const url = 'https://online.tradenation-cfd.com/api/v1';
-        console.log('Trade Nation CFD domain detected. Using:', url);
-        return url;
-    }
-    else {
+    } else if (hostname.includes('cfds-platform.vercel.app')){
+        return "https://demo.13i7.com/api/v1";
+    } else {
         const url = `${origin}/api/v1`;
         console.log('Using default URL:', url);
         return url;

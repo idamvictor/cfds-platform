@@ -66,7 +66,7 @@ const App = () => {
       link.href = settings.favicon;
       document.getElementsByTagName("head")[0].appendChild(link);
     }
-  }, [settings?.logo]);
+  }, [settings?.favicon]);
 
   return (
     <QueryClientProvider client={queryClient}>

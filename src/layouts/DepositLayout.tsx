@@ -10,10 +10,10 @@ const DepositLayout = () => {
   };
 
   return (
-    <>
+    <div className="px-6">
       <DepositPage onDepositSuccess={handleDepositSuccess} />
       <DepositHistory key={refreshTrigger} />
-    </>
+    </div>
   );
 };
 
