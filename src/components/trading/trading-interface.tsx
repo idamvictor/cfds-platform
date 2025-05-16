@@ -213,7 +213,6 @@ export function TradingInterface() {
         (baseVolumeLots * tradingInfo.contractSize * assetRate) / leverage;
       const userBalance = user?.balance || 0;
 
-      console.log(accountSummary?.freeMargin)
       setTradingInfo({
         contractSize: activeAsset.contract_size,
         position: activeAsset.position,
