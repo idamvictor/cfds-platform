@@ -6,21 +6,13 @@ const getBaseUrl = () => {
     const origin = window.location.origin;
     const hostname = window.location.hostname;
 
-    // Add debugging
-    console.log('Current origin:', origin);
-    console.log('Current hostname:', hostname);
-
     // Special handling for localhost environments
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
-        const url = "https://demo.13i7.com/api/v1";
-        console.log('Development environment detected. Using:', url);
-        return url;
+        return "https://demo.13i7.com/api/v1";
     } else if (hostname.includes('cfds-platform.vercel.app')){
         return "https://demo.13i7.com/api/v1";
     } else {
-        const url = `${origin}/api/v1`;
-        console.log('Using default URL:', url);
-        return url;
+        return `${origin}/api/v1`;
     }
 };
 
@@ -34,15 +26,11 @@ const axiosInstance = axios.create({
 
 export const setApiBaseUrl = (baseUrl: string) => {
     axiosInstance.defaults.baseURL = baseUrl;
-    console.log('API base URL manually set to:', baseUrl);
 };
 
 // Add request interceptor to log requests
 axiosInstance.interceptors.request.use(
     (config) => {
-        // Log the request URL for debugging
-        console.log('Making request to:', config.url);
-        console.log('With base URL:', config.baseURL);
 
         // Get token from Zustand store
         const token = useUserStore.getState().token;

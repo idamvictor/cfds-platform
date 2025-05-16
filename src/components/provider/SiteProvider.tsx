@@ -28,27 +28,17 @@ export function SiteProvider({ children }: SiteProviderProps) {
             const origin = window.location.origin;
             const hostname = window.location.hostname;
             let apiUrl = "";
-
-            // Add debugging
-            console.log('SiteProvider - Current origin:', origin);
-            console.log('SiteProvider - Current hostname:', hostname);
-
             // Special handling for localhost environments
             if (hostname === 'localhost' || hostname === '127.0.0.1') {
                 apiUrl = "https://demo.13i7.com/api/v1";
-                console.log("SiteProvider - Development environment detected. Using:", apiUrl);
             }
             // Special handling for tradenation-cfd.com domains
             else if (hostname.includes('cfds-platform.vercel.app')) {
                 apiUrl = 'https://demo.13i7.com/api/v1';
-                console.log("SiteProvider - Trade Nation CFD domain detected. Using:");
             }
             else {
                 apiUrl = `${origin}/api/v1`;
-                console.log("SiteProvider - Using default URL:", apiUrl);
             }
-
-            console.log(`SiteProvider - Setting API base URL to: ${apiUrl}`);
             setBaseUrl(apiUrl);
             setApiBaseUrl(apiUrl);
         }
@@ -57,7 +47,6 @@ export function SiteProvider({ children }: SiteProviderProps) {
     useEffect(() => {
         const loadSettings = async () => {
             try {
-                console.log('SiteProvider - Fetching settings with baseUrl:', baseUrl);
                 await fetchSettings();
             } catch (error) {
                 console.error("SiteProvider - Error fetching settings:", error);
