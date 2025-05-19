@@ -924,13 +924,13 @@ export function TradingInterface() {
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Contract size:</span>
                   <span className="text-primary">
-                    {tradingInfo.contractSize.toLocaleString()}
+                    {activeAsset?.contract_size}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Position:</span>
                   <span className="text-primary">
-                    {tradingInfo.position.toLocaleString()}
+                    {activeAsset?.position}
                   </span>
                 </div>
                 <div className="flex justify-between">
