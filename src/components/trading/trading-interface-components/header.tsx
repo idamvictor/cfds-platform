@@ -2,7 +2,7 @@ import type React from "react";
 
 import { useRef, useState, useEffect } from "react";
 import {
-  // Plus,
+  Plus,
   Wallet,
   ChevronDown,
   Menu,
@@ -353,13 +353,13 @@ export default function Header({
                               </div>
                             </>
                           ))}
-                          {/* <Button
+                          <Button
                             variant="outline"
                             size="sm"
                             className="w-full mt-2"
                           >
                             <Plus className="h-4 w-4 mr-2" /> Add Pair
-                          </Button> */}
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -471,9 +471,9 @@ export default function Header({
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               )}
-              {/* <Button variant="outline" size="icon" className="rounded-md ml-2">
+              <Button variant="outline" size="icon" className="rounded-md ml-2">
                 <Plus className="h-4 w-4" />
-              </Button> */}
+              </Button>
             </div>
           )}
         </div>
