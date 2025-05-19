@@ -52,6 +52,112 @@ interface HeaderProps {
   toggleView: (view: ActiveView) => void;
 }
 
+interface AssetListingTabsProps {
+  activePairs: string[];
+  activePair: string;
+  handlePairClick: (pair: string) => void;
+  removeCurrencyPair: (pair: string) => void;
+  isMobile: boolean;
+  showScrollButtons?: boolean;
+  scrollTabs?: (direction: "left" | "right") => void;
+  tabsListRef: React.RefObject<HTMLDivElement | null>;
+  activeTabRef: React.RefObject<HTMLDivElement | null>;
+  setIsMarketWatchOpen: (value: boolean) => void;
+}
+
+function AssetListingTabs({
+  activePairs,
+  activePair,
+  handlePairClick,
+  removeCurrencyPair,
+  isMobile,
+  showScrollButtons,
+  scrollTabs,
+  tabsListRef,
+  activeTabRef,
+  setIsMarketWatchOpen,
+}: AssetListingTabsProps) {
+  return (
+    <div className={`flex items-center ${isMobile ? "w-full" : "h-full"}`}>
+      {!isMobile && showScrollButtons && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
+          onClick={() => scrollTabs?.("left")}
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+      )}
+      <div
+        className={`overflow-hidden ${
+          isMobile
+            ? "w-full"
+            : "max-w-[300px] sm:max-w-[400px] md:max-w-[500px]"
+        } h-full flex items-center`}
+      >
+        <div className="w-full h-full flex items-center">
+          <div
+            ref={tabsListRef}
+            className="flex gap-2 overflow-x-auto scrollbar-hide whitespace-nowrap h-[70%]"
+            style={{ scrollbarWidth: "none" }}
+          >
+            {activePairs.map((pair, index) => (
+              <div
+                key={index}
+                ref={activePair === pair ? activeTabRef : null}
+                className={`relative flex items-center gap-3 px-4 py-2 cursor-pointer border-[1px] border-muted ${
+                  activePair === pair
+                    ? "border-b-2 border-b-accent "
+                    : "hover:bg-muted"
+                }`}
+                onClick={() => handlePairClick(pair)}
+              >
+                <CurrencyFlag pair={pair} />
+                <div className="flex flex-col items-start">
+                  <span className="text-xs">{pair}</span>
+                  <span className="text-xs text-muted-foreground hidden sm:inline">
+                    forex
+                  </span>
+                </div>
+                <button
+                  className="absolute top-0 left-[-7px] ml-1 sm:ml-2 rounded-full hover:bg-muted p-0.5"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeCurrencyPair(pair);
+                  }}
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      {!isMobile && showScrollButtons && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
+          onClick={() => scrollTabs?.("right")}
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      )}
+      {
+        <Button
+          variant="outline"
+          size="icon"
+          className="rounded-md ml-2"
+          onClick={() => setIsMarketWatchOpen(true)}
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
+      }
+    </div>
+  );
+}
+
 export default function Header({
   activePairs,
   activePair,
@@ -380,7 +486,6 @@ export default function Header({
                   </div>
                 </SheetContent>
               </Sheet>
-
               {/* Mobile search button */}
               {/* <Button
                 variant="ghost"
@@ -392,14 +497,12 @@ export default function Header({
                 }}
               >
                 <Search className="h-5 w-5" />
-              </Button> */}
-
+              </Button> */}{" "}
               {/* Mobile active pair display */}
               <div
                 className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-md"
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
               >
-                {/* <CurrencyFlag pair={activeAsset?.symbol_display || activePair} /> */}
                 <span className="text-sm font-medium">
                   {activeAsset?.symbol_display || activePair}
                 </span>
@@ -408,77 +511,35 @@ export default function Header({
             </div>
           )}
 
-          {/* assets listing tabs new */}
-          {!isMobile && (
-            <div className="flex items-center h-full">
-              {showScrollButtons && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => scrollTabs("left")}
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-              )}
-              <div className="overflow-hidden max-w-[300px] sm:max-w-[400px] md:max-w-[500px] h-full flex items-center">
-                <div className="w-full h-full flex items-center">
-                  <div
-                    ref={tabsListRef}
-                    className="flex gap-2 overflow-x-auto scrollbar-hide whitespace-nowrap h-[70%]"
-                    style={{ scrollbarWidth: "none" }}
-                  >
-                    {activePairs.map((pair, index) => (
-                      <div
-                        key={index}
-                        ref={activePair === pair ? activeTabRef : null}
-                        className={`relative flex items-center gap-3 px-4 py-2 cursor-pointer border-[1px] border-muted ${
-                          activePair === pair
-                            ? "border-b-2 border-b-accent "
-                            : "hover:bg-muted"
-                        }`}
-                        onClick={() => handlePairClick(pair)}
-                      >
-                        <CurrencyFlag pair={pair} />
-                        <div className="flex flex-col items-start">
-                          <span className="text-xs">{pair}</span>
-                          <span className="text-xs text-muted-foreground hidden sm:inline">
-                            forex
-                          </span>
-                        </div>
-                        <button
-                          className="absolute top-0 left-[-7px] ml-1 sm:ml-2 rounded-full hover:bg-muted p-0.5"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            removeCurrencyPair(pair);
-                          }}
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              {showScrollButtons && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => scrollTabs("right")}
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-              )}{" "}
-              <Button
-                variant="outline"
-                size="icon"
-                className="rounded-md ml-2"
-                onClick={() => setIsMarketWatchOpen(true)}
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
+          {/* {isMobile && (
+            <div className="w-full border-t border-secondary mt-2">
+              <AssetListingTabs
+                activePairs={activePairs}
+                activePair={activePair}
+                handlePairClick={handlePairClick}
+                removeCurrencyPair={removeCurrencyPair}
+                isMobile={true}
+                tabsListRef={tabsListRef}
+                activeTabRef={activeTabRef}
+                setIsMarketWatchOpen={setIsMarketWatchOpen}
+              />
             </div>
+          )} */}
+
+          {/* Desktop asset listing tabs */}
+          {!isMobile && (
+            <AssetListingTabs
+              activePairs={activePairs}
+              activePair={activePair}
+              handlePairClick={handlePairClick}
+              removeCurrencyPair={removeCurrencyPair}
+              isMobile={false}
+              showScrollButtons={showScrollButtons}
+              scrollTabs={scrollTabs}
+              tabsListRef={tabsListRef}
+              activeTabRef={activeTabRef}
+              setIsMarketWatchOpen={setIsMarketWatchOpen}
+            />
           )}
         </div>{" "}
         {/* Market Watch Modal */}
@@ -695,11 +756,26 @@ export default function Header({
           </div>
         </div>
       </header>
+      {/* Mobile asset listing tabs */}
+      {isMobile && (
+        <div className="w-full border-t border-secondary mt-2">
+          <AssetListingTabs
+            activePairs={activePairs}
+            activePair={activePair}
+            handlePairClick={handlePairClick}
+            removeCurrencyPair={removeCurrencyPair}
+            isMobile={true}
+            tabsListRef={tabsListRef}
+            activeTabRef={activeTabRef}
+            setIsMarketWatchOpen={setIsMarketWatchOpen}
+          />
+        </div>
+      )}
     </>
   );
 }
 
-function CurrencyFlag({ pair }: { pair?: string }) {
+export function CurrencyFlag({ pair }: { pair?: string }) {
   // Handle undefined or invalid pair format
   if (!pair || !pair.includes("/")) {
     return (
