@@ -758,7 +758,7 @@ export default function Header({
       </header>
       {/* Mobile asset listing tabs */}
       {isMobile && (
-        <div className="w-full border-t border-secondary mt-2">
+        <div className="w-full">
           <AssetListingTabs
             activePairs={activePairs}
             activePair={activePair}
