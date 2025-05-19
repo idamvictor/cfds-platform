@@ -33,6 +33,7 @@ import useTradeStore from "@/store/tradeStore";
 import { useCurrency } from "@/hooks/useCurrency";
 import AccountPlansModal from "@/components/AccountPlanModal";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import MarketWatchPanel from "./panels/market-watch-panel";
 
 // Define the ActiveView type
 type ActiveView =
@@ -64,6 +65,7 @@ export default function Header({
   const [showScrollButtons, setShowScrollButtons] = useState(false);
   const isMobile = useMobile();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMarketWatchOpen, setIsMarketWatchOpen] = useState(false);
   const { activeAsset, setActiveAsset, assets } = useAssetStore();
   const user = useUserStore((state) => state.user);
   const selectedAccountIndex = useUserStore(
@@ -139,7 +141,7 @@ export default function Header({
   };
 
   const headerStyle = {
-    backgroundColor: user?.account_type?.color || "gray"
+    backgroundColor: user?.account_type?.color || "gray",
   };
 
   return (
@@ -286,32 +288,28 @@ export default function Header({
 
                       {/* Plan Type */}
                       <div className="flex mt-2 px-3 py-2 w-full">
-
-
-                        { user?.account_type ? (
-                              <Button
-                                  style={headerStyle}
-                                  onClick={() => setIsPlansModalOpen(true)}
-                                  className="text-white cursor-pointer font-medium rounded-md shadow-md transition-all duration-300 group"
-                              >
-                                <div className="flex items-center gap-1">
-                                  <div className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 backdrop-blur-sm">
-                                    <img
-                                        src={user?.account_type?.icon}
-                                        alt={`${user?.account_type?.title} icon`}
-                                        className="w-4 h-4 object-contain"
-                                    />
-                                  </div>
-                                  <div className="flex flex-col items-start">
-              <span className="text-xs text-white font-bold">
-                { user?.account_type?.title }
-              </span>
-                                  </div>
-                                </div>
-                              </Button>
+                        {user?.account_type ? (
+                          <Button
+                            style={headerStyle}
+                            onClick={() => setIsPlansModalOpen(true)}
+                            className="text-white cursor-pointer font-medium rounded-md shadow-md transition-all duration-300 group"
+                          >
+                            <div className="flex items-center gap-1">
+                              <div className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 backdrop-blur-sm">
+                                <img
+                                  src={user?.account_type?.icon}
+                                  alt={`${user?.account_type?.title} icon`}
+                                  className="w-4 h-4 object-contain"
+                                />
+                              </div>
+                              <div className="flex flex-col items-start">
+                                <span className="text-xs text-white font-bold">
+                                  {user?.account_type?.title}
+                                </span>
+                              </div>
+                            </div>
+                          </Button>
                         ) : null}
-
-
 
                         <AccountPlansModal
                           open={isPlansModalOpen}
@@ -357,6 +355,7 @@ export default function Header({
                             variant="outline"
                             size="sm"
                             className="w-full mt-2"
+                            onClick={() => setIsMarketWatchOpen(true)}
                           >
                             <Plus className="h-4 w-4 mr-2" /> Add Pair
                           </Button>
@@ -470,14 +469,31 @@ export default function Header({
                 >
                   <ChevronRight className="h-4 w-4" />
                 </Button>
-              )}
-              <Button variant="outline" size="icon" className="rounded-md ml-2">
+              )}{" "}
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-md ml-2"
+                onClick={() => setIsMarketWatchOpen(true)}
+              >
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
           )}
-        </div>
-
+        </div>{" "}
+        {/* Market Watch Modal */}
+        <Dialog open={isMarketWatchOpen} onOpenChange={setIsMarketWatchOpen}>
+          <DialogContent className="sm:max-w-[425px] h-[90vh] p-0 gap-0">
+            <div className="overflow-y-auto h-full">
+              <MarketWatchPanel
+                addCurrencyPair={(pair) => {
+                  handlePairClick(pair);
+                  setIsMarketWatchOpen(false);
+                }}
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
         {/* Mobile search dropdown */}
         {isMobile && isSearchOpen && (
           <div className="absolute top-16 left-0 right-0 bg-background border-b border-border p-3 z-50">
@@ -520,7 +536,6 @@ export default function Header({
             </div>
           </div>
         )}
-
         {/* right side */}
         <div className="flex items-center gap-6">
           {!isMobile && (
