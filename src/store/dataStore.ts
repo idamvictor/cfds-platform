@@ -36,6 +36,15 @@ export interface Plan {
   features: string[];
 }
 
+export interface AssetCat {
+  cryptos: number;
+  stocks: number;
+  indices: number;
+  commodities: number;
+  metals: number;
+  forex: number;
+}
+
 export interface SiteData {
   currencies: Currency[];
   wallets: Wallet[];
@@ -43,30 +52,46 @@ export interface SiteData {
   crypto_networks: string[];
   plan_features: string[];
   plans: Plan[];
+  leverage?: AssetCat;
 }
 
 interface DataStore {
   data: SiteData | null;
+  leverage: AssetCat;
   isLoading: boolean;
   error: string | null;
   fetchData: () => Promise<void>;
 }
 
-// const initialSiteData: SiteData = {
-//     currencies: [],
-//     wallets: [],
-//     withdrawal_methods: [],
-// };
+// Default leverage values
+const defaultLeverage: AssetCat = {
+  cryptos: 100,
+  stocks: 100,
+  indices: 100,
+  commodities: 100,
+  metals: 100,
+  forex: 100
+};
 
 const useDataStore = create<DataStore>((set) => ({
   data: null,
+  leverage: defaultLeverage,
   isLoading: false,
   error: null,
   fetchData: async () => {
     set({ isLoading: true, error: null });
     try {
       const response = await axiosInstance.get("/data");
-      set({ data: response.data.data, isLoading: false });
+      const responseData = response.data.data;
+
+      // Extract leverage from the response and use defaults if missing
+      const leverage = responseData.leverage || defaultLeverage;
+
+      set({
+        data: responseData,
+        leverage,
+        isLoading: false
+      });
     } catch (error) {
       console.error("Failed to fetch site data:", error);
       set({

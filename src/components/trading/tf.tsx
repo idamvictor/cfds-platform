@@ -18,6 +18,7 @@ import { ProfitCalculatorModal } from "./trading-interface-components/profit-cal
 import { TakeProfitStopLossModal } from "./trading-interface-components/take-profit-stop-loss-modal";
 import { PendingOrderModal } from "./trading-interface-components/pending-order-modal";
 import TechnicalAnalysisWidget from "@/components/trading/partials/TechnicalAnalysisWidget";
+import useDataStore from "@/store/dataStore.ts";
 
 // AudioContext type for sound effects
 type AudioContextType = typeof AudioContext;
@@ -33,8 +34,9 @@ const formSchema = z.object({
 
 export function TradingInterface() {
     // Get asset and user data
-    const { activeAsset } = useAssetStore();
+    const { activeAsset, getActiveLeverage } = useAssetStore();
     const user = useUserStore(state => state.user);
+    const leverage = useDataStore(state => state.leverage);
     const { fetchOpenTrades, accountSummary } = useTradeStore();
 
     // State
@@ -171,7 +173,11 @@ export function TradingInterface() {
             const assetRate = Number.parseFloat(activeAsset.rate || "0");
             const buySpread = Number.parseFloat(activeAsset.buy_spread || "0.0001");
             const sellSpread = Number.parseFloat(activeAsset.sell_spread || "0.0001");
-            const leverage = activeAsset.leverage || 20;
+
+            // const leverage = activeAsset.leverage || 20;
+
+            const leverage = getActiveLeverage();
+
 
             // Calculate buy and sell prices
             const buyPrice = activeAsset.buy_price || assetRate * (1 + buySpread);
@@ -192,7 +198,7 @@ export function TradingInterface() {
                 sellPrice: sellPrice,
             });
         }
-    }, [activeAsset, baseVolumeLots, user?.balance]);
+    }, [activeAsset, baseVolumeLots, user?.balance, leverage]);
 
     const convertVolume = (value: number, fromFormat: string, toFormat: string): number => {
         // First convert to lots (base unit)
