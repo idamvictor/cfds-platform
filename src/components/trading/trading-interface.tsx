@@ -19,7 +19,7 @@ import { TakeProfitStopLossModal } from "./trading-interface-components/take-pro
 import { PendingOrderModal } from "./trading-interface-components/pending-order-modal";
 import { useCurrency } from "@/hooks/useCurrency.ts";
 import { cn } from "@/lib/utils.ts";
-// import TechnicalAnalysisWidget from "@/components/trading/partials/TechnicalAnalysisWidget";
+import { useOrientation } from "@/hooks/use-orientation";
 
 // AudioContext type for sound effects
 type AudioContextType = typeof AudioContext;
@@ -34,6 +34,7 @@ const formSchema = z.object({
 });
 
 export function TradingInterface() {
+  const isLandscape = useOrientation();
   // Get asset and user data
   const { activeAsset } = useAssetStore();
   const user = useUserStore((state) => state.user);
@@ -442,114 +443,123 @@ export function TradingInterface() {
       style={{ maxHeight: "500px", overflowY: "auto", overflowX: "hidden" }}
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className=" md:space-y-2">
-          {/* Mobile layout - side by side sections */}
-          <div className="md:hidden grid grid-cols-3 gap-1 w-full">
-            {/* Section 2: Trading Info */}
-            <div className="col-span-1 p-2">
-              <div className="grid gap-y-[2px] text-[10px]">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Contract:</span>
-                  <span className="text-primary">
-                    {tradingInfo.contractSize.toLocaleString()}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Position:</span>
-                  <span className="text-primary">
-                    {tradingInfo.position.toLocaleString()}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Margin:</span>
-                  <span
-                    className={cn(
-                      tradingInfo.margin > accountSummary.freeMargin
-                        ? "text-red-500"
-                        : "text-primary"
-                    )}
-                  >
-                    {formatCurrencyValue(
-                      parseFloat(tradingInfo.margin.toFixed(2))
-                    )}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Free Margin:</span>
-                  <span
-                    className={
-                      accountSummary.freeMargin < 0
-                        ? "text-red-500"
-                        : "text-primary"
-                    }
-                  >
-                    {formatCurrencyValue(
-                      parseFloat(accountSummary.freeMargin.toFixed(2))
-                    )}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Spread:</span>
-                  <span className="text-primary">
-                    {tradingInfo.spread.toFixed(5)}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Leverage:</span>
-                  <span className="text-primary">1:{tradingInfo.leverage}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Section 3: Profit Calculator and Buttons */}
-            <div className="col-span-1 p-2 rounded-r flex flex-col justify-between">
-              <div className="space-y-1">
-                <Button
-                  type="button"
-                  className="flex items-center justify-start py-1 w-full h-auto bg-secondary hover:bg-secondary/50"
-                  onClick={() => setIsProfitCalculatorOpen(true)}
-                >
-                  <BarChart2 className="h-3 w-3 mr-1 " />
-                  <div className="flex flex-col items-start justify-start">
-                    <span className="text-[10px] font-medium text-foreground">
-                      Profit{" "}
-                    </span>
-                    <span className="text-[10px] font-medium text-foreground">
-                      Calculator
-                    </span>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="md:space-y-2">
+          {/* Mobile layout - adapts to portrait/landscape */}
+          <div className="md:hidden w-full">
+            {!isLandscape ? (
+              // Portrait layout - existing 3-column grid
+              <div className="grid grid-cols-3 gap-1 w-full">
+                {/* Section 2: Trading Info */}
+                <div className="col-span-1 p-2">
+                  <div className="grid gap-y-[2px] text-[10px]">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Contract:</span>
+                      <span className="text-primary">
+                        {tradingInfo.contractSize.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Position:</span>
+                      <span className="text-primary">
+                        {tradingInfo.position.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Margin:</span>
+                      <span
+                        className={cn(
+                          tradingInfo.margin > accountSummary.freeMargin
+                            ? "text-red-500"
+                            : "text-primary"
+                        )}
+                      >
+                        {formatCurrencyValue(
+                          parseFloat(tradingInfo.margin.toFixed(2))
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">
+                        Free Margin:
+                      </span>
+                      <span
+                        className={
+                          accountSummary.freeMargin < 0
+                            ? "text-red-500"
+                            : "text-primary"
+                        }
+                      >
+                        {formatCurrencyValue(
+                          parseFloat(accountSummary.freeMargin.toFixed(2))
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Spread:</span>
+                      <span className="text-primary">
+                        {tradingInfo.spread.toFixed(5)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Leverage:</span>
+                      <span className="text-primary">
+                        1:{tradingInfo.leverage}
+                      </span>
+                    </div>
                   </div>
-                </Button>
-
-                <div>
-                  <Button
-                    type="button"
-                    className="flex flex-col items-start justify-center w-full h-auto bg-secondary hover:bg-secondary/50"
-                    onClick={() => setIsTpSlModalOpen(true)}
-                  >
-                    <div className="text-[8px] text-muted-foreground">
-                      TP & SL
-                    </div>
-                    <div className="text-[10px] text-foreground">
-                      {getTpSlText()}
-                    </div>
-                  </Button>
                 </div>
 
-                <div>
-                  <Button
-                    type="button"
-                    className="flex flex-col items-start justify-center w-full h-auto bg-secondary hover:bg-secondary/50"
-                    onClick={() => setIsPendingModalOpen(true)}
-                  >
-                    <div className="text-[8px] text-muted-foreground">
-                      Pending
-                    </div>
-                    <div className="text-[10px] text-foreground">Market</div>
-                  </Button>
-                </div>
-              </div>
+                {/* Section 3: Profit Calculator and Buttons */}
+                <div className="col-span-1 p-2 rounded-r flex flex-col justify-between">
+                  <div className="space-y-1">
+                    <Button
+                      type="button"
+                      className="flex items-center justify-start py-1 w-full h-auto bg-secondary hover:bg-secondary/50"
+                      onClick={() => setIsProfitCalculatorOpen(true)}
+                    >
+                      <BarChart2 className="h-3 w-3 mr-1 " />
+                      <div className="flex flex-col items-start justify-start">
+                        <span className="text-[10px] font-medium text-foreground">
+                          Profit{" "}
+                        </span>
+                        <span className="text-[10px] font-medium text-foreground">
+                          Calculator
+                        </span>
+                      </div>
+                    </Button>
 
-              {/* <div className="grid grid-cols-2 gap-1 mt-1">
+                    <div>
+                      <Button
+                        type="button"
+                        className="flex flex-col items-start justify-center w-full h-auto bg-secondary hover:bg-secondary/50"
+                        onClick={() => setIsTpSlModalOpen(true)}
+                      >
+                        <div className="text-[8px] text-muted-foreground">
+                          TP & SL
+                        </div>
+                        <div className="text-[10px] text-foreground">
+                          {getTpSlText()}
+                        </div>
+                      </Button>
+                    </div>
+
+                    <div>
+                      <Button
+                        type="button"
+                        className="flex flex-col items-start justify-center w-full h-auto bg-secondary hover:bg-secondary/50"
+                        onClick={() => setIsPendingModalOpen(true)}
+                      >
+                        <div className="text-[8px] text-muted-foreground">
+                          Pending
+                        </div>
+                        <div className="text-[10px] text-foreground">
+                          Market
+                        </div>
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* <div className="grid grid-cols-2 gap-1 mt-1">
                 <Button
                   type="submit"
                   className="bg-green-500 hover:bg-green-600 text-white h-8 px-1"
@@ -599,127 +609,254 @@ export function TradingInterface() {
                   )}
                 </Button>
               </div> */}
-            </div>
+                </div>
 
-            {/* Section 1: Volume and Tabs */}
-            <div className="col-span-1 p-2 rounded-l">
-              <div className="flex items-center mb-1">
-                <div className="flex-1">
-                  <label className="text-xs">Volume</label>
-                  <FormField
-                    control={form.control}
-                    name="volume"
-                    render={({ field }) => (
-                      <FormItem className="space-y-0">
-                        <FormControl>
-                          <Input
-                            {...field}
-                            value={displayVolume}
-                            onChange={(e) => {
-                              handleInputChange(e);
-                            }}
-                            className="h-6 bg-muted border-0 text-foreground text-sm font-medium p-1"
-                          />
-                        </FormControl>
-                      </FormItem>
+                {/* Section 1: Volume and Tabs */}
+                <div className="col-span-1 p-2 rounded-l">
+                  <div className="flex items-center mb-1">
+                    <div className="flex-1">
+                      <label className="text-xs">Volume</label>
+                      <FormField
+                        control={form.control}
+                        name="volume"
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormControl>
+                              <Input
+                                {...field}
+                                value={displayVolume}
+                                onChange={(e) => {
+                                  handleInputChange(e);
+                                }}
+                                className="h-6 bg-muted border-0 text-foreground text-sm font-medium p-1"
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1 ml-1 mt-2.5">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-4 w-4 text-muted-foreground bg-secondary hover:text-foreground p-0"
+                        onClick={() => handleVolumeChange(true)}
+                      >
+                        <ChevronUp className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-4 w-4 text-muted-foreground bg-secondary hover:text-foreground p-0"
+                        onClick={() => handleVolumeChange(false)}
+                      >
+                        <ChevronDown className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  <Tabs
+                    defaultValue="lots"
+                    value={activeTab}
+                    onValueChange={handleTabChange}
+                    className="w-full"
+                  >
+                    <TabsList className="grid grid-cols-3 h-6 bg-muted">
+                      <TabsTrigger
+                        value="lots"
+                        className="text-[10px] h-5 px-1"
+                      >
+                        lots
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="units"
+                        className="text-[10px] h-5 px-1"
+                      >
+                        units
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="currency"
+                        className="text-[10px] h-5 px-1"
+                      >
+                        currency
+                      </TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+
+                  <div className="grid grid-cols-1 gap-1 mt-1">
+                    <Button
+                      type="submit"
+                      className="bg-green-500 hover:bg-green-600 text-white h-8 px-1"
+                      onClick={() => {
+                        form.setValue("type", "buy");
+                        form.setValue("id", uuidv4());
+                        form.setValue(
+                          "amount",
+                          baseVolumeLots * tradingInfo.contractSize
+                        );
+                      }}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <Loader2 className="h-4 w-4 animate-spin mr-1" />
+                      ) : (
+                        <div className="flex flex-col items-center">
+                          <span className="text-[10px] font-bold">BUY</span>
+                          <span className="text-[8px]">
+                            {tradingInfo.buyPrice.toFixed(5)}
+                          </span>
+                        </div>
+                      )}
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="bg-red-500 hover:bg-red-600 text-white h-8 px-1"
+                      onClick={() => {
+                        form.setValue("type", "sell");
+                        form.setValue("id", uuidv4());
+                        form.setValue(
+                          "amount",
+                          baseVolumeLots * tradingInfo.contractSize
+                        );
+                      }}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <Loader2 className="h-4 w-4 animate-spin mr-1" />
+                      ) : (
+                        <div className="flex flex-col items-center">
+                          <span className="text-[10px] font-bold">SELL</span>
+                          <span className="text-[8px]">
+                            {tradingInfo.sellPrice.toFixed(5)}
+                          </span>
+                        </div>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              // Landscape layout - simplified and compact
+              <div className="flex items-center justify-between p-1 h-full">
+                {/* Left side - Volume controls and tabs in one row */}
+                <div className="flex-1 pr-1">
+                  <div className="flex items-center space-x-1">
+                    <div className="flex items-center space-x-1 flex-1">
+                      <div className="flex items-center space-x-0.5">
+                        <FormField
+                          control={form.control}
+                          name="volume"
+                          render={({ field }) => (
+                            <FormItem className="space-y-0">
+                              <FormControl>
+                                <Input
+                                  {...field}
+                                  value={displayVolume}
+                                  onChange={handleInputChange}
+                                  className="h-6 bg-muted border-0 text-foreground text-xs w-20"
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <div className="flex flex-col gap-0.5">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-3 w-3 bg-secondary p-0"
+                            onClick={() => handleVolumeChange(true)}
+                          >
+                            <ChevronUp className="h-2 w-2" />
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-3 w-3 bg-secondary p-0"
+                            onClick={() => handleVolumeChange(false)}
+                          >
+                            <ChevronDown className="h-2 w-2" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      <Tabs
+                        defaultValue="lots"
+                        value={activeTab}
+                        onValueChange={handleTabChange}
+                        className="flex-1"
+                      >
+                        <TabsList className="grid grid-cols-3 h-6 bg-muted">
+                          <TabsTrigger
+                            value="lots"
+                            className="text-[8px] px-0.5"
+                          >
+                            lots
+                          </TabsTrigger>
+                          <TabsTrigger
+                            value="units"
+                            className="text-[8px] px-0.5"
+                          >
+                            units
+                          </TabsTrigger>
+                          <TabsTrigger
+                            value="currency"
+                            className="text-[8px] px-0.5"
+                          >
+                            currency
+                          </TabsTrigger>
+                        </TabsList>
+                      </Tabs>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right side - Trading buttons */}
+                <div className="flex space-x-1">
+                  <Button
+                    type="submit"
+                    className="bg-green-500 hover:bg-green-600 text-white h-8 w-16"
+                    onClick={() => {
+                      form.setValue("type", "buy");
+                      form.setValue("id", uuidv4());
+                      form.setValue(
+                        "amount",
+                        baseVolumeLots * tradingInfo.contractSize
+                      );
+                    }}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <span className="text-xs font-bold">BUY</span>
                     )}
-                  />
-                </div>
-                <div className="flex flex-col gap-1 ml-1 mt-2.5">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-4 w-4 text-muted-foreground bg-secondary hover:text-foreground p-0"
-                    onClick={() => handleVolumeChange(true)}
-                  >
-                    <ChevronUp className="h-3 w-3" />
                   </Button>
                   <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-4 w-4 text-muted-foreground bg-secondary hover:text-foreground p-0"
-                    onClick={() => handleVolumeChange(false)}
+                    type="submit"
+                    className="bg-red-500 hover:bg-red-600 text-white h-8 w-16"
+                    onClick={() => {
+                      form.setValue("type", "sell");
+                      form.setValue("id", uuidv4());
+                      form.setValue(
+                        "amount",
+                        baseVolumeLots * tradingInfo.contractSize
+                      );
+                    }}
+                    disabled={isSubmitting}
                   >
-                    <ChevronDown className="h-3 w-3" />
+                    {isSubmitting ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <span className="text-xs font-bold">SELL</span>
+                    )}
                   </Button>
                 </div>
               </div>
-
-              <Tabs
-                defaultValue="lots"
-                value={activeTab}
-                onValueChange={handleTabChange}
-                className="w-full"
-              >
-                <TabsList className="grid grid-cols-3 h-6 bg-muted">
-                  <TabsTrigger value="lots" className="text-[10px] h-5 px-1">
-                    lots
-                  </TabsTrigger>
-                  <TabsTrigger value="units" className="text-[10px] h-5 px-1">
-                    units
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="currency"
-                    className="text-[10px] h-5 px-1"
-                  >
-                    currency
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
-
-              <div className="grid grid-cols-1 gap-1 mt-1">
-                <Button
-                  type="submit"
-                  className="bg-green-500 hover:bg-green-600 text-white h-8 px-1"
-                  onClick={() => {
-                    form.setValue("type", "buy");
-                    form.setValue("id", uuidv4());
-                    form.setValue(
-                      "amount",
-                      baseVolumeLots * tradingInfo.contractSize
-                    );
-                  }}
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <Loader2 className="h-4 w-4 animate-spin mr-1" />
-                  ) : (
-                    <div className="flex flex-col items-center">
-                      <span className="text-[10px] font-bold">BUY</span>
-                      <span className="text-[8px]">
-                        {tradingInfo.buyPrice.toFixed(5)}
-                      </span>
-                    </div>
-                  )}
-                </Button>
-                <Button
-                  type="submit"
-                  className="bg-red-500 hover:bg-red-600 text-white h-8 px-1"
-                  onClick={() => {
-                    form.setValue("type", "sell");
-                    form.setValue("id", uuidv4());
-                    form.setValue(
-                      "amount",
-                      baseVolumeLots * tradingInfo.contractSize
-                    );
-                  }}
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <Loader2 className="h-4 w-4 animate-spin mr-1" />
-                  ) : (
-                    <div className="flex flex-col items-center">
-                      <span className="text-[10px] font-bold">SELL</span>
-                      <span className="text-[8px]">
-                        {tradingInfo.sellPrice.toFixed(5)}
-                      </span>
-                    </div>
-                  )}
-                </Button>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Desktop layout - stacked sections */}
