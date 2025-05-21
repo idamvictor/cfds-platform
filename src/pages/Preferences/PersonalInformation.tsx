@@ -18,7 +18,8 @@ import axiosInstance from "@/lib/axios";
 import { toast } from "sonner";
 import useUserStore from "@/store/userStore";
 import { countries } from "@/data/countries";
-import {useEffect} from "react";
+import { useEffect } from "react";
+import { AxiosError } from "axios";
 
 const formSchema = z.object({
   first_name: z.string().min(2, "First name must be at least 2 characters"),
@@ -59,7 +60,7 @@ export default function PersonalInformation() {
   });
 
   useEffect(() => {
-    if(user){
+    if (user) {
       setImage(user?.avatar || null);
     }
   }, []);
@@ -94,7 +95,10 @@ export default function PersonalInformation() {
       }
     } catch (error) {
       console.error("Failed to update profile:", error);
-      toast.error("Failed to update profile. Please try again.");
+      const errorMessage =
+        (error as AxiosError<{ message: string }>).response?.data?.message ||
+        "Failed to update profile. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -197,7 +201,7 @@ export default function PersonalInformation() {
             Country
           </label>
           <Select
-            defaultValue={ user?.country || "maldives" }
+            defaultValue={user?.country || "maldives"}
             onValueChange={(value) => setValue("country", value)}
           >
             <SelectTrigger className="bg-card border-card-foreground/10">
