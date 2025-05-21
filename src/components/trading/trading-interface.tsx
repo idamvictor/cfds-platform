@@ -445,126 +445,6 @@ export function TradingInterface() {
         <form onSubmit={form.handleSubmit(onSubmit)} className=" md:space-y-2">
           {/* Mobile layout - side by side sections */}
           <div className="md:hidden grid grid-cols-3 gap-1 w-full">
-            {/* Section 1: Volume and Tabs */}
-            <div className="col-span-1 p-2 rounded-l">
-              <div className="flex items-center mb-1">
-                <div className="flex-1">
-                  <label className="text-xs">Volume</label>
-                  <FormField
-                    control={form.control}
-                    name="volume"
-                    render={({ field }) => (
-                      <FormItem className="space-y-0">
-                        <FormControl>
-                          <Input
-                            {...field}
-                            value={displayVolume}
-                            onChange={(e) => {
-                              handleInputChange(e);
-                            }}
-                            className="h-6 bg-muted border-0 text-foreground text-sm font-medium p-1"
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="flex flex-col gap-1 ml-1 mt-2.5">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-4 w-4 text-muted-foreground bg-secondary hover:text-foreground p-0"
-                    onClick={() => handleVolumeChange(true)}
-                  >
-                    <ChevronUp className="h-3 w-3" />
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-4 w-4 text-muted-foreground bg-secondary hover:text-foreground p-0"
-                    onClick={() => handleVolumeChange(false)}
-                  >
-                    <ChevronDown className="h-3 w-3" />
-                  </Button>
-                </div>
-              </div>
-
-              <Tabs
-                defaultValue="lots"
-                value={activeTab}
-                onValueChange={handleTabChange}
-                className="w-full"
-              >
-                <TabsList className="grid grid-cols-3 h-6 bg-muted">
-                  <TabsTrigger value="lots" className="text-[10px] h-5 px-1">
-                    lots
-                  </TabsTrigger>
-                  <TabsTrigger value="units" className="text-[10px] h-5 px-1">
-                    units
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="currency"
-                    className="text-[10px] h-5 px-1"
-                  >
-                    currency
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
-
-              <div className="grid grid-cols-1 gap-1 mt-1">
-                <Button
-                  type="submit"
-                  className="bg-green-500 hover:bg-green-600 text-white h-8 px-1"
-                  onClick={() => {
-                    form.setValue("type", "buy");
-                    form.setValue("id", uuidv4());
-                    form.setValue(
-                      "amount",
-                      baseVolumeLots * tradingInfo.contractSize
-                    );
-                  }}
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <Loader2 className="h-4 w-4 animate-spin mr-1" />
-                  ) : (
-                    <div className="flex flex-col items-center">
-                      <span className="text-[10px] font-bold">BUY</span>
-                      <span className="text-[8px]">
-                        {tradingInfo.buyPrice.toFixed(5)}
-                      </span>
-                    </div>
-                  )}
-                </Button>
-                <Button
-                  type="submit"
-                  className="bg-red-500 hover:bg-red-600 text-white h-8 px-1"
-                  onClick={() => {
-                    form.setValue("type", "sell");
-                    form.setValue("id", uuidv4());
-                    form.setValue(
-                      "amount",
-                      baseVolumeLots * tradingInfo.contractSize
-                    );
-                  }}
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <Loader2 className="h-4 w-4 animate-spin mr-1" />
-                  ) : (
-                    <div className="flex flex-col items-center">
-                      <span className="text-[10px] font-bold">SELL</span>
-                      <span className="text-[8px]">
-                        {tradingInfo.sellPrice.toFixed(5)}
-                      </span>
-                    </div>
-                  )}
-                </Button>
-              </div>
-            </div>
-
             {/* Section 2: Trading Info */}
             <div className="col-span-1 p-2">
               <div className="grid gap-y-[2px] text-[10px]">
@@ -719,6 +599,126 @@ export function TradingInterface() {
                   )}
                 </Button>
               </div> */}
+            </div>
+
+            {/* Section 1: Volume and Tabs */}
+            <div className="col-span-1 p-2 rounded-l">
+              <div className="flex items-center mb-1">
+                <div className="flex-1">
+                  <label className="text-xs">Volume</label>
+                  <FormField
+                    control={form.control}
+                    name="volume"
+                    render={({ field }) => (
+                      <FormItem className="space-y-0">
+                        <FormControl>
+                          <Input
+                            {...field}
+                            value={displayVolume}
+                            onChange={(e) => {
+                              handleInputChange(e);
+                            }}
+                            className="h-6 bg-muted border-0 text-foreground text-sm font-medium p-1"
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="flex flex-col gap-1 ml-1 mt-2.5">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-4 w-4 text-muted-foreground bg-secondary hover:text-foreground p-0"
+                    onClick={() => handleVolumeChange(true)}
+                  >
+                    <ChevronUp className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-4 w-4 text-muted-foreground bg-secondary hover:text-foreground p-0"
+                    onClick={() => handleVolumeChange(false)}
+                  >
+                    <ChevronDown className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
+
+              <Tabs
+                defaultValue="lots"
+                value={activeTab}
+                onValueChange={handleTabChange}
+                className="w-full"
+              >
+                <TabsList className="grid grid-cols-3 h-6 bg-muted">
+                  <TabsTrigger value="lots" className="text-[10px] h-5 px-1">
+                    lots
+                  </TabsTrigger>
+                  <TabsTrigger value="units" className="text-[10px] h-5 px-1">
+                    units
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="currency"
+                    className="text-[10px] h-5 px-1"
+                  >
+                    currency
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+
+              <div className="grid grid-cols-1 gap-1 mt-1">
+                <Button
+                  type="submit"
+                  className="bg-green-500 hover:bg-green-600 text-white h-8 px-1"
+                  onClick={() => {
+                    form.setValue("type", "buy");
+                    form.setValue("id", uuidv4());
+                    form.setValue(
+                      "amount",
+                      baseVolumeLots * tradingInfo.contractSize
+                    );
+                  }}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="h-4 w-4 animate-spin mr-1" />
+                  ) : (
+                    <div className="flex flex-col items-center">
+                      <span className="text-[10px] font-bold">BUY</span>
+                      <span className="text-[8px]">
+                        {tradingInfo.buyPrice.toFixed(5)}
+                      </span>
+                    </div>
+                  )}
+                </Button>
+                <Button
+                  type="submit"
+                  className="bg-red-500 hover:bg-red-600 text-white h-8 px-1"
+                  onClick={() => {
+                    form.setValue("type", "sell");
+                    form.setValue("id", uuidv4());
+                    form.setValue(
+                      "amount",
+                      baseVolumeLots * tradingInfo.contractSize
+                    );
+                  }}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="h-4 w-4 animate-spin mr-1" />
+                  ) : (
+                    <div className="flex flex-col items-center">
+                      <span className="text-[10px] font-bold">SELL</span>
+                      <span className="text-[8px]">
+                        {tradingInfo.sellPrice.toFixed(5)}
+                      </span>
+                    </div>
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
 
