@@ -738,87 +738,73 @@ export function TradingInterface() {
                 </div>
               </div>
             ) : (
-              // Landscape layout - simplified and compact
-              <div className="flex items-center justify-between p-1 h-full">
+              // Landscape layout - simplified and balanced
+              <div className="flex items-center justify-between h-full px-3">
                 {/* Left side - Volume controls and tabs in one row */}
-                <div className="flex-1 pr-1">
+                <div className="flex items-center gap-4">
                   <div className="flex items-center space-x-1">
-                    <div className="flex items-center space-x-1 flex-1">
-                      <div className="flex items-center space-x-0.5">
-                        <FormField
-                          control={form.control}
-                          name="volume"
-                          render={({ field }) => (
-                            <FormItem className="space-y-0">
-                              <FormControl>
-                                <Input
-                                  {...field}
-                                  value={displayVolume}
-                                  onChange={handleInputChange}
-                                  className="h-6 bg-muted border-0 text-foreground text-xs w-20"
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <div className="flex flex-col gap-0.5">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="h-3 w-3 bg-secondary p-0"
-                            onClick={() => handleVolumeChange(true)}
-                          >
-                            <ChevronUp className="h-2 w-2" />
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="h-3 w-3 bg-secondary p-0"
-                            onClick={() => handleVolumeChange(false)}
-                          >
-                            <ChevronDown className="h-2 w-2" />
-                          </Button>
-                        </div>
-                      </div>
-
-                      <Tabs
-                        defaultValue="lots"
-                        value={activeTab}
-                        onValueChange={handleTabChange}
-                        className="flex-1"
+                    <FormField
+                      control={form.control}
+                      name="volume"
+                      render={({ field }) => (
+                        <FormItem className="space-y-0">
+                          <FormControl>
+                            <Input
+                              {...field}
+                              value={displayVolume}
+                              onChange={handleInputChange}
+                              className="h-7 bg-muted border-0 text-foreground text-sm w-24"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <div className="flex flex-col gap-0.5">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-3.5 w-3.5 bg-secondary p-0"
+                        onClick={() => handleVolumeChange(true)}
                       >
-                        <TabsList className="grid grid-cols-3 h-6 bg-muted">
-                          <TabsTrigger
-                            value="lots"
-                            className="text-[8px] px-0.5"
-                          >
-                            lots
-                          </TabsTrigger>
-                          <TabsTrigger
-                            value="units"
-                            className="text-[8px] px-0.5"
-                          >
-                            units
-                          </TabsTrigger>
-                          <TabsTrigger
-                            value="currency"
-                            className="text-[8px] px-0.5"
-                          >
-                            currency
-                          </TabsTrigger>
-                        </TabsList>
-                      </Tabs>
+                        <ChevronUp className="h-2.5 w-2.5" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-3.5 w-3.5 bg-secondary p-0"
+                        onClick={() => handleVolumeChange(false)}
+                      >
+                        <ChevronDown className="h-2.5 w-2.5" />
+                      </Button>
                     </div>
                   </div>
+                  <Tabs
+                    defaultValue="lots"
+                    value={activeTab}
+                    onValueChange={handleTabChange}
+                    className="w-[180px]"
+                  >
+                    <TabsList className="grid grid-cols-3 h-7 bg-muted">
+                      <TabsTrigger value="lots" className="text-xs px-2">
+                        lots
+                      </TabsTrigger>
+                      <TabsTrigger value="units" className="text-xs px-2">
+                        units
+                      </TabsTrigger>
+                      <TabsTrigger value="currency" className="text-xs px-2">
+                        currency
+                      </TabsTrigger>
+                    </TabsList>
+                  </Tabs>{" "}
                 </div>
 
                 {/* Right side - Trading buttons */}
-                <div className="flex space-x-1">
+                <div className="flex gap-2">
                   <Button
                     type="submit"
-                    className="bg-green-500 hover:bg-green-600 text-white h-8 w-16"
+                    className="bg-green-500 hover:bg-green-600 text-white h-7 w-20"
                     onClick={() => {
                       form.setValue("type", "buy");
                       form.setValue("id", uuidv4());
@@ -832,12 +818,12 @@ export function TradingInterface() {
                     {isSubmitting ? (
                       <Loader2 className="h-3 w-3 animate-spin" />
                     ) : (
-                      <span className="text-xs font-bold">BUY</span>
+                      <span className="text-sm font-bold">BUY</span>
                     )}
                   </Button>
                   <Button
                     type="submit"
-                    className="bg-red-500 hover:bg-red-600 text-white h-8 w-16"
+                    className="bg-red-500 hover:bg-red-600 text-white h-7 w-20"
                     onClick={() => {
                       form.setValue("type", "sell");
                       form.setValue("id", uuidv4());
@@ -851,7 +837,7 @@ export function TradingInterface() {
                     {isSubmitting ? (
                       <Loader2 className="h-3 w-3 animate-spin" />
                     ) : (
-                      <span className="text-xs font-bold">SELL</span>
+                      <span className="text-sm font-bold">SELL</span>
                     )}
                   </Button>
                 </div>
