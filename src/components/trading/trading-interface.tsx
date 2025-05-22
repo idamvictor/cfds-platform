@@ -668,7 +668,7 @@ export function TradingInterface() {
                         value="lots"
                         className="text-[10px] h-5 px-1"
                       >
-                        lots
+                        lots 
                       </TabsTrigger>
                       <TabsTrigger
                         value="units"
