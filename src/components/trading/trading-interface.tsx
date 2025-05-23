@@ -445,7 +445,7 @@ export function TradingInterface() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="md:space-y-2">
           {/* Mobile layout - adapts to portrait/landscape */}
-          <div className="md:hidden w-full">
+          <div className="lg:hidden w-full">
             {!isLandscape ? (
               // Portrait layout - existing 3-column grid
               <div className="grid grid-cols-3 gap-1 w-full">
@@ -846,7 +846,7 @@ export function TradingInterface() {
           </div>
 
           {/* Desktop layout - stacked sections */}
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             {/* Section 1: Volume and Tabs */}
             <div className="p-3">
               <div className="flex items-center">
