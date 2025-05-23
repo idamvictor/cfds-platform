@@ -115,6 +115,7 @@ const useAssetStore = create<AssetStore>()(
           },
 
           updateAssetFromWebsocket: (updates) => {
+            console.log('updated ....')
             set(state => {
               const updateArray = Array.isArray(updates) ? updates : [updates];
 

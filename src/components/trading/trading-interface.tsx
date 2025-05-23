@@ -19,6 +19,7 @@ import { TakeProfitStopLossModal } from "./trading-interface-components/take-pro
 import { PendingOrderModal } from "./trading-interface-components/pending-order-modal";
 import { useCurrency } from "@/hooks/useCurrency.ts";
 import {cn} from "@/lib/utils.ts";
+import {useAssetWebSocket} from "@/hooks/useAssetWebsocket.ts";
 // import TechnicalAnalysisWidget from "@/components/trading/partials/TechnicalAnalysisWidget";
 
 // AudioContext type for sound effects
@@ -226,6 +227,13 @@ export function TradingInterface() {
       });
     }
   }, [activeAsset, baseVolumeLots, user?.balance]);
+
+
+  const { subscribeToAll } = useAssetWebSocket({
+    onConnected: () => {
+      subscribeToAll();
+    }
+  });
 
   const convertVolume = (
     value: number,
