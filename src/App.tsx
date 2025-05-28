@@ -7,14 +7,15 @@ import { SiteProvider } from "@/components/provider/SiteProvider.tsx";
 import LoadingScreen from "./components/loading-screen";
 import WebSocketInitializer from "@/components/WebSocketInitializer.tsx";
 import useSiteSettingsStore from "@/store/siteSettingStore";
-import {OnlineStatusInitializer} from "@/components/OnlineStatusInitializer.tsx";
+import { OnlineStatusInitializer } from "@/components/OnlineStatusInitializer.tsx";
 import AdminChat from "@/pages/admin/AdminChat.tsx";
 import SignUpPage from "@/pages/auth/signup-page.tsx";
 import CountryResidencePage from "@/pages/auth/country-page.tsx";
-import {ChatNotificationListener} from "@/components/ChatNotificationListener.tsx";
+import { ChatNotificationListener } from "@/components/ChatNotificationListener.tsx";
+import MT4Layout from "./layouts/MT4Layout";
+import MainContent from "./components/mt4/main-content";
 
 const AutoLoginPage = lazy(() => import("./pages/auth/auto-login"));
-
 
 const Test = lazy(() => import("./pages/test"));
 const Trading = lazy(() => import("./pages/trading"));
@@ -73,21 +74,19 @@ const App = () => {
       <Suspense fallback={<LoadingScreen />}>
         <Toaster position="top-right" />
         <BrowserRouter>
-
           <SiteProvider>
             <BaseLayout>
               <WebSocketInitializer />
               <OnlineStatusInitializer />
               <ChatNotificationListener />
               <Routes>
-
                 <Route
-                    path="/admin/chat"
-                    element={
-                      <ProtectedRoute>
-                        <AdminChat />
-                      </ProtectedRoute>
-                    }
+                  path="/admin/chat"
+                  element={
+                    <ProtectedRoute>
+                      <AdminChat />
+                    </ProtectedRoute>
+                  }
                 />
 
                 <Route
@@ -166,12 +165,19 @@ const App = () => {
                 <Route path="/auto-login" element={<AutoLoginPage />} />
                 <Route path="/signup" element={<SignUpPage />} />
                 <Route path="/" element={<LoginPage />} />
-                <Route path="/register/country-residence" element={<CountryResidencePage />} />
+                <Route
+                  path="/register/country-residence"
+                  element={<CountryResidencePage />}
+                />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route
                   path="/forgot-password"
                   element={<ForgotPasswordPage />}
                 />
+
+                <Route path="/mt4" element={<MT4Layout />}>
+                  <Route index element={<MainContent/>}/>
+                </Route>
 
                 <Route path="*" element={<NotFound />} />
               </Routes>
