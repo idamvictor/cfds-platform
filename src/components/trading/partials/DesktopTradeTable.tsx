@@ -89,7 +89,7 @@ export function DesktopTradeTable({
                 SL
               </TableHead>
               <TableHead className="h-8 text-xs font-medium text-muted-foreground">
-                {activeTab === "active" ? "Price" : "Close Price"}
+                {activeTab === "active" ? "Current Price" : "Close Price"}
               </TableHead>
               <TableHead className="h-8 text-xs font-medium text-muted-foreground">
                 Leverage

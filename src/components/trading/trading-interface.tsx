@@ -206,8 +206,13 @@ export function TradingInterface() {
       const leverage = user?.account_type?.leverage || 20;
 
       // Calculate buy and sell prices
-      const buyPrice = activeAsset.buy_price || assetRate * (1 + buySpread);
-      const sellPrice = activeAsset.sell_price || assetRate * (1 - sellSpread);
+      // const buyPrice = activeAsset.buy_price || assetRate * (1 + buySpread);
+      // const sellPrice = activeAsset.sell_price || assetRate * (1 - sellSpread);
+
+      const bSpread = buySpread > 0 ? (buySpread * assetRate) / 100 : 0;
+      const sSpread = sellSpread > 0 ? (sellSpread * assetRate) / 100 : 0;
+      const buyPrice =  assetRate + bSpread;
+      const sellPrice = assetRate - sSpread;
 
       // Calculate margin based on volume and leverage
       const calculatedMargin =
@@ -220,7 +225,7 @@ export function TradingInterface() {
         position: activeAsset.position,
         margin: calculatedMargin,
         freeMargin: accountSummary?.freeMargin || userBalance,
-        spread: buySpread + sellSpread,
+        spread: (sSpread > 0 && bSpread > 0) ? (buySpread + sellSpread) / 2 : 0,
         leverage: leverage,
         buyPrice: buyPrice,
         sellPrice: sellPrice,
@@ -599,9 +604,10 @@ export function TradingInterface() {
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Spread:</span>
                   <span className="text-primary">
-                    {tradingInfo.spread.toFixed(5)}
+                    {tradingInfo.spread.toFixed(2)}
                   </span>
                 </div>
+
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Leverage:</span>
                   <span className="text-primary">1:{tradingInfo.leverage}</span>
@@ -820,7 +826,7 @@ export function TradingInterface() {
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Spread:</span>
                   <span className="text-primary">
-                    {tradingInfo.spread.toFixed(5)}
+                    {tradingInfo.spread.toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between">

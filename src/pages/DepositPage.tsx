@@ -1,13 +1,15 @@
 import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import useDataStore from "@/store/dataStore";
-import { Cloud, CreditCard, Loader2 } from "lucide-react";
+import {Banknote, Cloud, CreditCard, Loader2} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CardDeposit from "./deposit/CardDeposit";
 import QRCodeDeposit from "@/pages/deposit/qr-code-deposit.tsx";
 import axiosInstance from "@/lib/axios.ts";
 import { toast } from "@/components/ui/sonner.tsx";
 import { AxiosError } from "axios";
+import React from "react";
+import WireTransfer from "@/pages/deposit/WireTransfer.tsx";
 
 // Custom PaymentMethod type
 interface PaymentMethod {
@@ -15,6 +17,7 @@ interface PaymentMethod {
   name: string;
   icon: React.ReactNode;
   processingTime: string;
+  info?: string;
 }
 
 function DirectPaymentMethods({
@@ -46,7 +49,14 @@ function DirectPaymentMethods({
           >
             <span className="text-muted-foreground w-7">{method.icon}</span>
             <div className="flex-1 text-left">
-              <p className="text-sm font-medium">{method.name}</p>
+              <p className="text-sm font-medium">
+                {method.name.split('/n').map((line, index, array) => (
+                    <React.Fragment key={index}>
+                      {line}
+                      {index < array.length - 1 && <br />}
+                    </React.Fragment>
+                ))}
+              </p>
               <p className="text-xs text-muted-foreground">
                 {method.processingTime}
               </p>
@@ -118,8 +128,20 @@ export default function DepositPage({
     }));
   }, [data?.wallets]);
 
+  const wirePaymentMethods: PaymentMethod[] = useMemo(() => {
+    if (!data?.wire_transfer) return [];
+
+    return [{
+      id: 'wire-transfer',
+      name : data?.wire_transfer?.title,
+      info : data?.wire_transfer?.info,
+      icon: <Banknote className="h-5 w-5 opacity-70" />,
+      processingTime: data?.wire_transfer.processing_time,
+    }]
+  }, [data?.wire_transfer]);
+
   const paymentMethods = useMemo(() => {
-    return [...cryptoPaymentMethods, ...staticPaymentMethods];
+    return [...cryptoPaymentMethods, ...staticPaymentMethods, ...wirePaymentMethods];
   }, [cryptoPaymentMethods]);
 
   // Auto-select first method if none selected and data is loaded
@@ -155,7 +177,14 @@ export default function DepositPage({
                   }`}
                 >
                   {method.icon}
-                  <span>{method.name}</span>
+                  <span >
+                     {method.name.split('/n').map((line, index, array) => (
+                         <React.Fragment key={index}>
+                           {line}
+                           {index < array.length - 1 && <br />}
+                         </React.Fragment>
+                     ))}
+                  </span>
                 </button>
               ))}
             </div>
@@ -177,31 +206,36 @@ export default function DepositPage({
           </div>
         ) : null}
 
-        {/* Right content area */}
+
         <Card className="items-start flex-1 rounded-none">
           <CardContent className="md:p-6 w-full">
             {isLoading && !data ? (
-              <div className="flex justify-center items-center h-full">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              </div>
+                <div className="flex justify-center items-center h-full">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
             ) : selectedMethodId === "credit-card" ? (
-              <CardDeposit onDepositSuccess={onDepositSuccess} />
+                <CardDeposit onDepositSuccess={onDepositSuccess} />
+            ) : selectedMethodId === "wire-transfer" && data?.wire_transfer ? (
+                <WireTransfer
+                    wireTransferInfo={data.wire_transfer.info}
+                    onDepositSuccess={onDepositSuccess}
+                />
             ) : selectedWallet ? (
-              <QRCodeDeposit
-                address={selectedWallet.address}
-                barcode={selectedWallet.barcode}
-                title={`${selectedWallet.crypto} Deposit`}
-                qrTitle={`${selectedWallet.crypto} QR CODE`}
-                addressTitle={`${selectedWallet.crypto} ADDRESS`}
-                onSubmit={handleSubmit}
-                onDepositSuccess={onDepositSuccess}
-              />
+                <QRCodeDeposit
+                    address={selectedWallet.address}
+                    barcode={selectedWallet.barcode}
+                    title={`${selectedWallet.crypto} Deposit`}
+                    qrTitle={`${selectedWallet.crypto} QR CODE`}
+                    addressTitle={`${selectedWallet.crypto} ADDRESS`}
+                    onSubmit={handleSubmit}
+                    onDepositSuccess={onDepositSuccess}
+                />
             ) : (
-              <div className="flex justify-center items-center h-full">
-                <p className="text-muted-foreground">
-                  Please select a payment method
-                </p>
-              </div>
+                <div className="flex justify-center items-center h-full">
+                  <p className="text-muted-foreground">
+                    Please select a payment method
+                  </p>
+                </div>
             )}
           </CardContent>
         </Card>

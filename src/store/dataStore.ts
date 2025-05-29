@@ -20,6 +20,12 @@ export interface Wallet {
   status: string;
 }
 
+export interface Wire {
+  title: string;
+  info: string;
+  processing_time: string;
+}
+
 export interface WithdrawalMethod {
   id: string;
   title: string;
@@ -39,6 +45,7 @@ export interface Plan {
 export interface SiteData {
   currencies: Currency[];
   wallets: Wallet[];
+  wire_transfer: Wire | null;
   withdrawal_methods: WithdrawalMethod[];
   crypto_networks: string[];
   plan_features: string[];

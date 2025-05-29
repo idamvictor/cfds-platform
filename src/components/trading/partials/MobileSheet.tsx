@@ -41,7 +41,7 @@ export function MobileSheet({
           size="sm"
           className="text-xs text-muted-foreground flex items-center gap-1"
         >
-          View all <ChevronRight className="h-3 w-3" />
+          View trades <ChevronRight className="h-3 w-3" />
         </Button>
       </SheetTrigger>
       <SheetContent side="bottom" className="h-[80vh] p-0">
@@ -100,6 +100,19 @@ export function MobileSheet({
                 />
               )
             )}
+
+            { activeTab == 'active' && openTrades?.length < 1 ? (
+                <div className="text-center py-6">
+                  <p>No {activeTab} orders</p>
+                </div>
+            ) : null}
+
+            { activeTab != 'active' && closedTrades?.length < 1 ? (
+                <div className="text-center py-6">
+                  <p>No order history</p>
+                </div>
+            ) : null}
+
 
             {/* Loading indicator and intersection observer target */}
             <div ref={loadMoreRef} className="py-2 text-center">

@@ -262,9 +262,16 @@ const useTradeStore = create<TradeStore>((set, get) => ({
       // Update open trades with new prices
       const updatedTrades = state.openTrades.map((trade) => {
         const newPrice = prices[trade.asset_id];
+
         if (newPrice !== undefined) {
+
+          // console.log('newPrice', newPrice)
+
+
           // Calculate new PnL
           const newPnL = calculatePnL(trade, newPrice);
+
+          // console.log('newPnL', newPnL)
 
           // Return updated trade
           return {
