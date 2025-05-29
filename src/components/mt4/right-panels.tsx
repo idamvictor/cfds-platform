@@ -68,13 +68,6 @@ export default function RightPanels() {
         </Card>
       </div>
 
-      {/* Show Positions */}
-      <div className="p-4 border-t border-slate-700">
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-400">Show Positions</span>
-          <ChevronDown className="w-4 h-4 text-gray-400" />
-        </div>
-      </div>
     </aside>
   );
 }

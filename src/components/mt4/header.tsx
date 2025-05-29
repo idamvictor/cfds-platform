@@ -3,7 +3,7 @@ import { TrendingUp, Grid3X3, X, Plus } from "lucide-react";
 
 export default function Header() {
   return (
-    <header className="bg-slate-800 border-b border-slate-700 px-4 py-2 flex items-center justify-between">
+    <header className="bg-[#1C2030] border-b border-slate-700 px-4 py-2 flex items-center justify-between">
       <div className="flex items-center gap-4">
         {/* Logo */}
         <div className="flex items-center gap-2">
