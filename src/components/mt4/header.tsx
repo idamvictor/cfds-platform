@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { TrendingUp, Grid3X3, X, Plus } from "lucide-react";
+import { TrendingUp, Grid3X3, Plus } from "lucide-react";
+import { AssetListingTabs } from "./header/asset-listing-tabs";
 
 export default function Header() {
   return (
@@ -19,7 +20,7 @@ export default function Header() {
         </Button>
 
         {/* Trading Instrument Tabs */}
-        <div className="flex items-center gap-1">
+        {/* <div className="flex items-center gap-1">
           <div className="bg-orange-600 px-3 py-1 rounded flex items-center gap-2 text-sm">
             <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center text-xs">
               ₿
@@ -47,7 +48,9 @@ export default function Header() {
           <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
             <Plus className="w-4 h-4" />
           </Button>
-        </div>
+        </div> */}
+        <AssetListingTabs/>
+
       </div>
 
       {/* New Order Button */}

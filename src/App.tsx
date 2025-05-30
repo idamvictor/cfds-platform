@@ -175,8 +175,15 @@ const App = () => {
                   element={<ForgotPasswordPage />}
                 />
 
-                <Route path="/mt4" element={<MT4Layout />}>
-                  <Route index element={<MainContent/>}/>
+                <Route
+                  path="/mt4"
+                  element={
+                    <ProtectedRoute>
+                      <MT4Layout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route index element={<MainContent />} />
                 </Route>
 
                 <Route path="*" element={<NotFound />} />
