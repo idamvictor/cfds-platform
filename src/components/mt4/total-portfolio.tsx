@@ -18,7 +18,7 @@ const portfolioData: PortfolioData = {
 
 export default function TotalPortfolio() {
   return (
-    <div className="bg-slate-800 border-t border-slate-700 p-4 w-full">
+    <div className="bg-[#1C2030] border-t border-slate-700 p-4 w-full">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-8">
           <span className="text-sm font-medium text-white">

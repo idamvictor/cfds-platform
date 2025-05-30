@@ -31,18 +31,18 @@ const sidebarItems: SidebarItem[] = [
 
 export default function Sidebar() {
   return (
-    <aside className="w-20 bg-slate-800 border-r border-slate-700 flex flex-col py-4">
+    <aside className="w-25 bg-[#1C2030] border-r border-slate-700 flex flex-col p-4">
       <nav className="flex flex-col gap-6">
         {sidebarItems.map((item, index) => {
           const Icon = item.icon;
           return (
             <div
               key={index}
-              className={`flex flex-col items-center gap-1 text-xs cursor-pointer transition-colors ${
+              className={`flex flex-col items-center gap-1 text-[10px] cursor-pointer transition-colors ${
                 item.isActive ? "text-white" : "text-gray-400 hover:text-white"
               }`}
             >
-              <Icon className="w-5 h-5" />
+              <Icon className="w-6 h-6" />
               <span className="text-center leading-tight">{item.label}</span>
             </div>
           );

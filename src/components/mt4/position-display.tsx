@@ -8,8 +8,8 @@ export default function PositionDisplay() {
   return (
     <div className="relative">
       {/* Base collapsed state */}
-      <div className="bg-slate-800 border-t border-slate-700 relative z-10">
-        <Card className="rounded-none border-x-0 border-b-0 bg-slate-800 py-0">
+      <div className="bg-slate-700 border-t border-slate-700 relative z-10">
+        <Card className="rounded-none border-x-0 border-b-0 bg-slate-700 py-0">
           <CardContent className="p-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -41,8 +41,8 @@ export default function PositionDisplay() {
       {!isCollapsed && (
         <div className="absolute bottom-0 left-0 right-0 z-50 transition-all duration-200">
           <div className="absolute bottom-full left-0 right-0 h-[calc(100vh-100%)] bg-black/30" />
-          <div className="bg-slate-800 border-t border-slate-700">
-            <Card className="rounded-none border-x-0 border-b-0 bg-slate-800 py-0">
+          <div className="bg-slate-700 border-t border-slate-700">
+            <Card className="rounded-none border-x-0 border-b-0 bg-slate-700 py-0">
               <CardContent className="p-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
