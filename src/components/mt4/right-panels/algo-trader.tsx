@@ -28,9 +28,9 @@ export default function AlgoTrader() {
   return (
     <div className="h-full flex flex-col">
       {/* Algo Trader Header - Fixed Position */}
-      <div className="p-4 border-b border-slate-700 bg-slate-800 sticky top-0 z-10">
+      <div className="p-2 border-b border-slate-700 bg-slate-700 sticky top-0 z-10">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium">Algo Trader</span>
+          <span className="text-xs font-medium">Algo Trader</span>
           <div className="flex items-center gap-2">
             <Switch />
             <X className="w-4 h-4 text-gray-400" />
@@ -39,12 +39,12 @@ export default function AlgoTrader() {
       </div>
 
       {/* Navigation Tree - Fixed Height Container */}
-      <div className="flex-1 min-h-0 p-4 bg-slate-800">
-        <Card className="h-full bg-slate-700 border-slate-600">
-          <CardContent className="p-3 h-full">
+      <div className="flex-1 min-h-0 p-0 bg-[#1C2030]">
+        <Card className="h-full bg-[#1C2030] border-slate-600 p-1 rounded-none shadow-none">
+          <CardContent className="p-1 h-full">
             <div className="h-full overflow-auto space-y-1">
               {/* FTMO MT4 */}
-              <div className="flex items-center gap-2 py-1 px-2 text-sm">
+              <div className="flex items-center gap-2 py-1 px-2 text-xs">
                 <div className="w-4 h-4 bg-green-500 rounded-sm flex items-center justify-center">
                   <span className="text-xs font-bold text-white">$</span>
                 </div>
@@ -55,7 +55,7 @@ export default function AlgoTrader() {
               <div>
                 <button
                   onClick={() => toggleSection("account")}
-                  className="flex items-center gap-1 py-1 px-2 text-sm w-full hover:bg-[#4a5a6c] rounded"
+                  className="flex items-center gap-1 py-1 px-2 text-xs w-full hover:bg-[#4a5a6c] rounded"
                 >
                   {expandedSections.account ? (
                     <ChevronDown className="w-3 h-3" />
@@ -70,13 +70,13 @@ export default function AlgoTrader() {
 
                 {expandedSections.account && (
                   <div className="ml-6 space-y-1">
-                    <div className="flex items-center gap-2 py-1 px-2 text-sm">
+                    <div className="flex items-center gap-2 py-1 px-2 text-xs">
                       <div className="w-4 h-4 bg-green-500 rounded-sm flex items-center justify-center">
                         <span className="text-xs font-bold text-white">IC</span>
                       </div>
                       <span>ICMarkrtsSC-Demo</span>
                     </div>
-                    <div className="flex items-center gap-2 py-1 px-2 text-sm">
+                    <div className="flex items-center gap-2 py-1 px-2 text-xs">
                       <div className="w-4 h-4 bg-green-500 rounded-sm flex items-center justify-center">
                         <span className="text-xs font-bold text-white">IC</span>
                       </div>
@@ -90,7 +90,7 @@ export default function AlgoTrader() {
               <div>
                 <button
                   onClick={() => toggleSection("expertAdvisors")}
-                  className="flex items-center gap-1 py-1 px-2 text-sm w-full hover:bg-[#4a5a6c] rounded"
+                  className="flex items-center gap-1 py-1 px-2 text-xs w-full hover:bg-[#4a5a6c] rounded"
                 >
                   {expandedSections.expertAdvisors ? (
                     <ChevronDown className="w-3 h-3" />
@@ -109,7 +109,7 @@ export default function AlgoTrader() {
                     <div>
                       <button
                         onClick={() => toggleSection("advisors")}
-                        className="flex items-center gap-1 py-1 px-2 text-sm w-full hover:bg-[#4a5a6c] rounded"
+                        className="flex items-center gap-1 py-1 px-2 text-xs w-full hover:bg-[#4a5a6c] rounded"
                       >
                         {expandedSections.advisors ? (
                           <ChevronDown className="w-3 h-3" />
@@ -124,19 +124,19 @@ export default function AlgoTrader() {
 
                       {expandedSections.advisors && (
                         <div className="ml-6 space-y-1">
-                          <div className="flex items-center gap-2 py-1 px-2 text-sm">
+                          <div className="flex items-center gap-2 py-1 px-2 text-xs">
                             <div className="w-4 h-4 bg-blue-400 rounded-sm flex items-center justify-center">
                               <FileText className="w-2 h-2 text-white" />
                             </div>
                             <span>ExpertMACD</span>
                           </div>
-                          <div className="flex items-center gap-2 py-1 px-2 text-sm">
+                          <div className="flex items-center gap-2 py-1 px-2 text-xs">
                             <div className="w-4 h-4 bg-blue-400 rounded-sm flex items-center justify-center">
                               <FileText className="w-2 h-2 text-white" />
                             </div>
                             <span>ExpertMAMA</span>
                           </div>
-                          <div className="flex items-center gap-2 py-1 px-2 text-sm">
+                          <div className="flex items-center gap-2 py-1 px-2 text-xs">
                             <div className="w-4 h-4 bg-blue-400 rounded-sm flex items-center justify-center">
                               <FileText className="w-2 h-2 text-white" />
                             </div>
