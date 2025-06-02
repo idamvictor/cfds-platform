@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
 import useAssetStore from "@/store/assetStore";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function MarketWatch() {
   const { groupedAssets, fetchAssets, setActiveAsset } = useAssetStore();
@@ -33,66 +41,80 @@ export default function MarketWatch() {
               placeholder="Search Market"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#1C2030] rounded px-7 py-0.5 text-[10px] text-white placeholder:text-[10px] placeholder:text-gray-400"
+              className="w-full bg-[#1C2030] rounded px-7 py-0.5 text-[8px] text-white placeholder:text-[10px] placeholder:text-gray-400"
             />
           </div>
         </div>
 
-        {/* Symbol Header */}
-        <div className="grid grid-cols-2 px-2 py-1 bg-[#1C2030] text-[10px] text-gray-400">
-          <div>Symbol</div>
-          <div className="text-right grid grid-cols-2">
-            <div>Bid</div>
-            <div>Ask</div>
-          </div>
-        </div>
+        {/* Table Header */}
+        <Table className="border-y border-[#2A3038]">
+          <TableHeader className="bg-[#2A3038]">
+            <TableRow className="border-0 hover:bg-transparent">
+              <TableHead className="h-7 text-[10px] text-gray-400 font-normal border-r border-[#2A3038]">
+                Symbol
+              </TableHead>
+              <TableHead className="h-7 text-[10px] text-gray-400 font-normal text-right border-r border-[#2A3038]">
+                Bid
+              </TableHead>
+              <TableHead className="h-7 text-[10px] text-gray-400 font-normal text-right">
+                Ask
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+        </Table>
       </div>
 
-      {/* Market Data - Scrollable */}
+      {/* Table Body - Scrollable */}
       <div className="flex-1 min-h-0 overflow-auto">
-        <div className="divide-y divide-[#2A3038]/50">
-          {Object.entries(groupedAssets).flatMap(([_type, typeAssets]) => {
-            const filteredAssets = typeAssets.filter(
-              (asset) =>
-                !searchQuery ||
-                asset.symbol_display
-                  .toLowerCase()
-                  .includes(searchQuery.toLowerCase()) ||
-                asset.name.toLowerCase().includes(searchQuery.toLowerCase())
-            );
-
-            if (filteredAssets.length === 0) return [];
-
-            return filteredAssets.map((asset) => {
-              const buyPrice = asset.buy_price;
-              const sellPrice = asset.sell_price;
-              const isPositive = Number(asset.change_percent) >= 0;
-
-              return (
-                <div
-                  key={asset.id}
-                  onClick={() => setActiveAsset(asset)}
-                  className="grid grid-cols-2 px-2 py-1 hover:bg-[#1C2030] cursor-pointer"
-                >
-                  <div className="flex items-center space-x-1">
-                    <div
-                      className={`w-1 h-1 rounded-full ${
-                        isPositive ? "bg-green-500" : "bg-red-500"
-                      }`}
-                    />
-                    <span className="text-[11px] text-white">
-                      {asset.symbol_display}
-                    </span>
-                  </div>
-                  <div className="text-right grid grid-cols-2 text-[11px]">
-                    <div className="text-blue-400 ">{buyPrice.toFixed(3)}</div>
-                    <div className="text-red-400">{sellPrice.toFixed(3)}</div>
-                  </div>
-                </div>
+        <Table>
+          <TableBody>
+            {Object.entries(groupedAssets).flatMap(([_type, typeAssets]) => {
+              const filteredAssets = typeAssets.filter(
+                (asset) =>
+                  !searchQuery ||
+                  asset.symbol_display
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase()) ||
+                  asset.name.toLowerCase().includes(searchQuery.toLowerCase())
               );
-            });
-          })}
-        </div>
+
+              if (filteredAssets.length === 0) return [];
+
+              return filteredAssets.map((asset) => {
+                const buyPrice = asset.buy_price;
+                const sellPrice = asset.sell_price;
+                const isPositive = Number(asset.change_percent) >= 0;
+
+                return (
+                  <TableRow
+                    key={asset.id}
+                    onClick={() => setActiveAsset(asset)}
+                    className="h-6 cursor-pointer border-b border-[#2A3038] hover:bg-[#2A3038]"
+                  >
+                    <TableCell className="py-0 text-[11px] border-r border-[#2A3038]">
+                      <div className="flex items-center space-x-1">
+                        <div
+                          className={`w-1 h-1 rounded-full ${
+                            isPositive ? "bg-green-500" : "bg-red-500"
+                          }`}
+                        />
+                        <span className="text-white">
+                          {asset.symbol_display}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-0 text-[11px] text-right text-blue-400 border-r border-[#2A3038]">
+                      {buyPrice.toFixed(3)}
+                    </TableCell>
+                    <TableCell className="py-0 text-[11px] text-right text-red-400">
+                      {sellPrice.toFixed(3)}
+                    </TableCell>
+                  </TableRow>
+                );
+              });
+            })}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );
