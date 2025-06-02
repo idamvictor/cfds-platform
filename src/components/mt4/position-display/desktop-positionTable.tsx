@@ -11,7 +11,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import type { Trade } from "@/store/tradeStore";
-import useUserStore from "@/store/userStore.ts";
+// import useUserStore from "@/store/userStore.ts";
 import useAssetStore from "@/store/assetStore";
 
 interface DesktopPositionTableProps {
@@ -31,7 +31,7 @@ export function DesktopPositionTable({
   loadMoreRef,
   handleClosePosition,
 }: DesktopPositionTableProps) {
-  const user = useUserStore((state) => state.user);
+  // const user = useUserStore((state) => state.user);
   const { setActiveAsset, assets } = useAssetStore();
 
   const handleAssetClick = (assetSymbol: string) => {

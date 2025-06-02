@@ -7,13 +7,13 @@ import { cn } from "@/lib/utils";
 import { useMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import axiosInstance from "@/lib/axios";
-import DesktopPositionTable from "./DesktopPositionTable";
-import ClosePositionDialog from "./ClosePositionDialog";
+import DesktopPositionTable from "./position-display/desktop-positionTable";
+import ClosePositionDialog from "./position-display/close-position-dialog";
 
 export default function PositionDisplay() {
   // UI state
   const [activeTab, setActiveTab] = useState<"active" | "history">("active");
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true)
   const [selectedOrder, setSelectedOrder] = useState<Trade | null>(null);
   const [showCloseDialog, setShowCloseDialog] = useState(false);
   const [closingTrade, setClosingTrade] = useState(false);
