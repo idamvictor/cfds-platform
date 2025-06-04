@@ -1,12 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  X,
-  Plus,
-  MoreHorizontal,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { X, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { CurrencyFlag } from "../../trading/trading-interface-components/header";
 import useAssetStore from "@/store/assetStore";
 import {
@@ -15,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import AddAsset from "./add-asset";
 
 interface AssetListingTabsProps {
   initialPairs?: string[];
@@ -143,9 +138,7 @@ export function AssetListingTabs({
                 >
                   <CurrencyFlag pair={pair} />
                   <div className="flex flex-col">
-                    <span className="text-sm text-white">
-                      {pair}
-                    </span>
+                    <span className="text-sm text-white">{pair}</span>
                     <span className="text-xs text-muted-foreground">
                       {asset?.type
                         ? asset.type.charAt(0).toUpperCase() +
@@ -193,9 +186,7 @@ export function AssetListingTabs({
               >
                 <CurrencyFlag pair={pair} />
                 <div className="flex flex-col">
-                  <span className="text-sm text-white">
-                    {pair}
-                  </span>
+                  <span className="text-sm text-white">{pair}</span>
                   <span className="text-xs text-muted-foreground">
                     {asset?.type
                       ? asset.type.charAt(0).toUpperCase() + asset.type.slice(1)
@@ -224,13 +215,7 @@ export function AssetListingTabs({
           </Button>
         )}
       </div>
-      <Button
-        variant="outline"
-        size="icon"
-        className="h-8 w-8 hover:bg-[#2A3447] ml-auto"
-      >
-        <Plus className="h-4 w-4" />
-      </Button>
+      <AddAsset />
     </div>
   );
 }
