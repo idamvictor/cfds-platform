@@ -1,99 +1,83 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { X, Plus } from "lucide-react";
+import {
+  X,
+  Plus,
+  MoreHorizontal,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { CurrencyFlag } from "../../trading/trading-interface-components/header";
 import useAssetStore from "@/store/assetStore";
-import useUserStore from "@/store/userStore";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface AssetListingTabsProps {
   initialPairs?: string[];
   onPairChange?: (pair: string) => void;
-  isMobile?: boolean;
-}
-
-function ChevronLeft(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <polyline points="15 18 9 12 15 6" />
-    </svg>
-  );
-}
-
-function ChevronRight(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <polyline points="9 18 15 12 9 6" />
-    </svg>
-  );
 }
 
 export function AssetListingTabs({
-  initialPairs = ["AUD/JPY"],
+  initialPairs = ["BTC/USD"],
   onPairChange,
-  isMobile = false,
 }: AssetListingTabsProps) {
-  const [activePairs, setActivePairs] = useState<string[]>(initialPairs);
-  const [activePair, setActivePair] = useState<string>(initialPairs[0]);
-  const [showScrollButtons, setShowScrollButtons] = useState(false);
-  const [isMarketWatchOpen, setIsMarketWatchOpen] = useState(false);
-
   const tabsListRef = useRef<HTMLDivElement>(null);
   const activeTabRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
-  const { setActiveAsset, assets } = useAssetStore();
+  const {
+    assets,
+    activePairs,
+    activePair,
+    setActivePair,
+    addPair,
+    removePair,
+  } = useAssetStore();
 
-  // Check if scroll buttons should be shown
+  const checkScroll = useCallback(() => {
+    if (tabsListRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = tabsListRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth);
+    }
+  }, []);
+
+  // Check scroll on mount and when active pairs change
   useEffect(() => {
-    const checkScrollable = () => {
-      if (tabsListRef.current) {
-        const { scrollWidth, clientWidth } = tabsListRef.current;
-        setShowScrollButtons(scrollWidth > clientWidth);
-      }
-    };
+    checkScroll();
+    window.addEventListener("resize", checkScroll);
+    return () => window.removeEventListener("resize", checkScroll);
+  }, [checkScroll, activePairs]);
 
-    checkScrollable();
-    window.addEventListener("resize", checkScrollable);
-
-    return () => {
-      window.removeEventListener("resize", checkScrollable);
-    };
-  }, [activePairs]);
+  const scroll = (direction: "left" | "right") => {
+    if (tabsListRef.current) {
+      const scrollAmount = 200; // Adjust this value as needed
+      const newScrollLeft =
+        tabsListRef.current.scrollLeft +
+        (direction === "left" ? -scrollAmount : scrollAmount);
+      tabsListRef.current.scrollTo({
+        left: newScrollLeft,
+        behavior: "smooth",
+      });
+    }
+  };
 
   // Scroll active tab into view when it changes
   useEffect(() => {
     if (activeTabRef.current && tabsListRef.current) {
       const tabElement = activeTabRef.current;
       const container = tabsListRef.current;
-
-      // Calculate position to scroll to
       const tabLeft = tabElement.offsetLeft;
       const tabRight = tabLeft + tabElement.offsetWidth;
       const containerLeft = container.scrollLeft;
       const containerRight = containerLeft + container.offsetWidth;
 
-      // If tab is not fully visible, scroll to make it visible
       if (tabLeft < containerLeft) {
         container.scrollTo({ left: tabLeft - 10, behavior: "smooth" });
       } else if (tabRight > containerRight) {
@@ -104,138 +88,146 @@ export function AssetListingTabs({
       }
     }
   }, [activePair]);
-
-  const scrollTabs = (direction: "left" | "right") => {
-    if (tabsListRef.current) {
-      const scrollAmount = direction === "left" ? -200 : 200;
-      tabsListRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
-    }
-  };
-
   const handlePairClick = (pair: string) => {
     setActivePair(pair);
-
-    // Find and set the corresponding asset
-    const asset = assets.find((a) => a.symbol_display === pair);
-    if (asset) {
-      setActiveAsset(asset);
-    }
-
-    // Notify parent component if callback is provided
     if (onPairChange) {
       onPairChange(pair);
     }
   };
 
-  const removeCurrencyPair = (pair: string) => {
-    if (activePairs.length > 1) {
-      const newPairs = activePairs.filter((p) => p !== pair);
-      setActivePairs(newPairs);
-
-      // If the removed pair was active, set the first pair as active
-      if (activePair === pair) {
-        setActivePair(newPairs[0]);
-
-        // Also update the active asset and notify parent
-        const newAsset = assets.find((a) => a.symbol_display === newPairs[0]);
-        if (newAsset) {
-          setActiveAsset(newAsset);
-          if (onPairChange) {
-            onPairChange(newPairs[0]);
-          }
-        }
-      }
+  const removeCurrencyPair = (pair: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    removePair(pair);
+    if (onPairChange && activePair === pair) {
+      onPairChange(activePairs[0]);
     }
   };
 
   const addCurrencyPair = (pair: string) => {
-    if (!activePairs.includes(pair)) {
-      setActivePairs([...activePairs, pair]);
-    }
-    setActivePair(pair);
-
-    // Find and set the corresponding asset
-    const asset = assets.find((a) => a.symbol_display === pair);
-    if (asset) {
-      setActiveAsset(asset);
-      if (onPairChange) {
-        onPairChange(pair);
-      }
+    addPair(pair);
+    if (onPairChange) {
+      onPairChange(pair);
     }
   };
 
   return (
-    <div className={`flex items-center ${isMobile ? "w-full" : "h-full"}`}>
-      {!isMobile && showScrollButtons && (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8"
-          onClick={() => scrollTabs("left")}
+    <div className="flex items-center h-full bg-[#1C2030] p-1 rounded-sm">
+      <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+        <div
+          onMouseEnter={() => setIsOpen(true)}
+          onMouseLeave={() => setIsOpen(false)}
         >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-      )}
-      <div
-        className={`overflow-hidden ${
-          isMobile
-            ? "w-full"
-            : "max-w-[300px] sm:max-w-[400px] md:max-w-[500px]"
-        } h-full flex items-center`}
-      >
-        <div className="w-full h-full flex items-center">
-          <div
-            ref={tabsListRef}
-            className="flex gap-2 overflow-x-auto scrollbar-hide whitespace-nowrap h-[70%]"
-            style={{ scrollbarWidth: "none" }}
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 hover:bg-[#2A3447]"
+            >
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="bg-[#1B2331] border-[#2A3447]">
+            {activePairs.map((pair) => {
+              const asset = assets.find((a) => a.symbol_display === pair);
+              const isActive = activePair === pair;
+
+              return (
+                <DropdownMenuItem
+                  key={pair}
+                  onClick={() => handlePairClick(pair)}
+                  className={`flex items-center gap-2 hover:bg-[#2A3447] cursor-pointer relative ${
+                    isActive
+                      ? "after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#F7931A]"
+                      : ""
+                  }`}
+                >
+                  <CurrencyFlag pair={pair} />
+                  <div className="flex flex-col">
+                    <span className="text-sm text-white">
+                      {pair}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {asset?.type
+                        ? asset.type.charAt(0).toUpperCase() +
+                          asset.type.slice(1)
+                        : "Unknown"}
+                    </span>
+                  </div>
+                </DropdownMenuItem>
+              );
+            })}
+          </DropdownMenuContent>
+        </div>
+      </DropdownMenu>{" "}
+      <div className="flex items-center mx-2 w-[600px]">
+        {canScrollLeft && (
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8 hover:bg-[#2A3447] shrink-0"
+            onClick={() => scroll("left")}
           >
-            {activePairs.map((pair, index) => (
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+        )}
+
+        <div
+          ref={tabsListRef}
+          className="flex gap-2 overflow-x-hidden mx-2 scroll-smooth"
+          onScroll={checkScroll}
+        >
+          {activePairs.map((pair) => {
+            const asset = assets.find((a) => a.symbol_display === pair);
+            const isActive = activePair === pair;
+
+            return (
               <div
-                key={index}
-                ref={activePair === pair ? activeTabRef : null}
-                className={`relative flex items-center gap-3 px-4 py-2 cursor-pointer border-[1px] border-muted ${
-                  activePair === pair
-                    ? "border-b-2 border-b-accent "
-                    : "hover:bg-muted"
+                key={pair}
+                ref={isActive ? activeTabRef : null}
+                className={`relative flex items-center gap-2 px-4 py-2 rounded cursor-pointer border border-[#2A3447] hover:bg-[#2A3447] w-[150px] shrink-0 ${
+                  isActive
+                    ? "after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#F7931A]"
+                    : ""
                 }`}
                 onClick={() => handlePairClick(pair)}
               >
                 <CurrencyFlag pair={pair} />
-                <div className="flex flex-col items-start">
-                  <span className="text-xs">{pair}</span>
-                  <span className="text-xs text-muted-foreground hidden sm:inline">
-                    forex
+                <div className="flex flex-col">
+                  <span className="text-sm text-white">
+                    {pair}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {asset?.type
+                      ? asset.type.charAt(0).toUpperCase() + asset.type.slice(1)
+                      : "..."}
                   </span>
                 </div>
                 <button
-                  className="absolute top-0 left-[-7px] ml-1 sm:ml-2 rounded-full hover:bg-muted p-0.5"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeCurrencyPair(pair);
-                  }}
+                  className="absolute right-1 top-1 rounded-full bg-[#2A3447] p-1 hover:bg-[#3A4457]"
+                  onClick={(e) => removeCurrencyPair(pair, e)}
                 >
-                  <X className="h-4 w-4" />
+                  <X className="h-3 w-3" />
                 </button>
               </div>
-            ))}
-          </div>
+            );
+          })}{" "}
         </div>
+
+        {canScrollRight && (
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8 hover:bg-[#2A3447] shrink-0"
+            onClick={() => scroll("right")}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        )}
       </div>
-      {!isMobile && showScrollButtons && (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8"
-          onClick={() => scrollTabs("right")}
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-      )}
       <Button
         variant="outline"
         size="icon"
-        className="rounded-md ml-2"
-        onClick={() => setIsMarketWatchOpen(true)}
+        className="h-8 w-8 hover:bg-[#2A3447] ml-auto"
       >
         <Plus className="h-4 w-4" />
       </Button>

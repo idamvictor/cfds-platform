@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/table";
 
 export default function MarketWatch() {
-  const { groupedAssets, fetchAssets, setActiveAsset } = useAssetStore();
+  const { groupedAssets, fetchAssets, setActiveAsset, addPair } =
+    useAssetStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [time, setTime] = useState(new Date());
 
@@ -68,7 +69,7 @@ export default function MarketWatch() {
       <div className="flex-1 min-h-0 overflow-auto">
         <Table>
           <TableBody>
-            {Object.entries(groupedAssets).flatMap(([_type, typeAssets]) => {
+            {Object.entries(groupedAssets).flatMap(([, typeAssets]) => {
               const filteredAssets = typeAssets.filter(
                 (asset) =>
                   !searchQuery ||
@@ -88,7 +89,10 @@ export default function MarketWatch() {
                 return (
                   <TableRow
                     key={asset.id}
-                    onClick={() => setActiveAsset(asset)}
+                    onClick={() => {
+                      setActiveAsset(asset);
+                      addPair(asset.symbol_display);
+                    }}
                     className="h-6 cursor-pointer border-b border-[#2A3038] hover:bg-[#2A3038]"
                   >
                     <TableCell className="py-0 text-[11px] border-r border-[#2A3038]">
