@@ -22,7 +22,7 @@ interface AssetListingTabsProps {
 }
 
 export function AssetListingTabs({
-  initialPairs = ["BTC/USD"],
+  // initialPairs = ["BTC/USD"],
   onPairChange,
 }: AssetListingTabsProps) {
   const tabsListRef = useRef<HTMLDivElement>(null);
@@ -36,7 +36,7 @@ export function AssetListingTabs({
     activePairs,
     activePair,
     setActivePair,
-    addPair,
+    // addPair,
     removePair,
   } = useAssetStore();
 
@@ -103,12 +103,12 @@ export function AssetListingTabs({
     }
   };
 
-  const addCurrencyPair = (pair: string) => {
-    addPair(pair);
-    if (onPairChange) {
-      onPairChange(pair);
-    }
-  };
+  // const addCurrencyPair = (pair: string) => {
+  //   addPair(pair);
+  //   if (onPairChange) {
+  //     onPairChange(pair);
+  //   }
+  // };
 
   return (
     <div className="flex items-center h-full bg-[#1C2030] p-1 rounded-sm">
