@@ -1,16 +1,24 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Bell, Star, Info } from "lucide-react";
 import useAssetStore from "@/store/assetStore";
 import { CurrencyFlag } from "../../trading/trading-interface-components/header";
 import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function AddAsset() {
   const [selectedTab, setSelectedTab] = useState<string>("forex");
   const [searchQuery, setSearchQuery] = useState("");
   const { groupedAssets, addPair } = useAssetStore();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const categories = [
     { id: "forex", label: "Forex", count: groupedAssets["forex"]?.length || 0 },
@@ -60,83 +68,129 @@ export default function AddAsset() {
         >
           <Plus className="h-4 w-4" />
         </Button>
-      </DialogTrigger>{" "}
-      <DialogContent className="sm:max-w-[1000px] bg-[#1B2331] border-[#2A3447] p-0">
-        <div className="flex h-[600px]">
-          {/* Left Sidebar */}
-          <div className="w-[200px] border-r border-[#2A3447] p-2 space-y-1">
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[900px] bg-[#1C2030] border-[#2A3447] p-0">
+        <div className="flex h-[500px]">
+          <div className="w-[160px] border-r border-[#2A3447]">
             {categories.map((category) => (
               <button
                 key={category.id}
                 onClick={() => setSelectedTab(category.id)}
-                className={`w-full flex items-center gap-2 px-4 py-2 text-sm rounded transition-colors
-                  ${
-                    selectedTab === category.id
-                      ? "bg-[#2A3447] text-white"
-                      : "text-muted-foreground hover:bg-[#2A3447] hover:text-white"
-                  }`}
+                className={`w-full flex items-center px-4 py-2 text-sm transition-colors border-l-2 ${
+                  selectedTab === category.id
+                    ? "bg-[#2A3447] text-white border-[#F7931A]"
+                    : "text-muted-foreground hover:bg-[#2A3447] hover:text-white border-transparent"
+                }`}
               >
                 {category.label}
-                <span className="ml-auto rounded-full bg-[#1C2030] px-2 py-0.5 text-xs">
+                <span className="ml-auto rounded-sm bg-[#2A3447] px-1.5 text-xs">
                   {category.count}
                 </span>
               </button>
             ))}
           </div>
 
-          {/* Right Content */}
-          <div className="flex-1 flex flex-col">
-            {/* Search Bar */}
-            <div className="p-4 border-b border-[#2A3447]">
+          <div className="flex-1 flex flex-col min-w-0">
+            <div className="p-3 border-b border-[#2A3447]">
               <div className="relative">
-                <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search assets..."
-                  className="pl-9 bg-[#1C2030] border-[#2A3447] text-white"
+                  className="pl-8 h-9 bg-[#2A3447] border-0 text-white text-sm"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
             </div>
 
-            {/* Assets Table Header */}
-            <div className="grid grid-cols-[auto_1fr_auto] gap-4 px-4 py-2 border-b border-[#2A3447] text-xs text-muted-foreground">
-              <div>Symbol</div>
-              <div>Name</div>
-              <div className="text-right">Change</div>
-            </div>
-
-            {/* Assets List */}
             <div className="flex-1 overflow-y-auto">
-              {filteredAssets.map((asset) => (
-                <button
-                  key={asset.id}
-                  onClick={() => handleAssetSelect(asset.symbol_display)}
-                  className="grid grid-cols-[auto_1fr_auto] gap-4 px-4 py-2 w-full hover:bg-[#2A3447] transition-colors items-center"
-                >
-                  <div className="flex items-center gap-2">
-                    <CurrencyFlag pair={asset.symbol_display} />
-                    <span className="text-sm font-medium text-white">
-                      {asset.symbol_display}
-                    </span>
-                  </div>
-                  <div className="text-sm text-muted-foreground truncate">
-                    {asset.name}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`text-sm ${
-                        parseFloat(asset.change_percent || "0") >= 0
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
+              <Table className="border-collapse">
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent border-b border-[#2A3447]">
+                    <TableHead className="text-xs text-muted-foreground font-normal px-3 py-2">
+                      Symbol
+                    </TableHead>
+                    <TableHead className="text-xs text-muted-foreground font-normal px-3 py-2 text-right">
+                      Sell
+                    </TableHead>
+                    <TableHead className="text-xs text-muted-foreground font-normal px-3 py-2 text-right">
+                      Buy
+                    </TableHead>
+                    <TableHead className="text-xs text-muted-foreground font-normal px-3 py-2 text-right">
+                      Spread
+                    </TableHead>
+                    <TableHead className="text-xs text-muted-foreground font-normal px-3 py-2 text-right">
+                      Change
+                    </TableHead>
+                    <TableHead className="w-[100px] px-3 py-2"></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredAssets.map((asset) => (
+                    <TableRow
+                      key={asset.id}
+                      onClick={() => handleAssetSelect(asset.symbol_display)}
+                      className="hover:bg-[#2A3447] transition-colors cursor-pointer border-b border-[#2A3447]/50"
                     >
-                      {parseFloat(asset.change_percent || "0").toFixed(2)}%
-                    </span>
-                    <Plus className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                </button>
-              ))}
+                      <TableCell className="px-3 py-2">
+                        <div className="flex items-center gap-2">
+                          <CurrencyFlag pair={asset.symbol_display} />
+                          <div>
+                            <div className="text-white">
+                              {asset.symbol_display}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {asset.name}
+                            </div>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="px-3 py-2 text-right text-white">
+                        {asset.sell_price.toFixed(5)}
+                      </TableCell>
+                      <TableCell className="px-3 py-2 text-right text-white">
+                        {asset.buy_price.toFixed(5)}
+                      </TableCell>
+                      <TableCell className="px-3 py-2 text-right text-white">
+                        {(asset.buy_price - asset.sell_price).toFixed(5)}
+                      </TableCell>
+                      <TableCell className="px-3 py-2 text-right">
+                        <span
+                          className={
+                            parseFloat(asset.change_percent || "0") >= 0
+                              ? "text-green-500"
+                              : "text-red-500"
+                          }
+                        >
+                          {parseFloat(asset.change_percent || "0").toFixed(2)}%
+                        </span>
+                      </TableCell>
+                      <TableCell className="px-3 py-2">
+                        <div className="flex items-center justify-end space-x-1">
+                          <button
+                            onClick={(e) => e.stopPropagation()}
+                            className="rounded-sm p-0.5 hover:bg-[#3A4457] text-muted-foreground"
+                          >
+                            <Bell className="h-3.5 w-3.5" />
+                          </button>
+                          <button
+                            onClick={(e) => e.stopPropagation()}
+                            className="rounded-sm p-0.5 hover:bg-[#3A4457] text-muted-foreground"
+                          >
+                            <Star className="h-3.5 w-3.5" />
+                          </button>
+                          <button
+                            onClick={(e) => e.stopPropagation()}
+                            className="rounded-sm p-0.5 hover:bg-[#3A4457] text-muted-foreground"
+                          >
+                            <Info className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           </div>
         </div>
