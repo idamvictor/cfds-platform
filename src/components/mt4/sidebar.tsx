@@ -10,6 +10,7 @@ import {
   Star,
   History,
 } from "lucide-react";
+import { useMobile } from "@/hooks/use-mobile";
 
 interface SidebarItem {
   icon: React.ComponentType<{ className?: string }>;
@@ -30,8 +31,14 @@ const sidebarItems: SidebarItem[] = [
 ];
 
 export default function Sidebar() {
+  const isMobile = useMobile();
+
   return (
-    <aside className="w-25 bg-[#1C2030] border-r border-slate-700 flex flex-col p-4">
+    <aside
+      className={`bg-[#1C2030] border-r border-slate-700 flex flex-col p-4 ${
+        isMobile ? "w-16" : "w-25"
+      }`}
+    >
       <nav className="flex flex-col gap-6">
         {sidebarItems.map((item, index) => {
           const Icon = item.icon;
@@ -43,7 +50,9 @@ export default function Sidebar() {
               }`}
             >
               <Icon className="w-6 h-6" />
-              <span className="text-center leading-tight">{item.label}</span>
+              {!isMobile && (
+                <span className="text-center leading-tight">{item.label}</span>
+              )}
             </div>
           );
         })}
