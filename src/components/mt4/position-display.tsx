@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import useTradeStore from "@/store/tradeStore";
 import type { Trade } from "@/store/tradeStore";
 import { cn } from "@/lib/utils";
-import { useMobile } from "@/hooks/use-mobile";
+// import { useMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import axiosInstance from "@/lib/axios";
 import DesktopPositionTable from "./position-display/desktop-positionTable";
@@ -18,7 +18,7 @@ export default function PositionDisplay() {
   const [showCloseDialog, setShowCloseDialog] = useState(false);
   const [closingTrade, setClosingTrade] = useState(false);
 
-  const isMobile = useMobile(768);
+  // const isMobile = useMobile(768);
 
   // Get trade data from the store
   const {
@@ -113,7 +113,7 @@ export default function PositionDisplay() {
 
   return (
     <div className="flex flex-col text-slate-300 w-full relative">
-      {!isCollapsed && !isMobile && (
+      {!isCollapsed  && (
         <div className="h-[200px] overflow-hidden absolute bottom-full left-0 right-0 z-50 bg-slate-700/50 border border-slate-600 shadow-lg backdrop-blur-sm">
           <div className="border-b border-slate-600 flex justify-between items-center sticky top-0 z-20 bg-slate-700">
             <div className="flex overflow-x-auto">
