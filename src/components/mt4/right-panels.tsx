@@ -3,7 +3,7 @@ import AlgoTrader from "./right-panels/algo-trader";
 
 export default function RightPanels() {
   return (
-    <aside className="w-80 h-full bg-slate-800 border-l border-slate-700">
+    <aside className="h-full bg-slate-800 border-l border-slate-700 w-full">
       <div className="h-full grid grid-rows-2">
         <div className="overflow-hidden">
           <MarketWatch />
