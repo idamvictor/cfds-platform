@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 
 const MT4Layout = () =>{
     return (
-      <div className="h-screen bg-slate-900 text-white flex flex-col overflow-hidden">
+      <div className="h-screen bg-[#1C2030] text-white flex flex-col overflow-hidden">
         {/* Header - Full width at top */}
         <Header />
 
@@ -15,7 +15,7 @@ const MT4Layout = () =>{
           <Sidebar />
 
           {/* Main Content - Chart, Right Panels, Position Display */}
-          <Outlet/>
+          <Outlet />
         </div>
 
         {/* Total Portfolio - Full width at bottom, independent of other components */}

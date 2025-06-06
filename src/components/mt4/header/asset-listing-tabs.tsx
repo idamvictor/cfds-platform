@@ -106,7 +106,7 @@ export function AssetListingTabs({
   // };
 
   return (
-    <div className="flex items-center h-full bg-[#1C2030] p-1 rounded-sm">
+    <div className="flex items-center h-full bg-[#1C2030] p-1 rounded-sm w-full">
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <div
           onMouseEnter={() => setIsOpen(true)}
@@ -152,7 +152,7 @@ export function AssetListingTabs({
           </DropdownMenuContent>
         </div>
       </DropdownMenu>{" "}
-      <div className="flex items-center mx-2 w-[600px]">
+      <div className="flex items-center mx-2 flex-1 min-w-0">
         {canScrollLeft && (
           <Button
             variant="outline"
@@ -166,7 +166,7 @@ export function AssetListingTabs({
 
         <div
           ref={tabsListRef}
-          className="flex gap-2 overflow-x-hidden mx-2 scroll-smooth"
+          className="flex gap-2 overflow-x-hidden mx-2 scroll-smooth flex-1"
           onScroll={checkScroll}
         >
           {activePairs.map((pair) => {

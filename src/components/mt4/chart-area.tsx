@@ -6,7 +6,7 @@ import TradingViewWidget from "../trading/trading-interface-components/trading-v
 
 export default function ChartArea() {
   return (
-    <div className="flex-1 bg-slate-900 relative">
+    <div className="flex-1 bg-[#1C2030] relative">
       <TradingViewWidget />
     </div>
   );
