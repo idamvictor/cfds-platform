@@ -56,6 +56,7 @@ interface AssetListingTabsProps {
   activePairs: string[];
   activePair: string;
   handlePairClick: (pair: string) => void;
+  getAssetCategory: (pair: string) => string;
   removeCurrencyPair: (pair: string) => void;
   isMobile: boolean;
   showScrollButtons?: boolean;
@@ -75,7 +76,7 @@ function AssetListingTabs({
   scrollTabs,
   tabsListRef,
   activeTabRef,
-  setIsMarketWatchOpen,
+  setIsMarketWatchOpen,getAssetCategory
 }: AssetListingTabsProps) {
   return (
     <div className={`flex items-center ${isMobile ? "w-full" : "h-full"}`}>
@@ -117,7 +118,7 @@ function AssetListingTabs({
                 <div className="flex flex-col items-start">
                   <span className="text-xs">{pair}</span>
                   <span className="text-xs text-muted-foreground hidden sm:inline">
-                    forex
+                    { getAssetCategory(pair) }
                   </span>
                 </div>
                 <button
@@ -245,6 +246,17 @@ export default function Header({
       setActiveAsset(asset);
     }
   };
+
+  const getAssetCategory = (pair: string) => {
+    // Find and set the corresponding asset
+    const asset = assets.find((a) => a.symbol_display === pair);
+    if (asset) {
+      return asset.type
+    }
+    return 'forex'
+  };
+
+
 
   const headerStyle = {
     backgroundColor: user?.account_type?.color || "gray",
@@ -538,6 +550,7 @@ export default function Header({
               scrollTabs={scrollTabs}
               tabsListRef={tabsListRef}
               activeTabRef={activeTabRef}
+              getAssetCategory={getAssetCategory}
               setIsMarketWatchOpen={setIsMarketWatchOpen}
             />
           )}
@@ -767,6 +780,7 @@ export default function Header({
             isMobile={true}
             tabsListRef={tabsListRef}
             activeTabRef={activeTabRef}
+            getAssetCategory={getAssetCategory}
             setIsMarketWatchOpen={setIsMarketWatchOpen}
           />
         </div>

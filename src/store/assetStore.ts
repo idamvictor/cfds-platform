@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import axiosInstance from "@/lib/axios";
 import { AssetUpdate } from "@/hooks/useAssetWebsocket";
+import useUserStore from "@/store/userStore.ts";
+import useDataStore, {AssetCat} from "@/store/dataStore.ts";
 
 export interface Asset {
   id: string;
@@ -26,6 +28,7 @@ export interface Asset {
   image: string;
   sym_key: string;
   type: "forex" | "crypto" | "stocks" | "indices" | "commodities" | "metals";
+  category: "forex" | "cryptos" | "stocks" | "indices" | "commodities" | "metals";
   buy_price: number;
   sell_price: number;
   created_at: string;
@@ -51,6 +54,7 @@ interface AssetStore {
   setActivePair: (pair: string) => void;
   addPair: (pair: string) => void;
   removePair: (pair: string) => void;
+  getActiveLeverage: () => number;
 }
 
 const DEFAULT_ASSET_SYMBOL = "BITSTAMP:BTCUSD";
@@ -258,6 +262,40 @@ const useAssetStore = create<AssetStore>()(
           };
         });
       },
+
+      getActiveLeverage: () => {
+        const { activeAsset } = get();
+
+        // If no active asset, return default
+        if (!activeAsset) return 20;
+
+        try {
+          // Get leverage data from dataStore
+          const leverageData = useDataStore.getState().leverage;
+          const user = useUserStore.getState().user;
+
+          // Get the asset type
+          const assetType = activeAsset.category;
+
+          // Use type assertion to make TypeScript happy
+          // This is safe since we know assetType is a valid key of AssetCat
+          const leverageValue = leverageData[assetType as keyof AssetCat];
+
+          // Return the leverage value with fallbacks
+          return (
+              (leverageValue) ||
+              activeAsset.leverage ||
+              user?.account_type?.leverage ||
+              20
+          );
+        } catch (error) {
+          console.error("Error retrieving leverage:", error);
+          // Fallback to user account leverage or default
+          const user = useUserStore.getState().user;
+          return user?.account_type?.leverage || 20;
+        }
+      }
+
     }),
     {
       name: "asset-storage",

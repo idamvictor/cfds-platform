@@ -19,6 +19,9 @@ import { TakeProfitStopLossModal } from "./trading-interface-components/take-pro
 import { PendingOrderModal } from "./trading-interface-components/pending-order-modal";
 import { useCurrency } from "@/hooks/useCurrency.ts";
 import { cn } from "@/lib/utils.ts";
+import useDataStore from "@/store/dataStore.ts";
+
+// import TechnicalAnalysisWidget from "@/components/trading/partials/TechnicalAnalysisWidget";
 import { useOrientation } from "@/hooks/use-orientation";
 
 // AudioContext type for sound effects
@@ -36,9 +39,11 @@ const formSchema = z.object({
 export function TradingInterface() {
   const isLandscape = useOrientation();
   // Get asset and user data
-  const { activeAsset } = useAssetStore();
+  const { activeAsset, getActiveLeverage } = useAssetStore();
   const user = useUserStore((state) => state.user);
+  const leverage = useDataStore((state) => state.leverage);
   const { fetchOpenTrades, accountSummary } = useTradeStore();
+
 
   // State
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -203,7 +208,12 @@ export function TradingInterface() {
       const assetRate = Number.parseFloat(activeAsset.rate || "0");
       const buySpread = Number.parseFloat(activeAsset.buy_spread || "0.0001");
       const sellSpread = Number.parseFloat(activeAsset.sell_spread || "0.0001");
-      const leverage = user?.account_type?.leverage || 20;
+
+
+      // const leverage = user?.account_type?.leverage || 20;
+
+      const leverage = getActiveLeverage();
+
 
       // Calculate buy and sell prices
       const buyPrice = activeAsset.buy_price || assetRate * (1 + buySpread);
@@ -225,7 +235,7 @@ export function TradingInterface() {
         sellPrice: sellPrice,
       });
     }
-  }, [activeAsset, baseVolumeLots, user?.balance]);
+  }, [activeAsset, baseVolumeLots, user?.balance, leverage]);
 
   const convertVolume = (
     value: number,
@@ -363,7 +373,7 @@ export function TradingInterface() {
 
     const tradeData = {
       type: values.type,
-      leverage: user?.account_type?.leverage || 20,
+      leverage: tradingInfo?.leverage,
       amount: calculatedAmount,
       qty: calculatedAmount,
       volume: calculatedAmount,
@@ -924,13 +934,13 @@ export function TradingInterface() {
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Contract size:</span>
                   <span className="text-primary">
-                    {tradingInfo.contractSize.toLocaleString()}
+                    {activeAsset?.contract_size}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Position:</span>
                   <span className="text-primary">
-                    {tradingInfo.position.toLocaleString()}
+                    {activeAsset?.position}
                   </span>
                 </div>
                 <div className="flex justify-between">
