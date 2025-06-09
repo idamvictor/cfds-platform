@@ -1,12 +1,12 @@
-import ChartArea from "./chart-area";
-import PositionDisplay from "./position-display";
-import RightPanels from "./right-panels";
+import ChartArea from "./main-content/chart-area";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMobile } from "@/hooks/use-mobile";
 import AutomatedTrading from "./right-panels/automated-trading";
 import useOverlayStore from "@/store/overlayStore";
+import PositionDisplay from "./main-content/position-display";
+import RightPanels from "./main-content/right-panels";
 
 export default function MainContent() {
   const [isRightPanelVisible, setIsRightPanelVisible] = useState(true);

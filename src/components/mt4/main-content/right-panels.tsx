@@ -1,5 +1,6 @@
-import MarketWatch from "./right-panels/market-watch";
-import AlgoTrader from "./right-panels/algo-trader";
+import AlgoTrader from "../right-panels/algo-trader";
+import MarketWatch from "../right-panels/market-watch";
+
 
 export default function RightPanels() {
   return (

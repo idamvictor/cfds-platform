@@ -7,8 +7,9 @@ import { cn } from "@/lib/utils";
 // import { useMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import axiosInstance from "@/lib/axios";
-import DesktopPositionTable from "./position-display/desktop-positionTable";
-import ClosePositionDialog from "./position-display/close-position-dialog";
+import DesktopPositionTable from "../position-display/desktop-positionTable";
+import ClosePositionDialog from "../position-display/close-position-dialog";
+
 
 export default function PositionDisplay() {
   // UI state
