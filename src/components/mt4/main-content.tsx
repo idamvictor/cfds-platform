@@ -5,16 +5,26 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMobile } from "@/hooks/use-mobile";
+import AutomatedTrading from "./right-panels/automated-trading";
+import useOverlayStore from "@/store/overlayStore";
 
 export default function MainContent() {
   const [isRightPanelVisible, setIsRightPanelVisible] = useState(true);
   const isMobile = useMobile(768);
+  const { automatedTrading } = useOverlayStore();
 
   return (
     <main className="flex-1 flex flex-col h-full">
       {/* Chart and Right Panels Container */}
       <div className="flex flex-1 min-h-0 relative">
         <ChartArea />
+
+        {/* Automated Trading Panel */}
+        {automatedTrading && (
+          <div className="absolute z-30">
+            <AutomatedTrading />
+          </div>
+        )}
 
         {/* Toggle Button */}
         <button

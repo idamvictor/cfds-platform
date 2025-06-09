@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { ChevronDown, ChevronRight, Folder, FileText, X } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import AutomatedTrading from "./automated-trading";
+import useOverlayStore from "@/store/overlayStore";
 
 type SectionState = {
   account: boolean;
@@ -18,7 +18,7 @@ export default function AlgoTrader() {
     expertAdvisors: true,
     advisors: true,
   });
-  const [showAutomatedTrading, setShowAutomatedTrading] = useState(false);
+  const { setAutomatedTrading } = useOverlayStore();
 
   const toggleSection = (section: keyof SectionState) => {
     setExpandedSections((prev) => ({
@@ -127,7 +127,7 @@ export default function AlgoTrader() {
                       {expandedSections.advisors && (
                         <div className="ml-6 space-y-1">
                           <button
-                            onClick={() => setShowAutomatedTrading(true)}
+                            onClick={() => setAutomatedTrading(true)}
                             className="w-full flex items-center gap-2 py-1 px-2 text-xs hover:bg-[#4a5a6c] rounded"
                           >
                             <div className="w-4 h-4 bg-blue-400 rounded-sm flex items-center justify-center">
@@ -157,21 +157,6 @@ export default function AlgoTrader() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Automated Trading Modal */}
-      {showAutomatedTrading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="relative">
-            {/* <button
-              onClick={() => setShowAutomatedTrading(false)}
-              className="absolute -top-2 -right-2 z-10"
-            >
-              <X className="h-4 w-4" />
-            </button> */}
-            <AutomatedTrading onClose={() => setShowAutomatedTrading(false)} />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

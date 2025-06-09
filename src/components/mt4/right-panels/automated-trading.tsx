@@ -2,12 +2,11 @@ import { X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import useOverlayStore from "@/store/overlayStore";
 
-interface AutomatedTradingProps {
-  onClose?: () => void;
-}
+export default function AutomatedTrading() {
+  const { setAutomatedTrading } = useOverlayStore();
 
-export default function AutomatedTrading({ onClose }: AutomatedTradingProps) {
   return (
     <Card className="w-[350px] bg-[#1C2030] text-slate-300 border-slate-800 pt-0">
       <CardHeader className="bg-slate-700 flex flex-row items-center justify-between py-4 px-4 border-b border-slate-800 rounded-md">
@@ -18,7 +17,7 @@ export default function AutomatedTrading({ onClose }: AutomatedTradingProps) {
           variant="ghost"
           size="icon"
           className="h-6 w-6 text-slate-400 hover:text-slate-100"
-          onClick={onClose}
+          onClick={() => setAutomatedTrading(false)}
         >
           <X className="h-4 w-4" />
           <span className="sr-only">Close</span>
