@@ -4,7 +4,7 @@ import { AssetListingTabs } from "./header/asset-listing-tabs";
 import Logo from "../Logo";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
-import TradingInterface from "./trading-interface";
+import TradingInterface from "./trading-interface-copy";
 
 export default function Header() {
   const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
@@ -52,7 +52,7 @@ export default function Header() {
       </div>
 
       <Dialog open={isTradeModalOpen} onOpenChange={setIsTradeModalOpen}>
-        <DialogContent className="p-0 bg-[#1C2030]">
+        <DialogContent className="p-0 bg-[#1C2030] w-[250px]">
           <TradingInterface />
         </DialogContent>
       </Dialog>
