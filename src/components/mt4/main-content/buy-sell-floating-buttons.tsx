@@ -5,48 +5,35 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import TradingInterface from "../trading-interface-copy";
-import { useState } from "react";
 
 export default function BuySellFloatingButtons() {
-  const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
-  const [tradeType, setTradeType] = useState<"buy" | "sell">("buy");
-
-  const handleTradeClick = (type: "buy" | "sell") => {
-    setTradeType(type);
-    setIsTradeModalOpen(true);
-  };
 
   return (
     <div className="absolute top-10 right-10 flex gap-2">
       <DropdownMenu
-        open={isTradeModalOpen && tradeType === "buy"}
-        onOpenChange={(open) => setIsTradeModalOpen(open)}
       >
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
             className="bg-transparent hover:bg-[#234134] text-[#4CD080] px-4 py-1 h-auto border-1 border-[#4CD080] shadow-none font-medium text-base"
-            onClick={() => handleTradeClick("buy")}
           >
             <span className="flex flex-col items-center gap-0.5">
               <span className="text-sm">BUY</span>
               <span className="text-xs opacity-90">43702.10</span>
             </span>
           </Button>
-        </DropdownMenuTrigger>
+        </DropdownMenuTrigger>{" "}
         <DropdownMenuContent className="p-0 bg-[#1C2030] w-[250px]">
-          <TradingInterface />
+          <TradingInterface type="buy" />
         </DropdownMenuContent>
       </DropdownMenu>
 
       <DropdownMenu
-        open={isTradeModalOpen && tradeType === "sell"}
-        onOpenChange={(open) => setIsTradeModalOpen(open)}
       >
         <DropdownMenuTrigger asChild>
           <Button
             className="bg-transparent hover:bg-[#4a2828] text-[#FF4D4D] px-4 py-1 h-auto shadow-none font-medium text-base border-1 border-[#FF4D4D]"
-            onClick={() => handleTradeClick("sell")}
+            // onClick={() => handleTradeClick("sell")}
           >
             <span className="flex flex-col items-center gap-0.5">
               <span className="text-sm">SELL</span>
@@ -55,7 +42,7 @@ export default function BuySellFloatingButtons() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="p-0 bg-[#1C2030] w-[250px]">
-          <TradingInterface />
+          <TradingInterface type="sell" />
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

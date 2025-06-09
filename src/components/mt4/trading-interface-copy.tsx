@@ -36,7 +36,11 @@ const formSchema = z.object({
   stopLoss: z.number().optional(),
 });
 
-export function TradingInterface() {
+interface TradingInterfaceProps {
+  type?: "buy" | "sell";
+}
+
+export function TradingInterface({ type }: TradingInterfaceProps) {
   // const isLandscape = useOrientation();
   // Get asset and user data
   const { activeAsset } = useAssetStore();
@@ -587,7 +591,6 @@ export function TradingInterface() {
                   Profit Calculator
                 </span>
               </Button>
-
               <div className="flex gap-2">
                 <div className="space-y-1 flex-1">
                   <Button
@@ -614,63 +617,70 @@ export function TradingInterface() {
                     <div className="text-xs text-foreground">Market</div>
                   </Button>
                 </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-1 pt-1">
-                <Button
-                  type="submit"
-                  className="bg-green-500 hover:bg-green-600 text-white h-10 text-xs"
-                  onClick={() => {
-                    form.setValue("type", "buy");
-                    form.setValue("id", uuidv4());
-                    form.setValue(
-                      "amount",
-                      baseVolumeLots * tradingInfo.contractSize
-                    );
-                  }}
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <div className="flex items-center">
-                      <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                      <span>Processing...</span>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center">
-                      <span className="font-bold">BUY</span>
-                      <span className="text-sm">
-                        {tradingInfo.buyPrice.toFixed(5)}
-                      </span>
-                    </div>
-                  )}
-                </Button>
-                <Button
-                  type="submit"
-                  className="bg-red-500 hover:bg-red-600 text-white h-10 text-xs"
-                  onClick={() => {
-                    form.setValue("type", "sell");
-                    form.setValue("id", uuidv4());
-                    form.setValue(
-                      "amount",
-                      baseVolumeLots * tradingInfo.contractSize
-                    );
-                  }}
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <div className="flex items-center">
-                      <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                      <span>Processing...</span>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center">
-                      <span className="font-bold">SELL</span>
-                      <span className="text-sm">
-                        {tradingInfo.sellPrice.toFixed(5)}
-                      </span>
-                    </div>
-                  )}
-                </Button>
+              </div>{" "}
+              <div
+                className={`grid ${
+                  !type ? "grid-cols-2" : "grid-cols-1"
+                } gap-1 pt-1`}
+              >
+                {(!type || type === "buy") && (
+                  <Button
+                    type="submit"
+                    className="bg-green-500 hover:bg-green-600 text-white h-10 text-xs w-full"
+                    onClick={() => {
+                      form.setValue("type", "buy");
+                      form.setValue("id", uuidv4());
+                      form.setValue(
+                        "amount",
+                        baseVolumeLots * tradingInfo.contractSize
+                      );
+                    }}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center">
+                        <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                        <span>Processing...</span>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center">
+                        <span className="font-bold">BUY</span>
+                        <span className="text-sm">
+                          {tradingInfo.buyPrice.toFixed(5)}
+                        </span>
+                      </div>
+                    )}
+                  </Button>
+                )}
+                {(!type || type === "sell") && (
+                  <Button
+                    type="submit"
+                    className="bg-red-500 hover:bg-red-600 text-white h-10 text-xs w-full"
+                    onClick={() => {
+                      form.setValue("type", "sell");
+                      form.setValue("id", uuidv4());
+                      form.setValue(
+                        "amount",
+                        baseVolumeLots * tradingInfo.contractSize
+                      );
+                    }}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center">
+                        <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                        <span>Processing...</span>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center">
+                        <span className="font-bold">SELL</span>
+                        <span className="text-sm">
+                          {tradingInfo.sellPrice.toFixed(5)}
+                        </span>
+                      </div>
+                    )}
+                  </Button>
+                )}
               </div>
             </div>
           </div>
