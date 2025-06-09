@@ -2,7 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { AssetListingTabs } from "./header/asset-listing-tabs";
 import Logo from "../Logo";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import TradingInterface from "./trading-interface-copy";
 
@@ -11,7 +15,7 @@ export default function Header() {
 
   return (
     <header className="bg-[#1C2030] border-b border-slate-700 px-4 py-2">
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between  lg:gap-0">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between lg:gap-0">
         {/* Top row for mobile, normal layout for desktop */}
         <div className="flex lg:hidden items-center justify-between w-full">
           <div className="flex items-center gap-2">
@@ -36,13 +40,20 @@ export default function Header() {
 
         {/* Desktop new order button */}
         <div className="hidden lg:block">
-          <Button
-            className="border border-green-500 bg-transparent text-primary hover:bg-green-500 hover:text-white transition-colors"
-            onClick={() => setIsTradeModalOpen(true)}
+          <DropdownMenu
+            open={isTradeModalOpen}
+            onOpenChange={setIsTradeModalOpen}
           >
-            <Plus className="w-4 h-4 mr-2" />
-            New Order
-          </Button>
+            <DropdownMenuTrigger asChild>
+              <Button className="border border-green-500 bg-transparent text-primary hover:bg-green-500 hover:text-white transition-colors">
+                <Plus className="w-4 h-4 mr-2" />
+                New Order
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="p-0 bg-[#1C2030] w-[250px] border border-slate-700 shadow-lg">
+              <TradingInterface />
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Mobile asset listing tabs */}
@@ -50,12 +61,6 @@ export default function Header() {
           <AssetListingTabs />
         </div>
       </div>
-
-      <Dialog open={isTradeModalOpen} onOpenChange={setIsTradeModalOpen}>
-        <DialogContent className="p-0 bg-[#1C2030] w-[250px]">
-          <TradingInterface />
-        </DialogContent>
-      </Dialog>
     </header>
   );
 }
