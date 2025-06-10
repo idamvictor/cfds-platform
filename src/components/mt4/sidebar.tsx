@@ -2,13 +2,17 @@ import type React from "react";
 import {
   BarChart3,
   BookOpen,
-  Bell,
-  MessageSquare,
+  // Bell,
+  // MessageSquare,
   Play,
   TrendingUp,
-  Grid3X3,
+  // Grid3X3,
   Star,
   History,
+  LineChart,
+  Clock,
+  Calendar,
+  Newspaper,
 } from "lucide-react";
 import { useMobile } from "@/hooks/use-mobile";
 
@@ -19,13 +23,17 @@ interface SidebarItem {
 }
 
 const sidebarItems: SidebarItem[] = [
-  { icon: Grid3X3, label: "CLIENT AREA" },
+  // { icon: Grid3X3, label: "CLIENT AREA" },
   { icon: BarChart3, label: "TRADE ROOM", isActive: true },
+  { icon: LineChart, label: "MARKET WATCH" },
   { icon: BookOpen, label: "ORDER BOOK" },
+  { icon: Clock, label: "TRADING HISTORY" },
+  { icon: Calendar, label: "CALENDAR" },
+  { icon: Newspaper, label: "MARKET NEWS" },
   { icon: Star, label: "WATCH LIST" },
-  { icon: Bell, label: "ALERTS & NOTIFICATION" },
+  // { icon: Bell, label: "ALERTS & NOTIFICATION" },
   { icon: History, label: "FINANCIAL HISTORY" },
-  { icon: MessageSquare, label: "CHAT & SUPPORT" },
+  // { icon: MessageSquare, label: "CHAT & SUPPORT" },
   { icon: Play, label: "VIDEO GUIDES" },
   { icon: TrendingUp, label: "TECHNICAL ANALYSIS" },
 ];
