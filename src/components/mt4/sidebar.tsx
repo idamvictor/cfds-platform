@@ -1,12 +1,8 @@
 import type React from "react";
 import {
   BarChart3,
-  BookOpen,
-  // Bell,
-  // MessageSquare,
   Play,
   TrendingUp,
-  // Grid3X3,
   Star,
   History,
   LineChart,
@@ -15,49 +11,65 @@ import {
   Newspaper,
 } from "lucide-react";
 import { useMobile } from "@/hooks/use-mobile";
+import useOverlayStore from "@/store/overlayStore";
 
 interface SidebarItem {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   isActive?: boolean;
+  panelId: string;
 }
 
 const sidebarItems: SidebarItem[] = [
-  // { icon: Grid3X3, label: "CLIENT AREA" },
-  { icon: BarChart3, label: "TRADE ROOM", isActive: true },
-  { icon: LineChart, label: "MARKET WATCH" },
-  { icon: BookOpen, label: "ORDER BOOK" },
-  { icon: Clock, label: "TRADING HISTORY" },
-  { icon: Calendar, label: "CALENDAR" },
-  { icon: Newspaper, label: "MARKET NEWS" },
-  { icon: Star, label: "WATCH LIST" },
-  // { icon: Bell, label: "ALERTS & NOTIFICATION" },
-  { icon: History, label: "FINANCIAL HISTORY" },
-  // { icon: MessageSquare, label: "CHAT & SUPPORT" },
-  { icon: Play, label: "VIDEO GUIDES" },
-  { icon: TrendingUp, label: "TECHNICAL ANALYSIS" },
+  {
+    icon: BarChart3,
+    label: "TRADE ROOM",
+    isActive: true,
+    panelId: "trade-room",
+  },
+  { icon: LineChart, label: "MARKET WATCH", panelId: "market-watch" },
+  { icon: BarChart3, label: "ACTIVE ORDERS", panelId: "active-orders" },
+  { icon: Clock, label: "TRADING HISTORY", panelId: "trading-history" },
+  { icon: Calendar, label: "CALENDAR", panelId: "calendar" },
+  { icon: Newspaper, label: "MARKET NEWS", panelId: "market-news" },
+  { icon: Star, label: "WATCH LIST", panelId: "watch-list" },
+  { icon: History, label: "FINANCIAL HISTORY", panelId: "financial-history" },
+  { icon: Play, label: "VIDEO GUIDES", panelId: "video-guides" },
+  {
+    icon: TrendingUp,
+    label: "TECHNICAL ANALYSIS",
+    panelId: "technical-analysis",
+  },
 ];
 
 export default function Sidebar() {
-  const isMobile = useMobile();
+  const isMobile = useMobile(768);
+  const { activePanel, setActivePanel } = useOverlayStore();
+
+  const handleItemClick = (item: SidebarItem) => {
+    if (item.panelId === "trade-room") return; // Don't toggle for trade room
+    setActivePanel(activePanel === item.panelId ? null : (item.panelId as any));
+  };
 
   return (
-    <aside
-      className={`bg-[#1C2030] border-r border-slate-700 flex flex-col p-4 ${
-        isMobile ? "w-16" : "w-25"
+    <div
+      className={`bg-[#1C2030] border-r border-slate-700 p-1 flex flex-col h-full ${
+        isMobile ? "w-16" : "w-20"
       }`}
     >
-      <nav className="flex flex-col gap-6">
+      <nav className="flex flex-col gap-6 overflow-y-auto max-h-full scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
         {sidebarItems.map((item, index) => {
           const Icon = item.icon;
+          const isSelected = activePanel === item.panelId || item.isActive;
           return (
             <div
               key={index}
               className={`flex flex-col items-center gap-1 text-[10px] cursor-pointer transition-colors ${
-                item.isActive ? "text-white" : "text-gray-400 hover:text-white"
+                isSelected ? "text-white" : "text-gray-400 hover:text-white"
               }`}
+              onClick={() => handleItemClick(item)}
             >
-              <Icon className="w-6 h-6" />
+              <Icon className="w-6 h-6 flex-shrink-0" />
               {!isMobile && (
                 <span className="text-center leading-tight">{item.label}</span>
               )}
@@ -65,6 +77,6 @@ export default function Sidebar() {
           );
         })}
       </nav>
-    </aside>
+    </div>
   );
 }

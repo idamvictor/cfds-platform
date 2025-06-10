@@ -1,6 +1,6 @@
 import ChartArea from "./main-content/chart-area";
 import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMobile } from "@/hooks/use-mobile";
 import AutomatedTrading from "./right-panels/automated-trading";
@@ -8,10 +8,70 @@ import useOverlayStore from "@/store/overlayStore";
 import PositionDisplay from "./main-content/position-display";
 import RightPanels from "./main-content/right-panels";
 
+// Import panel components
+import MarketWatchPanel from "../trading/trading-interface-components/panels/market-watch-panel";
+import ActiveOrdersPanel from "../trading/trading-interface-components/panels/active-orders-panel";
+import TradingHistoryPanel from "../trading/trading-interface-components/panels/trading-history-panel";
+import CalendarPanel from "../trading/trading-interface-components/panels/calendar-panel";
+import MarketNewsPanel from "../trading/trading-interface-components/panels/market-news-panel";
+import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
+import { Button } from "../ui/button";
+
 export default function MainContent() {
   const [isRightPanelVisible, setIsRightPanelVisible] = useState(true);
   const isMobile = useMobile(768);
-  const { automatedTrading } = useOverlayStore();
+  const { automatedTrading, activePanel, setActivePanel } = useOverlayStore();
+
+  const addCurrencyPair = (pair: string) => {
+    console.log("Adding currency pair:", pair);
+  };
+
+  const renderActivePanel = () => {
+    if (!activePanel) return null;
+
+    const panels: Record<string, React.ReactNode> = {
+      "market-watch": <MarketWatchPanel addCurrencyPair={addCurrencyPair} />,
+      "active-orders": <ActiveOrdersPanel />,
+      "trading-history": <TradingHistoryPanel />,
+      calendar: <CalendarPanel />,
+      "market-news": <MarketNewsPanel />,
+    };
+
+    const PanelComponent = panels[activePanel];
+
+    // If it's one of the implemented panels, return it as is
+    if (PanelComponent)
+      return <div className="absolute z-30 h-full">{PanelComponent}</div>;
+
+    // For non-implemented panels, show a generic panel
+    return (
+      <div className="absolute z-30 ">
+        <Card className="w-[350px] bg-[#1C2030] text-slate-300 border-slate-800">
+          <CardHeader className="bg-slate-700 flex flex-row items-center justify-between py-4 px-4 border-b border-slate-800">
+            <CardTitle className="text-sm font-medium text-slate-200">
+              {activePanel
+                .split("-")
+                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(" ")}
+            </CardTitle>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 text-slate-400 hover:text-slate-100"
+              onClick={() => setActivePanel(null)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </CardHeader>
+          <CardContent className="p-4">
+            <p className="text-muted-foreground">
+              This panel is under development
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
 
   return (
     <main className="flex-1 flex flex-col h-full">
@@ -21,10 +81,13 @@ export default function MainContent() {
 
         {/* Automated Trading Panel */}
         {automatedTrading && (
-          <div className="absolute z-30">
+          <div className="absolute z-30 ">
             <AutomatedTrading />
           </div>
         )}
+
+        {/* Active Panel from Sidebar */}
+        {renderActivePanel()}
 
         {/* Toggle Button */}
         <button
