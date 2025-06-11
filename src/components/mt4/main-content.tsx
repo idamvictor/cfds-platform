@@ -39,14 +39,18 @@ export default function MainContent() {
 
     const PanelComponent = panels[activePanel];
 
-    // If it's one of the implemented panels, return it as is
+    // If it's one of the implemented panels, return it
     if (PanelComponent)
-      return <div className="absolute z-30 h-full">{PanelComponent}</div>;
+      return (
+        <div className="w-[300px] border-r border-border overflow-y-auto">
+          {PanelComponent}
+        </div>
+      );
 
     // For non-implemented panels, show a generic panel
     return (
-      <div className="absolute z-30 ">
-        <Card className="w-[350px] bg-[#1C2030] text-slate-300 border-slate-800">
+      <div className="w-[300px] border-r border-border">
+        <Card className="bg-[#1C2030] text-slate-300 border-slate-800">
           <CardHeader className="bg-slate-700 flex flex-row items-center justify-between py-4 px-4 border-b border-slate-800">
             <CardTitle className="text-sm font-medium text-slate-200">
               {activePanel
@@ -74,21 +78,35 @@ export default function MainContent() {
   };
 
   return (
-    <main className="flex-1 flex flex-col h-full">
+    <main className="flex-1 flex flex-col h-full relative">
       {/* Chart and Right Panels Container */}
-      <div className="flex flex-1 min-h-0 relative">
-        <ChartArea />
+      <div className="flex flex-1 min-h-0">
+        {/* Left Panel from Sidebar */}
+        {!isMobile && renderActivePanel()}
+        {/* Chart Area with Automated Trading */}
+        <div className="flex-1 relative h-full">
+          <ChartArea />
+          {/* Automated Trading Panel */}
+          {automatedTrading && (
+            <div className=" top-0 left-0 z-50 absolute">
+              <AutomatedTrading />
+            </div>
+          )}
 
-        {/* Automated Trading Panel */}
-        {automatedTrading && (
-          <div className="absolute z-30 ">
-            <AutomatedTrading />
-          </div>
-        )}
-
-        {/* Active Panel from Sidebar */}
-        {renderActivePanel()}
-
+          {/* Mobile Panel Overlay */}
+          {isMobile && activePanel && (
+            <>
+              <div
+                className="fixed inset-0 bg-black/50 z-30"
+                onClick={() => setActivePanel(null)}
+              />
+              <div className="fixed left-0 top-0 bottom-0 w-[300px] z-40 bg-background">
+                {renderActivePanel()}
+              </div>
+            </>
+          )}
+        </div>
+        {/* Right Panels */}
         {/* Toggle Button */}
         <button
           onClick={() => setIsRightPanelVisible(!isRightPanelVisible)}
@@ -101,8 +119,6 @@ export default function MainContent() {
             <ChevronLeft className="h-4 w-4" />
           )}
         </button>
-
-        {/* Right Panels with conditional classes */}
         <div
           className={cn(
             "transition-all duration-300 ease-in-out",
@@ -117,7 +133,6 @@ export default function MainContent() {
         >
           <RightPanels />
         </div>
-
         {/* Overlay for mobile */}
         {isMobile && isRightPanelVisible && (
           <div
