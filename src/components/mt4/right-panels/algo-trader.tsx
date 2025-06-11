@@ -1,10 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { ChevronDown, ChevronRight, X, Play } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
-import { ChevronDown, ChevronRight, Folder, FileText, X } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import useOverlayStore from "@/store/overlayStore";
+import useDataStore from "@/store/dataStore";
+import useUserStore from "@/store/userStore";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 type SectionState = {
   account: boolean;
@@ -19,6 +23,8 @@ export default function AlgoTrader() {
     advisors: true,
   });
   const { setAutomatedTrading } = useOverlayStore();
+  const { data } = useDataStore();
+  const user = useUserStore((state) => state.user);
 
   const toggleSection = (section: keyof SectionState) => {
     setExpandedSections((prev) => ({
@@ -27,9 +33,22 @@ export default function AlgoTrader() {
     }));
   };
 
+  const handleAdvisorClick = (advisorId: string) => {
+    // Check if the advisor is available in the user's plan
+    if (!user?.account_type?.expert_advisors?.includes(advisorId)) {
+      toast.error(
+        "This Expert Advisor is not available for your plan. Please upgrade to access it."
+      );
+      return;
+    }
+
+    // Start the automated trading with the selected advisor
+    setAutomatedTrading(true, advisorId);
+  };
+
   return (
     <div className="h-full flex flex-col">
-      {/* Algo Trader Header - Fixed Position */}
+      {/* Algo Trader Header */}
       <div className="p-2 border-b border-slate-700 bg-slate-700 sticky top-0 z-10">
         <div className="flex items-center justify-between">
           <span className="text-xs font-medium">Algo Trader</span>
@@ -40,7 +59,7 @@ export default function AlgoTrader() {
         </div>
       </div>
 
-      {/* Navigation Tree - Fixed Height Container */}
+      {/* Navigation Tree */}
       <div className="flex-1 min-h-0 p-0 bg-[#1C2030]">
         <Card className="h-full bg-[#1C2030] border-slate-600 p-1 rounded-none shadow-none">
           <CardContent className="p-1 h-full">
@@ -107,7 +126,7 @@ export default function AlgoTrader() {
 
                 {expandedSections.expertAdvisors && (
                   <div className="ml-6 space-y-1">
-                    {/* Advisors Subfolder */}
+                    {/* Advisors Section */}
                     <div>
                       <button
                         onClick={() => toggleSection("advisors")}
@@ -118,35 +137,34 @@ export default function AlgoTrader() {
                         ) : (
                           <ChevronRight className="w-3 h-3" />
                         )}
-                        <div className="w-4 h-4 bg-yellow-500 rounded-sm flex items-center justify-center">
-                          <Folder className="w-2 h-2 text-white" />
+                        <div className="w-4 h-4 bg-blue-500 rounded-sm flex items-center justify-center">
+                          <span className="text-xs text-white">A</span>
                         </div>
                         <span>Advisors</span>
                       </button>
 
-                      {expandedSections.advisors && (
+                      {expandedSections.advisors && data?.expert_advisors && (
                         <div className="ml-6 space-y-1">
-                          <button
-                            onClick={() => setAutomatedTrading(true)}
-                            className="w-full flex items-center gap-2 py-1 px-2 text-xs hover:bg-[#4a5a6c] rounded"
-                          >
-                            <div className="w-4 h-4 bg-blue-400 rounded-sm flex items-center justify-center">
-                              <FileText className="w-2 h-2 text-white" />
-                            </div>
-                            <span>ExpertMACD</span>
-                          </button>
-                          <div className="flex items-center gap-2 py-1 px-2 text-xs">
-                            <div className="w-4 h-4 bg-blue-400 rounded-sm flex items-center justify-center">
-                              <FileText className="w-2 h-2 text-white" />
-                            </div>
-                            <span>ExpertMAMA</span>
-                          </div>
-                          <div className="flex items-center gap-2 py-1 px-2 text-xs">
-                            <div className="w-4 h-4 bg-blue-400 rounded-sm flex items-center justify-center">
-                              <FileText className="w-2 h-2 text-white" />
-                            </div>
-                            <span>ExpertMAPSAR</span>
-                          </div>
+                          {data.expert_advisors.map((advisor) => (
+                            <button
+                              key={advisor.id}
+                              onClick={() => handleAdvisorClick(advisor.id)}
+                              className={cn(
+                                "flex items-center w-full gap-2 py-1 px-2 text-xs hover:bg-[#4a5a6c] rounded",
+                                !user?.account_type?.expert_advisors?.includes(
+                                  advisor.id
+                                ) && "opacity-50 cursor-not-allowed"
+                              )}
+                              disabled={
+                                !user?.account_type?.expert_advisors?.includes(
+                                  advisor.id
+                                )
+                              }
+                            >
+                              <Play className="w-3 h-3" />
+                              <span>{advisor.name}</span>
+                            </button>
+                          ))}
                         </div>
                       )}
                     </div>

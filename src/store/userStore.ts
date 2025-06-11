@@ -64,6 +64,7 @@ export interface User {
     icon: string;
     color: string;
     image: string;
+    expert_advisors: string[]; // Array of expert advisor IDs available for this plan
   };
   accounts: UserAccount[];
   notifications: UserNotification[];

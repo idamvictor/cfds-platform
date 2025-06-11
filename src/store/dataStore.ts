@@ -45,6 +45,13 @@ export interface AssetCat {
   forex: number;
 }
 
+export interface ExpertAdvisor {
+  id: string;
+  name: string;
+  slug: string;
+  image: string;
+}
+
 export interface SiteData {
   currencies: Currency[];
   wallets: Wallet[];
@@ -53,6 +60,7 @@ export interface SiteData {
   plan_features: string[];
   plans: Plan[];
   leverage?: AssetCat;
+  expert_advisors: ExpertAdvisor[];
 }
 
 interface DataStore {
@@ -70,7 +78,7 @@ const defaultLeverage: AssetCat = {
   indices: 100,
   commodities: 100,
   metals: 100,
-  forex: 100
+  forex: 100,
 };
 
 const useDataStore = create<DataStore>((set) => ({
@@ -90,7 +98,7 @@ const useDataStore = create<DataStore>((set) => ({
       set({
         data: responseData,
         leverage,
-        isLoading: false
+        isLoading: false,
       });
     } catch (error) {
       console.error("Failed to fetch site data:", error);

@@ -20,7 +20,8 @@ import { Button } from "../ui/button";
 export default function MainContent() {
   const [isRightPanelVisible, setIsRightPanelVisible] = useState(true);
   const isMobile = useMobile(768);
-  const { automatedTrading, activePanel, setActivePanel } = useOverlayStore();
+  const { automatedTrading, selectedAdvisorId, activePanel, setActivePanel } =
+    useOverlayStore();
 
   const addCurrencyPair = (pair: string) => {
     console.log("Adding currency pair:", pair);
@@ -88,8 +89,8 @@ export default function MainContent() {
           <ChartArea />
           {/* Automated Trading Panel */}
           {automatedTrading && (
-            <div className=" top-0 left-0 z-50 absolute">
-              <AutomatedTrading />
+            <div className="top-0 left-0 z-50 absolute">
+              <AutomatedTrading advisorId={selectedAdvisorId} />
             </div>
           )}
 

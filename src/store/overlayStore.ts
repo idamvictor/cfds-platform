@@ -1,36 +1,24 @@
 import { create } from "zustand";
 
-export type PanelType =
-  | "market-watch"
-  | "active-orders"
-  | "trading-history"
-  | "calendar"
-  | "market-news"
-  | "trade-room"
-  | "watch-list"
-  | "financial-history"
-  | "video-guides"
-  | "technical-analysis"
-  | null;
-
 interface OverlayState {
   automatedTrading: boolean;
-  setAutomatedTrading: (open: boolean) => void;
-  activePanel: PanelType;
-  setActivePanel: (panel: PanelType) => void;
-  resetAll: () => void;
+  selectedAdvisorId: string | undefined;
+  activePanel: string | null;
+  showDepositModal: boolean;
+  setAutomatedTrading: (trading: boolean, advisorId?: string) => void;
+  setActivePanel: (panel: string | null) => void;
+  setShowDepositModal: (show: boolean) => void;
 }
 
 const useOverlayStore = create<OverlayState>((set) => ({
   automatedTrading: false,
-  setAutomatedTrading: (open) => set({ automatedTrading: open }),
+  selectedAdvisorId: undefined,
   activePanel: null,
+  showDepositModal: false,
+  setAutomatedTrading: (trading, advisorId) =>
+    set({ automatedTrading: trading, selectedAdvisorId: advisorId }),
   setActivePanel: (panel) => set({ activePanel: panel }),
-  resetAll: () =>
-    set({
-      automatedTrading: false,
-      activePanel: null,
-    }),
+  setShowDepositModal: (show) => set({ showDepositModal: show }),
 }));
 
 export default useOverlayStore;
