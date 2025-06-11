@@ -11,21 +11,22 @@ import {
   Newspaper,
 } from "lucide-react";
 import { useMobile } from "@/hooks/use-mobile";
-import useOverlayStore from "@/store/overlayStore";
+import useOverlayStore, { type PanelType } from "@/store/overlayStore";
+import { cn } from "@/lib/utils";
 
 interface SidebarItem {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   isActive?: boolean;
-  panelId: string;
+  panelId: PanelType;
 }
 
 const sidebarItems: SidebarItem[] = [
   {
     icon: BarChart3,
     label: "TRADE ROOM",
-    isActive: true,
-    panelId: "trade-room",
+    panelId: "trade-room", // This item should not toggle
+    isActive: true, // This item is always active
   },
   { icon: LineChart, label: "MARKET WATCH", panelId: "market-watch" },
   { icon: BarChart3, label: "ACTIVE ORDERS", panelId: "active-orders" },
@@ -48,32 +49,36 @@ export default function Sidebar() {
 
   const handleItemClick = (item: SidebarItem) => {
     if (item.panelId === "trade-room") return; // Don't toggle for trade room
-    setActivePanel(activePanel === item.panelId ? null : (item.panelId as any));
+    setActivePanel(activePanel === item.panelId ? null : item.panelId);
   };
 
   return (
     <div
-      className={`bg-[#1C2030] border-r border-slate-700 p-1 flex flex-col h-full ${
-        isMobile ? "w-16" : "w-20"
-      }`}
+      className={cn(
+        "flex flex-col bg-background border-r border-border transition-all duration-300",
+        isMobile ? "w-[60px]" : "w-[92px]"
+      )}
     >
-      <nav className="flex flex-col gap-6 overflow-y-auto max-h-full scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
+      <nav className="flex flex-col items-center py-4 space-y-2 h-full">
         {sidebarItems.map((item, index) => {
           const Icon = item.icon;
           const isSelected = activePanel === item.panelId || item.isActive;
           return (
-            <div
+            <button
               key={index}
-              className={`flex flex-col items-center gap-1 text-[10px] cursor-pointer transition-colors ${
-                isSelected ? "text-white" : "text-gray-400 hover:text-white"
-              }`}
+              className={cn(
+                "flex flex-col items-center justify-center w-full py-4 px-1 transition-colors",
+                isSelected
+                  ? "bg-slate-700"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              )}
               onClick={() => handleItemClick(item)}
             >
-              <Icon className="w-6 h-6 flex-shrink-0" />
+              <Icon className="h-5 w-5 mb-1" />
               {!isMobile && (
-                <span className="text-center leading-tight">{item.label}</span>
+                <span className="text-[9px] font-medium">{item.label}</span>
               )}
-            </div>
+            </button>
           );
         })}
       </nav>
