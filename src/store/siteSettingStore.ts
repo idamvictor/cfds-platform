@@ -25,6 +25,7 @@ export interface SiteSettings {
     maintenanceMessage?: string;
     // Add other settings as needed
     lastFetched: number;
+    is_mt4: boolean;
 }
 
 interface SiteSettingsState {
