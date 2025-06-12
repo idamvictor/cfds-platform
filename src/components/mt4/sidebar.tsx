@@ -1,10 +1,10 @@
 import type React from "react";
 import {
   BarChart3,
-  Play,
-  TrendingUp,
-  Star,
-  History,
+  // Play,
+  // TrendingUp,
+  // Star,
+  // History,
   LineChart,
   Clock,
   Calendar,
@@ -34,14 +34,14 @@ const sidebarItems: SidebarItem[] = [
   { icon: Clock, label: "TRADING HISTORY", panelId: "trading-history" },
   { icon: Calendar, label: "CALENDAR", panelId: "calendar" },
   { icon: Newspaper, label: "MARKET NEWS", panelId: "market-news" },
-  { icon: Star, label: "WATCH LIST", panelId: "watch-list" },
-  { icon: History, label: "FINANCIAL HISTORY", panelId: "financial-history" },
-  { icon: Play, label: "VIDEO GUIDES", panelId: "video-guides" },
-  {
-    icon: TrendingUp,
-    label: "TECHNICAL ANALYSIS",
-    panelId: "technical-analysis",
-  },
+  // { icon: Star, label: "WATCH LIST", panelId: "watch-list" },
+  // { icon: History, label: "FINANCIAL HISTORY", panelId: "financial-history" },
+  // { icon: Play, label: "VIDEO GUIDES", panelId: "video-guides" },
+  // {
+  //   icon: TrendingUp,
+  //   label: "TECHNICAL ANALYSIS",
+  //   panelId: "technical-analysis",
+  // },
 ];
 
 export default function Sidebar() {

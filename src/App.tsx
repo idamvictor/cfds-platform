@@ -15,10 +15,11 @@ import { ChatNotificationListener } from "@/components/ChatNotificationListener.
 import MT4Layout from "./layouts/MT4Layout";
 import MainContent from "./components/mt4/main-content";
 
+const TradingRouter = lazy(() => import("./components/routing/TradingRouter"));
+
 const AutoLoginPage = lazy(() => import("./pages/auth/auto-login"));
 
 const Test = lazy(() => import("./pages/test"));
-const Trading = lazy(() => import("./pages/trading"));
 const RegisterPage = lazy(() => import("./pages/auth/register-page"));
 const LoginPage = lazy(() => import("./pages/auth/login-page"));
 const ForgotPasswordPage = lazy(
@@ -152,13 +153,14 @@ const App = () => {
                   <Route path="/main/settings" element={<SettingsPage />} />
                   <Route path="/main/test" element={<Test />} />
                 </Route>
+
                 <Route
-                  path="trading"
-                  element={
-                    <ProtectedRoute>
-                      <Trading />
-                    </ProtectedRoute>
-                  }
+                    path="trading"
+                    element={
+                      <ProtectedRoute>
+                        <TradingRouter />
+                      </ProtectedRoute>
+                    }
                 />
 
                 {/* Authentication Routes */}

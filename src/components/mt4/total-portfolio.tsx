@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import useTradeStore from "@/store/tradeStore";
 import { useCurrency } from "@/hooks/useCurrency";
 import { cn } from "@/lib/utils";
@@ -55,9 +55,9 @@ export default function TotalPortfolio() {
             </div>
           </div>
         </div>
-        <Button className="bg-orange-600 hover:bg-orange-700 ml-4 shrink-0">
-          SWITCH TO CRM
-        </Button>
+        {/*<Button className="bg-orange-600 hover:bg-orange-700 ml-4 shrink-0">*/}
+        {/*  SWITCH TO CRM*/}
+        {/*</Button>*/}
       </div>
     </div>
   );

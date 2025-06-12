@@ -120,11 +120,11 @@ export function DesktopPositionTable({
                   {position.volume.toFixed(2)}
                 </TableCell>
                 <TableCell className="py-2 text-xs">
-                  {new Date(position.open_time).toLocaleString()}
+                  { position.open_time }
                 </TableCell>
                 {activeTab === "history" && (
                   <TableCell className="py-2 text-xs">
-                    {new Date(position.close_time).toLocaleString()}
+                    { position.close_time }
                   </TableCell>
                 )}
                 <TableCell className="py-2 text-xs">
