@@ -12,6 +12,7 @@ import AdminChat from "@/pages/admin/AdminChat.tsx";
 import SignUpPage from "@/pages/auth/signup-page.tsx";
 import CountryResidencePage from "@/pages/auth/country-page.tsx";
 import {ChatNotificationListener} from "@/components/ChatNotificationListener.tsx";
+import {LicenseProvider} from "@/components/provider/LicenseProvider.tsx";
 
 const AutoLoginPage = lazy(() => import("./pages/auth/auto-login"));
 
@@ -74,7 +75,8 @@ const App = () => {
         <Toaster position="top-right" />
         <BrowserRouter>
 
-          <SiteProvider>
+          <LicenseProvider>
+            <SiteProvider>
             <BaseLayout>
               <WebSocketInitializer />
               <OnlineStatusInitializer />
@@ -177,6 +179,7 @@ const App = () => {
               </Routes>
             </BaseLayout>
           </SiteProvider>
+          </LicenseProvider>
         </BrowserRouter>
       </Suspense>
     </QueryClientProvider>
