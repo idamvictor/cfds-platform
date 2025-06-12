@@ -1,12 +1,25 @@
 import { create } from "zustand";
 
+export type PanelType =
+  | "trade-room"
+  | "market-watch"
+  | "active-orders"
+  | "trading-history"
+  | "calendar"
+  | "market-news"
+  | "watch-list"
+  | "financial-history"
+  | "video-guides"
+  | "technical-analysis"
+  | null;
+
 interface OverlayState {
   automatedTrading: boolean;
   selectedAdvisorId: string | undefined;
-  activePanel: string | null;
+  activePanel: PanelType;
   showDepositModal: boolean;
   setAutomatedTrading: (trading: boolean, advisorId?: string) => void;
-  setActivePanel: (panel: string | null) => void;
+  setActivePanel: (panel: PanelType) => void;
   setShowDepositModal: (show: boolean) => void;
 }
 

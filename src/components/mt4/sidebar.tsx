@@ -9,6 +9,7 @@ import {
   Clock,
   Calendar,
   Newspaper,
+  ClipboardList,
 } from "lucide-react";
 import { useMobile } from "@/hooks/use-mobile";
 import useOverlayStore, { type PanelType } from "@/store/overlayStore";
@@ -29,7 +30,7 @@ const sidebarItems: SidebarItem[] = [
     isActive: true, // This item is always active
   },
   { icon: LineChart, label: "MARKET WATCH", panelId: "market-watch" },
-  { icon: BarChart3, label: "ACTIVE ORDERS", panelId: "active-orders" },
+  { icon: ClipboardList, label: "ACTIVE ORDERS", panelId: "active-orders" },
   { icon: Clock, label: "TRADING HISTORY", panelId: "trading-history" },
   { icon: Calendar, label: "CALENDAR", panelId: "calendar" },
   { icon: Newspaper, label: "MARKET NEWS", panelId: "market-news" },
