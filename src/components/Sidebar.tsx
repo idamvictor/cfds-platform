@@ -1,10 +1,11 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  LogOut, LayoutDashboard, User, ArrowUpDown, FileCheck, Folders, MessageSquare, PiggyBank, Settings,
+  LogOut, LayoutDashboard, User, ArrowUpDown, FileCheck, Folders, MessageSquare, PiggyBank, Settings, Store,
 } from "lucide-react";
 import useUserStore from "@/store/userStore";
 import AutoTraderModal from "@/components/trading/trading-interface-components/auto-trader-modal.tsx";
+import useSiteSettingsStore from "@/store/siteSettingStore.ts";
 
 interface SidebarProps {
   onLinkClick?: () => void;
@@ -14,6 +15,9 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const clearUser = useUserStore((state) => state.clearUser);
+
+  const settings = useSiteSettingsStore((state) => state.settings);
+
 
   // Function to check if a nav item is active
   const isActive = (path: string) => {
@@ -27,7 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   };
 
   // Using original menu items
-  const navItems = [
+  const baseNavItems = [
     { title: "Dashboard", icon: LayoutDashboard, path: "/main/dashboard" },
     { title: "Personal Information", icon: User, path: "/main/personal" },
     { title: "Withdrawal", icon: ArrowUpDown, path: "/main/withdrawal" },
@@ -37,6 +41,23 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
     { title: "Savings", icon: PiggyBank, path: "/main/savings" },
     { title: "Settings", icon: Settings, path: "/main/settings" },
   ];
+
+  const navItems = React.useMemo(() => {
+    const items = [...baseNavItems];
+
+    if (settings?.is_mt4) {
+      const accountsIndex = items.findIndex(item => item.path === "/main/accounts");
+      const insertIndex = accountsIndex !== -1 ? accountsIndex + 1 : items.length - 2;
+
+      items.splice(insertIndex, 0, {
+        title: "Marketplace",
+        icon: Store,
+        path: "/main/marketplace"
+      });
+    }
+
+    return items;
+  }, [settings?.is_mt4]);
 
   return (
       <aside className="bg-[#1E223D] h-full w-20 flex flex-col items-center shadow-lg">

@@ -14,6 +14,7 @@ import CountryResidencePage from "@/pages/auth/country-page.tsx";
 import { ChatNotificationListener } from "@/components/ChatNotificationListener.tsx";
 import MT4Layout from "./layouts/MT4Layout";
 import MainContent from "./components/mt4/main-content";
+import MarketplacePage from "@/pages/marketplace/marketplace-page.tsx";
 
 const TradingRouter = lazy(() => import("./components/routing/TradingRouter"));
 
@@ -124,6 +125,7 @@ const App = () => {
                       path="/main/deposit/card"
                       element={<CardDeposit />}
                     />
+
                     {/* <Route
                       path="/main/deposit/paypal"
                       element={<PaypalDeposit />}
@@ -143,6 +145,11 @@ const App = () => {
                       element={<CryptoWalletDeposit />}
                     />
                   </Route>
+
+
+
+                  <Route path="/main/marketplace" element={<MarketplacePage />} />
+
 
                   {/* Placeholder routes for other sections */}
                   <Route path="/main/withdrawal" element={<WithdrawalForm />} />

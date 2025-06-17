@@ -26,6 +26,7 @@ export interface SiteSettings {
     // Add other settings as needed
     lastFetched: number;
     is_mt4: boolean;
+    has_marketplace: boolean;
 }
 
 interface SiteSettingsState {
