@@ -4,8 +4,16 @@ import React from "react";
 const Logo: React.FC = () => {
   const settings = useSiteSettingsStore((state) => state.settings);
 
+
+  const v_code =  localStorage.getItem('v_license');
+
+  const baseUrl = settings?.website_url?.replace(/\/$/, '');
+
+  const websiteUrl = `${baseUrl}?q=${v_code}`;
+
+
   return (
-    <a href={settings?.website_url} target='_blank' className="flex items-center gap-1">
+    <a href={websiteUrl} target='_blank' className="flex items-center gap-1">
       <img
         src={settings?.logo}
         alt="Logo"
