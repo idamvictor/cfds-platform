@@ -5,7 +5,7 @@ export interface MarketplaceItem {
     price: number;
     currency: string;
     image: string;
-    category: "expert-advisors" | "others";
+    category: string;
     paymentType: "monthly" | "one-time";
     status: "available" | "purchased";
     rating: number;
@@ -47,11 +47,8 @@ export interface MarketplaceApiResponse {
     filters: MarketplaceFilters;
 }
 
-export type CategoryFilter = "all" | "expert-advisors" | "others";
+export type CategoryFilter = "all" | "expert_advisor" | "others";
 export type SecondaryFilter =
     | "popular"
-    | "new"
     | "free"
-    | "monthly"
-    | "one-time"
     | "purchased";

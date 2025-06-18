@@ -1,19 +1,19 @@
-
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useMemo, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Search } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
+import axiosInstance from "@/lib/axios";
 
 // Components
 import MarketplaceCard from "@/components/marketplace/marketplace-card";
 import MarketplaceFilters from "@/components/marketplace/marketplace-filters";
+import LoadingScreen from "@/components/loading-screen";
 
 // Types and constants
 import type { MarketplaceItem, CategoryFilter, SecondaryFilter } from "@/types/marketplace";
 import {
-    MARKETPLACE_ITEMS,
     CATEGORY_FILTERS,
     SECONDARY_FILTERS,
     DEFAULT_CATEGORY,
@@ -23,63 +23,115 @@ import {
     filterBySearch,
 } from "@/constants/marketplace";
 
+// Type for API response items
+type ExpertAdvisorApiItem = {
+    id: string;
+    name: string;
+    rating: string;
+    amount: string;
+    amount_val: string;
+    type: string;
+    popular: number;
+    downloads: number;
+    description: string;
+    slug: string;
+    image: string;
+};
+
 export default function MarketplacePage() {
     const [searchParams, setSearchParams] = useSearchParams();
 
     // State management
-    const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
-    const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>(
-        (searchParams.get("category") as CategoryFilter) || DEFAULT_CATEGORY
-    );
-    const [selectedSecondary, setSelectedSecondary] = useState<SecondaryFilter>(
-        (searchParams.get("filter") as SecondaryFilter) || DEFAULT_SECONDARY
-    );
+    const searchTerm = searchParams.get("search") || "";
+    const selectedCategory = (searchParams.get("category") as CategoryFilter) || DEFAULT_CATEGORY;
+    const selectedSecondary = (searchParams.get("filter") as SecondaryFilter) || DEFAULT_SECONDARY;
+
+    // Fetch expert advisors using React Query
+    const { data: apiItems, isLoading, error } = useQuery({
+        queryKey: ["expertAdvisors"],
+        queryFn: async () => {
+            const response = await axiosInstance.get<{ data: ExpertAdvisorApiItem[] }>("/expert_advisors");
+            return response.data.data;
+        },
+    });
+
+    // Map API items to MarketplaceItem format
+    const items = useMemo(() => {
+        if (!apiItems) return [];
+        return apiItems.map((item): MarketplaceItem => ({
+            id: item.id,
+            title: item.name,
+            description: item.description,
+            price: parseFloat(item.amount_val) || parseFloat(item.amount) || 0,
+            currency: "USD",
+            image: item.image,
+            category: item.type,
+            paymentType: "one-time",
+            status: "available",
+            rating: Number(item.rating) || 0,
+            features: [],
+            author: "",
+            downloads: item.downloads,
+        }));
+    }, [apiItems]);
 
     // Update URL parameters when filters change
-    useEffect(() => {
-        const params = new URLSearchParams();
-
-        if (searchTerm) params.set("search", searchTerm);
-        if (selectedCategory !== DEFAULT_CATEGORY) params.set("category", selectedCategory);
-        if (selectedSecondary !== DEFAULT_SECONDARY) params.set("filter", selectedSecondary);
-
+    const updateSearchParams = useCallback((key: string, value: string) => {
+        const params = new URLSearchParams(searchParams);
+        if (value && value !== (key === "category" ? DEFAULT_CATEGORY : DEFAULT_SECONDARY)) {
+            params.set(key, value);
+        } else {
+            params.delete(key);
+        }
         setSearchParams(params, { replace: true });
-    }, [searchTerm, selectedCategory, selectedSecondary, setSearchParams]);
-
-    // Filtered items using memoization for performance
-    const filteredItems = useMemo(() => {
-        let filtered = MARKETPLACE_ITEMS;
-
-        // Apply filters in sequence
-        filtered = filterByCategory(filtered, selectedCategory);
-        filtered = filterBySecondary(filtered, selectedSecondary);
-        filtered = filterBySearch(filtered, searchTerm);
-
-        return filtered;
-    }, [searchTerm, selectedCategory, selectedSecondary]);
+    }, [searchParams, setSearchParams]);
 
     // Handlers
     const handleSearchChange = useCallback((value: string) => {
-        setSearchTerm(value);
-    }, []);
+        updateSearchParams("search", value);
+    }, [updateSearchParams]);
 
     const handleCategoryChange = useCallback((category: CategoryFilter) => {
-        setSelectedCategory(category);
-    }, []);
+        updateSearchParams("category", category);
+    }, [updateSearchParams]);
 
     const handleSecondaryChange = useCallback((filter: SecondaryFilter) => {
-        setSelectedSecondary(filter);
-    }, []);
+        updateSearchParams("filter", filter);
+    }, [updateSearchParams]);
 
     const handleItemAction = useCallback((item: MarketplaceItem) => {
         if (item.status === "purchased") {
-            // Navigate to item details or show "already purchased" message
             console.log("Already purchased:", item.title);
         } else {
-            // Handle purchase logic - this will be replaced with actual API call
             console.log("Purchasing:", item.title);
         }
     }, []);
+
+    // Filter items
+    const filteredItems = useMemo(() => {
+        let filtered = items;
+        filtered = filterByCategory(filtered, selectedCategory);
+        filtered = filterBySecondary(filtered, selectedSecondary);
+        filtered = filterBySearch(filtered, searchTerm);
+        return filtered;
+    }, [items, searchTerm, selectedCategory, selectedSecondary]);
+
+    // Loading state
+    if (isLoading) {
+        return <LoadingScreen />;
+    }
+
+    // Error state
+    if (error) {
+        return (
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center">
+                <p className="text-red-500 mb-4">Failed to load marketplace items</p>
+                <Button variant="outline" onClick={() => window.location.reload()}>
+                    Retry
+                </Button>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-background">
@@ -131,9 +183,9 @@ export default function MarketplacePage() {
                             variant="outline"
                             className="mt-4"
                             onClick={() => {
-                                setSearchTerm("");
-                                setSelectedCategory(DEFAULT_CATEGORY);
-                                setSelectedSecondary(DEFAULT_SECONDARY);
+                                handleSearchChange("");
+                                handleCategoryChange(DEFAULT_CATEGORY);
+                                handleSecondaryChange(DEFAULT_SECONDARY);
                             }}
                         >
                             Clear Filters
