@@ -35,7 +35,7 @@ export default function AlgoTrader() {
 
   const handleAdvisorClick = (advisorId: string) => {
     // Check if the advisor is available in the user's plan
-    if (!user?.account_type?.expert_advisors?.includes(advisorId)) {
+    if (!user?.eas?.includes(advisorId)) {
       toast.error(
         "This Expert Advisor is not available for your plan. Please upgrade to access it."
       );
@@ -151,12 +151,12 @@ export default function AlgoTrader() {
                               onClick={() => handleAdvisorClick(advisor.id)}
                               className={cn(
                                 "flex items-center w-full gap-2 py-1 px-2 text-xs hover:bg-[#4a5a6c] rounded",
-                                !user?.account_type?.expert_advisors?.includes(
+                                !user?.eas?.includes(
                                   advisor.id
                                 ) && "opacity-50 cursor-not-allowed"
                               )}
                               disabled={
-                                !user?.account_type?.expert_advisors?.includes(
+                                !user?.eas?.includes(
                                   advisor.id
                                 )
                               }

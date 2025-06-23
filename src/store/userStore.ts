@@ -66,6 +66,7 @@ export interface User {
     image: string;
     expert_advisors: string[]; // Array of expert advisor IDs available for this plan
   };
+  eas? : string[];
   accounts: UserAccount[];
   notifications: UserNotification[];
 }

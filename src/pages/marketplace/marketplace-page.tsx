@@ -5,6 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axiosInstance from "@/lib/axios";
+import { toast } from "@/components/ui/sonner";
+import useUserStore from "@/store/userStore";
 
 // Components
 import MarketplaceCard from "@/components/marketplace/marketplace-card";
@@ -99,13 +101,37 @@ export default function MarketplacePage() {
         updateSearchParams("filter", filter);
     }, [updateSearchParams]);
 
+    const getCurrentUser = useUserStore((state) => state.getCurrentUser);
+
     const handleItemAction = useCallback((item: MarketplaceItem) => {
         if (item.status === "purchased") {
             console.log("Already purchased:", item.title);
         } else {
             console.log("Purchasing:", item.title);
+
+            // Make a POST request to purchase the expert advisor
+            axiosInstance.post("/purchase/ea", { expert_advisor_id: item.id })
+                .then((response) => {
+                    if (response.data.status === "success") {
+                        // Show success toast
+                        toast.success("Expert Advisor purchased successfully");
+
+                        // Refresh user data
+                        getCurrentUser();
+                    } else {
+                        // Show error toast if status is not success
+                        toast.error(response.data.message || "Failed to purchase Expert Advisor");
+                    }
+                })
+                .catch((error) => {
+                    // Show error toast with the error message from the response
+                    const errorMessage = error.response?.data?.message ||
+                                        error.response?.data?.error ||
+                                        "Failed to purchase Expert Advisor";
+                    toast.error(errorMessage);
+                });
         }
-    }, []);
+    }, [getCurrentUser]);
 
     // Filter items
     const filteredItems = useMemo(() => {

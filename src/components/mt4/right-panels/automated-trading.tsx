@@ -36,7 +36,7 @@ export default function AutomatedTrading({ advisorId }: AutomatedTradingProps) {
     }
 
     const isAvailable =
-      user?.account_type?.expert_advisors?.includes(advisorId);
+      user?.eas?.includes(advisorId);
     if (!isAvailable) {
       toast.error("This Expert Advisor is not available for your plan");
       setAutomatedTrading(false);
@@ -47,7 +47,7 @@ export default function AutomatedTrading({ advisorId }: AutomatedTradingProps) {
   }, [
     advisorId,
     data?.expert_advisors,
-    user?.account_type?.expert_advisors,
+    user?.eas,
     setAutomatedTrading,
   ]);
 
