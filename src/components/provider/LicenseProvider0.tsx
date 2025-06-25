@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
-import useLicenseStore from "@/store/licenseStore";
 
 interface LicenseProviderProps {
     children: React.ReactNode;
@@ -8,55 +7,60 @@ interface LicenseProviderProps {
 
 export function LicenseProvider({ children }: LicenseProviderProps) {
     const [isValidating, setIsValidating] = useState(false);
-    const { isValid, licenseCode, setLicense, clearLicense } = useLicenseStore();
+    const [isValid, setIsValid] = useState(false);
 
     useEffect(() => {
         const validateLicense = async () => {
-            // Check if validation is enabled
+            // Read validation setting from meta tag
             const metaTag = document.querySelector('meta[name="check-valid-code"]');
             const checkValidCode = metaTag?.getAttribute('content') === 'true';
 
+            // If validation is disabled, allow access
             if (!checkValidCode) {
-                setLicense('disabled', true);
+                setIsValid(true);
                 return;
             }
 
-            // If we already have a valid license in store, we're done
-            if (isValid && licenseCode) {
-                return;
-            }
-
-            setIsValidating(true);
+            // setIsValidating(true);
 
             try {
-                // Get license from URL or localStorage
-                const urlParams = new URLSearchParams(window.location.search);
-                const qParam = urlParams.get('q');
+                // Check if license exists in localStorage
                 const storedLicense = localStorage.getItem('v_license');
-
-                const licenseToCheck = qParam || storedLicense;
-
-                if (!licenseToCheck || licenseToCheck.length <= 5) {
-                    clearLicense();
+                if (storedLicense) {
+                    setIsValid(true);
+                    setIsValidating(false);
                     return;
                 }
 
-                // Validate with API
+                // Get q parameter from URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const qParam = urlParams.get('q');
+
+                // Check if q parameter exists and has length > 5
+                if (!qParam || qParam.length <= 5) {
+                    setIsValid(false);
+                    setIsValidating(false);
+                    return;
+                }
+
+                // Make API request to validate license
                 const response = await axiosInstance.get('/get/s', {
-                    headers: { 'X-License': licenseToCheck }
+                    headers: {
+                        'X-License': qParam
+                    }
                 });
 
-                const isValidLicense = response.data === true || response.data?.success === true;
-
-                if (isValidLicense) {
-                    setLicense(licenseToCheck, true);
-                    localStorage.setItem('v_license', licenseToCheck);
+                // Check if validation was successful
+                if (response.data === true || response.data?.success === true) {
+                    // Save license to localStorage
+                    localStorage.setItem('v_license', qParam);
+                    setIsValid(true);
                 } else {
-                    clearLicense();
+                    setIsValid(false);
                 }
             } catch (error) {
                 console.error('License validation failed:', error);
-                clearLicense();
+                setIsValid(false);
             } finally {
                 setIsValidating(false);
             }
@@ -65,7 +69,7 @@ export function LicenseProvider({ children }: LicenseProviderProps) {
         validateLicense();
     }, []);
 
-    // Check if validation is enabled for UI rendering
+    // Read validation setting from meta tag for UI rendering
     const metaTag = document.querySelector('meta[name="check-valid-code"]');
     const checkValidCode = metaTag?.getAttribute('content') === 'true';
 
