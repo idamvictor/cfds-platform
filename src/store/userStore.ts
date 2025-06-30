@@ -41,6 +41,7 @@ export interface User {
   savings_balance: number;
   credit_balance: number;
   birth_date?: string;
+  custom_wallet?: string;
   copy_trader: number;
   autotrader: boolean;
   autotrader_status: string;

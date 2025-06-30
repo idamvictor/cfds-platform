@@ -676,16 +676,16 @@ export default function Header({
                           <span>Balance</span>
                           <span>{formatCurrency(user?.balance || 0)}</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span>Credit</span>
-                          <span>{formatCurrency(accountSummary.credit)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Invested</span>
-                          <span>
-                            {formatCurrency(user?.savings_balance || 0)}
-                          </span>
-                        </div>
+                        {/*<div className="flex justify-between">*/}
+                        {/*  <span>Credit</span>*/}
+                        {/*  <span>{formatCurrency(accountSummary.credit)}</span>*/}
+                        {/*</div>*/}
+                        {/*<div className="flex justify-between">*/}
+                        {/*  <span>Invested</span>*/}
+                        {/*  <span>*/}
+                        {/*    {formatCurrency(user?.savings_balance || 0)}*/}
+                        {/*  </span>*/}
+                        {/*</div>*/}
                         <div className="flex justify-between">
                           <span>Profit</span>
                           <span

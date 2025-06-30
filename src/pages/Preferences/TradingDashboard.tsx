@@ -171,7 +171,7 @@ export default function Dashboard() {
                                     </div>
 
                                     <div className="flex justify-between items-center">
-                                        <span className="text-muted-foreground">Credit</span>
+                                        <span className="text-muted-foreground">{ user?.custom_wallet }</span>
                                         <span className="text-green-500 font-medium">{formatCurrency(user?.credit_balance || 0)}</span>
                                     </div>
 

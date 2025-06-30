@@ -51,12 +51,12 @@ export function AccountSummary({
               </span>
             </div>
 
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground text-xs">Credit:</span>
-              <span className="text-xs">
-                {formatCurrency(accountData.credit)}
-              </span>
-            </div>
+            {/*<div className="flex items-center gap-2">*/}
+            {/*  <span className="text-muted-foreground text-xs">Credit:</span>*/}
+            {/*  <span className="text-xs">*/}
+            {/*    {formatCurrency(accountData.credit)}*/}
+            {/*  </span>*/}
+            {/*</div>*/}
 
             <div className="flex items-center gap-2">
               <span className="text-muted-foreground text-xs">Equity:</span>
@@ -182,12 +182,12 @@ export function AccountSummary({
                     {formatCurrency(accountData.balance)}
                   </span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Credit</span>
-                  <span className="font-medium">
-                    {formatCurrency(accountData.credit)}
-                  </span>
-                </div>
+                {/*<div className="flex justify-between items-center">*/}
+                {/*  <span className="text-sm">Credit</span>*/}
+                {/*  <span className="font-medium">*/}
+                {/*    {formatCurrency(accountData.credit)}*/}
+                {/*  </span>*/}
+                {/*</div>*/}
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Equity</span>
                   <span className="font-medium">

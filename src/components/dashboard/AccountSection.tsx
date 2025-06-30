@@ -40,7 +40,7 @@ export function AccountSection() {
             <span className="text-primary font-medium">1:{ user?.account_type?.leverage }</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-muted-foreground">Credit</span>
+            <span className="text-muted-foreground">{ user?.custom_wallet }</span>
             <span className="text-primary font-medium">
               {formatCurrency(user?.credit_balance ?? 0)}
             </span>
