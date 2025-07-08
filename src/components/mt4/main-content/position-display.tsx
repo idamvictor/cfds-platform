@@ -10,11 +10,10 @@ import axiosInstance from "@/lib/axios";
 import DesktopPositionTable from "../position-display/desktop-positionTable";
 import ClosePositionDialog from "../position-display/close-position-dialog";
 
-
 export default function PositionDisplay() {
   // UI state
   const [activeTab, setActiveTab] = useState<"active" | "history">("active");
-  const [isCollapsed, setIsCollapsed] = useState(true)
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Trade | null>(null);
   const [showCloseDialog, setShowCloseDialog] = useState(false);
   const [closingTrade, setClosingTrade] = useState(false);
@@ -114,7 +113,7 @@ export default function PositionDisplay() {
 
   return (
     <div className="flex flex-col text-slate-300 w-full relative">
-      {!isCollapsed  && (
+      {!isCollapsed && (
         <div className="h-[200px] overflow-hidden absolute bottom-full left-0 right-0 z-50 bg-slate-700/50 border border-slate-600 shadow-lg backdrop-blur-sm">
           <div className="border-b border-slate-600 flex justify-between items-center sticky top-0 z-20 bg-slate-700">
             <div className="flex overflow-x-auto">
