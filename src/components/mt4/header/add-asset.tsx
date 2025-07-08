@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Plus, Search, Bell, Star, Info } from "lucide-react";
 import useAssetStore from "@/store/assetStore";
+import useWatchlistStore from "@/store/watchlistStore";
 import { CurrencyFlag } from "../../trading/trading-interface-components/header";
 import { Input } from "@/components/ui/input";
 import {
@@ -14,13 +15,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { Asset } from "@/store/watchlistStore";
+
 export default function AddAsset() {
   const [selectedTab, setSelectedTab] = useState<string>("forex");
   const [searchQuery, setSearchQuery] = useState("");
   const { groupedAssets, addPair } = useAssetStore();
+  const { addToWatchlist, removeFromWatchlist, isInWatchlist, watchlist } =
+    useWatchlistStore();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const categories = [
+    { id: "watchlist", label: "Watchlist", count: watchlist.length },
     { id: "forex", label: "Forex", count: groupedAssets["forex"]?.length || 0 },
     {
       id: "stocks",
@@ -49,14 +55,31 @@ export default function AddAsset() {
     setIsOpen(false);
   };
 
+  const handleWatchlistToggle = (e: React.MouseEvent, asset: Asset) => {
+    e.stopPropagation();
+    if (isInWatchlist(asset.symbol_display)) {
+      removeFromWatchlist(asset.symbol_display);
+    } else {
+      addToWatchlist(asset);
+    }
+  };
+
   const filteredAssets =
-    groupedAssets[selectedTab]?.filter(
-      (asset) =>
-        asset.symbol_display
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        asset.name.toLowerCase().includes(searchQuery.toLowerCase())
-    ) || [];
+    selectedTab === "watchlist"
+      ? watchlist.filter(
+          (asset) =>
+            asset.symbol_display
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase()) ||
+            asset.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      : groupedAssets[selectedTab]?.filter(
+          (asset) =>
+            asset.symbol_display
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase()) ||
+            asset.name.toLowerCase().includes(searchQuery.toLowerCase())
+        ) || [];
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -174,8 +197,12 @@ export default function AddAsset() {
                             <Bell className="h-3.5 w-3.5" />
                           </button>
                           <button
-                            onClick={(e) => e.stopPropagation()}
-                            className="rounded-sm p-0.5 hover:bg-[#3A4457] text-muted-foreground"
+                            onClick={(e) => handleWatchlistToggle(e, asset)}
+                            className={`rounded-sm p-0.5 hover:bg-[#3A4457] ${
+                              isInWatchlist(asset.symbol_display)
+                                ? "text-yellow-500"
+                                : "text-muted-foreground"
+                            }`}
                           >
                             <Star className="h-3.5 w-3.5" />
                           </button>

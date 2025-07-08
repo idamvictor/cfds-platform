@@ -9,6 +9,7 @@ import useDataStore from "@/store/dataStore";
 import useUserStore from "@/store/userStore";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import useSiteSettingsStore from "@/store/siteSettingStore";
 
 type SectionState = {
   account: boolean;
@@ -25,6 +26,7 @@ export default function AlgoTrader() {
   const { setAutomatedTrading } = useOverlayStore();
   const { data } = useDataStore();
   const user = useUserStore((state) => state.user);
+  const settings = useSiteSettingsStore((state) => state.settings);
 
   const toggleSection = (section: keyof SectionState) => {
     setExpandedSections((prev) => ({
@@ -66,14 +68,20 @@ export default function AlgoTrader() {
             <div className="h-full overflow-auto space-y-1">
               {/* FTMO MT4 */}
               <div className="flex items-center gap-2 py-1 px-2 text-xs">
-                <div className="w-4 h-4 bg-green-500 rounded-sm flex items-center justify-center">
+                {/* <div className="w-4 h-4 bg-green-500 rounded-sm flex items-center justify-center">
                   <span className="text-xs font-bold text-white">$</span>
-                </div>
-                <span>FTMO MT4</span>
+                </div> */}
+                {/* <span>FTMO MT4</span> */}
+                {/* <Logo /> */}
+                <img
+                  src={settings?.logo_sm || settings?.logo}
+                  alt="Logo"
+                  className=" w-auto h-8 rounded"
+                />
               </div>
 
               {/* Account Section */}
-              <div>
+              {/* <div>
                 <button
                   onClick={() => toggleSection("account")}
                   className="flex items-center gap-1 py-1 px-2 text-xs w-full hover:bg-[#4a5a6c] rounded"
@@ -105,10 +113,10 @@ export default function AlgoTrader() {
                     </div>
                   </div>
                 )}
-              </div>
+              </div> */}
 
               {/* Expert Advisors Section */}
-              <div>
+              {/* <div>
                 <button
                   onClick={() => toggleSection("expertAdvisors")}
                   className="flex items-center gap-1 py-1 px-2 text-xs w-full hover:bg-[#4a5a6c] rounded"
@@ -126,7 +134,6 @@ export default function AlgoTrader() {
 
                 {expandedSections.expertAdvisors && (
                   <div className="ml-6 space-y-1">
-                    {/* Advisors Section */}
                     <div>
                       <button
                         onClick={() => toggleSection("advisors")}
@@ -151,15 +158,10 @@ export default function AlgoTrader() {
                               onClick={() => handleAdvisorClick(advisor.id)}
                               className={cn(
                                 "flex items-center w-full gap-2 py-1 px-2 text-xs hover:bg-[#4a5a6c] rounded",
-                                !user?.eas?.includes(
-                                  advisor.id
-                                ) && "opacity-50 cursor-not-allowed"
+                                !user?.eas?.includes(advisor.id) &&
+                                  "opacity-50 cursor-not-allowed"
                               )}
-                              disabled={
-                                !user?.eas?.includes(
-                                  advisor.id
-                                )
-                              }
+                              disabled={!user?.eas?.includes(advisor.id)}
                             >
                               <Play className="w-3 h-3" />
                               <span>{advisor.name}</span>
@@ -168,6 +170,45 @@ export default function AlgoTrader() {
                         </div>
                       )}
                     </div>
+                  </div>
+                )}
+              </div> */}
+
+              {/* newone  */}
+              {/* Advisors Section */}
+              <div>
+                <button
+                  onClick={() => toggleSection("advisors")}
+                  className="flex items-center gap-1 py-1 px-2 text-xs w-full hover:bg-[#4a5a6c] rounded"
+                >
+                  {expandedSections.advisors ? (
+                    <ChevronDown className="w-3 h-3" />
+                  ) : (
+                    <ChevronRight className="w-3 h-3" />
+                  )}
+                  <div className="w-4 h-4 bg-blue-500 rounded-sm flex items-center justify-center">
+                    <span className="text-xs text-white">EA</span>
+                  </div>
+                  <span>Expert Advisors</span>
+                </button>
+
+                {expandedSections.advisors && data?.expert_advisors && (
+                  <div className="ml-6 space-y-1">
+                    {data.expert_advisors.map((advisor) => (
+                      <button
+                        key={advisor.id}
+                        onClick={() => handleAdvisorClick(advisor.id)}
+                        className={cn(
+                          "flex items-center w-full gap-2 py-1 px-2 text-xs hover:bg-[#4a5a6c] rounded",
+                          !user?.eas?.includes(advisor.id) &&
+                            "opacity-50 cursor-not-allowed"
+                        )}
+                        disabled={!user?.eas?.includes(advisor.id)}
+                      >
+                        <Play className="w-3 h-3" />
+                        <span>{advisor.name}</span>
+                      </button>
+                    ))}
                   </div>
                 )}
               </div>
