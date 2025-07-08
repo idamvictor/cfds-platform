@@ -1,17 +1,18 @@
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+// import { Button } from "@/components/ui/button";
+// import { Plus } from "lucide-react";
 import { AssetListingTabs } from "./header/asset-listing-tabs";
 import Logo from "../Logo";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useState } from "react";
-import TradingInterface from "./trading-interface-copy";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
+// import { useState } from "react";
+// import TradingInterface from "./trading-interface-copy";
+import BuySellFloatingButtons from "./main-content/buy-sell-floating-buttons";
 
 export default function Header() {
-  const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
+  // const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
 
   return (
     <header className="bg-[#1C2030] border-b border-slate-700 px-4 py-2">
@@ -21,13 +22,14 @@ export default function Header() {
           <div className="flex items-center gap-2">
             <Logo />
           </div>
-          <Button
+          {/* <Button
             className="border border-green-500 bg-transparent text-primary hover:bg-green-500 hover:text-white transition-colors"
             onClick={() => setIsTradeModalOpen(true)}
           >
             <Plus className="w-4 h-4 mr-2" />
             New Order
-          </Button>
+          </Button> */}
+          <BuySellFloatingButtons />
         </div>
 
         {/* Desktop layout */}
@@ -40,7 +42,7 @@ export default function Header() {
 
         {/* Desktop new order button */}
         <div className="hidden lg:block">
-          <DropdownMenu
+          {/* <DropdownMenu
             open={isTradeModalOpen}
             onOpenChange={setIsTradeModalOpen}
           >
@@ -53,7 +55,8 @@ export default function Header() {
             <DropdownMenuContent className="p-0 bg-[#1C2030] w-[250px] border border-slate-700 shadow-lg">
               <TradingInterface />
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
+          <BuySellFloatingButtons />
         </div>
 
         {/* Mobile asset listing tabs */}

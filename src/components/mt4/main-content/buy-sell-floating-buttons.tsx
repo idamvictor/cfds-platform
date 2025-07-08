@@ -13,7 +13,7 @@ export default function BuySellFloatingButtons() {
   const sellPrice = activeAsset?.sell_price ?? 0;
 
   return (
-    <div className="absolute top-10 right-10 flex gap-2">
+    <div className=" flex gap-2">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button

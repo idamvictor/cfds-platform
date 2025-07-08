@@ -1,5 +1,5 @@
 import TradingViewWidget from "../../trading/trading-interface-components/trading-view-widget";
-import BuySellFloatingButtons from "./buy-sell-floating-buttons";
+// import BuySellFloatingButtons from "./buy-sell-floating-buttons";
 
 export default function ChartArea() {
   return (
@@ -7,7 +7,7 @@ export default function ChartArea() {
       <div className="h-full">
         <TradingViewWidget />
       </div>
-      <BuySellFloatingButtons />
+      {/* <BuySellFloatingButtons /> */}
     </div>
   );
 }
