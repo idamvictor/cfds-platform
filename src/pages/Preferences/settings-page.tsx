@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EyeOff, Eye } from "lucide-react";
 import { CurrencySelector } from "@/components/settings/currency-selector";
-import { LanguageSelector } from "@/components/settings/language-selector";
+// import { LanguageSelector } from "@/components/settings/language-selector"; // Commented out as per requirement to use English only
 import {
   Form,
   FormControl,
@@ -275,7 +275,7 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
-      {/* Language Section */}
+      {/* Language Section - Commented out as per requirement to use English only
       <Card className="bg-card text-card-foreground">
         <CardHeader>
           <CardTitle>DASHBOARD LANGUAGE</CardTitle>
@@ -284,6 +284,7 @@ export default function SettingsPage() {
           <LanguageSelector />
         </CardContent>
       </Card>
+      */}
     </div>
   );
 }

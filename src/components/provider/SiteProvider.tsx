@@ -35,7 +35,8 @@ export function SiteProvider({ children }: SiteProviderProps) {
 
             // Special handling for localhost environments
             if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.includes('cfds-platform.vercel.app')) {
-                apiUrl = "https://online.tradenation-cfds.com/api/v1";
+                // apiUrl = "https://online.tradenation-cfds.com/api/v1";
+                apiUrl = "https://online.esg-market.pro/api/v1";
                 console.log("SiteProvider - Development environment detected. Using:", apiUrl);
             }
             // Special handling for tradenation-cfds.com domains
@@ -86,10 +87,12 @@ export function SiteProvider({ children }: SiteProviderProps) {
     }
 
     if (!settings && initialLoadComplete) {
+
         return <SiteUnreachable />;
     }
 
     if (initialized && settings?.status) {
+
         return <>{children}</>;
     }
 

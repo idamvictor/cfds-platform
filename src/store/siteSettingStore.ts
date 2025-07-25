@@ -7,6 +7,7 @@ export interface SiteSettings {
     status: "active" | "disabled";
     name: string;
     logo?: string;
+    has_ecn?: boolean;
     favicon?: string;
     theme?: string;
     contactEmail?: string;

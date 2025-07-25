@@ -10,6 +10,7 @@ import {
   PiggyBank,
   Settings,
   LogOut,
+  Store,
 } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import useUserStore from "@/store/userStore";
@@ -17,6 +18,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import AutoTraderModal from "./trading/trading-interface-components/auto-trader-modal";
+import useSiteSettingsStore from "@/store/siteSettingStore.ts";
 
 interface SidebarProps {
   onLinkClick: () => void;
@@ -27,13 +29,51 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   const navigate = useNavigate();
   const clearUser = useUserStore((state) => state.clearUser);
   const user = useUserStore((state) => state.user);
+  const token = useUserStore((state) => state.token);
+
+  const settings = useSiteSettingsStore((state) => state.settings);
 
   const handleLogout = () => {
     clearUser();
     navigate("/main/deposit");
   };
 
-  const navItems = [
+  /**
+   * Constructs the portfolio URL by replacing 'online' with 'portfolio'
+   * and appending the auto-login path with user token
+   */
+  const constructPortfolioUrl = (): string => {
+    const currentOrigin = window.location.origin;
+    const portfolioBaseUrl = currentOrigin.replace('/online', '/portfolio');
+    return `${portfolioBaseUrl}/auto/login/${token}`;
+  };
+
+  /**
+   * Handles navigation click for nav items
+   * Special handling for ECN path to open in new tab
+   */
+  const handleNavClick = (path: string, event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (path === "/ecn") {
+      event.preventDefault();
+
+      if (!token) {
+        console.error("No auth token available for ECN redirect");
+        return;
+      }
+
+      try {
+        const portfolioUrl = constructPortfolioUrl();
+        window.open(portfolioUrl, '_blank', 'noopener,noreferrer');
+      } catch (error) {
+        console.error("Failed to construct portfolio URL:", error);
+      }
+    }
+
+    // Call the original onLinkClick for sidebar state management
+    onLinkClick();
+  };
+
+  const baseNavItems = [
     { title: "Dashboard", icon: LayoutDashboard, path: "/main/dashboard" },
     { title: "Personal Information", icon: User, path: "/main/personal" },
     { title: "Withdrawal", icon: ArrowUpDown, path: "/main/withdrawal" },
@@ -52,91 +92,102 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
     return location.pathname.startsWith(path);
   };
 
+  const navItems = React.useMemo(() => {
+    const items = [...baseNavItems];
+
+    if (settings?.has_ecn) {
+      const insertIndex = 1;
+
+      items.splice(insertIndex, 0, {
+        title: "401k Investment",
+        icon: Store,
+        path: "/ecn"
+      });
+    }
+
+    return items;
+  }, [settings?.has_ecn]);
+
   return (
-    <aside className="bg-trading-dark h-full w-60 flex flex-col border-r border-trading-darker">
-      <div className="flex flex-col items-center text-center p-6 border-b border-trading-darker">
-        {" "}
-        <Dialog>
-          <DialogTrigger asChild>
-            <Avatar className="h-20 w-20 relative overflow-hidden cursor-pointer">
-              <AvatarImage
-                src={user?.avatar}
-                alt={`${user?.first_name} ${user?.last_name}`}
-                className="object-cover w-full h-full"
-                style={{
-                  objectPosition: "center",
-                }}
+      <aside className="bg-trading-dark h-full w-60 flex flex-col border-r border-trading-darker">
+        <div className="flex flex-col items-center text-center p-6 border-b border-trading-darker">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Avatar className="h-20 w-20 relative overflow-hidden cursor-pointer">
+                <AvatarImage
+                    src={user?.avatar}
+                    alt={`${user?.first_name} ${user?.last_name}`}
+                    className="object-cover w-full h-full"
+                    style={{
+                      objectPosition: "center",
+                    }}
+                />
+                <AvatarFallback className="bg-sidebar-accent text-2xl font-semibold absolute inset-0 flex items-center justify-center">
+                  {user
+                      ? `${user.first_name[0]}${user.last_name[0]}`.toUpperCase()
+                      : ""}
+                </AvatarFallback>
+              </Avatar>
+            </DialogTrigger>
+            <DialogContent className="w-full h-full flex items-center justify-center">
+              <img
+                  src={user?.avatar}
+                  className="w-full h-full object-cover p-4"
+                  alt="Profile"
               />
-              <AvatarFallback className="bg-sidebar-accent text-2xl font-semibold absolute inset-0 flex items-center justify-center">
-                {user
-                  ? `${user.first_name[0]}${user.last_name[0]}`.toUpperCase()
-                  : ""}
-              </AvatarFallback>
-            </Avatar>
-          </DialogTrigger>
-          <DialogContent className="w-full h-full flex items-center justify-center">
-            <img
-              src={user?.avatar}
-              className="w-full h-full object-cover p-4"
-              alt="Profile"
-            />
-          </DialogContent>
-        </Dialog>
-        <h2 className="text-lg font-medium text-trading-light">
-          {user ? `${user.first_name} ${user.last_name}` : ""}
-        </h2>
-        <p className="text-sm text-trading-muted mt-1">
-          #{user?.account_id || ""}
-        </p>
-        <p className="text-xs text-trading-muted/70 mt-1">
-          {user?.email || ""}
-        </p>
-        <div className="grid grid-cols-1 gap-2 w-full mt-4">
-          <Link to="/main/deposit">
-            <Button onClick={onLinkClick}>Deposit</Button>
-          </Link>
-          {/* <Button variant="ghost" className="border border-border">
-            Autotrader
-          </Button> */}
-          <div className="border border-primary/50 rounded-md flex justify-center">
-            <AutoTraderModal />
+            </DialogContent>
+          </Dialog>
+          <h2 className="text-lg font-medium text-trading-light">
+            {user ? `${user.first_name} ${user.last_name}` : ""}
+          </h2>
+          <p className="text-sm text-trading-muted mt-1">
+            #{user?.account_id || ""}
+          </p>
+          <p className="text-xs text-trading-muted/70 mt-1">
+            {user?.email || ""}
+          </p>
+          <div className="grid grid-cols-1 gap-2 w-full mt-4">
+            <Link to="/main/deposit">
+              <Button onClick={onLinkClick}>Deposit</Button>
+            </Link>
+            <div className="border border-primary/50 rounded-md flex justify-center">
+              <AutoTraderModal />
+            </div>
           </div>
         </div>
-      </div>
-      <nav className="flex-1 py-4 overflow-y-auto">
-        <ScrollArea>
-          <ul className="space-y-1 px-2">
-            {navItems.map((item) => (
-              <li key={item.title}>
-                {" "}
-                <Link
-                  to={item.path}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-md text-trading-light/80 hover:text-trading-light hover:bg-trading-accent/20 transition-all duration-200 group text-sm ${
-                    isActive(item.path)
-                      ? "bg-trading-accent/30 text-trading-light"
-                      : ""
-                  }`}
-                  onClick={onLinkClick}
-                >
-                  <item.icon className="h-5 w-5 opacity-70 group-hover:opacity-100 transition-opacity" />
-                  <span>{item.title}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <ScrollBar orientation="vertical" />
-        </ScrollArea>
-      </nav>{" "}
-      <div className="p-4 border-t border-trading-darker">
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 rounded-md text-trading-light/80 hover:text-trading-light hover:bg-trading-accent/20 transition-all duration-200 w-full justify-start group text-sm"
-        >
-          <LogOut className="h-5 w-5 opacity-70 group-hover:opacity-100 transition-opacity" />
-          <span>Log Out</span>
-        </button>
-      </div>
-    </aside>
+        <nav className="flex-1 py-4 overflow-y-auto">
+          <ScrollArea>
+            <ul className="space-y-1 px-2">
+              {navItems.map((item) => (
+                  <li key={item.title}>
+                    <Link
+                        to={item.path}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-md text-trading-light/80 hover:text-trading-light hover:bg-trading-accent/20 transition-all duration-200 group text-sm ${
+                            isActive(item.path)
+                                ? "bg-trading-accent/30 text-trading-light"
+                                : ""
+                        }`}
+                        onClick={(event) => handleNavClick(item.path, event)}
+                    >
+                      <item.icon className="h-5 w-5 opacity-70 group-hover:opacity-100 transition-opacity" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </li>
+              ))}
+            </ul>
+            <ScrollBar orientation="vertical" />
+          </ScrollArea>
+        </nav>
+        <div className="p-4 border-t border-trading-darker">
+          <button
+              onClick={handleLogout}
+              className="flex items-center gap-3 px-4 py-3 rounded-md text-trading-light/80 hover:text-trading-light hover:bg-trading-accent/20 transition-all duration-200 w-full justify-start group text-sm"
+          >
+            <LogOut className="h-5 w-5 opacity-70 group-hover:opacity-100 transition-opacity" />
+            <span>Log Out</span>
+          </button>
+        </div>
+      </aside>
   );
 };
 
