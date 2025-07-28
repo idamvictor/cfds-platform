@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import useDataStore from "./dataStore";
 
 export type PanelType =
   | "trade-room"
@@ -28,8 +29,13 @@ const useOverlayStore = create<OverlayState>((set) => ({
   selectedAdvisorId: undefined,
   activePanel: null,
   showDepositModal: false,
-  setAutomatedTrading: (trading, advisorId) =>
-    set({ automatedTrading: trading, selectedAdvisorId: advisorId }),
+  setAutomatedTrading: (trading, advisorId) => {
+    const { activeEA } = useDataStore.getState();
+    if (trading && !activeEA) {
+      return;
+    }
+    set({ automatedTrading: trading, selectedAdvisorId: advisorId });
+  },
   setActivePanel: (panel) => set({ activePanel: panel }),
   setShowDepositModal: (show) => set({ showDepositModal: show }),
 }));

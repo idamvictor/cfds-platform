@@ -68,7 +68,10 @@ interface DataStore {
   leverage: AssetCat;
   isLoading: boolean;
   error: string | null;
+  activeEA: ExpertAdvisor | null;
   fetchData: () => Promise<void>;
+  activateEA: (ea: ExpertAdvisor) => void;
+  deactivateEA: () => void;
 }
 
 // Default leverage values
@@ -86,6 +89,7 @@ const useDataStore = create<DataStore>((set) => ({
   leverage: defaultLeverage,
   isLoading: false,
   error: null,
+  activeEA: null,
   fetchData: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -108,6 +112,8 @@ const useDataStore = create<DataStore>((set) => ({
       });
     }
   },
+  activateEA: (ea) => set({ activeEA: ea }),
+  deactivateEA: () => set({ activeEA: null }),
 }));
 
 export default useDataStore;
