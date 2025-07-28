@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EyeOff, Eye } from "lucide-react";
 import { CurrencySelector } from "@/components/settings/currency-selector";
-import { LanguageSelector } from "@/components/settings/language-selector";
+// import { LanguageSelector } from "@/components/settings/language-selector";
 import {
   Form,
   FormControl,
@@ -276,14 +276,16 @@ export default function SettingsPage() {
       </Card>
 
       {/* Language Section */}
-      <Card className="bg-card text-card-foreground">
-        <CardHeader>
-          <CardTitle>DASHBOARD LANGUAGE</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <LanguageSelector />
-        </CardContent>
-      </Card>
+
+
+      {/*<Card className="bg-card text-card-foreground">*/}
+      {/*  <CardHeader>*/}
+      {/*    <CardTitle>DASHBOARD LANGUAGE</CardTitle>*/}
+      {/*  </CardHeader>*/}
+      {/*  <CardContent>*/}
+      {/*    <LanguageSelector />*/}
+      {/*  </CardContent>*/}
+      {/*</Card>*/}
     </div>
   );
 }
