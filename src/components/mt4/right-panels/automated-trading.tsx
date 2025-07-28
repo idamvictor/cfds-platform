@@ -80,7 +80,7 @@ export default function AutomatedTrading({ advisorId }: AutomatedTradingProps) {
   }
 
   return (
-    <Card className="w-[350px] bg-[#1C2030] text-slate-300 border-slate-800 pt-0">
+    <Card className="w-[350px] bg-[#1C2030] text-slate-300 border-slate-800 pt-0 gap-0">
       <CardHeader className="bg-slate-700 flex flex-row items-center justify-between py-4 px-4 border-b border-slate-800 rounded-md">
         <CardTitle className="text-sm font-medium text-slate-200">
           {currentAdvisor.name} - Trading Robot
@@ -113,7 +113,14 @@ export default function AutomatedTrading({ advisorId }: AutomatedTradingProps) {
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="p-4">
+      <CardContent className="p-0">
+        <div className="flex justify-center mb-4">
+          <img
+            src={currentAdvisor.image}
+            alt={currentAdvisor.name}
+            className="w-full h-40  object-cover"
+          />
+        </div>
         <div className="grid grid-cols-2 gap-y-2 text-sm">
           <div className="text-right text-slate-400 pr-4">Status:</div>
           <div>
