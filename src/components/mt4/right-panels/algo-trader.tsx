@@ -8,7 +8,7 @@ import useOverlayStore from "@/store/overlayStore";
 import useDataStore from "@/store/dataStore";
 import useUserStore from "@/store/userStore";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+// import { cn } from "@/lib/utils";
 import useSiteSettingsStore from "@/store/siteSettingStore";
 
 type SectionState = {
@@ -194,21 +194,18 @@ export default function AlgoTrader() {
 
                 {expandedSections.advisors && data?.expert_advisors && (
                   <div className="ml-6 space-y-1">
-                    {data.expert_advisors.map((advisor) => (
-                      <button
-                        key={advisor.id}
-                        onClick={() => handleAdvisorClick(advisor.id)}
-                        className={cn(
-                          "flex items-center w-full gap-2 py-1 px-2 text-xs hover:bg-[#4a5a6c] rounded",
-                          !user?.eas?.includes(advisor.id) &&
-                            "opacity-50 cursor-not-allowed"
-                        )}
-                        disabled={!user?.eas?.includes(advisor.id)}
-                      >
-                        <Play className="w-3 h-3" />
-                        <span>{advisor.name}</span>
-                      </button>
-                    ))}
+                    {data.expert_advisors
+                      .filter((advisor) => user?.eas?.includes(advisor.id))
+                      .map((advisor) => (
+                        <button
+                          key={advisor.id}
+                          onClick={() => handleAdvisorClick(advisor.id)}
+                          className="flex items-center w-full gap-2 py-1 px-2 text-xs hover:bg-[#4a5a6c] rounded"
+                        >
+                          <Play className="w-3 h-3" />
+                          <span>{advisor.name}</span>
+                        </button>
+                      ))}
                   </div>
                 )}
               </div>
