@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState, useRef, useCallback, useEffect } from "react";
 import useTradeStore from "@/store/tradeStore";
 import type { Trade } from "@/store/tradeStore";
@@ -181,7 +181,7 @@ export default function PositionDisplay() {
                     <span className="text-sm text-slate-300 mr-2">
                       Show Positions
                     </span>
-                    <ChevronDown className="w-4 h-4" />
+                    <ChevronUp className="w-4 h-4" />
                   </button>
                 </div>
               </div>
