@@ -57,10 +57,10 @@ export default function Sidebar() {
     <div
       className={cn(
         "flex flex-col bg-background border-r border-border transition-all duration-300",
-        isMobile ? "w-[60px]" : "w-[92px]"
+        isMobile ? "w-[60px]" : "w-[62px]"
       )}
     >
-      <nav className="flex flex-col items-center py-4 space-y-2 h-full">
+      <nav className="flex flex-col items-center py-4  h-full">
         {sidebarItems.map((item, index) => {
           const Icon = item.icon;
           const isSelected = activePanel === item.panelId || item.isActive;
