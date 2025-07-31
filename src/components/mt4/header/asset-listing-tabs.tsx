@@ -166,7 +166,7 @@ export function AssetListingTabs({
 
         <div
           ref={tabsListRef}
-          className="flex gap-2 overflow-x-hidden mx-2 scroll-smooth flex-1"
+          className="flex gap-2 overflow-x-hidden mx-2 scroll-smooth flex-1 md:max-w-[calc(100vw-700px)] md:[&::-webkit-scrollbar]:hidden md:[&::-webkit-scrollbar-track]:bg-transparent md:[&::-webkit-scrollbar-thumb]:bg-transparent md:hover:overflow-x-auto"
           onScroll={checkScroll}
         >
           {activePairs.map((pair) => {
