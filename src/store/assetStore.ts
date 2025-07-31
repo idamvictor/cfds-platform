@@ -115,7 +115,13 @@ const useAssetStore = create<AssetStore>()(
       },
 
       setActiveAsset: (asset) => {
-        set({ activeAsset: asset });
+        set((state) => ({
+          activeAsset: asset,
+          activePair: asset.symbol_display,
+          activePairs: state.activePairs.includes(asset.symbol_display)
+            ? state.activePairs
+            : [...state.activePairs, asset.symbol_display]
+        }));
       },
 
       getAssetById: (id) => {
