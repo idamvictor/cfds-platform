@@ -24,6 +24,7 @@ export interface Asset {
   sell_spread: string;
   base: string;
   leverage: number;
+  spread: number;
   is_active: number;
   image: string;
   sym_key: string;

@@ -33,6 +33,11 @@ export default function BuySellFloatingButtons() {
         </DropdownMenuContent>
       </DropdownMenu>
 
+      {(activeAsset?.spread ?? 0) > 0 && (
+        <div className="flex items-center justify-center">
+          <p className="text-xs">{(activeAsset?.spread ?? 0).toFixed(3)}</p>
+        </div>
+      )}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button className="bg-transparent hover:bg-[#4a2828] text-[#FF4D4D] px-4 py-1 h-auto shadow-none font-medium text-base border-1 border-[#FF4D4D] w-[120px]">
