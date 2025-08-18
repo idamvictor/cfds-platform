@@ -8,6 +8,7 @@ export interface SiteSettings {
     name: string;
     logo?: string;
     has_ecn?: boolean;
+    must_verify_account?: boolean;
     favicon?: string;
     theme?: string;
     contactEmail?: string;
