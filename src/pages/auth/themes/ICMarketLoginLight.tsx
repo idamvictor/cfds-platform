@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Eye, EyeOff, Globe, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -19,7 +19,7 @@ const formSchema = z.object({
     password: z.string().min(1, { message: "Password is required" }),
 });
 
-export default function ICMarketLogin() {
+export default function ICMarketLoginLight() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [requireOTP, setRequireOTP] = useState(false);
@@ -144,17 +144,17 @@ export default function ICMarketLogin() {
     }
 
     return (
-        <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4">
+        <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
             {/* Top green border */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-green-500"></div>
 
-            <div className="w-full max-w-md bg-[#151515] rounded p-8 relative">
+            <div className="w-full max-w-md bg-gray-200 rounded p-8 relative">
                 {/* Language selector */}
-                <div className="absolute top-4 right-4 text-white flex items-center space-x-1">
-                    <Globe className="h-4 w-4" />
-                    <span className="text-sm">EN</span>
-                    <span>▼</span>
-                </div>
+                {/*<div className="absolute top-4 right-4 text-white flex items-center space-x-1">*/}
+                {/*    <Globe className="h-4 w-4" />*/}
+                {/*    <span className="text-sm">EN</span>*/}
+                {/*    <span>▼</span>*/}
+                {/*</div>*/}
 
                 {/* Logo and title */}
                 <div className="text-center mb-8 py-10">
@@ -162,7 +162,7 @@ export default function ICMarketLogin() {
                         <Logo />
                     </div>
 
-                    <p className="text-white text-sm">Sign in to Secure Client Area</p>
+                    <p className="text-black text-sm">Sign in to Secure Client Area</p>
                 </div>
 
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -173,7 +173,9 @@ export default function ICMarketLogin() {
                             type="email"
                             placeholder="Email"
                             {...form.register("email")}
-                            className="w-full bg-[#222222] border-0 rounded px-10 py-3 text-white placeholder-gray-500 focus:ring-1 focus:ring-green-500 focus:outline-none"
+
+                            className="w-full bg-white border-0 rounded px-10 py-3 text-black placeholder-gray-500 focus:ring-1 focus:ring-gray-800 focus:outline-none"
+
                         />
                         {form.formState.errors.email && (
                             <p className="text-red-500 text-xs mt-1">{form.formState.errors.email.message}</p>
@@ -187,7 +189,7 @@ export default function ICMarketLogin() {
                             type={showPassword ? "text" : "password"}
                             placeholder="Password"
                             {...form.register("password")}
-                            className="w-full bg-[#222222] border-0 rounded px-10 py-3 text-white placeholder-gray-500 focus:ring-1 focus:ring-green-500 focus:outline-none"
+                            className="w-full bg-white border-0 rounded px-10 py-3 text-black placeholder-gray-500 focus:ring-1 focus:ring-gray-800 focus:outline-none"
                         />
                         <button
                             type="button"
@@ -207,7 +209,7 @@ export default function ICMarketLogin() {
 
                     {/* Forgot password */}
                     <div className="text-right">
-                        <Link to="/forgot-password" className="text-green-500 text-sm hover:underline">
+                        <Link to="/forgot-password" className="text-black text-sm hover:underline">
                             Forgot Password?
                         </Link>
                     </div>
@@ -216,7 +218,7 @@ export default function ICMarketLogin() {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-3 rounded transition-colors"
+                        className="w-full bg-black hover:bg-gray-950 text-white font-bold py-3 rounded transition-colors"
                     >
                         {isLoading ? "LOGGING IN..." : "LOGIN"}
                     </button>
@@ -224,9 +226,9 @@ export default function ICMarketLogin() {
 
                 {/* Account links */}
                 <div className="mt-8 text-center">
-                    <p className="text-white text-sm mb-2">Don't have an account?</p>
+                    <p className="text-black text-sm mb-2">Don't have an account?</p>
                     <div className="text-sm">
-                        <Link to="/signup" className="text-white hover:text-green-500">Create Account</Link>
+                        <Link to="/signup" className="text-black hover:text-green-500">Create Account</Link>
                         {/*<span className="text-white mx-2">|</span>*/}
                         {/*<Link to="/signup" className="text-white hover:text-green-500">Open a Real Account</Link>*/}
                     </div>
@@ -234,7 +236,7 @@ export default function ICMarketLogin() {
             </div>
 
             {/* Trustpilot rating */}
-            <div className="mt-8 text-white text-center">
+            <div className="mt-8 text-black text-center">
                 <div className="flex items-center justify-center gap-2">
                     <span className="text-sm">Our customers say</span>
                     <span className="font-bold mr-2">Excellent</span>
