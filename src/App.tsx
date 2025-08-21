@@ -15,6 +15,7 @@ import { ChatNotificationListener } from "@/components/ChatNotificationListener.
 import MT4Layout from "./layouts/MT4Layout";
 import MainContent from "./components/mt4/main-content";
 import MarketplacePage from "@/pages/marketplace/marketplace-page.tsx";
+import TranslationErrorBoundary from "@/components/TranslationErrorBoundary.tsx";
 
 const TradingRouter = lazy(() => import("./components/routing/TradingRouter"));
 
@@ -78,10 +79,11 @@ const App = () => {
         <BrowserRouter>
           <SiteProvider>
             <BaseLayout>
-              <WebSocketInitializer />
-              <OnlineStatusInitializer />
-              <ChatNotificationListener />
-              <Routes>
+              <TranslationErrorBoundary>
+                <WebSocketInitializer />
+                <OnlineStatusInitializer />
+                <ChatNotificationListener />
+                <Routes>
                 <Route
                   path="/admin/chat"
                   element={
@@ -196,7 +198,8 @@ const App = () => {
                 </Route>
 
                 <Route path="*" element={<NotFound />} />
-              </Routes>
+                </Routes>
+              </TranslationErrorBoundary>
             </BaseLayout>
           </SiteProvider>
         </BrowserRouter>
