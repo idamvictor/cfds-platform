@@ -15,6 +15,7 @@ import { ChatNotificationListener } from "@/components/ChatNotificationListener.
 import MT4Layout from "./layouts/MT4Layout";
 import MainContent from "./components/mt4/main-content";
 import MarketplacePage from "@/pages/marketplace/marketplace-page.tsx";
+import { TradingPlatformLight } from "./components/mt4-light/trading-platform-light";
 
 const TradingRouter = lazy(() => import("./components/routing/TradingRouter"));
 
@@ -146,10 +147,10 @@ const App = () => {
                     />
                   </Route>
 
-
-
-                  <Route path="/main/marketplace" element={<MarketplacePage />} />
-
+                  <Route
+                    path="/main/marketplace"
+                    element={<MarketplacePage />}
+                  />
 
                   {/* Placeholder routes for other sections */}
                   <Route path="/main/withdrawal" element={<WithdrawalForm />} />
@@ -162,12 +163,12 @@ const App = () => {
                 </Route>
 
                 <Route
-                    path="trading"
-                    element={
-                      <ProtectedRoute>
-                        <TradingRouter />
-                      </ProtectedRoute>
-                    }
+                  path="trading"
+                  element={
+                    <ProtectedRoute>
+                      <TradingRouter />
+                    </ProtectedRoute>
+                  }
                 />
 
                 {/* Authentication Routes */}
@@ -194,6 +195,15 @@ const App = () => {
                 >
                   <Route index element={<MainContent />} />
                 </Route>
+
+                <Route
+                  path="mt4-light"
+                  element={
+                    <ProtectedRoute>
+                      <TradingPlatformLight />
+                    </ProtectedRoute>
+                  }
+                />
 
                 <Route path="*" element={<NotFound />} />
               </Routes>
