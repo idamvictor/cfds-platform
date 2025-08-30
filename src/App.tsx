@@ -15,6 +15,7 @@ import { ChatNotificationListener } from "@/components/ChatNotificationListener.
 import MT4Layout from "./layouts/MT4Layout";
 import MainContent from "./components/mt4/main-content";
 import MarketplacePage from "@/pages/marketplace/marketplace-page.tsx";
+import TranslationErrorBoundary from "@/components/TranslationErrorBoundary.tsx";
 import { TradingPlatformLight } from "./components/mt4-light/trading-platform-light";
 
 const TradingRouter = lazy(() => import("./components/routing/TradingRouter"));
@@ -79,55 +80,58 @@ const App = () => {
         <BrowserRouter>
           <SiteProvider>
             <BaseLayout>
-              <WebSocketInitializer />
-              <OnlineStatusInitializer />
-              <ChatNotificationListener />
-              <Routes>
-                <Route
-                  path="/admin/chat"
-                  element={
-                    <ProtectedRoute>
-                      <AdminChat />
-                    </ProtectedRoute>
-                  }
-                />
-
-                <Route
-                  path="/main"
-                  element={
-                    <ProtectedRoute>
-                      <MainLayout />
-                    </ProtectedRoute>
-                  }
-                >
+              <TranslationErrorBoundary>
+                <WebSocketInitializer />
+                <OnlineStatusInitializer />
+                <ChatNotificationListener />
+                <Routes>
                   <Route
-                    index
-                    element={<Navigate to="/main/dashboard" replace />}
-                  />
-                  <Route
-                    path="/main/dashboard"
-                    element={<TradingDashboard />}
-                  />
-                  <Route
-                    path="/main/personal"
-                    element={<PersonalInformation />}
+                    path="/admin/chat"
+                    element={
+                      <ProtectedRoute>
+                        <AdminChat />
+                      </ProtectedRoute>
+                    }
                   />
 
-                  <Route path="/main/deposit" element={<DepositLayout />}>
+                  <Route
+                    path="/main"
+                    element={
+                      <ProtectedRoute>
+                        <MainLayout />
+                      </ProtectedRoute>
+                    }
+                  >
                     <Route
                       index
-                      element={<Navigate to="/main/deposit/:crypto" replace />}
+                      element={<Navigate to="/main/dashboard" replace />}
                     />
-                    {/*<Route*/}
-                    {/*  path="/main/deposit/bank"*/}
-                    {/*  element={<BankDeposit />}*/}
-                    {/*/>*/}
                     <Route
-                      path="/main/deposit/card"
-                      element={<CardDeposit />}
+                      path="/main/dashboard"
+                      element={<TradingDashboard />}
+                    />
+                    <Route
+                      path="/main/personal"
+                      element={<PersonalInformation />}
                     />
 
-                    {/* <Route
+                    <Route path="/main/deposit" element={<DepositLayout />}>
+                      <Route
+                        index
+                        element={
+                          <Navigate to="/main/deposit/:crypto" replace />
+                        }
+                      />
+                      {/*<Route*/}
+                      {/*  path="/main/deposit/bank"*/}
+                      {/*  element={<BankDeposit />}*/}
+                      {/*/>*/}
+                      <Route
+                        path="/main/deposit/card"
+                        element={<CardDeposit />}
+                      />
+
+                      {/* <Route
                       path="/main/deposit/paypal"
                       element={<PaypalDeposit />}
                     />
@@ -136,77 +140,84 @@ const App = () => {
                       element={<OtherDeposit />}
                     /> */}
 
-                    {/* Crypto routes */}
+                      {/* Crypto routes */}
+                      <Route
+                        path="/main/deposit/:crypto"
+                        element={<CryptoWalletDeposit />}
+                      />
+                      <Route
+                        path="/main/deposit/:crypto/:walletId"
+                        element={<CryptoWalletDeposit />}
+                      />
+                    </Route>
+
                     <Route
-                      path="/main/deposit/:crypto"
-                      element={<CryptoWalletDeposit />}
+                      path="/main/marketplace"
+                      element={<MarketplacePage />}
+                    />
+
+                    {/* Placeholder routes for other sections */}
+                    <Route
+                      path="/main/withdrawal"
+                      element={<WithdrawalForm />}
                     />
                     <Route
-                      path="/main/deposit/:crypto/:walletId"
-                      element={<CryptoWalletDeposit />}
+                      path="/main/verification"
+                      element={<Verification />}
                     />
+                    <Route path="/main/accounts" element={<AccountsPage />} />
+                    <Route path="/main/chat" element={<LiveChat />} />
+                    <Route path="/main/savings" element={<SavingsPage />} />
+                    <Route path="/main/settings" element={<SettingsPage />} />
+                    <Route path="/main/test" element={<Test />} />
                   </Route>
 
                   <Route
-                    path="/main/marketplace"
-                    element={<MarketplacePage />}
+                    path="trading"
+                    element={
+                      <ProtectedRoute>
+                        <TradingRouter />
+                      </ProtectedRoute>
+                    }
                   />
 
-                  {/* Placeholder routes for other sections */}
-                  <Route path="/main/withdrawal" element={<WithdrawalForm />} />
-                  <Route path="/main/verification" element={<Verification />} />
-                  <Route path="/main/accounts" element={<AccountsPage />} />
-                  <Route path="/main/chat" element={<LiveChat />} />
-                  <Route path="/main/savings" element={<SavingsPage />} />
-                  <Route path="/main/settings" element={<SettingsPage />} />
-                  <Route path="/main/test" element={<Test />} />
-                </Route>
+                  {/* Authentication Routes */}
+                  <Route path="/auto-login" element={<AutoLoginPage />} />
+                  <Route path="/signup" element={<SignUpPage />} />
+                  <Route path="/" element={<LoginPage />} />
+                  <Route
+                    path="/register/country-residence"
+                    element={<CountryResidencePage />}
+                  />
+                  <Route path="/register" element={<RegisterPage />} />
+                  <Route
+                    path="/forgot-password"
+                    element={<ForgotPasswordPage />}
+                  />
 
-                <Route
-                  path="trading"
-                  element={
-                    <ProtectedRoute>
-                      <TradingRouter />
-                    </ProtectedRoute>
-                  }
-                />
+                  <Route
+                    path="/mt4"
+                    element={
+                      <ProtectedRoute>
+                        <MT4Layout />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route index element={<MainContent />} />
+                  </Route>
 
-                {/* Authentication Routes */}
-                <Route path="/auto-login" element={<AutoLoginPage />} />
-                <Route path="/signup" element={<SignUpPage />} />
-                <Route path="/" element={<LoginPage />} />
-                <Route
-                  path="/register/country-residence"
-                  element={<CountryResidencePage />}
-                />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route
-                  path="/forgot-password"
-                  element={<ForgotPasswordPage />}
-                />
+                  <Route
+                    path="mt4-light"
+                    element={
+                      <ProtectedRoute>
+                        <TradingPlatformLight />
+                      </ProtectedRoute>
+                    }
+                  />
 
-                <Route
-                  path="/mt4"
-                  element={
-                    <ProtectedRoute>
-                      <MT4Layout />
-                    </ProtectedRoute>
-                  }
-                >
-                  <Route index element={<MainContent />} />
-                </Route>
-
-                <Route
-                  path="mt4-light"
-                  element={
-                    <ProtectedRoute>
-                      <TradingPlatformLight />
-                    </ProtectedRoute>
-                  }
-                />
-
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </TranslationErrorBoundary>
             </BaseLayout>
           </SiteProvider>
         </BrowserRouter>

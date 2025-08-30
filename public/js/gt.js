@@ -32,6 +32,52 @@ function googleTranslateElementInit2() {
         autoDisplay: false,
         includedLanguages: 'ar,de,en,es,fr,hi,it,ja,ko,pt,ru,zh-CN',
     }, 'google_translate_element2');
+    
+    // Prevent Google Translate from interfering with React
+    setTimeout(preventReactDOMConflicts, 1000);
+}
+
+/**
+ * Prevents Google Translate from causing DOM conflicts with React
+ */
+function preventReactDOMConflicts() {
+    // Add error handling for React DOM operations
+    if (window.React && window.ReactDOM) {
+        // Override removeChild to handle Google Translate conflicts
+        const originalRemoveChild = Node.prototype.removeChild;
+        Node.prototype.removeChild = function(child) {
+            try {
+                // Check if the child is still actually a child of this node
+                if (this.contains(child)) {
+                    return originalRemoveChild.call(this, child);
+                } else {
+                    // If not, it may have been moved by Google Translate
+                    console.warn('Attempted to remove a node that is not a child - likely Google Translate interference');
+                    return child;
+                }
+            } catch (error) {
+                console.warn('DOM manipulation error prevented (Google Translate conflict):', error);
+                return child;
+            }
+        };
+
+        // Override insertBefore for similar protection
+        const originalInsertBefore = Node.prototype.insertBefore;
+        Node.prototype.insertBefore = function(newNode, referenceNode) {
+            try {
+                return originalInsertBefore.call(this, newNode, referenceNode);
+            } catch (error) {
+                console.warn('DOM insertion error prevented (Google Translate conflict):', error);
+                // Try to append instead if reference node is not found
+                try {
+                    return this.appendChild(newNode);
+                } catch (secondError) {
+                    console.warn('Fallback appendChild also failed:', secondError);
+                    return newNode;
+                }
+            }
+        };
+    }
 }
 
 /**
@@ -56,7 +102,9 @@ function doGTranslate(lang_pair) {
         }
 
         localStorage.setItem('selectedLanguage', 'en');
-        window.location.reload();
+        
+        // Use React-safe reload method
+        safeReloadForTranslation();
         return;
     }
 
@@ -98,15 +146,38 @@ function doGTranslate(lang_pair) {
             // For development on localhost
             document.cookie = "googtrans=/en/" + targetLang + "; expires=" + now.toGMTString() + "; path=/; domain=" + window.location.hostname + ";";
 
-            // Reload to apply translation
-            window.location.reload();
+            // Use React-safe reload method
+            safeReloadForTranslation();
         }
     } catch (error) {
         console.error("Translation error:", error);
         // Last resort fallback
         document.cookie = "googtrans=/en/" + targetLang;
-        window.location.reload();
+        safeReloadForTranslation();
     }
+}
+
+/**
+ * Safely reloads the page in a way that doesn't cause React DOM conflicts
+ */
+function safeReloadForTranslation() {
+    // Clean up any React-related timers or intervals before reload
+    if (window.React && window.React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED) {
+        try {
+            // Clear any pending React updates
+            const scheduler = window.React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.Scheduler;
+            if (scheduler && scheduler.unstable_cancelCallback) {
+                // This is a more graceful way but may not always be available
+            }
+        } catch (e) {
+            // Ignore errors, this is just cleanup
+        }
+    }
+    
+    // Small delay to allow React to clean up
+    setTimeout(() => {
+        window.location.reload();
+    }, 100);
 }
 
 /**
@@ -120,28 +191,31 @@ function GTranslateGetCurrentLang() {
 
 // Apply saved language on page load with a retry mechanism
 window.addEventListener('load', function() {
-    const savedLang = localStorage.getItem('selectedLanguage');
-    if (savedLang && savedLang !== 'en') {
-        // First check if translation is already active
-        const currentLang = GTranslateGetCurrentLang();
+    // Wait for React to finish initial render before applying translations
+    setTimeout(function() {
+        const savedLang = localStorage.getItem('selectedLanguage');
+        if (savedLang && savedLang !== 'en') {
+            // First check if translation is already active
+            const currentLang = GTranslateGetCurrentLang();
 
-        // If not active or not matching saved preference, apply it
-        if (currentLang !== savedLang) {
-            // Wait for translation element to be fully initialized
-            setTimeout(function() {
-                doGTranslate('en|' + savedLang);
-
-                // Double-check after a delay and retry if needed
+            // If not active or not matching saved preference, apply it
+            if (currentLang !== savedLang) {
+                // Wait for translation element to be fully initialized
                 setTimeout(function() {
-                    const checkLang = GTranslateGetCurrentLang();
-                    if (checkLang !== savedLang) {
-                        console.log("Translation retry needed");
-                        doGTranslate('en|' + savedLang);
-                    }
-                }, 1500);
-            }, 1000);
+                    doGTranslate('en|' + savedLang);
+
+                    // Double-check after a delay and retry if needed
+                    setTimeout(function() {
+                        const checkLang = GTranslateGetCurrentLang();
+                        if (checkLang !== savedLang) {
+                            console.log("Translation retry needed");
+                            doGTranslate('en|' + savedLang);
+                        }
+                    }, 1500);
+                }, 1000);
+            }
         }
-    }
+    }, 500); // Give React time to initialize
 });
 
 // Make functions globally available

@@ -11,7 +11,7 @@ import useUserStore from "@/store/userStore";
 // Components
 import MarketplaceCard from "@/components/marketplace/marketplace-card";
 import MarketplaceFilters from "@/components/marketplace/marketplace-filters";
-import LoadingScreen from "@/components/loading-screen";
+// import LoadingScreen from "@/components/loading-screen";
 
 // Types and constants
 import type { MarketplaceItem, CategoryFilter, SecondaryFilter } from "@/types/marketplace";
@@ -144,7 +144,11 @@ export default function MarketplacePage() {
 
     // Loading state
     if (isLoading) {
-        return <LoadingScreen />;
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                Loading...
+            </div>
+        );
     }
 
     // Error state

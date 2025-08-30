@@ -4,6 +4,7 @@ import useDataStore from "@/store/dataStore";
 import useUserStore from "@/store/userStore";
 import {AccountDisabled} from "@/components/site/AccountDisabled.tsx";
 import {SitePending} from "@/components/site/SitePending.tsx";
+import useSiteSettingsStore from "@/store/siteSettingStore.ts";
 
 export function BaseLayout({ children }: { children: React.ReactNode }) {
     const location = useLocation();
@@ -13,6 +14,9 @@ export function BaseLayout({ children }: { children: React.ReactNode }) {
     const getCurrentUser = useUserStore(state => state.getCurrentUser);
     const [isStoreHydrated, setIsStoreHydrated] = useState(false);
     const dataFetchedRef = useRef(false);
+
+    const settings = useSiteSettingsStore((state) => state.settings);
+
 
     const authRoutes = ["/register/country-residence","/signup","/", "/login", "/auto-login", "/register", "/forgot-password"];
     const isAuthRoute = authRoutes.some(route => location.pathname === route);
@@ -83,7 +87,7 @@ export function BaseLayout({ children }: { children: React.ReactNode }) {
         return <AccountDisabled />;
     }
 
-    if (user?.status === "pending" && !isAuthRoute) {
+    if (user?.status === "pending" && !isAuthRoute && settings?.must_verify_account) {
         return <SitePending />;
     }
 

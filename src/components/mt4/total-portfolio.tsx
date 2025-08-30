@@ -2,10 +2,13 @@
 import useTradeStore from "@/store/tradeStore";
 import { useCurrency } from "@/hooks/useCurrency";
 import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
+import { useNavigate } from "react-router-dom";
 
 export default function TotalPortfolio() {
   const accountSummary = useTradeStore((state) => state.accountSummary);
   const { formatCurrency } = useCurrency();
+  const navigate = useNavigate();
 
   return (
     <div className="bg-[#1C2030] border-t border-slate-700 p-4 w-full">
@@ -55,9 +58,12 @@ export default function TotalPortfolio() {
             </div>
           </div>
         </div>
-        {/*<Button className="bg-orange-600 hover:bg-orange-700 ml-4 shrink-0">*/}
-        {/*  SWITCH TO CRM*/}
-        {/*</Button>*/}
+        <Button 
+          className="bg-orange-600  hover:bg-orange-700 ml-4 shrink-0"
+          onClick={() => navigate('/main/dashboard')}
+        >
+          DASHBOARD
+        </Button>
       </div>
     </div>
   );
