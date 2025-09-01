@@ -13,7 +13,7 @@ interface ChartTabsProps {
 
 export function ChartTabs({ tabs, onSelectTab }: ChartTabsProps) {
   return (
-    <div className="absolute bottom-2 left-2 flex items-center gap-1">
+    <div className="flex items-center gap-1 p-3">
       {tabs.map((tab, index) => (
         <Button
           key={index}

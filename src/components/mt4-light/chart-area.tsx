@@ -1,6 +1,6 @@
-import { TradingChart } from "./TradingChart";
-import { ChartTabs } from "./ChartTabs";
+import { ChartTabs } from "./chart-area/ChartTabs";
 import { useState } from "react";
+import TradingViewLightWidget from "./chart-area/TradingViewLightWidget";
 
 interface ChartTab {
   pair: string;
@@ -28,8 +28,10 @@ export function ChartArea() {
   };
 
   return (
-    <div className="flex-1 bg-gray-50 border-b border-slate-400 relative">
-      <TradingChart />
+    <div className="flex-1 bg-gray-50 border-b border-slate-400 ">
+      <div className="h-[90%]">
+        <TradingViewLightWidget />
+      </div>
       <ChartTabs tabs={tabs} onSelectTab={handleTabSelect} />
     </div>
   );
