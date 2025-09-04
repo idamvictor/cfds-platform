@@ -38,7 +38,7 @@ function TradingViewLightWidget({
       symbol: tvSymbol,
       theme: theme,
       timezone: "Etc/UTC",
-      backgroundColor: theme === "dark" ? "#131722" : "#ffffff",
+      backgroundColor: theme === "light" ? "#131722" : "#ffffff",
       gridColor:
         theme === "dark"
           ? "rgba(255, 255, 255, 0.06)"
