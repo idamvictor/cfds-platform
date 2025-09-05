@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronRight, X, Play, Settings } from "lucide-react";
+import { ChevronDown, ChevronRight, Play, Settings } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
 import useOverlayStore from "@/store/overlayStore";
@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import useSiteSettingsStore from "@/store/siteSettingStore";
+// import useSiteSettingsStore from "@/store/siteSettingStore";
 
 type SectionState = {
   account: boolean;
@@ -32,7 +32,7 @@ export default function AlgoTraderLight() {
   const { setAutomatedTrading } = useOverlayStore();
   const { data, activeEA, activateEA } = useDataStore();
   const user = useUserStore((state) => state.user);
-  const settings = useSiteSettingsStore((state) => state.settings);
+  // const settings = useSiteSettingsStore((state) => state.settings);
 
   const toggleSection = (section: keyof SectionState) => {
     setExpandedSections((prev) => ({
@@ -64,45 +64,48 @@ export default function AlgoTraderLight() {
   return (
     <div className="h-full flex flex-col">
       {/* Algo Trader Header */}
-      <div className="p-2 border-b border-slate-700 bg-slate-700 sticky top-0 z-10">
+      <div className="p-2 bg-[#D2E0EA] sticky top-0 z-10">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium">Algo Trader</span>
+          <span className="text-xs text-slate-900 font-bold">
+            Artificail Intelligence (AI) Trading
+          </span>
           <div className="flex items-center gap-2">
             <Switch />
-            <X className="w-4 h-4 text-gray-400" />
           </div>
         </div>
       </div>
 
       {/* Navigation Tree */}
-      <div className="flex-1 min-h-0 p-0 bg-[#1C2030]">
-        <Card className="h-full bg-[#1C2030] border-slate-600 p-1 rounded-none shadow-none">
+      <div className="flex-1 min-h-0 p-0 bg-white">
+        <Card className="h-full bg-white border-gray-100 p-1 rounded-none shadow-none">
           <CardContent className="p-1 h-full">
             <div className="h-full overflow-auto space-y-1">
               {/* FTMO MT4 */}
-              <div className="flex items-center gap-2 py-1 px-2 text-xs">
+              {/* <div className="flex items-center gap-2 py-1 px-2 text-xs">
                 <img
                   src={settings?.logo_sm || settings?.logo}
                   alt="Logo"
                   className=" w-auto h-8 rounded"
                 />
-              </div>
+              </div> */}
 
               {/* Advisors Section */}
               <div>
                 <button
                   onClick={() => toggleSection("advisors")}
-                  className="flex items-center gap-1 py-1 px-2 text-xs w-full hover:bg-[#4a5a6c] rounded"
+                  className="flex items-center gap-1 py-1 px-2 text-xs w-full hover:bg-gray-50 rounded"
                 >
                   {expandedSections.advisors ? (
-                    <ChevronDown className="w-3 h-3" />
+                    <ChevronDown className="w-3 h-3 text-slate-900" />
                   ) : (
-                    <ChevronRight className="w-3 h-3" />
+                    <ChevronRight className="w-3 h-3 text-slate-900" />
                   )}
                   <div className="w-4 h-4 bg-blue-500 rounded-sm flex items-center justify-center">
                     <span className="text-xs text-white">EA</span>
                   </div>
-                  <span>Expert Advisors</span>
+                  <span className="text-slate-900 font-semibold">
+                    Expert Advisors
+                  </span>
                 </button>
 
                 {expandedSections.advisors && data?.expert_advisors && (
@@ -112,14 +115,16 @@ export default function AlgoTraderLight() {
                       .map((advisor) => (
                         <div
                           key={advisor.id}
-                          className="flex items-center w-full justify-between gap-2 py-1 px-2 text-xs hover:bg-[#4a5a6c] rounded"
+                          className="flex items-center w-full justify-between gap-2 py-1 px-2 text-xs hover:bg-gray-50 rounded text-slate-900"
                         >
                           <button
                             onClick={() => handleAdvisorClick(advisor)}
                             className="flex items-center gap-2"
                           >
-                            <Play className="w-3 h-3" />
-                            <span>{advisor.name}</span>
+                            <Play className="w-3 h-3 font-semibold text-slate-900" />
+                            <span className="font-semibold text-slate-900">
+                              {advisor.name}
+                            </span>
                           </button>
                           {activeEA?.id === advisor.id ? (
                             <Badge variant="secondary">Activated</Badge>
@@ -130,9 +135,10 @@ export default function AlgoTraderLight() {
                                   <Settings className="w-4 h-4" />
                                 </button>
                               </DropdownMenuTrigger>
-                              <DropdownMenuContent>
+                              <DropdownMenuContent className="bg-white">
                                 <DropdownMenuItem
                                   onClick={() => handleActivateEA(advisor)}
+                                  className="text-slate-900"
                                 >
                                   Activate
                                 </DropdownMenuItem>

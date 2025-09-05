@@ -114,8 +114,8 @@ export default function PositionDisplayLight() {
   return (
     <div className="flex flex-col text-slate-300 w-full relative">
       {!isCollapsed && (
-        <div className="h-[200px] overflow-hidden  bottom-full left-0 right-0 z-50 bg-slate-700/50 border border-slate-600 shadow-lg backdrop-blur-sm">
-          <div className="border-b border-slate-600 flex justify-between items-center sticky top-0 z-20 bg-slate-700">
+        <div className="h-[200px] overflow-hidden  bottom-full left-0 right-0 z-50 bg-slate-700/50  shadow-lg backdrop-blur-sm">
+          <div className=" flex justify-between items-center sticky top-0 z-20 bg-slate-700">
             <div className="flex overflow-x-auto">
               <button
                 className={cn(
