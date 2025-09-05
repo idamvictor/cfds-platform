@@ -1,23 +1,17 @@
 "use client";
 
-import { useState } from "react";
 import { TitleBar } from "./title-bar";
 import { Toolbar } from "./toolbar";
-import { AITradingPanel } from "./ai-trading-panel";
+// import { AITradingPanel } from "./ai-trading-panel";
 import { ChartArea } from "./chart-area";
-import { TradingHistory } from "./trading-history";
+// import { TradingHistory } from "./trading-history";
 import { StatusBar } from "./status-bar";
-import MarketWatch from "./market-watch";
+import MarketWatch from "./market-watch-light";
+import PositionDisplayLight from "./position-display-light";
+import AlgoTraderLight from "./algo-trader-light";
+import TotalPortfolioLight from "./total-portfolio-light";
 
 export function TradingPlatformLight() {
-  const [autoTrading, setAutoTrading] = useState(true);
-
-  const aiTradingOptions = [
-    { name: "Quant Bridge AI", icon: "🤖" },
-    { name: "BlackRock Algo Pro", icon: "🤖" },
-    { name: "Flux River AI Trader", icon: "🤖" },
-  ];
-
   return (
     <div className="h-screen bg-slate-100 flex flex-col font-sans text-sm">
       <TitleBar />
@@ -25,13 +19,13 @@ export function TradingPlatformLight() {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Left Sidebar */}
-        <div className="w-96 bg-white border-r border-slate-300 flex flex-col">
-          <MarketWatch />
-          <AITradingPanel
-            autoTrading={autoTrading}
-            onAutoTradingChange={setAutoTrading}
-            aiTradingOptions={aiTradingOptions}
-          />
+        <div className="w-96 bg-white border-r border-slate-300 flex flex-col h-full">
+          <div className="h-[70%] overflow-auto">
+            <MarketWatch />
+          </div>
+          <div className="h-[30%] overflow-auto">
+            <AlgoTraderLight />
+          </div>
         </div>
 
         {/* Main Content Area */}
@@ -40,7 +34,11 @@ export function TradingPlatformLight() {
         </div>
       </div>
 
-      <TradingHistory />
+      <TotalPortfolioLight />
+
+      {/* <TradingHistory /> */}
+      <PositionDisplayLight />
+
       <StatusBar />
     </div>
   );
