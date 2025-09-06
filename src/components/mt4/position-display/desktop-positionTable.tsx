@@ -55,60 +55,60 @@ export function DesktopPositionTable({
   return (
     <div className="h-[calc(200px-38px)] w-full overflow-hidden flex flex-col">
       <div className="w-full overflow-y-auto flex-1">
-        <Table>
-          <TableHeader className="sticky top-0 bg-slate-700 z-10">
-            <TableRow className="border-b border-slate-600 hover:bg-transparent">
-              <TableHead className="h-8 text-xs font-medium text-slate-400">
+        <Table className="w-full table-fixed border-slate-200">
+          <TableHeader className="sticky top-0 bg-white z-10 border border-slate-200">
+            <TableRow className="border-b border-slate-300 hover:bg-transparent">
+              <TableHead className="h-6 text-[11px] font-medium text-slate-900 w-[11%] border-r-1 border-slate-300 px-1">
                 Symbol
               </TableHead>
-              <TableHead className="h-8 text-xs font-medium text-slate-400">
+              <TableHead className="h-6 text-[11px] font-medium text-slate-900 w-[11%] border-r-1 border-slate-300 px-1">
                 Type
               </TableHead>
-              <TableHead className="h-8 text-xs font-medium text-slate-400">
+              <TableHead className="h-6 text-[11px] font-medium text-slate-900 w-[11%] border-r-1 border-slate-300 px-1">
                 Volume
               </TableHead>
-              <TableHead className="h-8 text-xs font-medium text-slate-400">
+              <TableHead className="h-6 text-[11px] font-medium text-slate-900 w-[11%] border-r-1 border-slate-300 px-1">
                 Open Time
               </TableHead>
               {activeTab === "history" && (
-                <TableHead className="h-8 text-xs font-medium text-slate-400">
+                <TableHead className="h-6 text-[11px] font-medium text-slate-900 w-[11%] border-r-1 border-slate-300 px-1">
                   Close Time
                 </TableHead>
               )}
-              <TableHead className="h-8 text-xs font-medium text-slate-400 w-9">
+              <TableHead className="h-6 text-[11px] font-medium text-slate-900 w-[11%] border-r-1 border-slate-300 px-1">
                 TP
               </TableHead>
-              <TableHead className="h-8 text-xs font-medium text-slate-400 w-9">
+              <TableHead className="h-6 text-[11px] font-medium text-slate-900 w-[11%] border-r-1 border-slate-300 px-1">
                 SL
               </TableHead>
-              <TableHead className="h-8 text-xs font-medium text-slate-400">
+              <TableHead className="h-6 text-[11px] font-medium text-slate-900 w-[11%] border-r-1 border-slate-300 px-1">
                 {activeTab === "active" ? "Price" : "Close Price"}
               </TableHead>
-              <TableHead className="h-8 text-xs font-medium text-slate-400 text-right">
+              <TableHead className="h-6 text-[11px] font-medium text-slate-900 text-right w-[11%] border-r-1 border-slate-300 px-1">
                 P/L
               </TableHead>
               {activeTab === "active" && handleClosePosition && (
-                <TableHead className="h-8 text-xs font-medium text-slate-400 w-9">
+                <TableHead className="h-6 text-[11px] font-medium text-slate-900 w-[11%] px-1">
                   Close
                 </TableHead>
               )}
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody className="border-b border-slate-300">
             {positions.map((position) => (
               <TableRow
                 key={position.id}
-                className="border-b border-border hover:bg-slate-700/50 bg-slate-800/50"
+                className="border-b border-slate-300 hover:bg-[#0866C6] hover:text-white bg-white"
               >
                 <TableCell
                   onClick={() => handleAssetClick(position.asset_symbol)}
-                  className="py-2 text-xs font-medium cursor-pointer hover:text-primary transition-colors"
+                  className="h-6 py-0.5 px-1 text-[11px] font-medium cursor-pointer hover:text-primary transition-colors border-r-1 border-slate-300"
                 >
                   {position.asset_symbol}
                 </TableCell>
                 <TableCell
                   className={cn(
-                    "py-2 text-xs font-medium",
+                    "h-6 py-0.5 px-1 text-[11px] font-medium border-r-1 border-slate-300",
                     position.trade_type === "buy"
                       ? "text-green-500"
                       : "text-red-500"
@@ -116,29 +116,29 @@ export function DesktopPositionTable({
                 >
                   {position.trade_type.toUpperCase()}
                 </TableCell>
-                <TableCell className="py-2 text-xs">
+                <TableCell className="h-6 py-0.5 px-1 text-[11px] border-r-1 border-slate-300">
                   {position.volume.toFixed(2)}
                 </TableCell>
-                <TableCell className="py-2 text-xs">
-                  { position.open_time }
+                <TableCell className="h-6 py-0.5 px-1 text-[11px] border-r-1 border-slate-300">
+                  {position.open_time}
                 </TableCell>
                 {activeTab === "history" && (
-                  <TableCell className="py-2 text-xs">
-                    { position.close_time }
+                  <TableCell className="h-6 py-0.5 px-1 text-[11px] border-r-1 border-slate-300">
+                    {position.close_time}
                   </TableCell>
                 )}
-                <TableCell className="py-2 text-xs">
+                <TableCell className="h-6 py-0.5 px-1 text-[11px] border-r-1 border-slate-300">
                   {position.take_profit || "-"}
                 </TableCell>
-                <TableCell className="py-2 text-xs">
+                <TableCell className="h-6 py-0.5 px-1 text-[11px] border-r-1 border-slate-300">
                   {position.stop_loss || "-"}
                 </TableCell>
-                <TableCell className="py-2 text-xs">
+                <TableCell className="h-6 py-0.5 px-1 text-[11px] border-r-1 border-slate-300">
                   {position.closing_price.toFixed(5)}
                 </TableCell>
                 <TableCell
                   className={cn(
-                    "py-2 text-xs text-right",
+                    "h-6 py-0.5 px-1 text-[11px] text-right border-r-1 border-slate-300",
                     position.pnl >= 0 ? "text-green-500" : "text-red-500"
                   )}
                 >
@@ -146,11 +146,11 @@ export function DesktopPositionTable({
                   {position.pnl.toFixed(2)}
                 </TableCell>
                 {activeTab === "active" && handleClosePosition && (
-                  <TableCell className="py-2 text-xs">
+                  <TableCell className="h-6 py-0.5 px-1 text-[11px]">
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-6 w-6"
+                      className="h-4 w-4 p-0"
                       onClick={() => handleClosePosition(position)}
                     >
                       ✕
@@ -163,7 +163,7 @@ export function DesktopPositionTable({
         </Table>
       </div>
 
-      <div ref={loadMoreRef} className="w-full h-4" />
+      <div ref={loadMoreRef} className="w-full h-0" />
     </div>
   );
 }

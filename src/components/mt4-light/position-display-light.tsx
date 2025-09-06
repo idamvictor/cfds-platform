@@ -112,17 +112,29 @@ export default function PositionDisplayLight() {
   };
 
   return (
-    <div className="flex flex-col text-slate-300 w-full relative">
+    <div className="flex flex-col text-slate-900 w-full relative">
       {!isCollapsed && (
-        <div className="h-[200px] overflow-hidden  bottom-full left-0 right-0 z-50 bg-slate-700/50  shadow-lg backdrop-blur-sm">
-          <div className=" flex justify-between items-center sticky top-0 z-20 bg-slate-700">
+        <div className="h-[200px] overflow-hidden  bottom-full left-0 right-0 z-50 bg-white  shadow-lg backdrop-blur-sm">
+          <DesktopPositionTable
+            positions={activeTab === "active" ? openTrades : closedTrades}
+            isLoading={activeTab === "active" ? isLoadingOpen : isLoadingClosed}
+            error={activeTab === "active" ? errorOpen : errorClosed}
+            activeTab={activeTab}
+            loadMoreRef={loadMoreRef}
+            handleClosePosition={
+              activeTab === "active" ? handleClosePosition : undefined
+            }
+          />
+
+          {/* control tabs */}
+          <div className=" flex justify-between items-center sticky top-0 z-20 bg-[#EDF0F4]">
             <div className="flex overflow-x-auto">
               <button
                 className={cn(
                   "rounded-none border-b-2 border-transparent px-4 py-2 whitespace-nowrap text-xs",
                   activeTab === "active"
                     ? "border-primary text-primary"
-                    : "text-slate-400"
+                    : "text-slate-900"
                 )}
                 onClick={() => setActiveTab("active")}
               >
@@ -133,7 +145,7 @@ export default function PositionDisplayLight() {
                   "rounded-none border-b-2 border-transparent px-4 py-2 whitespace-nowrap text-xs",
                   activeTab === "history"
                     ? "border-primary text-primary"
-                    : "text-slate-400"
+                    : "text-slate-900"
                 )}
                 onClick={() => setActiveTab("history")}
               >
@@ -149,27 +161,16 @@ export default function PositionDisplayLight() {
               </button>
             </div>
           </div>
-
-          <DesktopPositionTable
-            positions={activeTab === "active" ? openTrades : closedTrades}
-            isLoading={activeTab === "active" ? isLoadingOpen : isLoadingClosed}
-            error={activeTab === "active" ? errorOpen : errorClosed}
-            activeTab={activeTab}
-            loadMoreRef={loadMoreRef}
-            handleClosePosition={
-              activeTab === "active" ? handleClosePosition : undefined
-            }
-          />
         </div>
       )}
 
       {isCollapsed && (
-        <div className="bg-slate-700/50 border border-slate-600 relative z-10">
-          <Card className="rounded-none border-x-0 border-b-0 bg-slate-700/50 py-0">
+        <div className="bg-[#EDF0F4] border border-[#EDF0F4] relative z-10">
+          <Card className="rounded-none border-x-0 border-b-0 bg-[#EDF0F4] py-0">
             <CardContent className="p-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-medium text-slate-300">
+                  <h3 className="text-sm font-medium text-slate-900">
                     Total Portfolio
                   </h3>
                 </div>
@@ -178,7 +179,7 @@ export default function PositionDisplayLight() {
                     onClick={() => setIsCollapsed(false)}
                     className="p-1 text-slate-400 hover:text-slate-300 transition-colors flex items-center"
                   >
-                    <span className="text-sm text-slate-300 mr-2">
+                    <span className="text-sm text-slate-900 mr-2">
                       Show Positions
                     </span>
                     <ChevronUp className="w-4 h-4" />
