@@ -1,4 +1,3 @@
-import { Card, CardContent } from "@/components/ui/card";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState, useRef, useCallback, useEffect } from "react";
 import useTradeStore from "@/store/tradeStore";
@@ -113,83 +112,112 @@ export default function PositionDisplayLight() {
 
   return (
     <div className="flex flex-col text-slate-900 w-full relative">
-      {!isCollapsed && (
-        <div className="h-[200px] overflow-hidden  bottom-full left-0 right-0 z-50 bg-white  shadow-lg backdrop-blur-sm">
-          <DesktopPositionTable
-            positions={activeTab === "active" ? openTrades : closedTrades}
-            isLoading={activeTab === "active" ? isLoadingOpen : isLoadingClosed}
-            error={activeTab === "active" ? errorOpen : errorClosed}
-            activeTab={activeTab}
-            loadMoreRef={loadMoreRef}
-            handleClosePosition={
-              activeTab === "active" ? handleClosePosition : undefined
-            }
-          />
+      <div className="relative">
+        {/* Expanded view with slide animation */}
+        <div
+          className={cn(
+            "transform transition-all duration-300 ease-in-out",
+            isCollapsed ? "h-0 opacity-0" : "h-[190px] opacity-100"
+          )}
+        >
+          <div className="h-[190px] relative bg-white shadow-lg backdrop-blur-sm">
+            <div className="absolute inset-0 overflow-auto">
+              <DesktopPositionTable
+                positions={activeTab === "active" ? openTrades : closedTrades}
+                isLoading={
+                  activeTab === "active" ? isLoadingOpen : isLoadingClosed
+                }
+                error={activeTab === "active" ? errorOpen : errorClosed}
+                activeTab={activeTab}
+                loadMoreRef={loadMoreRef}
+                handleClosePosition={
+                  activeTab === "active" ? handleClosePosition : undefined
+                }
+              />
+            </div>
 
-          {/* control tabs */}
-          <div className=" flex justify-between items-center sticky top-0 z-20 bg-[#EDF0F4]">
+            {/* control tabs */}
+            <div className="flex justify-between items-center absolute bottom-0 left-0 right-0 z-20 bg-[#EDF0F4]">
+              <div className="flex overflow-x-auto">
+                <button
+                  className={cn(
+                    "rounded-none border-t-2 border-transparent px-4 py-2 whitespace-nowrap text-xs font-bold",
+                    activeTab === "active"
+                      ? "bg-white text-slate-900"
+                      : "text-gray-500"
+                  )}
+                  onClick={() => setActiveTab("active")}
+                >
+                  Trade
+                </button>
+                <button
+                  className={cn(
+                    "rounded-none border-t-2 border-transparent px-4 py-2 whitespace-nowrap text-xs font-bold",
+                    activeTab === "history"
+                      ? "bg-white text-slate-900"
+                      : "text-gray-500"
+                  )}
+                  onClick={() => setActiveTab("history")}
+                >
+                  Account History
+                </button>
+              </div>
+              <div className="flex items-center">
+                <button
+                  onClick={() => setIsCollapsed(true)}
+                  className="p-1 text-slate-400 hover:text-slate-300 transition-colors flex items-center"
+                >
+                  <ChevronDown className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Collapsed view with slide animation */}
+        <div
+          className={cn(
+            "transform transition-all duration-300 ease-in-out absolute bottom-0 left-0 right-0",
+            isCollapsed
+              ? "translate-y-0 opacity-100"
+              : "translate-y-full opacity-0"
+          )}
+        >
+          <div className="flex justify-between items-center bg-[#EDF0F4] relative z-10">
             <div className="flex overflow-x-auto">
               <button
                 className={cn(
-                  "rounded-none border-b-2 border-transparent px-4 py-2 whitespace-nowrap text-xs",
+                  "rounded-none border-t-2 border-transparent px-4 py-2 whitespace-nowrap text-xs font-bold",
                   activeTab === "active"
-                    ? "border-primary text-primary"
-                    : "text-slate-900"
+                    ? "bg-white text-slate-900"
+                    : "text-gray-500"
                 )}
-                onClick={() => setActiveTab("active")}
               >
-                ACTIVE POSITIONS
+                Trade
               </button>
               <button
                 className={cn(
-                  "rounded-none border-b-2 border-transparent px-4 py-2 whitespace-nowrap text-xs",
+                  "rounded-none border-t-2 border-transparent px-4 py-2 whitespace-nowrap text-xs font-bold",
                   activeTab === "history"
-                    ? "border-primary text-primary"
-                    : "text-slate-900"
+                    ? "bg-white text-slate-900"
+                    : "text-gray-500"
                 )}
-                onClick={() => setActiveTab("history")}
               >
-                POSITIONS HISTORY
+                Account History
               </button>
             </div>
             <div className="flex items-center">
               <button
-                onClick={() => setIsCollapsed(true)}
-                className="p-1 text-slate-400 hover:text-slate-300 transition-colors flex items-center"
+                onClick={() => setIsCollapsed(false)}
+                className="p-1 text-slate-400 hover:text-slate-300 transition-colors flex items-center gap-2"
               >
-                <ChevronDown className="h-4 w-4" />
+                <span className="text-xs text-slate-900">Show Positions</span>
+                <ChevronUp className="h-4 w-4" />
               </button>
             </div>
           </div>
         </div>
-      )}
-
-      {isCollapsed && (
-        <div className="bg-[#EDF0F4] border border-[#EDF0F4] relative z-10">
-          <Card className="rounded-none border-x-0 border-b-0 bg-[#EDF0F4] py-0">
-            <CardContent className="p-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-medium text-slate-900">
-                    Total Portfolio
-                  </h3>
-                </div>
-                <div className="flex items-center">
-                  <button
-                    onClick={() => setIsCollapsed(false)}
-                    className="p-1 text-slate-400 hover:text-slate-300 transition-colors flex items-center"
-                  >
-                    <span className="text-sm text-slate-900 mr-2">
-                      Show Positions
-                    </span>
-                    <ChevronUp className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+      </div>
 
       <ClosePositionDialog
         open={showCloseDialog}

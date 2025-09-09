@@ -30,21 +30,21 @@ export default function MarketWatchLight() {
     <div className="h-full flex flex-col bg-white">
       {/* Market Watch Header - Fixed */}
       <div className="flex flex-col h-full">
-        <div className="bg-white border-b border-sla sticky top-0 z-10">
+        <div className="bg-white border-b border-slate-400 sticky top-0 z-10">
           <div className="">
             <div className="flex items-center justify-between w-full">
               <span className="bg-[#D2E0EA] text-gray-900 w-full p-2">
                 Market Watch: {time.toLocaleTimeString()}
               </span>
             </div>
-            <div className="relative mt-2 mb-2">
+            <div className="relative mt-2 mb-2  ">
               <Search className="w-5 h-5 absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search Market"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white rounded px-7 py-1.5 text-[11px] text-slate-900 placeholder:text-gray-400"
+                className="w-full bg-white rounded px-10 py-1.5 text-[11px] text-slate-900 placeholder:text-gray-400"
               />
             </div>
           </div>

@@ -89,7 +89,7 @@ export function ChartTabs() {
   }, [activePair]);
 
   return (
-    <div className="flex items-center gap-1 p-3">
+    <div className="flex items-center bg-[#EDF0F4]">
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <div
           onMouseEnter={() => setIsOpen(true)}
@@ -99,9 +99,9 @@ export function ChartTabs() {
             <Button
               variant="ghost"
               size="icon"
-              className="h-6 w-6 hover:bg-slate-200"
+              className="h-8 w-8 hover:bg-white/50"
             >
-              <MoreHorizontal className="h-4 w-4" />
+              <MoreHorizontal className="h-4 w-4 text-gray-500" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white border-slate-200">
@@ -112,10 +112,10 @@ export function ChartTabs() {
                   key={pair}
                   onClick={() => handlePairClick(pair)}
                   className={`flex items-center gap-2 cursor-pointer ${
-                    isActive ? "bg-blue-50" : ""
+                    isActive ? "bg-white text-slate-900" : "text-gray-500"
                   }`}
                 >
-                  <span>{pair}, M5</span>
+                  <span className="text-xs font-bold">{pair}, M5</span>
                 </DropdownMenuItem>
               );
             })}
@@ -127,16 +127,16 @@ export function ChartTabs() {
         <Button
           variant="ghost"
           size="icon"
-          className="h-6 w-6 shrink-0"
+          className="h-8 w-8 shrink-0 hover:bg-white/50"
           onClick={() => scroll("left")}
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-4 w-4 text-gray-500" />
         </Button>
       )}
 
       <div
         ref={tabsListRef}
-        className="flex gap-1 overflow-x-hidden scroll-smooth flex-1 [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-transparent hover:overflow-x-auto"
+        className="flex overflow-x-hidden scroll-smooth flex-1 [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-transparent hover:overflow-x-auto bg-[#EDF0F4]"
         onScroll={checkScroll}
       >
         {activePairs.map((pair) => {
@@ -147,24 +147,22 @@ export function ChartTabs() {
               ref={isActive ? activeTabRef : null}
               className="relative"
             >
-              <Button
-                variant="ghost"
-                size="sm"
-                className={`h-6 px-2 text-xs whitespace-nowrap ${
+              <button
+                className={`rounded-none border-t-2 border-transparent px-4 py-2 whitespace-nowrap text-xs font-bold ${
                   isActive
-                    ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
-                    : "text-slate-600 hover:bg-slate-200"
+                    ? "bg-white text-slate-900 border-primary"
+                    : "text-gray-500"
                 }`}
                 onClick={() => handlePairClick(pair)}
               >
                 {pair}, M5
                 <button
-                  className="ml-1 rounded-full hover:bg-blue-200 p-0.5"
+                  className="ml-2 text-gray-400 hover:text-gray-600"
                   onClick={(e) => handleRemovePair(pair, e)}
                 >
                   <X className="h-3 w-3" />
                 </button>
-              </Button>
+              </button>
             </div>
           );
         })}
@@ -174,10 +172,10 @@ export function ChartTabs() {
         <Button
           variant="ghost"
           size="icon"
-          className="h-6 w-6 shrink-0"
+          className="h-8 w-8 shrink-0 hover:bg-white/50"
           onClick={() => scroll("right")}
         >
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-4 w-4 text-gray-500" />
         </Button>
       )}
     </div>

@@ -20,10 +20,10 @@ export function TradingPlatformLight() {
       <div className="flex flex-1 overflow-hidden">
         {/* Left Sidebar */}
         <div className="w-96 bg-white border-r border-slate-300 flex flex-col h-full">
-          <div className="h-[70%] overflow-auto">
+          <div className="h-[75%] overflow-auto">
             <MarketWatch />
           </div>
-          <div className="h-[30%] overflow-auto">
+          <div className="h-[25%] overflow-auto">
             <AlgoTraderLight />
           </div>
         </div>

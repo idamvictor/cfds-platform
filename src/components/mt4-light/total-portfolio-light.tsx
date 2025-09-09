@@ -12,7 +12,7 @@ export default function TotalPortfolioLight() {
   // const navigate = useNavigate();
 
   return (
-    <div className="bg-[#C3C3C3] border-t border-slate-700 w-full p-1">
+    <div className="bg-[#C3C3C3] w-full p-1">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-8 flex-1 min-w-0">
           {/* <span className="text-sm font-medium text-slate-900 whitespace-nowrap">
