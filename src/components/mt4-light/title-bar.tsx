@@ -1,7 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Minimize2, Square, X } from "lucide-react";
+import useSiteSettingsStore from "@/store/siteSettingStore";
+import useAssetStore from "@/store/assetStore";
 
 export function TitleBar() {
+  const settings = useSiteSettingsStore((state) => state.settings);
+  const activeAsset = useAssetStore((state) => state.activeAsset);
+
   return (
     <div className="bg-white border-b border-slate-400 px-4 py-1 flex items-center justify-between">
       <div className="flex items-center gap-2">
@@ -9,10 +14,10 @@ export function TitleBar() {
           <span className="text-white text-xs">📊</span>
         </div>
         <span className="text-slate-800 text-xs font-medium">
-          S1285120 ICMarketsEC Demo: Demo Account - Hedge - Raw Trading Ltd
+          {settings?.name || "Demo Account"}
         </span>
         <span className="text-slate-800 text-xs font-medium">
-          - [ GBPUSD,M1 ]
+          - [ {activeAsset?.symbol_display || "BTC/USD"},M1 ]
         </span>
       </div>
       <div className="flex items-center gap-1">
