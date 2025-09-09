@@ -27,161 +27,160 @@ export default function MarketWatchLight() {
   }, [fetchAssets]);
 
   return (
-    <div className="h-full flex flex-col bg-[#1C2030]">
+    <div className="h-full flex flex-col bg-white">
       {/* Market Watch Header - Fixed */}
-      <div className="bg-slate-700 border-b border-[#2A3038] sticky top-0 z-10">
-        <div className="p-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] text-gray-400">
-              Market Watch: {time.toLocaleTimeString()}
-            </span>
-          </div>
-          <div className="relative mt-2">
-            <Search className="w-3 h-3 absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search Market"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#1C2030] rounded px-7 py-0.5 text-[8px] text-white placeholder:text-[10px] placeholder:text-gray-400"
-            />
+      <div className="flex flex-col h-full">
+        <div className="bg-white border-b border-sla sticky top-0 z-10">
+          <div className="">
+            <div className="flex items-center justify-between w-full">
+              <span className="bg-[#D2E0EA] text-gray-900 w-full p-2">
+                Market Watch: {time.toLocaleTimeString()}
+              </span>
+            </div>
+            <div className="relative mt-2 mb-2">
+              <Search className="w-5 h-5 absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search Market"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-white rounded px-7 py-1.5 text-[11px] text-slate-900 placeholder:text-gray-400"
+              />
+            </div>
           </div>
         </div>
 
-        {/* Table Header */}
-        <Table className="border-y border-[#2A3038]">
-          <TableHeader className="bg-[#2A3038]">
-            <TableRow className="border-0 hover:bg-transparent">
-              <TableHead className="h-7 text-[10px] text-gray-400 font-normal border-r border-[#2A3038]">
-                Symbol
-              </TableHead>
-              <TableHead className="h-7 text-[10px] text-gray-400 font-normal text-right border-r border-[#2A3038]">
-                Bid
-              </TableHead>
-              <TableHead className="h-7 text-[10px] text-gray-400 font-normal text-right">
-                Ask
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-        </Table>
-      </div>
-
-      {/* Table Body - Scrollable */}
-      <div className="flex-1 min-h-0 overflow-auto">
-        <Table>
-          <TableBody>
-            {/* Watchlist Assets on Top */}
-            {watchlist
-              .filter(
-                (asset) =>
-                  !searchQuery ||
-                  asset.symbol_display
-                    .toLowerCase()
-                    .includes(searchQuery.toLowerCase()) ||
-                  asset.name.toLowerCase().includes(searchQuery.toLowerCase())
-              )
-              .map((asset) => {
-                const buyPrice = asset.buy_price;
-                const sellPrice = asset.sell_price;
-                const isPositive = Number(asset.change_percent) >= 0;
-
-                return (
-                  <TableRow
-                    key={`watchlist-${asset.id}`}
-                    onClick={() => {
-                      // Convert watchlist asset to assetStore asset type
-                      const assetStore = useAssetStore.getState();
-                      const found = assetStore.getAssetBySymbol(
-                        asset.symbol_display
-                      );
-                      if (found) {
-                        setActiveAsset(found);
-                      }
-                      addPair(asset.symbol_display);
-                    }}
-                    className="h-6 cursor-pointer border-b border-[#2A3038] hover:bg-[#2A3038]"
-                  >
-                    <TableCell className="py-0 text-[11px] border-r border-[#2A3038]">
-                      <div className="flex items-center space-x-1">
-                        <div
-                          className={`w-1 h-1 rounded-full ${
-                            isPositive ? "bg-green-500" : "bg-red-500"
-                          }`}
-                        />
-                        <span className="text-white font-bold">
-                          {asset.symbol_display}
-                        </span>
-                        <span>
-                          <BadgeCheck size={16} strokeWidth={0.5} />
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="py-0 text-[11px] text-right text-blue-400 border-r border-[#2A3038]">
-                      {buyPrice.toFixed(3)}
-                    </TableCell>
-                    <TableCell className="py-0 text-[11px] text-right text-red-400">
-                      {sellPrice.toFixed(3)}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-
-            {/* Remaining Market Assets */}
-            {Object.entries(groupedAssets).flatMap(([, typeAssets]) => {
-              const filteredAssets = typeAssets.filter(
-                (asset) =>
-                  !watchlist.some(
-                    (w) => w.symbol_display === asset.symbol_display
-                  ) &&
-                  (!searchQuery ||
+        <div className="flex-1 min-h-0 overflow-auto relative">
+          <Table>
+            <TableHeader className="bg-white sticky top-0 z-10">
+              <TableRow className="border-y border-slate-400 hover:bg-transparent">
+                <TableHead className="h-10 text-[12px] text-slate-900 font-bold border-r border-slate-400 py-2 px-4 w-[60%] bg-white">
+                  Symbol
+                </TableHead>
+                <TableHead className="h-10 text-[12px] text-slate-900 font-bold text-right border-r border-slate-400 py-2 px-4 w-[20%] bg-white">
+                  Bid
+                </TableHead>
+                <TableHead className="h-10 text-[12px] text-slate-900 font-bold text-right py-2 px-4 w-[20%] bg-white">
+                  Ask
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {/* Watchlist Assets on Top */}
+              {watchlist
+                .filter(
+                  (asset) =>
+                    !searchQuery ||
                     asset.symbol_display
                       .toLowerCase()
                       .includes(searchQuery.toLowerCase()) ||
-                    asset.name
-                      .toLowerCase()
-                      .includes(searchQuery.toLowerCase()))
-              );
+                    asset.name.toLowerCase().includes(searchQuery.toLowerCase())
+                )
+                .map((asset) => {
+                  const buyPrice = asset.buy_price;
+                  const sellPrice = asset.sell_price;
 
-              if (filteredAssets.length === 0) return [];
+                  return (
+                    <TableRow
+                      key={`watchlist-${asset.id}`}
+                      onClick={() => {
+                        // Convert watchlist asset to assetStore asset type
+                        const assetStore = useAssetStore.getState();
+                        const found = assetStore.getAssetBySymbol(
+                          asset.symbol_display
+                        );
+                        if (found) {
+                          setActiveAsset(found);
+                        }
+                        addPair(asset.symbol_display);
+                      }}
+                      className="h-10 cursor-pointer border-b border-slate-400 hover:bg-slate-300"
+                    >
+                      <TableCell className="py-2 px-4 text-[13px] border-r border-slate-400 w-[60%]">
+                        <div className="flex items-center space-x-2">
+                          <img
+                            src={asset.image}
+                            alt={asset.name}
+                            className="w-5 h-5 object-contain rounded-full"
+                          />
+                          <span className="text-slate-900 font-bold">
+                            {asset.symbol_display}
+                          </span>
+                          <span>
+                            <BadgeCheck
+                              size={18}
+                              strokeWidth={1.5}
+                              className="text-slate-900"
+                            />
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-2 px-4 text-[13px] text-right font-bold text-blue-400 border-r border-slate-400 w-[20%]">
+                        {buyPrice.toFixed(3)}
+                      </TableCell>
+                      <TableCell className="py-2 px-4 text-[13px] text-right font-bold text-red-400 w-[20%]">
+                        {sellPrice.toFixed(3)}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
 
-              return filteredAssets.map((asset) => {
-                const buyPrice = asset.buy_price;
-                const sellPrice = asset.sell_price;
-                const isPositive = Number(asset.change_percent) >= 0;
-
-                return (
-                  <TableRow
-                    key={asset.id}
-                    onClick={() => {
-                      setActiveAsset(asset);
-                      addPair(asset.symbol_display);
-                    }}
-                    className="h-6 cursor-pointer border-b border-[#2A3038] hover:bg-[#2A3038]"
-                  >
-                    <TableCell className="py-0 text-[11px] border-r border-[#2A3038]">
-                      <div className="flex items-center space-x-1">
-                        <div
-                          className={`w-1 h-1 rounded-full ${
-                            isPositive ? "bg-green-500" : "bg-red-500"
-                          }`}
-                        />
-                        <span className="text-white">
-                          {asset.symbol_display}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="py-0 text-[11px] text-right text-blue-400 border-r border-[#2A3038]">
-                      {buyPrice.toFixed(3)}
-                    </TableCell>
-                    <TableCell className="py-0 text-[11px] text-right text-red-400">
-                      {sellPrice.toFixed(3)}
-                    </TableCell>
-                  </TableRow>
+              {/* Remaining Market Assets */}
+              {Object.entries(groupedAssets).flatMap(([, typeAssets]) => {
+                const filteredAssets = typeAssets.filter(
+                  (asset) =>
+                    !watchlist.some(
+                      (w) => w.symbol_display === asset.symbol_display
+                    ) &&
+                    (!searchQuery ||
+                      asset.symbol_display
+                        .toLowerCase()
+                        .includes(searchQuery.toLowerCase()) ||
+                      asset.name
+                        .toLowerCase()
+                        .includes(searchQuery.toLowerCase()))
                 );
-              });
-            })}
-          </TableBody>
-        </Table>
+
+                if (filteredAssets.length === 0) return [];
+
+                return filteredAssets.map((asset) => {
+                  const buyPrice = asset.buy_price;
+                  const sellPrice = asset.sell_price;
+
+                  return (
+                    <TableRow
+                      key={asset.id}
+                      onClick={() => {
+                        setActiveAsset(asset);
+                        addPair(asset.symbol_display);
+                      }}
+                      className="h-10 cursor-pointer border-b border-slate-400 hover:bg-slate-300"
+                    >
+                      <TableCell className="py-2 px-4 text-[13px] border-r border-slate-400 w-[60%]">
+                        <div className="flex items-center space-x-2">
+                          <img
+                            src={asset.image}
+                            alt={asset.name}
+                            className="w-5 h-5 object-contain rounded-full"
+                          />
+                          <span className="text-slate-900 font-bold">
+                            {asset.symbol_display}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-2 px-4 text-[13px] text-right font-bold text-blue-400 border-r border-slate-400 w-[20%]">
+                        {buyPrice.toFixed(3)}
+                      </TableCell>
+                      <TableCell className="py-2 px-4 text-[13px] text-right font-bold text-red-400 w-[20%]">
+                        {sellPrice.toFixed(3)}
+                      </TableCell>
+                    </TableRow>
+                  );
+                });
+              })}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );

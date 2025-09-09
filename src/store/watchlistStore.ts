@@ -1,14 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-export interface Asset {
-  id: string | number;
-  symbol_display: string;
-  name: string;
-  sell_price: number;
-  buy_price: number;
-  change_percent: string | null;
-}
+import { Asset } from "./assetStore";
 
 interface WatchlistStore {
   watchlist: Asset[];
