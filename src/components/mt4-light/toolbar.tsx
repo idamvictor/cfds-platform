@@ -1,10 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Plus, BarChart3, Play } from "lucide-react";
+import useUserStore from "@/store/userStore";
 
 export function Toolbar() {
+  const user = useUserStore((state) => state.user);
+  const unreadNotifications =
+    user?.notifications.filter((n) => !n.read_at).length || 0;
   return (
-    <div className="bg-slate-100 border-b border-slate-300 px-4 py-2 flex items-center justify-between">
+    <div className="bg-white border-b border-slate-300 px-4 py-2 flex items-center justify-between">
       <div className="flex items-center gap-4">
         <Button
           variant="outline"
@@ -24,11 +29,24 @@ export function Toolbar() {
         </Button>
       </div>
       <div className="flex items-center gap-2">
-        <Play className="h-4 w-4 text-green-600 fill-green-600" />
+        <Play className="h-6 w-6 text-green-600 fill-green-600" />
         <span className="text-sm text-slate-700 font-medium">Auto Trading</span>
-        <Badge className="rounded-full w-5 h-5 p-0 flex items-center justify-center text-xs bg-red-500 text-white border-0">
-          1
-        </Badge>
+        <div className="relative">
+          <Avatar className="h-8 w-8">
+            <AvatarImage
+              src={user?.avatar}
+              alt={`${user?.first_name} ${user?.last_name}`}
+            />
+            <AvatarFallback>
+              {user ? `${user.first_name[0]}${user.last_name[0]}` : "U"}
+            </AvatarFallback>
+          </Avatar>
+          {unreadNotifications > 0 && (
+            <Badge className="absolute -top-2 -right-2 rounded-full w-5 h-5 p-0 flex items-center justify-center text-xs bg-red-500 text-white border-2 border-white">
+              {unreadNotifications}
+            </Badge>
+          )}
+        </div>
       </div>
     </div>
   );
