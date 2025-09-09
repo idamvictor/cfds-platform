@@ -10,8 +10,12 @@ import MarketWatch from "./market-watch-light";
 import PositionDisplayLight from "./position-display-light";
 import AlgoTraderLight from "./algo-trader-light";
 import TotalPortfolioLight from "./total-portfolio-light";
+import AutomatedTrading from "../mt4/right-panels/automated-trading";
+import useOverlayStore from "@/store/overlayStore";
 
 export function TradingPlatformLight() {
+  const { automatedTrading, selectedAdvisorId } = useOverlayStore();
+
   return (
     <div className="h-screen bg-slate-100 flex flex-col font-sans text-sm">
       <TitleBar />
@@ -29,8 +33,14 @@ export function TradingPlatformLight() {
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col relative">
           <ChartArea />
+          {/* Automated Trading Panel */}
+          {automatedTrading && (
+            <div className="top-0 left-0 z-50 absolute">
+              <AutomatedTrading advisorId={selectedAdvisorId} />
+            </div>
+          )}
         </div>
       </div>
 
