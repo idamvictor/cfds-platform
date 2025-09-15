@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { Asset } from "@/store/watchlistStore";
+import { Asset } from "@/store/assetStore";
 
 export default function AddAsset() {
   const [selectedTab, setSelectedTab] = useState<string>("forex");
