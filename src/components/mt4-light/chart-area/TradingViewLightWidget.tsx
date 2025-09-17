@@ -29,7 +29,7 @@ function TradingViewLightWidget({
       hide_side_toolbar: true,
       hide_top_toolbar: false,
       hide_legend: false,
-      hide_volume: false,
+      hide_volume: true,
       hotlist: false,
       interval: interval,
       locale: "en",
