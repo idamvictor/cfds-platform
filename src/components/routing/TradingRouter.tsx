@@ -1,8 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 import useSiteSettingsStore from "@/store/siteSettingStore";
 import TradingPlatform from "@/components/trading/trading-interface-components/trading-platform";
-import MT4Layout from "@/layouts/MT4Layout";
-import MainContent from "@/components/mt4/main-content";
+// import MT4Layout from "@/layouts/MT4Layout";
+// import MainContent from "@/components/mt4/main-content";
+import {TradingPlatformLight} from "@/components/mt4-light/trading-platform-light.tsx";
 
 const TradingRouter = () => {
     const settings = useSiteSettingsStore((state) => state.settings);
@@ -11,9 +12,7 @@ const TradingRouter = () => {
     if (is_mt4) {
         return (
             <Routes>
-                <Route path="/" element={<MT4Layout />}>
-                    <Route index element={<MainContent />} />
-                </Route>
+                <Route path="/" element={<TradingPlatformLight />} />
             </Routes>
         );
     }

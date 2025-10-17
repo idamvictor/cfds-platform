@@ -437,11 +437,11 @@ export function TradingInterface() {
     const sl = form.getValues().stopLoss;
 
     if (tp && sl) {
-      return `TP: ${tp.toFixed(5)} SL: ${sl.toFixed(5)}`;
+      return `TP: ${tp.toFixed(2)} SL: ${sl.toFixed(2)}`;
     } else if (tp) {
-      return `TP: ${tp.toFixed(5)}`;
+      return `TP: ${tp.toFixed(2)}`;
     } else if (sl) {
-      return `SL: ${sl.toFixed(5)}`;
+      return `SL: ${sl.toFixed(2)}`;
     } else {
       return "Not set";
     }
@@ -1092,6 +1092,12 @@ export function TradingInterface() {
       <TakeProfitStopLossModal
         open={isTpSlModalOpen}
         onOpenChange={setIsTpSlModalOpen}
+        currentTakeProfit={form.getValues().takeProfit}
+        currentStopLoss={form.getValues().stopLoss}
+        onApplyValues={(takeProfit, stopLoss) => {
+          form.setValue("takeProfit", takeProfit);
+          form.setValue("stopLoss", stopLoss);
+        }}
       />
       <PendingOrderModal
         open={isPendingModalOpen}

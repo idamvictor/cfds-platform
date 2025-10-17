@@ -236,20 +236,27 @@ export default function ICMarketLoginLight() {
             </div>
 
             {/* Trustpilot rating */}
-            <div className="mt-8 text-black text-center">
-                <div className="flex items-center justify-center gap-2">
-                    <span className="text-sm">Our customers say</span>
-                    <span className="font-bold mr-2">Excellent</span>
-                    <div className="flex">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                            <div key={star} className="w-5 h-5 bg-green-500 flex items-center justify-center text-white text-xs mx-0.5">★</div>
-                        ))}
+            <div className="mt-8 text-black text-center px-4">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
+                    <div className="flex items-center gap-1 sm:gap-2">
+                        <span className="text-sm">Our customers say</span>
+                        <span className="font-bold">Excellent</span>
                     </div>
-                    <span className="text-sm">4.8 out of 5 based on 44,986 reviews</span>
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9 0L11.4 5.73L17.5 6.75L13.25 11.27L14.4 17.5L9 14.53L3.6 17.5L4.75 11.27L0.5 6.75L6.6 5.73L9 0Z" fill="#00B67A"/>
-                    </svg>
-                    <span className="font-bold">Trustpilot</span>
+                    <div className="flex items-center gap-1 sm:gap-2">
+                        <div className="flex">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                                <div key={star} className="w-4 h-4 sm:w-5 sm:h-5 bg-green-500 flex items-center justify-center text-white text-xs mx-0.5">★</div>
+                            ))}
+                        </div>
+                        <span className="text-xs sm:text-sm">4.8 out of 5</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                        <span className="text-xs sm:text-sm">based on 44,986 reviews</span>
+                        <svg width="16" height="16" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" className="sm:w-[18px] sm:h-[18px]">
+                            <path d="M9 0L11.4 5.73L17.5 6.75L13.25 11.27L14.4 17.5L9 14.53L3.6 17.5L4.75 11.27L0.5 6.75L6.6 5.73L9 0Z" fill="#00B67A"/>
+                        </svg>
+                        <span className="font-bold text-sm">Trustpilot</span>
+                    </div>
                 </div>
             </div>
 

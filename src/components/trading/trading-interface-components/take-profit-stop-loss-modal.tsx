@@ -19,6 +19,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   preset: z.string(),
@@ -29,34 +30,57 @@ const formSchema = z.object({
 interface TakeProfitStopLossModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onApplyValues?: (takeProfit: number | undefined, stopLoss: number | undefined) => void;
+  currentTakeProfit?: number;
+  currentStopLoss?: number;
 }
 
 export function TakeProfitStopLossModal({
   open,
   onOpenChange,
+  onApplyValues,
+  currentTakeProfit,
+  currentStopLoss,
 }: TakeProfitStopLossModalProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       preset: "default",
-      takeProfit: "",
-      stopLoss: "",
+      takeProfit: currentTakeProfit ? currentTakeProfit.toFixed(2) : "",
+      stopLoss: currentStopLoss ? currentStopLoss.toFixed(2) : "",
     },
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("Applied TP/SL values:", values);
+    const takeProfit = values.takeProfit ? parseFloat(parseFloat(values.takeProfit).toFixed(2)) : undefined;
+    const stopLoss = values.stopLoss ? parseFloat(parseFloat(values.stopLoss).toFixed(2)) : undefined;
+    
+    if (onApplyValues) {
+      onApplyValues(takeProfit, stopLoss);
+    }
+    
     onOpenChange(false);
   };
+
+  // Update form when current values change
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        preset: "default",
+        takeProfit: currentTakeProfit ? currentTakeProfit.toFixed(2) : "",
+        stopLoss: currentStopLoss ? currentStopLoss.toFixed(2) : "",
+      });
+    }
+  }, [open, currentTakeProfit, currentStopLoss, form]);
 
   const handleAdjustValue = (
     field: "takeProfit" | "stopLoss",
     increment: boolean
   ) => {
     const currentValue = Number.parseFloat(form.getValues(field) || "0");
-    const step = 0.01;
-    const newValue = increment ? currentValue + step : currentValue - step;
-    form.setValue(field, newValue.toFixed(3));
+    const step = 1.00;
+    const newValue = increment ? currentValue + step : Math.max(0, currentValue - step);
+    form.setValue(field, newValue.toFixed(2));
   };
 
   return (
@@ -115,7 +139,14 @@ export function TakeProfitStopLossModal({
                             <Input
                               {...field}
                               className="bg-transparent border-none p-0 text-white text-xs focus-visible:ring-0 focus-visible:ring-offset-0 h-5"
-                              placeholder="0.000"
+                              placeholder="0.00"
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                // Allow empty value or valid decimal with up to 2 decimal places
+                                if (value === '' || /^\d*\.?\d{0,2}$/.test(value)) {
+                                  field.onChange(value);
+                                }
+                              }}
                             />
                           </div>
                           <div className="flex flex-col bg-[#131722] rounded-r h-full justify-center">
@@ -164,7 +195,14 @@ export function TakeProfitStopLossModal({
                             <Input
                               {...field}
                               className="bg-transparent border-none p-0 text-white text-xs focus-visible:ring-0 focus-visible:ring-offset-0 h-5"
-                              placeholder="0.000"
+                              placeholder="0.00"
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                // Allow empty value or valid decimal with up to 2 decimal places
+                                if (value === '' || /^\d*\.?\d{0,2}$/.test(value)) {
+                                  field.onChange(value);
+                                }
+                              }}
                             />
                           </div>
                           <div className="flex flex-col bg-[#131722] rounded-r h-full justify-center">

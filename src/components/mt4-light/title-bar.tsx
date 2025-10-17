@@ -2,10 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Minimize2, Square, X } from "lucide-react";
 import useSiteSettingsStore from "@/store/siteSettingStore";
 import useAssetStore from "@/store/assetStore";
+import { useNavigate } from "react-router-dom";
 
 export function TitleBar() {
   const settings = useSiteSettingsStore((state) => state.settings);
   const activeAsset = useAssetStore((state) => state.activeAsset);
+  const navigate = useNavigate();
 
   return (
     <div className="bg-white border-b border-slate-400 px-4 py-1 flex items-center justify-between">
@@ -39,6 +41,7 @@ export function TitleBar() {
           variant="ghost"
           size="sm"
           className="h-6 w-6 p-0 hover:bg-red-500 hover:text-white text-slate-600"
+          onClick={() => navigate("/main/dashboard")}
         >
           <X className="h-3 w-3" />
         </Button>
