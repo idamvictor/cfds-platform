@@ -10,7 +10,7 @@ export function ChartArea() {
   return (
     <div className="flex-1 bg-gray-50 border-b border-slate-400 ">
       <div className="h-[93%] relative">
-        <div className="absolute top-20 left-4 z-10">
+        <div className="absolute top-20 right-4 z-10">
           <BuySellFloatingButtonsLight />
         </div>
         <TradingViewLightWidget />
