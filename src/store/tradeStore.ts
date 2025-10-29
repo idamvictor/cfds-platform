@@ -2,6 +2,7 @@ import { create } from "zustand";
 import axiosInstance from "@/lib/axios";
 import { io, Socket } from "socket.io-client";
 import useUserStore from "@/store/userStore.ts";
+import useSiteSettingsStore from "@/store/siteSettingStore";
 
 export interface Trade {
   id: string;
@@ -87,6 +88,7 @@ interface TradeStore {
   resetTrades: () => void;
   updateTradesWithPrices: (prices: Record<string, number>) => void;
   calculateAccountSummary: () => void;
+  disconnectWebSocket: () => void;
 }
 
 // Global socket instance to prevent multiple connections
@@ -317,10 +319,32 @@ const useTradeStore = create<TradeStore>((set, get) => ({
       },
     });
   },
+
+  disconnectWebSocket: () => {
+    if (socket) {
+      socket.disconnect();
+      socket = null;
+      set({ wsConnected: false });
+    }
+  },
 }));
 
 // Initialize WebSocket connection
 function initWebSocket() {
+  // Check if live trader is enabled
+  const livetraderStatus = useSiteSettingsStore.getState().settings?.livetrader_status ?? true;
+
+  if (!livetraderStatus) {
+    console.log("WebSocket for trades not initialized - livetrader_status is false");
+    // Disconnect if already connected
+    if (socket) {
+      socket.disconnect();
+      socket = null;
+      useTradeStore.setState({ wsConnected: false });
+    }
+    return;
+  }
+
   if (socket && socket.connected) return;
 
   // Clean up any existing connection

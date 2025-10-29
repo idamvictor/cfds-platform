@@ -1,13 +1,18 @@
 import { useEffect, useRef, memo } from "react";
 import useAssetStore from "@/store/assetStore";
+import useSiteSettingsStore from "@/store/siteSettingStore";
+import TradingViewLoadingOverlay from "@/components/trading/TradingViewLoadingOverlay";
 
 function TradingViewWidget() {
   const container = useRef<HTMLDivElement | null>(null);
   // Only use the tv_symbol property from activeAsset to prevent unnecessary re-renders
   const tvSymbol = useAssetStore((state) => state.activeAsset?.tv_symbol);
+  const livetraderStatus = useSiteSettingsStore(
+    (state) => state.settings?.livetrader_status ?? true
+  );
 
   useEffect(() => {
-    if (!container.current || !tvSymbol) return;
+    if (!container.current || !tvSymbol || !livetraderStatus) return;
 
     // Store a reference to the container for cleanup
     const currentContainer = container.current;
@@ -65,9 +70,14 @@ function TradingViewWidget() {
         currentContainer.innerHTML = "";
       }
     };
-  }, [tvSymbol]); // Only re-run when tvSymbol changes
+  }, [tvSymbol, livetraderStatus]); // Re-run when tvSymbol or livetraderStatus changes
 
-  return <div ref={container} style={{ height: "100%", width: "100%" }} />;
+  return (
+    <div style={{ height: "100%", width: "100%", position: "relative" }}>
+      {!livetraderStatus && <TradingViewLoadingOverlay theme="dark" />}
+      <div ref={container} style={{ height: "100%", width: "100%" }} />
+    </div>
+  );
 }
 
 // Memoize to prevent unnecessary rerenders
