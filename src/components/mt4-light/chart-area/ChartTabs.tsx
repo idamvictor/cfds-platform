@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, X, MoreHorizontal } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import useAssetStore from "@/store/assetStore";
+import useDarkModeStore from "@/store/darkModeStore";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,6 +41,7 @@ export function ChartTabs() {
   const [isOpen, setIsOpen] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
 
   const checkScroll = useCallback(() => {
     if (tabsListRef.current) {
@@ -89,7 +91,11 @@ export function ChartTabs() {
   }, [activePair]);
 
   return (
-    <div className="flex items-center bg-[#EDF0F4]">
+    <div
+      className={`flex items-center ${
+        isDarkMode ? "bg-[#1C2030]" : "bg-[#EDF0F4]"
+      }`}
+    >
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <div
           onMouseEnter={() => setIsOpen(true)}
@@ -99,12 +105,24 @@ export function ChartTabs() {
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 hover:bg-white/50"
+              className={`h-8 w-8 ${
+                isDarkMode ? "hover:bg-[#2A3447]" : "hover:bg-white/50"
+              }`}
             >
-              <MoreHorizontal className="h-4 w-4 text-gray-500" />
+              <MoreHorizontal
+                className={`h-4 w-4 ${
+                  isDarkMode ? "text-slate-200" : "text-gray-500"
+                }`}
+              />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-white border-slate-200">
+          <DropdownMenuContent
+            className={`${
+              isDarkMode
+                ? "bg-[#1B2331] border-[#2A3447]"
+                : "bg-white border-slate-200"
+            }`}
+          >
             {activePairs.map((pair) => {
               const isActive = pair === activePair;
               return (
@@ -112,7 +130,13 @@ export function ChartTabs() {
                   key={pair}
                   onClick={() => handlePairClick(pair)}
                   className={`flex items-center gap-2 cursor-pointer ${
-                    isActive ? "bg-white text-slate-900" : "text-gray-500"
+                    isDarkMode
+                      ? isActive
+                        ? "bg-[#2A3447] text-white"
+                        : "text-slate-200"
+                      : isActive
+                      ? "bg-white text-slate-900"
+                      : "text-gray-500"
                   }`}
                 >
                   <span className="text-xs font-bold">{pair}, M5</span>
@@ -127,16 +151,24 @@ export function ChartTabs() {
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 shrink-0 hover:bg-white/50"
+          className={`h-8 w-8 shrink-0 ${
+            isDarkMode ? "hover:bg-[#2A3447]" : "hover:bg-white/50"
+          }`}
           onClick={() => scroll("left")}
         >
-          <ChevronLeft className="h-4 w-4 text-gray-500" />
+          <ChevronLeft
+            className={`h-4 w-4 ${
+              isDarkMode ? "text-slate-200" : "text-gray-500"
+            }`}
+          />
         </Button>
       )}
 
       <div
         ref={tabsListRef}
-        className="flex overflow-x-hidden scroll-smooth flex-1 [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-transparent hover:overflow-x-auto bg-[#EDF0F4]"
+        className={`flex overflow-x-hidden scroll-smooth flex-1 [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-transparent hover:overflow-x-auto ${
+          isDarkMode ? "bg-[#1C2030]" : "bg-[#EDF0F4]"
+        }`}
         onScroll={checkScroll}
       >
         {activePairs.map((pair) => {
@@ -149,7 +181,11 @@ export function ChartTabs() {
             >
               <button
                 className={`rounded-none border-t-2 border-transparent px-4 py-2 whitespace-nowrap text-xs font-bold ${
-                  isActive
+                  isDarkMode
+                    ? isActive
+                      ? "bg-[#2A3447] text-slate-200 border-primary"
+                      : "text-slate-400"
+                    : isActive
                     ? "bg-white text-slate-900 border-primary"
                     : "text-gray-500"
                 }`}
@@ -157,7 +193,11 @@ export function ChartTabs() {
               >
                 {pair}, M5
                 <button
-                  className="ml-2 text-gray-400 hover:text-gray-600"
+                  className={`ml-2 ${
+                    isDarkMode
+                      ? "text-slate-400 hover:text-slate-200"
+                      : "text-gray-400 hover:text-gray-600"
+                  }`}
                   onClick={(e) => handleRemovePair(pair, e)}
                 >
                   <X className="h-3 w-3" />
@@ -172,10 +212,16 @@ export function ChartTabs() {
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 shrink-0 hover:bg-white/50"
+          className={`h-8 w-8 shrink-0 ${
+            isDarkMode ? "hover:bg-[#2A3447]" : "hover:bg-white/50"
+          }`}
           onClick={() => scroll("right")}
         >
-          <ChevronRight className="h-4 w-4 text-gray-500" />
+          <ChevronRight
+            className={`h-4 w-4 ${
+              isDarkMode ? "text-slate-200" : "text-gray-500"
+            }`}
+          />
         </Button>
       )}
     </div>

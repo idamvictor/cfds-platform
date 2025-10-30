@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { BadgeCheck, Search } from "lucide-react";
 import useAssetStore from "@/store/assetStore";
 import useWatchlistStore from "@/store/watchlistStore";
+import useDarkModeStore from "@/store/darkModeStore";
 import {
   Table,
   TableBody,
@@ -17,6 +18,7 @@ export default function MarketWatchLight() {
   const { watchlist } = useWatchlistStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [time, setTime] = useState(new Date());
+  const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
 
   useEffect(() => {
     fetchAssets();
@@ -27,24 +29,46 @@ export default function MarketWatchLight() {
   }, [fetchAssets]);
 
   return (
-    <div className="h-full flex flex-col bg-white">
+    <div
+      className={`h-full flex flex-col ${
+        isDarkMode ? "bg-slate-900" : "bg-white"
+      }`}
+    >
       {/* Market Watch Header - Fixed */}
       <div className="flex flex-col h-full">
-        <div className="bg-white border-b border-slate-400 sticky top-0 z-10">
+        <div
+          className={`${isDarkMode ? "bg-slate-900" : "bg-white"} border-b ${
+            isDarkMode ? "border-slate-600" : "border-slate-400"
+          } sticky top-0 z-10`}
+        >
           <div className="">
             <div className="flex items-center justify-between w-full">
-              <span className="bg-[#D2E0EA] text-gray-900 w-full p-2">
+              <span
+                className={`${
+                  isDarkMode
+                    ? "bg-slate-800 text-slate-200"
+                    : "bg-[#D2E0EA] text-gray-900"
+                } w-full p-2`}
+              >
                 Market Watch: {time.toLocaleTimeString()}
               </span>
             </div>
             <div className="relative mt-2 mb-2  ">
-              <Search className="w-5 h-5 absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <Search
+                className={`w-5 h-5 absolute left-2 top-1/2 transform -translate-y-1/2 ${
+                  isDarkMode ? "text-slate-400" : "text-gray-400"
+                }`}
+              />
               <input
                 type="text"
                 placeholder="Search Market"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white rounded px-10 py-1.5 text-[11px] text-slate-900 placeholder:text-gray-400"
+                className={`w-full rounded px-10 py-1.5 text-[11px] ${
+                  isDarkMode
+                    ? "bg-slate-800 text-slate-200 placeholder:text-slate-400"
+                    : "bg-white text-slate-900 placeholder:text-gray-400"
+                }`}
               />
             </div>
           </div>
@@ -52,15 +76,45 @@ export default function MarketWatchLight() {
 
         <div className="flex-1 min-h-0 overflow-auto relative">
           <Table>
-            <TableHeader className="bg-white sticky top-0 z-10">
-              <TableRow className="border-y border-slate-400 hover:bg-transparent">
-                <TableHead className="h-10 text-[12px] text-slate-900 font-bold border-r border-slate-400 py-2 px-4 w-[60%] bg-white">
+            <TableHeader
+              className={`${
+                isDarkMode ? "bg-slate-900" : "bg-white"
+              } sticky top-0 z-10`}
+            >
+              <TableRow
+                className={`border-y ${
+                  isDarkMode ? "border-slate-600" : "border-slate-400"
+                } hover:bg-transparent`}
+              >
+                <TableHead
+                  className={`h-10 text-[12px] ${
+                    isDarkMode ? "text-slate-200" : "text-slate-900"
+                  } font-bold border-r ${
+                    isDarkMode
+                      ? "border-slate-600 bg-slate-900"
+                      : "border-slate-400 bg-white"
+                  } py-2 px-4 w-[60%]`}
+                >
                   Symbol
                 </TableHead>
-                <TableHead className="h-10 text-[12px] text-slate-900 font-bold text-right border-r border-slate-400 py-2 px-4 w-[20%] bg-white">
+                <TableHead
+                  className={`h-10 text-[12px] ${
+                    isDarkMode ? "text-slate-200" : "text-slate-900"
+                  } font-bold text-right border-r ${
+                    isDarkMode
+                      ? "border-slate-600 bg-slate-900"
+                      : "border-slate-400 bg-white"
+                  } py-2 px-4 w-[20%]`}
+                >
                   Bid
                 </TableHead>
-                <TableHead className="h-10 text-[12px] text-slate-900 font-bold text-right py-2 px-4 w-[20%] bg-white">
+                <TableHead
+                  className={`h-10 text-[12px] ${
+                    isDarkMode ? "text-slate-200" : "text-slate-900"
+                  } font-bold text-right py-2 px-4 w-[20%] ${
+                    isDarkMode ? "bg-slate-900" : "bg-white"
+                  }`}
+                >
                   Ask
                 </TableHead>
               </TableRow>
@@ -94,23 +148,37 @@ export default function MarketWatchLight() {
                         }
                         addPair(asset.symbol_display);
                       }}
-                      className="h-10 cursor-pointer border-b border-slate-400 hover:bg-slate-300"
+                      className={`h-10 cursor-pointer border-b ${
+                        isDarkMode
+                          ? "border-slate-600 hover:bg-slate-800"
+                          : "border-slate-400 hover:bg-slate-300"
+                      }`}
                     >
-                      <TableCell className="py-2 px-4 text-[13px] border-r border-slate-400 w-[60%]">
+                      <TableCell
+                        className={`py-2 px-4 text-[13px] border-r ${
+                          isDarkMode ? "border-slate-600" : "border-slate-400"
+                        } w-[60%]`}
+                      >
                         <div className="flex items-center space-x-2">
                           <img
                             src={asset.image}
                             alt={asset.name}
                             className="w-5 h-5 object-contain rounded-full"
                           />
-                          <span className="text-slate-900 font-bold">
+                          <span
+                            className={`${
+                              isDarkMode ? "text-slate-200" : "text-slate-900"
+                            } font-bold`}
+                          >
                             {asset.symbol_display}
                           </span>
                           <span>
                             <BadgeCheck
                               size={18}
                               strokeWidth={1.5}
-                              className="text-slate-900"
+                              className={
+                                isDarkMode ? "text-slate-200" : "text-slate-900"
+                              }
                             />
                           </span>
                         </div>
@@ -154,16 +222,28 @@ export default function MarketWatchLight() {
                         setActiveAsset(asset);
                         addPair(asset.symbol_display);
                       }}
-                      className="h-10 cursor-pointer border-b border-slate-400 hover:bg-slate-300"
+                      className={`h-10 cursor-pointer border-b ${
+                        isDarkMode
+                          ? "border-slate-600 hover:bg-slate-800"
+                          : "border-slate-400 hover:bg-slate-300"
+                      }`}
                     >
-                      <TableCell className="py-2 px-4 text-[13px] border-r border-slate-400 w-[60%]">
+                      <TableCell
+                        className={`py-2 px-4 text-[13px] border-r ${
+                          isDarkMode ? "border-slate-600" : "border-slate-400"
+                        } w-[60%]`}
+                      >
                         <div className="flex items-center space-x-2">
                           <img
                             src={asset.image}
                             alt={asset.name}
                             className="w-5 h-5 object-contain rounded-full"
                           />
-                          <span className="text-slate-900 font-bold">
+                          <span
+                            className={`${
+                              isDarkMode ? "text-slate-200" : "text-slate-900"
+                            } font-bold`}
+                          >
                             {asset.symbol_display}
                           </span>
                         </div>

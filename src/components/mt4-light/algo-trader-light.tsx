@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import useOverlayStore from "@/store/overlayStore";
 import useDataStore, { ExpertAdvisor } from "@/store/dataStore";
 import useUserStore from "@/store/userStore";
+import useDarkModeStore from "@/store/darkModeStore";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -33,6 +34,7 @@ export default function AlgoTraderLight() {
   const { data, activeEA, activateEA } = useDataStore();
   const user = useUserStore((state) => state.user);
   const settings = useSiteSettingsStore((state) => state.settings);
+  const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
 
   const toggleSection = (section: keyof SectionState) => {
     setExpandedSections((prev) => ({
@@ -64,9 +66,17 @@ export default function AlgoTraderLight() {
   return (
     <div className="h-full flex flex-col">
       {/* Algo Trader Header */}
-      <div className="p-2 bg-[#D2E0EA] sticky top-0 z-10">
+      <div
+        className={`p-2 ${
+          isDarkMode ? "bg-slate-800" : "bg-[#D2E0EA]"
+        } sticky top-0 z-10`}
+      >
         <div className="flex items-center justify-between">
-          <span className="text-xs text-slate-900 font-bold">
+          <span
+            className={`text-xs font-bold ${
+              isDarkMode ? "text-slate-200" : "text-slate-900"
+            }`}
+          >
             Artificail Intelligence (AI) Trading
           </span>
           <div className="flex items-center gap-2">
@@ -76,13 +86,27 @@ export default function AlgoTraderLight() {
       </div>
 
       {/* Navigation Tree */}
-      <div className="flex-1 min-h-0 p-0 bg-white">
-        <Card className="h-full bg-white border-gray-100 p-1 rounded-none shadow-none">
+      <div
+        className={`flex-1 min-h-0 p-0 ${
+          isDarkMode ? "bg-slate-900" : "bg-white"
+        }`}
+      >
+        <Card
+          className={`h-full ${
+            isDarkMode
+              ? "bg-slate-900 border-slate-700"
+              : "bg-white border-gray-100"
+          } p-1 rounded-none shadow-none`}
+        >
           <CardContent className="p-1 h-full">
             <div className="h-full overflow-auto space-y-1">
               {!settings?.expert_advisor && (
                 <div className="flex items-center justify-center h-full">
-                  <p className="text-sm text-slate-500 text-center px-4">
+                  <p
+                    className={`text-sm ${
+                      isDarkMode ? "text-slate-400" : "text-slate-500"
+                    } text-center px-4`}
+                  >
                     Expert Advisors are currently disabled. Please contact
                     support for more information.
                   </p>
@@ -102,17 +126,31 @@ export default function AlgoTraderLight() {
                 <div>
                   <button
                     onClick={() => toggleSection("advisors")}
-                    className="flex items-center gap-1 py-1 px-2 text-xs w-full hover:bg-gray-50 rounded"
+                    className={`flex items-center gap-1 py-1 px-2 text-xs w-full ${
+                      isDarkMode ? "hover:bg-slate-800" : "hover:bg-gray-50"
+                    } rounded`}
                   >
                     {expandedSections.advisors ? (
-                      <ChevronDown className="w-3 h-3 text-slate-900" />
+                      <ChevronDown
+                        className={`w-3 h-3 ${
+                          isDarkMode ? "text-slate-200" : "text-slate-900"
+                        }`}
+                      />
                     ) : (
-                      <ChevronRight className="w-3 h-3 text-slate-900" />
+                      <ChevronRight
+                        className={`w-3 h-3 ${
+                          isDarkMode ? "text-slate-200" : "text-slate-900"
+                        }`}
+                      />
                     )}
                     <div className="w-4 h-4 bg-blue-500 rounded-sm flex items-center justify-center">
                       <span className="text-xs text-white">EA</span>
                     </div>
-                    <span className="text-slate-900 font-semibold">
+                    <span
+                      className={`${
+                        isDarkMode ? "text-slate-200" : "text-slate-900"
+                      } font-semibold`}
+                    >
                       Expert Advisors
                     </span>
                   </button>
@@ -124,30 +162,64 @@ export default function AlgoTraderLight() {
                         .map((advisor) => (
                           <div
                             key={advisor.id}
-                            className="flex items-center w-full justify-between gap-2 py-1 px-2 text-xs hover:bg-gray-50 rounded text-slate-900"
+                            className={`flex items-center w-full justify-between gap-2 py-1 px-2 text-xs ${
+                              isDarkMode
+                                ? "hover:bg-slate-800 text-slate-200"
+                                : "hover:bg-gray-50 text-slate-900"
+                            } rounded`}
                           >
                             <button
                               onClick={() => handleAdvisorClick(advisor)}
                               className="flex items-center gap-2"
                             >
-                              <Play className="w-3 h-3 font-semibold text-slate-900" />
-                              <span className="font-semibold text-slate-900">
+                              <Play
+                                className={`w-3 h-3 font-semibold ${
+                                  isDarkMode
+                                    ? "text-slate-200"
+                                    : "text-slate-900"
+                                }`}
+                              />
+                              <span
+                                className={`font-semibold ${
+                                  isDarkMode
+                                    ? "text-slate-200"
+                                    : "text-slate-900"
+                                }`}
+                              >
                                 {advisor.name}
                               </span>
                             </button>
                             {activeEA?.id === advisor.id ? (
-                              <Badge variant="secondary">Activated</Badge>
+                              <Badge
+                                variant={isDarkMode ? "outline" : "secondary"}
+                              >
+                                Activated
+                              </Badge>
                             ) : (
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <button>
-                                    <Settings className="w-4 h-4" />
+                                    <Settings
+                                      className={`w-4 h-4 ${
+                                        isDarkMode
+                                          ? "text-slate-200"
+                                          : "text-slate-900"
+                                      }`}
+                                    />
                                   </button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent className="bg-white">
+                                <DropdownMenuContent
+                                  className={
+                                    isDarkMode ? "bg-slate-800" : "bg-white"
+                                  }
+                                >
                                   <DropdownMenuItem
                                     onClick={() => handleActivateEA(advisor)}
-                                    className="text-slate-900"
+                                    className={
+                                      isDarkMode
+                                        ? "text-slate-200"
+                                        : "text-slate-900"
+                                    }
                                   >
                                     Activate
                                   </DropdownMenuItem>

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { X, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { CurrencyFlag } from "../../trading/trading-interface-components/header";
 import useAssetStore from "@/store/assetStore";
+import useDarkModeStore from "@/store/darkModeStore";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,6 +26,7 @@ export function AssetListingLightTabs({
   const [isOpen, setIsOpen] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
 
   const {
     assets,
@@ -106,7 +108,11 @@ export function AssetListingLightTabs({
   // };
 
   return (
-    <div className="flex items-center bg-[#1C2030] p-1 rounded-sm w-full">
+    <div
+      className={`flex items-center ${
+        isDarkMode ? "bg-[#1C2030]" : "bg-slate-100"
+      } p-1 rounded-sm w-full`}
+    >
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <div
           onMouseEnter={() => setIsOpen(true)}
@@ -116,12 +122,24 @@ export function AssetListingLightTabs({
             <Button
               variant="outline"
               size="icon"
-              className="h-8 w-8 hover:bg-[#2A3447]"
+              className={`h-8 w-8 ${
+                isDarkMode ? "hover:bg-[#2A3447]" : "hover:bg-slate-200"
+              }`}
             >
-              <MoreHorizontal className="h-4 w-4" />
+              <MoreHorizontal
+                className={`h-4 w-4 ${
+                  isDarkMode ? "text-slate-200" : "text-slate-900"
+                }`}
+              />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-[#1B2331] border-[#2A3447]">
+          <DropdownMenuContent
+            className={`${
+              isDarkMode
+                ? "bg-[#1B2331] border-[#2A3447]"
+                : "bg-white border-slate-200"
+            }`}
+          >
             {activePairs.map((pair) => {
               const asset = assets.find((a) => a.symbol_display === pair);
               const isActive = activePair === pair;
@@ -130,7 +148,9 @@ export function AssetListingLightTabs({
                 <DropdownMenuItem
                   key={pair}
                   onClick={() => handlePairClick(pair)}
-                  className={`flex items-center gap-2 hover:bg-[#2A3447] cursor-pointer relative ${
+                  className={`flex items-center gap-2 ${
+                    isDarkMode ? "hover:bg-[#2A3447]" : "hover:bg-slate-200"
+                  } cursor-pointer relative ${
                     isActive
                       ? "after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#F7931A]"
                       : ""
@@ -138,7 +158,13 @@ export function AssetListingLightTabs({
                 >
                   <CurrencyFlag pair={pair} />
                   <div className="flex flex-col">
-                    <span className="text-sm text-white">{pair}</span>
+                    <span
+                      className={`text-sm ${
+                        isDarkMode ? "text-white" : "text-slate-900"
+                      }`}
+                    >
+                      {pair}
+                    </span>
                     <span className="text-xs text-muted-foreground">
                       {asset?.type
                         ? asset.type.charAt(0).toUpperCase() +
@@ -157,7 +183,9 @@ export function AssetListingLightTabs({
           <Button
             variant="outline"
             size="icon"
-            className="h-8 w-8 hover:bg-[#2A3447] shrink-0"
+            className={`h-8 w-8 ${
+              isDarkMode ? "hover:bg-[#2A3447]" : "hover:bg-slate-200"
+            } shrink-0`}
             onClick={() => scroll("left")}
           >
             <ChevronLeft className="h-4 w-4" />
@@ -177,7 +205,11 @@ export function AssetListingLightTabs({
               <div
                 key={pair}
                 ref={isActive ? activeTabRef : null}
-                className={`relative flex items-center gap-2 px-4 py-2 rounded cursor-pointer border border-[#2A3447] hover:bg-[#2A3447] w-[150px] shrink-0 ${
+                className={`relative flex items-center gap-2 px-4 py-2 rounded cursor-pointer border ${
+                  isDarkMode
+                    ? "border-[#2A3447] hover:bg-[#2A3447]"
+                    : "border-slate-200 hover:bg-slate-200"
+                } w-[150px] shrink-0 ${
                   isActive
                     ? "after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#F7931A]"
                     : ""
@@ -186,7 +218,13 @@ export function AssetListingLightTabs({
               >
                 <CurrencyFlag pair={pair} />
                 <div className="flex flex-col">
-                  <span className="text-sm text-white">{pair}</span>
+                  <span
+                    className={`text-sm ${
+                      isDarkMode ? "text-white" : "text-slate-900"
+                    }`}
+                  >
+                    {pair}
+                  </span>
                   <span className="text-xs text-muted-foreground">
                     {asset?.type
                       ? asset.type.charAt(0).toUpperCase() + asset.type.slice(1)
@@ -194,7 +232,11 @@ export function AssetListingLightTabs({
                   </span>
                 </div>
                 <button
-                  className="absolute right-1 top-1 rounded-full bg-[#2A3447] p-1 hover:bg-[#3A4457]"
+                  className={`absolute right-1 top-1 rounded-full p-1 ${
+                    isDarkMode
+                      ? "bg-[#2A3447] hover:bg-[#3A4457]"
+                      : "bg-slate-200 hover:bg-slate-300"
+                  }`}
                   onClick={(e) => removeCurrencyPair(pair, e)}
                 >
                   <X className="h-3 w-3" />
@@ -208,7 +250,9 @@ export function AssetListingLightTabs({
           <Button
             variant="outline"
             size="icon"
-            className="h-8 w-8 hover:bg-[#2A3447] shrink-0"
+            className={`h-8 w-8 ${
+              isDarkMode ? "hover:bg-[#2A3447]" : "hover:bg-slate-200"
+            } shrink-0`}
             onClick={() => scroll("right")}
           >
             <ChevronRight className="h-4 w-4" />

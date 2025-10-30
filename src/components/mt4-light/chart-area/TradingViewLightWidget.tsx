@@ -1,18 +1,18 @@
 import { useEffect, useRef, memo } from "react";
 import useAssetStore from "@/store/assetStore";
+import useDarkModeStore from "@/store/darkModeStore";
 
 interface TradingViewLightWidgetProps {
-  theme?: "light" | "dark";
   interval?: string;
 }
 
 function TradingViewLightWidget({
-  theme = "light",
   interval = "D",
 }: TradingViewLightWidgetProps) {
   const container = useRef<HTMLDivElement>(null);
   const tvSymbol =
     useAssetStore((state) => state.activeAsset?.tv_symbol) || "OANDA:EURUSD";
+  const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -36,13 +36,12 @@ function TradingViewLightWidget({
       save_image: true,
       style: "1",
       symbol: tvSymbol,
-      theme: theme,
+      theme: isDarkMode ? "dark" : "light",
       timezone: "Etc/UTC",
-      backgroundColor: theme === "light" ? "#ffffff" : "#131722",
-      gridColor:
-        theme === "dark"
-          ? "rgba(255, 255, 255, 0.06)"
-          : "rgba(46, 46, 46, 0.06)",
+      backgroundColor: isDarkMode ? "#131722" : "#ffffff",
+      gridColor: isDarkMode
+        ? "rgba(255, 255, 255, 0.06)"
+        : "rgba(46, 46, 46, 0.06)",
       watchlist: [],
       withdateranges: false,
       compareSymbols: [],
@@ -61,7 +60,7 @@ function TradingViewLightWidget({
         containerElement.innerHTML = "";
       }
     };
-  }, [tvSymbol, theme, interval]);
+  }, [tvSymbol, isDarkMode, interval]);
 
   return (
     <div
@@ -78,8 +77,9 @@ function TradingViewLightWidget({
           href={`https://www.tradingview.com/symbols/${tvSymbol}/?exchange=OANDA`}
           rel="noopener noreferrer"
           target="_blank"
+          className={isDarkMode ? "text-slate-200" : "text-slate-900"}
         >
-          <span className="blue-text">
+          <span className={`${isDarkMode ? "text-blue-400" : "blue-text"}`}>
             {tvSymbol.replace("OANDA:", "")} Chart by TradingView
           </span>
         </a>

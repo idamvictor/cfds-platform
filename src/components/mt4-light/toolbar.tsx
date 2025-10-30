@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Plus, Play } from "lucide-react";
 import useUserStore from "@/store/userStore";
+import useDarkModeStore from "@/store/darkModeStore";
 import { useState } from "react";
 import {
   DropdownMenu,
@@ -13,12 +14,19 @@ import { TradingInterface } from "../mt4/trading-interface-copy";
 
 export function Toolbar() {
   const user = useUserStore((state) => state.user);
+  const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
   const unreadNotifications =
     user?.notifications.filter((n) => !n.read_at).length || 0;
   const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
 
   return (
-    <div className="bg-white border-b border-slate-300 px-4 py-2 flex items-center justify-between">
+    <div
+      className={`${
+        isDarkMode
+          ? "bg-slate-800 border-slate-600"
+          : "bg-white border-slate-300"
+      } border-b px-4 py-2 flex items-center justify-between`}
+    >
       <div className="flex items-center gap-4">
         <DropdownMenu
           open={isTradeModalOpen}
@@ -28,20 +36,36 @@ export function Toolbar() {
             <Button
               variant="outline"
               size="sm"
-              className="flex items-center gap-2 bg-white border-blue-300 text-slate-700 hover:bg-blue-50"
+              className={`flex items-center gap-2 ${
+                isDarkMode
+                  ? "bg-slate-800 border-blue-500 text-slate-200 hover:bg-slate-700"
+                  : "bg-white border-blue-300 text-slate-700 hover:bg-blue-50"
+              }`}
             >
               <Plus className="h-4 w-4" />
               New Order
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="p-0 bg-white w-[250px] border border-slate-300 shadow-lg">
+          <DropdownMenuContent
+            className={`p-0 w-[250px] border shadow-lg ${
+              isDarkMode
+                ? "bg-slate-800 border-slate-600"
+                : "bg-white border-slate-300"
+            }`}
+          >
             <TradingInterface />
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
       <div className="flex items-center gap-2">
-        <Play className="h-6 w-6 text-green-600 fill-green-600" />
-        <span className="text-sm text-slate-700 font-medium">Auto Trading</span>
+        <Play className="h-6 w-6 text-green-500 fill-green-500" />
+        <span
+          className={`text-sm font-medium ${
+            isDarkMode ? "text-slate-200" : "text-slate-700"
+          }`}
+        >
+          Auto Trading
+        </span>
         <div className="relative">
           <Avatar className="h-8 w-8">
             <AvatarImage

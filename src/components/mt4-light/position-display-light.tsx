@@ -3,6 +3,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import useTradeStore from "@/store/tradeStore";
 import type { Trade } from "@/store/tradeStore";
 import { cn } from "@/lib/utils";
+import useDarkModeStore from "@/store/darkModeStore";
 // import { useMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import axiosInstance from "@/lib/axios";
@@ -16,6 +17,7 @@ export default function PositionDisplayLight() {
   const [selectedOrder, setSelectedOrder] = useState<Trade | null>(null);
   const [showCloseDialog, setShowCloseDialog] = useState(false);
   const [closingTrade, setClosingTrade] = useState(false);
+  const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
 
   // const isMobile = useMobile(768);
 
@@ -120,7 +122,11 @@ export default function PositionDisplayLight() {
             isCollapsed ? "h-0 opacity-0" : "h-[190px] opacity-100"
           )}
         >
-          <div className="h-[190px] relative bg-white shadow-lg backdrop-blur-sm">
+          <div
+            className={`h-[190px] relative ${
+              isDarkMode ? "bg-slate-900" : "bg-white"
+            } shadow-lg backdrop-blur-sm`}
+          >
             <div className="absolute inset-0 overflow-auto">
               <DesktopPositionTable
                 positions={activeTab === "active" ? openTrades : closedTrades}
@@ -137,13 +143,21 @@ export default function PositionDisplayLight() {
             </div>
 
             {/* control tabs */}
-            <div className="flex justify-between items-center absolute bottom-0 left-0 right-0 z-20 bg-[#EDF0F4]">
+            <div
+              className={`flex justify-between items-center absolute bottom-0 left-0 right-0 z-20 ${
+                isDarkMode ? "bg-slate-800" : "bg-[#EDF0F4]"
+              }`}
+            >
               <div className="flex overflow-x-auto">
                 <button
                   className={cn(
                     "rounded-none border-t-2 border-transparent px-4 py-2 whitespace-nowrap text-xs font-bold",
                     activeTab === "active"
-                      ? "bg-white text-slate-900"
+                      ? isDarkMode
+                        ? "bg-slate-900 text-slate-200"
+                        : "bg-white text-slate-900"
+                      : isDarkMode
+                      ? "text-slate-400"
                       : "text-gray-500"
                   )}
                   onClick={() => setActiveTab("active")}
@@ -154,7 +168,11 @@ export default function PositionDisplayLight() {
                   className={cn(
                     "rounded-none border-t-2 border-transparent px-4 py-2 whitespace-nowrap text-xs font-bold",
                     activeTab === "history"
-                      ? "bg-white text-slate-900"
+                      ? isDarkMode
+                        ? "bg-slate-900 text-slate-200"
+                        : "bg-white text-slate-900"
+                      : isDarkMode
+                      ? "text-slate-400"
                       : "text-gray-500"
                   )}
                   onClick={() => setActiveTab("history")}
@@ -165,7 +183,11 @@ export default function PositionDisplayLight() {
               <div className="flex items-center">
                 <button
                   onClick={() => setIsCollapsed(true)}
-                  className="p-1 text-slate-400 hover:text-slate-300 transition-colors flex items-center"
+                  className={`p-1 ${
+                    isDarkMode
+                      ? "text-slate-500 hover:text-slate-400"
+                      : "text-slate-400 hover:text-slate-300"
+                  } transition-colors flex items-center`}
                 >
                   <ChevronDown className="h-4 w-4" />
                 </button>
@@ -183,13 +205,21 @@ export default function PositionDisplayLight() {
               : "translate-y-full opacity-0"
           )}
         >
-          <div className="flex justify-between items-center bg-[#EDF0F4] relative z-10">
+          <div
+            className={`flex justify-between items-center relative z-10 ${
+              isDarkMode ? "bg-slate-800" : "bg-[#EDF0F4]"
+            }`}
+          >
             <div className="flex overflow-x-auto">
               <button
                 className={cn(
                   "rounded-none border-t-2 border-transparent px-4 py-2 whitespace-nowrap text-xs font-bold",
                   activeTab === "active"
-                    ? "bg-white text-slate-900"
+                    ? isDarkMode
+                      ? "bg-slate-900 text-slate-200"
+                      : "bg-white text-slate-900"
+                    : isDarkMode
+                    ? "text-slate-400"
                     : "text-gray-500"
                 )}
               >
@@ -199,7 +229,11 @@ export default function PositionDisplayLight() {
                 className={cn(
                   "rounded-none border-t-2 border-transparent px-4 py-2 whitespace-nowrap text-xs font-bold",
                   activeTab === "history"
-                    ? "bg-white text-slate-900"
+                    ? isDarkMode
+                      ? "bg-slate-900 text-slate-200"
+                      : "bg-white text-slate-900"
+                    : isDarkMode
+                    ? "text-slate-400"
                     : "text-gray-500"
                 )}
               >
@@ -209,9 +243,19 @@ export default function PositionDisplayLight() {
             <div className="flex items-center">
               <button
                 onClick={() => setIsCollapsed(false)}
-                className="p-1 text-slate-400 hover:text-slate-300 transition-colors flex items-center gap-2"
+                className={`p-1 ${
+                  isDarkMode
+                    ? "text-slate-500 hover:text-slate-400"
+                    : "text-slate-400 hover:text-slate-300"
+                } transition-colors flex items-center gap-2`}
               >
-                <span className="text-xs text-slate-900">Show Positions</span>
+                <span
+                  className={`text-xs ${
+                    isDarkMode ? "text-slate-200" : "text-slate-900"
+                  }`}
+                >
+                  Show Positions
+                </span>
                 <ChevronUp className="h-4 w-4" />
               </button>
             </div>

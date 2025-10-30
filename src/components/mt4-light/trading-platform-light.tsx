@@ -4,6 +4,7 @@ import { TitleBar } from "./title-bar";
 import { Toolbar } from "./toolbar";
 // import { AITradingPanel } from "./ai-trading-panel";
 import { ChartArea } from "./chart-area";
+import useDarkModeStore from "@/store/darkModeStore";
 // import { TradingHistory } from "./trading-history";
 import { StatusBar } from "./status-bar";
 import MarketWatch from "./market-watch-light";
@@ -15,15 +16,26 @@ import useOverlayStore from "@/store/overlayStore";
 
 export function TradingPlatformLight() {
   const { automatedTrading, selectedAdvisorId } = useOverlayStore();
+  const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
 
   return (
-    <div className="h-screen bg-slate-100 flex flex-col font-sans text-sm">
+    <div
+      className={`h-screen ${
+        isDarkMode ? "bg-slate-950" : "bg-slate-100"
+      } flex flex-col font-sans text-sm`}
+    >
       <TitleBar />
       <Toolbar />
 
       <div className="flex flex-1 overflow-hidden">
         {/* Left Sidebar */}
-        <div className="w-96 bg-white border-r border-slate-300 flex flex-col h-full">
+        <div
+          className={`w-96 ${
+            isDarkMode
+              ? "bg-slate-900 border-slate-600"
+              : "bg-white border-slate-300"
+          } border-r flex flex-col h-full`}
+        >
           <div className="h-[75%] overflow-auto">
             <MarketWatch />
           </div>
@@ -33,11 +45,19 @@ export function TradingPlatformLight() {
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col relative">
+        <div
+          className={`flex-1 flex flex-col relative ${
+            isDarkMode ? "bg-slate-900" : "bg-white"
+          }`}
+        >
           <ChartArea />
           {/* Automated Trading Panel */}
           {automatedTrading && (
-            <div className="top-0 left-0 z-50 absolute">
+            <div
+              className={`top-0 left-0 z-50 absolute ${
+                isDarkMode ? "bg-slate-900" : "bg-white"
+              }`}
+            >
               <AutomatedTrading advisorId={selectedAdvisorId} />
             </div>
           )}
