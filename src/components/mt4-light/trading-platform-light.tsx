@@ -16,12 +16,14 @@ import AutomatedTrading from "../mt4/right-panels/automated-trading";
 import useOverlayStore from "@/store/overlayStore";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useMobile } from "@/hooks/use-mobile";
+import useSiteSettingsStore from "@/store/siteSettingStore";
 
 export function TradingPlatformLight() {
   const { automatedTrading, selectedAdvisorId } = useOverlayStore();
   const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
   const isMobile = useMobile();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const settings = useSiteSettingsStore((state) => state.settings);
 
   const Sidebar = () => (
     <div
@@ -31,12 +33,18 @@ export function TradingPlatformLight() {
           : "bg-white border-slate-300"
       } border-r flex flex-col h-full`}
     >
-      <div className="h-[75%] overflow-auto">
+      <div
+        className={`${
+          settings?.expert_advisor ? "h-[75%]" : "h-full"
+        } overflow-auto`}
+      >
         <MarketWatch />
       </div>
-      <div className="h-[25%] overflow-auto">
-        <AlgoTraderLight />
-      </div>
+      {settings?.expert_advisor && (
+        <div className="h-[25%] overflow-auto">
+          <AlgoTraderLight />
+        </div>
+      )}
     </div>
   );
 
@@ -56,7 +64,7 @@ export function TradingPlatformLight() {
         {/* Sheet for Mobile */}
         {isMobile ? (
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-            <SheetContent side="left" className="p-0 w-full sm:w-96 z-100">
+            <SheetContent side="left" className="p-0 w-full sm:w-96 z-">
               <Sidebar />
             </SheetContent>
           </Sheet>
