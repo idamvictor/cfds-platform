@@ -28,6 +28,7 @@ export interface SiteSettings {
   is_mt4: boolean;
   must_verify_account: boolean;
   has_marketplace: boolean;
+  livetrader_status?: boolean;
 }
 
 interface SiteSettingsState {

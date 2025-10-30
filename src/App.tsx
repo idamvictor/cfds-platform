@@ -17,6 +17,7 @@ import MainContent from "./components/mt4/main-content";
 import MarketplacePage from "@/pages/marketplace/marketplace-page.tsx";
 import TranslationErrorBoundary from "@/components/TranslationErrorBoundary.tsx";
 import { TradingPlatformLight } from "./components/mt4-light/trading-platform-light";
+import LiveTraderStatusWatcher from "@/components/LiveTraderStatusWatcher";
 
 const TradingRouter = lazy(() => import("./components/routing/TradingRouter"));
 
@@ -84,6 +85,7 @@ const App = () => {
                 <WebSocketInitializer />
                 <OnlineStatusInitializer />
                 <ChatNotificationListener />
+                <LiveTraderStatusWatcher />
                 <Routes>
                   <Route
                     path="/admin/chat"

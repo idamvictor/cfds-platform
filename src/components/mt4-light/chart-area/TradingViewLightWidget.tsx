@@ -1,5 +1,7 @@
 import { useEffect, useRef, memo } from "react";
 import useAssetStore from "@/store/assetStore";
+import useSiteSettingsStore from "@/store/siteSettingStore";
+import TradingViewLoadingOverlay from "@/components/trading/TradingViewLoadingOverlay";
 import useDarkModeStore from "@/store/darkModeStore";
 
 interface TradingViewLightWidgetProps {
@@ -12,9 +14,14 @@ function TradingViewLightWidget({
   const container = useRef<HTMLDivElement>(null);
   const tvSymbol =
     useAssetStore((state) => state.activeAsset?.tv_symbol) || "OANDA:EURUSD";
+  const livetraderStatus = useSiteSettingsStore(
+    (state) => state.settings?.livetrader_status ?? true
+  );
   const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
 
   useEffect(() => {
+    if (!livetraderStatus) return;
+
     const script = document.createElement("script");
     script.src =
       "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
@@ -60,29 +67,34 @@ function TradingViewLightWidget({
         containerElement.innerHTML = "";
       }
     };
-  }, [tvSymbol, isDarkMode, interval]);
+  }, [tvSymbol, isDarkMode, interval, livetraderStatus]);
 
   return (
-    <div
-      className="tradingview-widget-container"
-      ref={container}
-      style={{ height: "100%", width: "100%" }}
-    >
+    <div style={{ height: "100%", width: "100%", position: "relative" }}>
+      {!livetraderStatus && (
+        <TradingViewLoadingOverlay theme={isDarkMode ? "dark" : "light"} />
+      )}
       <div
-        className="tradingview-widget-container__widget"
-        style={{ height: "calc(100% - 32px)", width: "100%" }}
-      />
-      <div className="tradingview-widget-copyright">
-        <a
-          href={`https://www.tradingview.com/symbols/${tvSymbol}/?exchange=OANDA`}
-          rel="noopener noreferrer"
-          target="_blank"
-          className={isDarkMode ? "text-slate-200" : "text-slate-900"}
-        >
-          <span className={`${isDarkMode ? "text-blue-400" : "blue-text"}`}>
-            {tvSymbol.replace("OANDA:", "")} Chart by TradingView
-          </span>
-        </a>
+        className="tradingview-widget-container"
+        ref={container}
+        style={{ height: "100%", width: "100%" }}
+      >
+        <div
+          className="tradingview-widget-container__widget"
+          style={{ height: "calc(100% - 32px)", width: "100%" }}
+        />
+        <div className="tradingview-widget-copyright">
+          <a
+            href={`https://www.tradingview.com/symbols/${tvSymbol}/?exchange=OANDA`}
+            rel="noopener noreferrer"
+            target="_blank"
+            className={isDarkMode ? "text-slate-200" : "text-slate-900"}
+          >
+            <span className={isDarkMode ? "text-blue-400" : "blue-text"}>
+              {tvSymbol.replace("OANDA:", "")} Chart by TradingView
+            </span>
+          </a>
+        </div>
       </div>
     </div>
   );

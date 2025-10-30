@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 import useAssetStore from '@/store/assetStore';
+import useSiteSettingsStore from '@/store/siteSettingStore';
 
 // Types for WebSocket data
 export interface AssetUpdate {
@@ -36,6 +37,9 @@ interface WebSocketOptions {
 export function useAssetWebSocket(options: WebSocketOptions = {}) {
     const socketRef = useRef<Socket | null>(null);
     const updateAssetFromWebsocket = useAssetStore(state => state.updateAssetFromWebsocket);
+    const livetraderStatus = useSiteSettingsStore(
+        (state) => state.settings?.livetrader_status ?? true
+    );
 
     // Connect to WebSocket
     const connect = useCallback(() => {
@@ -110,13 +114,19 @@ export function useAssetWebSocket(options: WebSocketOptions = {}) {
 
     // Setup connection and cleanup
     useEffect(() => {
-        connect();
+        // Only connect if livetrader_status is true
+        if (livetraderStatus) {
+            connect();
+        } else {
+            // Disconnect if livetrader_status is false
+            disconnect();
+        }
 
         // Clean up WebSocket connection on unmount
         return () => {
             disconnect();
         };
-    }, [connect, disconnect]);
+    }, [connect, disconnect, livetraderStatus]);
 
     return {
         subscribeToAll,
