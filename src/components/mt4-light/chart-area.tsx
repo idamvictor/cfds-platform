@@ -22,7 +22,9 @@ export function ChartArea() {
         </div>
         <TradingViewLightWidget />
       </div>
-      <ChartTabs />
+      <div className="overflow-x-auto w-full">
+        <ChartTabs />
+      </div>
     </div>
   );
 }

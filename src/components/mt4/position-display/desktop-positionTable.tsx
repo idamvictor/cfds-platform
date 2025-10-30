@@ -59,9 +59,9 @@ export function DesktopPositionTable({
   }
   return (
     <div className="h-[calc(200px-38px)] w-full overflow-hidden flex flex-col">
-      <div className="w-full overflow-y-auto flex-1">
+      <div className="w-full overflow-x-auto overflow-y-auto flex-1">
         <Table
-          className={`w-full table-fixed ${
+          className={`min-w-[800px] w-full ${
             isDarkMode ? "border-slate-600" : "border-slate-200"
           }`}
         >

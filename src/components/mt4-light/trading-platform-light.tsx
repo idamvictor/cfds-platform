@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { TitleBar } from "./title-bar";
 import { Toolbar } from "./toolbar";
 // import { AITradingPanel } from "./ai-trading-panel";
@@ -13,10 +14,31 @@ import AlgoTraderLight from "./algo-trader-light";
 import TotalPortfolioLight from "./total-portfolio-light";
 import AutomatedTrading from "../mt4/right-panels/automated-trading";
 import useOverlayStore from "@/store/overlayStore";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { useMobile } from "@/hooks/use-mobile";
 
 export function TradingPlatformLight() {
   const { automatedTrading, selectedAdvisorId } = useOverlayStore();
   const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
+  const isMobile = useMobile();
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+  const Sidebar = () => (
+    <div
+      className={`w-full md:w-96 ${
+        isDarkMode
+          ? "bg-slate-900 border-slate-600"
+          : "bg-white border-slate-300"
+      } border-r flex flex-col h-full`}
+    >
+      <div className="h-[75%] overflow-auto">
+        <MarketWatch />
+      </div>
+      <div className="h-[25%] overflow-auto">
+        <AlgoTraderLight />
+      </div>
+    </div>
+  );
 
   return (
     <div
@@ -25,24 +47,22 @@ export function TradingPlatformLight() {
       } flex flex-col font-sans text-sm`}
     >
       <TitleBar />
-      <Toolbar />
+      <Toolbar
+        isMobile={isMobile}
+        onToggleSidebar={() => setIsSheetOpen(true)}
+      />
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Left Sidebar */}
-        <div
-          className={`w-96 ${
-            isDarkMode
-              ? "bg-slate-900 border-slate-600"
-              : "bg-white border-slate-300"
-          } border-r flex flex-col h-full`}
-        >
-          <div className="h-[75%] overflow-auto">
-            <MarketWatch />
-          </div>
-          <div className="h-[25%] overflow-auto">
-            <AlgoTraderLight />
-          </div>
-        </div>
+        {/* Sheet for Mobile */}
+        {isMobile ? (
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+            <SheetContent side="left" className="p-0 w-full sm:w-96 z-100">
+              <Sidebar />
+            </SheetContent>
+          </Sheet>
+        ) : (
+          <Sidebar />
+        )}
 
         {/* Main Content Area */}
         <div

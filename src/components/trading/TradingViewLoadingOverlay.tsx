@@ -14,7 +14,7 @@ export default function TradingViewLoadingOverlay({}: TradingViewLoadingOverlayP
         height: "100%",
         backgroundColor: "rgba(0, 0, 0, 0.85)",
         backdropFilter: "blur(4px)",
-        zIndex: 9999
+        zIndex: 99,
       }}
     >
       <div className="flex flex-col items-center gap-4">

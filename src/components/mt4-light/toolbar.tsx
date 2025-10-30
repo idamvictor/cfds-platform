@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Plus, Play } from "lucide-react";
+import { Plus, Play, Menu } from "lucide-react";
 import useUserStore from "@/store/userStore";
 import useDarkModeStore from "@/store/darkModeStore";
 import { useState } from "react";
@@ -12,7 +12,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { TradingInterface } from "../mt4/trading-interface-copy";
 
-export function Toolbar() {
+interface ToolbarProps {
+  isMobile?: boolean;
+  onToggleSidebar?: () => void;
+}
+
+export function Toolbar({ isMobile, onToggleSidebar }: ToolbarProps) {
   const user = useUserStore((state) => state.user);
   const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
   const unreadNotifications =
@@ -28,6 +33,16 @@ export function Toolbar() {
       } border-b px-4 py-2 flex items-center justify-between`}
     >
       <div className="flex items-center gap-4">
+        {isMobile && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onToggleSidebar}
+            className="md:hidden"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+        )}
         <DropdownMenu
           open={isTradeModalOpen}
           onOpenChange={setIsTradeModalOpen}
