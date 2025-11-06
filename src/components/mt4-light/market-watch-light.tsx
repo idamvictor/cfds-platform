@@ -50,7 +50,14 @@ export default function MarketWatchLight() {
                     : "bg-[#D2E0EA] text-gray-900"
                 } w-full p-2`}
               >
-                Market Watch: {time.toLocaleTimeString()}
+                Market Watch: GMT{" "}
+                {time.toLocaleTimeString("en-US", {
+                  timeZone: "GMT",
+                  hour12: false,
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                })}
               </span>
             </div>
             <div className="relative mt-2 mb-2  ">

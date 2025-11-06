@@ -1,13 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Minimize2, Square, X, Moon, Sun } from "lucide-react";
 import useSiteSettingsStore from "@/store/siteSettingStore";
-import useAssetStore from "@/store/assetStore";
 import { useNavigate } from "react-router-dom";
 import useDarkModeStore from "@/store/darkModeStore";
 
 export function TitleBar() {
   const settings = useSiteSettingsStore((state) => state.settings);
-  const activeAsset = useAssetStore((state) => state.activeAsset);
   const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
   const navigate = useNavigate();
 
@@ -29,13 +27,6 @@ export function TitleBar() {
           } text-xs font-medium`}
         >
           {settings?.name || "Demo Account"}
-        </span>
-        <span
-          className={`${
-            isDarkMode ? "text-slate-200" : "text-slate-800"
-          } text-xs font-medium`}
-        >
-          - [ {activeAsset?.symbol_display || "BTC/USD"},M1 ]
         </span>
       </div>
       <div className="flex items-center gap-1">
