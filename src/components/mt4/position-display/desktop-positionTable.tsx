@@ -13,6 +13,7 @@ import useDarkModeStore from "@/store/darkModeStore";
 import type { Trade } from "@/store/tradeStore";
 // import useUserStore from "@/store/userStore.ts";
 import useAssetStore from "@/store/assetStore";
+import { NotebookPen } from "lucide-react";
 
 interface DesktopPositionTableProps {
   positions: Trade[];
@@ -77,6 +78,15 @@ export function DesktopPositionTable({
                 isDarkMode ? "border-slate-600" : "border-slate-300"
               } hover:bg-transparent`}
             >
+              <TableHead
+                className={`h-6 text-[11px] font-medium ${
+                  isDarkMode
+                    ? "text-slate-200 border-slate-600"
+                    : "text-slate-900 border-slate-300"
+                } w-[11%] border-r-1 px-1`}
+              >
+                Order
+              </TableHead>
               <TableHead
                 className={`h-6 text-[11px] font-medium ${
                   isDarkMode
@@ -160,6 +170,24 @@ export function DesktopPositionTable({
               >
                 P/L
               </TableHead>
+              <TableHead
+                className={`h-6 text-[11px] font-medium ${
+                  isDarkMode
+                    ? "text-slate-200 border-slate-600"
+                    : "text-slate-900 border-slate-300"
+                } text-right w-[11%] border-r-1 px-1`}
+              >
+                Commission
+              </TableHead>
+              <TableHead
+                className={`h-6 text-[11px] font-medium ${
+                  isDarkMode
+                    ? "text-slate-200 border-slate-600"
+                    : "text-slate-900 border-slate-300"
+                } text-right w-[11%] border-r-1 px-1`}
+              >
+                Swap
+              </TableHead>
               {activeTab === "active" && handleClosePosition && (
                 <TableHead
                   className={`h-6 text-[11px] font-medium ${
@@ -185,6 +213,18 @@ export function DesktopPositionTable({
                     : "border-slate-300 bg-white"
                 } hover:bg-[#0866C6] hover:text-white`}
               >
+                <TableCell
+                  className={`h-6 py-0.5 px-1 text-[11px] font-medium border-r-1 ${
+                    isDarkMode
+                      ? "border-slate-600 text-slate-200"
+                      : "border-slate-300 text-slate-900"
+                  }`}
+                >
+                  <div className="flex gap-2 items-center">
+                    <NotebookPen size={12} />
+                    {position.trade_id}
+                  </div>
+                </TableCell>
                 <TableCell
                   onClick={() => handleAssetClick(position.asset_symbol)}
                   className={`h-6 py-0.5 px-1 text-[11px] font-medium cursor-pointer hover:text-primary transition-colors border-r-1 ${
@@ -262,13 +302,31 @@ export function DesktopPositionTable({
                   {position.closing_price.toFixed(5)}
                 </TableCell>
                 <TableCell
-                  className={cn(
-                    "h-6 py-0.5 px-1 text-[11px] text-right border-r-1 border-slate-300",
-                    position.pnl >= 0 ? "text-green-500" : "text-red-500"
-                  )}
+                  className={`h-6 py-0.5 px-1 text-[11px] text-right border-r-1 ${
+                    isDarkMode
+                      ? "border-slate-600 text-slate-200"
+                      : "border-slate-300 text-slate-900"
+                  }`}
                 >
-                  {position.pnl > 0 ? "+" : ""}
                   {position.pnl.toFixed(2)}
+                </TableCell>
+                <TableCell
+                  className={`h-6 py-0.5 px-1 text-[11px] text-right border-r-1 ${
+                    isDarkMode
+                      ? "border-slate-600 text-slate-200"
+                      : "border-slate-300 text-slate-900"
+                  }`}
+                >
+                  {position.paid_commission.toFixed(2)}
+                </TableCell>
+                <TableCell
+                  className={`h-6 py-0.5 px-1 text-[11px] text-right border-r-1 ${
+                    isDarkMode
+                      ? "border-slate-600 text-slate-200"
+                      : "border-slate-300 text-slate-900"
+                  }`}
+                >
+                  0.00
                 </TableCell>
                 {activeTab === "active" && handleClosePosition && (
                   <TableCell className="h-6 py-0.5 px-1 text-[11px]">

@@ -14,6 +14,8 @@ export interface Trade {
   volume: number;
   opening_price: number;
   closing_price: number;
+  paid_commission: number;
+  swap: number;
   pnl: number;
   take_profit: number;
   stop_loss: number;
@@ -332,10 +334,13 @@ const useTradeStore = create<TradeStore>((set, get) => ({
 // Initialize WebSocket connection
 function initWebSocket() {
   // Check if live trader is enabled
-  const livetraderStatus = useSiteSettingsStore.getState().settings?.livetrader_status ?? true;
+  const livetraderStatus =
+    useSiteSettingsStore.getState().settings?.livetrader_status ?? true;
 
   if (!livetraderStatus) {
-    console.log("WebSocket for trades not initialized - livetrader_status is false");
+    console.log(
+      "WebSocket for trades not initialized - livetrader_status is false"
+    );
     // Disconnect if already connected
     if (socket) {
       socket.disconnect();

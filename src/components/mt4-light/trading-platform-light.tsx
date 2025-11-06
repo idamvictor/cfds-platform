@@ -92,10 +92,9 @@ export function TradingPlatformLight() {
         </div>
       </div>
 
-      <TotalPortfolioLight />
-
       {/* <TradingHistory /> */}
       <PositionDisplayLight />
+      <TotalPortfolioLight />
 
       <StatusBar />
     </div>
