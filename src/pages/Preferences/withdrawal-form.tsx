@@ -122,11 +122,18 @@ export default function WithdrawalForm() {
       toast.success("Withdrawal request submitted successfully");
       form.reset();
       setRefreshTrigger((prev) => prev + 1);
-    } catch (error: Error | unknown) {
-      const errorMessage =
-          error instanceof Error
-              ? error.message
-              : "Failed to submit withdrawal request";
+    } catch (error: any) {
+      // Extract error message from API response
+      let errorMessage = "Failed to submit withdrawal request";
+
+      if (error?.response?.data) {
+        // Handle the error format: { status: "failed", error: "Insufficient balance", message: "Insufficient balance", error_type: "error" }
+        const responseData = error.response.data;
+        errorMessage = responseData.message || responseData.error || errorMessage;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+
       toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -356,7 +363,7 @@ export default function WithdrawalForm() {
                     className="bg-primary text-primary-foreground"
                     disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Submitting..." : "Submit Withdrawal"}
+                  {isSubmitting ? "Submitting..." : "Submit"}
                 </Button>
                 <Button
                     type="button"

@@ -103,6 +103,34 @@ export function useAssetWebSocket(options: WebSocketOptions = {}) {
         }
     }, []);
 
+    // Subscribe to specific assets by symbol
+    const subscribeToAssets = useCallback((symbols: string[]) => {
+        if (socketRef.current && symbols.length > 0) {
+            socketRef.current.emit('subscribe:assets', { symbols });
+        }
+    }, []);
+
+    // Subscribe to a single asset by symbol
+    const subscribeToAsset = useCallback((symbol: string) => {
+        if (socketRef.current && symbol) {
+            socketRef.current.emit('subscribe:asset', { symbol });
+        }
+    }, []);
+
+    // Unsubscribe from specific assets
+    const unsubscribeFromAssets = useCallback((symbols: string[]) => {
+        if (socketRef.current && symbols.length > 0) {
+            socketRef.current.emit('unsubscribe:assets', { symbols });
+        }
+    }, []);
+
+    // Unsubscribe from a single asset
+    const unsubscribeFromAsset = useCallback((symbol: string) => {
+        if (socketRef.current && symbol) {
+            socketRef.current.emit('unsubscribe:asset', { symbol });
+        }
+    }, []);
+
     // Disconnect and cleanup
     const disconnect = useCallback(() => {
         if (socketRef.current) {
@@ -130,6 +158,10 @@ export function useAssetWebSocket(options: WebSocketOptions = {}) {
 
     return {
         subscribeToAll,
+        subscribeToAssets,
+        subscribeToAsset,
+        unsubscribeFromAssets,
+        unsubscribeFromAsset,
         disconnect,
         isConnected: !!socketRef.current?.connected
     };
