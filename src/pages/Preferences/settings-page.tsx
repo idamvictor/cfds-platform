@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import axiosInstance from "@/lib/axios";
 import { toast } from "sonner";
+import {LanguageSelector} from "@/components/settings/language-selector.tsx";
 
 const passwordFormSchema = z
   .object({
@@ -82,7 +83,7 @@ export default function SettingsPage() {
   // };
 
   return (
-    <div className="flex flex-col gap-8 p-6 bg-background text-foreground min-h-screen">
+    <div className="flex flex-col gap-8 p-6 pb-16 bg-background text-foreground min-h-screen">
       <h1 className="text-2xl font-bold text-center">SETTINGS</h1>
 
       <div className="grid grid-cols-1 gap-6">
@@ -275,7 +276,7 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
-      {/* Language Section - Commented out as per requirement to use English only
+
       <Card className="bg-card text-card-foreground">
         <CardHeader>
           <CardTitle>DASHBOARD LANGUAGE</CardTitle>
@@ -284,7 +285,8 @@ export default function SettingsPage() {
           <LanguageSelector />
         </CardContent>
       </Card>
-      */}
+
+
     </div>
   );
 }

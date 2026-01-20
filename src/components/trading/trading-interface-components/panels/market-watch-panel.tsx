@@ -9,10 +9,11 @@ import AssetCategory from "@/components/trading/trading-interface-components/pan
 
 interface MarketWatchPanelProps {
     addCurrencyPair: (pair: string) => void;
+    onAssetSelect?: () => void;
 }
 
 // Main Component
-const MarketWatchPanel = ({ addCurrencyPair }: MarketWatchPanelProps) => {
+const MarketWatchPanel = ({ addCurrencyPair, onAssetSelect }: MarketWatchPanelProps) => {
     const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -51,7 +52,8 @@ const MarketWatchPanel = ({ addCurrencyPair }: MarketWatchPanelProps) => {
     const handleAssetClick = useCallback((asset: Asset) => {
         setActiveAsset(asset);
         addCurrencyPair(asset.sy);
-    }, [setActiveAsset, addCurrencyPair]);
+        onAssetSelect?.();
+    }, [setActiveAsset, addCurrencyPair, onAssetSelect]);
 
     // Filter assets based on search term
     const filteredAssets = searchTerm.trim() === ""

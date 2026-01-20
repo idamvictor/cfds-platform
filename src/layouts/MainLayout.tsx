@@ -33,7 +33,7 @@ const MainLayout = () => {
   }, [isSidebarVisible]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-background overflow-x-hidden">
       <div className="fixed top-0 left-0 right-0 z-20">
         <Header toggleSidebar={toggleSidebar} />
       </div>

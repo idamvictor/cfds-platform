@@ -104,7 +104,10 @@ export default function Sidebar({
                   title="Market Watch"
                   onClose={() => toggleView(activeView)}
                 >
-                  <MarketWatchPanel addCurrencyPair={addCurrencyPair} />
+                  <MarketWatchPanel
+                    addCurrencyPair={addCurrencyPair}
+                    onAssetSelect={() => toggleView(activeView)}
+                  />
                 </MobilePanelWrapper>
               )}
               {activeView === "active-orders" && (

@@ -146,12 +146,29 @@
 }
 
 @layer base {
+  html {
+    overflow-x: hidden;
+    overscroll-behavior: none;
+    height: 100%;
+  }
+
   * {
     @apply border-border;
   }
   body {
     @apply bg-trading-darker text-foreground antialiased;
     font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    overflow-x: hidden;
+    overscroll-behavior: none;
+    min-height: 100svh;
+    height: 100%;
+    touch-action: pan-y;
+  }
+
+  #root {
+    min-height: 100%;
+    width: 100%;
+    overflow-x: hidden;
   }
 
   /* Custom scrollbar */

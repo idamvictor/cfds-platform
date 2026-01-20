@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import Header from "./header";
 import Sidebar from "./sidebar";
 import MainContent from "./main-content";
@@ -8,6 +8,9 @@ import AssetInitializer from "../asset-initializer";
 // import { useMobile } from "@/hooks/use-mobile";
 import { addClickSound } from "@/lib/addClickSound.ts";
 import Footer from "@/components/footer";
+
+// Extracted for easy testing; adjust value to shorten the revert window when needed.
+const NON_OPEN_REVERT_MS = 1 * 60 * 1000;
 
 export type ActiveView =
   | "market-watch"
@@ -27,7 +30,11 @@ export default function TradingPlatform() {
   // console.log("isMobile", isMobile);
 
   const { setActiveAsset, assets, fetchAssets, activeAsset } = useAssetStore();
-  const { fetchOpenTrades, fetchClosedTrades } = useTradeStore();
+  const { fetchOpenTrades, fetchClosedTrades, openTrades } = useTradeStore();
+
+  const revertTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [lastSyncedTradeId, setLastSyncedTradeId] = useState<string | null>(null);
+  const lastNonOpenAssetRef = useRef<string | null>(null);
 
   useEffect(() => {
     addClickSound();
@@ -46,6 +53,9 @@ export default function TradingPlatform() {
   //   console.log("TradingPlatform - Assets loaded:", assets.length);
   // }, [assets]);
 
+  const normalizeSymbol = (value?: string | null) =>
+    value ? value.replace(/[^A-Za-z]/g, "").toUpperCase() : "";
+
   // Update active pair when active asset changes
   useEffect(() => {
     if (activeAsset && activeAsset.sy) {
@@ -58,6 +68,115 @@ export default function TradingPlatform() {
       }
     }
   }, [activeAsset, activePairs]);
+
+  // Utility helpers for open trades alignment
+  const findAssetForTrade = (tradeId?: string, tradeSymbol?: string) => {
+    if (!tradeId && !tradeSymbol) return undefined;
+    const normalizedTradeSymbol = normalizeSymbol(tradeSymbol);
+
+    return assets.find((asset) => {
+      const normalizedSy = normalizeSymbol(asset.sy);
+      const normalizedDisplay = normalizeSymbol(asset.symbol_display);
+      const normalizedSymbol = normalizeSymbol(asset.symbol);
+      const normalizedTvSymbol = normalizeSymbol(asset.tv_symbol);
+
+      return (
+        asset.asset_id === tradeId ||
+        asset.id === tradeId ||
+        normalizedSy === normalizedTradeSymbol ||
+        normalizedDisplay === normalizedTradeSymbol ||
+        normalizedSymbol === normalizedTradeSymbol ||
+        normalizedTvSymbol === normalizedTradeSymbol
+      );
+    });
+  };
+
+  const clearRevertTimer = () => {
+    if (revertTimerRef.current) {
+      clearTimeout(revertTimerRef.current);
+      revertTimerRef.current = null;
+    }
+  };
+
+  // When open trades arrive, default to the first trade's asset
+  useEffect(() => {
+    if (!openTrades.length) {
+      return;
+    }
+
+    const firstTrade = openTrades[0];
+    const matchingAsset = findAssetForTrade(firstTrade.asset_id, firstTrade.asset_symbol);
+
+    if (matchingAsset && lastSyncedTradeId !== firstTrade.id) {
+      setActiveAsset(matchingAsset);
+      setLastSyncedTradeId(firstTrade.id);
+    }
+  }, [openTrades, assets, lastSyncedTradeId, setActiveAsset]);
+
+  // If active asset is outside open trades, start a 10-minute timer to revert back
+  useEffect(() => {
+    if (!openTrades.length) {
+      clearRevertTimer();
+      lastNonOpenAssetRef.current = null;
+      return;
+    }
+
+    const firstTrade = openTrades[0];
+    const firstTradeAsset = findAssetForTrade(firstTrade.asset_id, firstTrade.asset_symbol);
+
+    if (!firstTradeAsset) {
+      return;
+    }
+
+    const activeInOpenTrades =
+      !!activeAsset &&
+      openTrades.some((trade) => {
+        const tradeKey = normalizeSymbol(trade.asset_symbol);
+        const activeKeySy = normalizeSymbol(activeAsset.sy);
+        const activeKeyDisplay = normalizeSymbol(activeAsset.symbol_display);
+        const activeKeySymbol = normalizeSymbol((activeAsset as { symbol?: string }).symbol);
+        const activeKeyTv = normalizeSymbol((activeAsset as { tv_symbol?: string }).tv_symbol);
+
+        return (
+          trade.asset_id === activeAsset.asset_id ||
+          trade.asset_id === activeAsset.id ||
+          tradeKey === activeKeySy ||
+          tradeKey === activeKeyDisplay ||
+          tradeKey === activeKeySymbol ||
+          tradeKey === activeKeyTv
+        );
+      });
+
+    if (activeInOpenTrades) {
+      clearRevertTimer();
+      lastNonOpenAssetRef.current = null;
+      return;
+    }
+
+    const activeAssetKey = activeAsset?.asset_id || activeAsset?.id || activeAsset?.sy || null;
+    const timerMatchesActive =
+      revertTimerRef.current && lastNonOpenAssetRef.current === activeAssetKey;
+
+    if (!timerMatchesActive) {
+      clearRevertTimer();
+      lastNonOpenAssetRef.current = activeAssetKey;
+      revertTimerRef.current = setTimeout(() => {
+        // Recalculate target in case assets refresh while waiting
+        const latestFirstTradeAsset = findAssetForTrade(firstTrade.asset_id, firstTrade.asset_symbol);
+        if (latestFirstTradeAsset) {
+          setActiveAsset(latestFirstTradeAsset);
+        }
+        revertTimerRef.current = null;
+        lastNonOpenAssetRef.current = null;
+      }, NON_OPEN_REVERT_MS);
+    }
+  }, [activeAsset, openTrades, assets, setActiveAsset]);
+
+  useEffect(() => {
+    return () => {
+      clearRevertTimer();
+    };
+  }, []);
 
   const toggleSidebar = () => {
     setSidebarExpanded(!sidebarExpanded);

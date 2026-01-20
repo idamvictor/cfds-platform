@@ -230,7 +230,7 @@ export default function LoginRegisterTradeNation() {
     }
 
     return (
-        <div className="min-h-screen bg-[#0A1A2A] flex flex-col">
+        <div className="min-h-screen bg-[#0A1A2A] flex flex-col overflow-x-hidden pb-16">
             {/* Warning banner - Mobile version */}
             <div className="md:hidden">
                 {showWarning ? (
