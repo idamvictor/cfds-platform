@@ -29,6 +29,7 @@ export interface SiteSettings {
   must_verify_account: boolean;
   has_marketplace: boolean;
   livetrader_status?: boolean;
+  credit_card_deposit?: boolean;
 }
 
 interface SiteSettingsState {
