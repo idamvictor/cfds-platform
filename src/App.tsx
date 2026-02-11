@@ -13,6 +13,7 @@ import SignUpPage from "@/pages/auth/signup-page.tsx";
 import CountryResidencePage from "@/pages/auth/country-page.tsx";
 import {ChatNotificationListener} from "@/components/ChatNotificationListener.tsx";
 import {LicenseProvider} from "@/components/provider/LicenseProvider.tsx";
+import LicenseListener from "@/components/LicenseListener.tsx";
 import TranslatePatches from "@/components/TranslatePatches.tsx";
 
 const AutoLoginPage = lazy(() => import("./pages/auth/auto-login"));
@@ -76,6 +77,7 @@ const App = () => {
         <Toaster position="top-right" />
         <BrowserRouter>
           <TranslatePatches />
+          <LicenseListener />
           <LicenseProvider>
             <SiteProvider>
             <BaseLayout>

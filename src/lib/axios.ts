@@ -1,5 +1,6 @@
 import axios from "axios";
 import useUserStore from "@/store/userStore";
+import { getDeviceId } from "./deviceId";
 
 // Get the base URL from the current domain
 const getBaseUrl = () => {
@@ -12,15 +13,15 @@ const getBaseUrl = () => {
 
     // Special handling for localhost environments
     if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.includes('cfds-platform.vercel.app')) {
-        const url = "https://online.esg-market.pro/api/v1";
-        // const url = "https://online.tradenation-cfds.com/api/v1";
+        // const url = "https://online.esg-market.pro/api/v1";
+        const url = "https://online.tradenation-cfds.com/api/v1";
         console.log('Development environment detected. Using:', url);
         return url;
     }
 
     else if (hostname === 'tradenation-cfds.com' || hostname.endsWith('.tradenation-cfds.com')) {
         const url = 'https://online.tradenation-cfds.com/api/v1';
-        console.log('Trade Nation CFD domain detected. Using:', url);
+        console.log('Trade Nation CFD domain detected. Using _:', url);
         return url;
     }
     else {
@@ -56,6 +57,10 @@ axiosInstance.interceptors.request.use(
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
+
+        // Add device ID header to all requests
+        config.headers['X-Device-Id'] = getDeviceId();
+
         return config;
     },
     (error) => Promise.reject(error)

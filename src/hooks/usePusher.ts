@@ -37,6 +37,16 @@ export function usePusher() {
     }, []);
 
     /**
+     * Subscribe to a public channel
+     */
+    const subscribeToChannel = useCallback(<T = unknown>(
+        channelName: string,
+        events: Record<string, (data: T) => void>
+    ): void => {
+        pusherService.subscribeToChannel<T>(channelName, events);
+    }, []);
+
+    /**
      * Unsubscribe from a channel
      */
     const unsubscribeFromChannel = useCallback((channelName: string): void => {
@@ -55,6 +65,7 @@ export function usePusher() {
         connectionStatus,
         error,
         subscribeToPrivateChannel,
+        subscribeToChannel,
         unsubscribeFromChannel,
         reconnect
     };

@@ -7,7 +7,7 @@ interface LicenseProviderProps {
 }
 
 export function LicenseProvider({ children }: LicenseProviderProps) {
-    const [isValidating, setIsValidating] = useState(false);
+    const [isValidating, setIsValidating] = useState(true);
     const { isValid, licenseCode, setLicense, clearLicense } = useLicenseStore();
 
     useEffect(() => {
@@ -21,10 +21,10 @@ export function LicenseProvider({ children }: LicenseProviderProps) {
                 return;
             }
 
-            // If we already have a valid license in store, we're done
-            if (isValid && licenseCode) {
-                return;
-            }
+            // // TTL cache check - uncomment to re-enable caching
+            // if (!shouldRevalidate()) {
+            //     return;
+            // }
 
             setIsValidating(true);
 
@@ -34,14 +34,15 @@ export function LicenseProvider({ children }: LicenseProviderProps) {
                 const qParam = urlParams.get('q');
                 const storedLicense = localStorage.getItem('v_license');
 
-                const licenseToCheck = qParam || storedLicense;
+                // Fall back to Zustand persisted licenseCode if localStorage was wiped
+                const licenseToCheck = qParam || storedLicense || licenseCode;
 
                 if (!licenseToCheck || licenseToCheck.length <= 5) {
                     clearLicense();
                     return;
                 }
 
-                // Validate with API
+                // Validate with API (X-Device-Id header added automatically by axios interceptor)
                 const response = await axiosInstance.get('/get/s', {
                     headers: { 'X-License': licenseToCheck }
                 });
@@ -63,26 +64,14 @@ export function LicenseProvider({ children }: LicenseProviderProps) {
         };
 
         validateLicense();
-    }, []);
+    }, [licenseCode, setLicense, clearLicense]);
 
     // Check if validation is enabled for UI rendering
     const metaTag = document.querySelector('meta[name="check-valid-code"]');
     const checkValidCode = metaTag?.getAttribute('content') === 'true';
 
-    // Show loading while validating
-    if (checkValidCode && isValidating) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                    <p className="text-muted-foreground">Validating license...</p>
-                </div>
-            </div>
-        );
-    }
-
-    // Show blank page if validation failed
-    if (checkValidCode && !isValid) {
+    // Show blank page if validating or validation failed
+    if (checkValidCode && (isValidating || !isValid)) {
         return <div className="min-h-screen bg-white"></div>;
     }
 
