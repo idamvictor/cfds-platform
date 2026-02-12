@@ -29,27 +29,14 @@ export function SiteProvider({ children }: SiteProviderProps) {
             const hostname = window.location.hostname;
             let apiUrl = "";
 
-            // Add debugging
-            console.log('SiteProvider - Current origin:', origin);
-            console.log('SiteProvider - Current hostname:', hostname);
-
-            // Special handling for localhost environments
-            if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.includes('cfds-platform.vercel.app')) {
-                apiUrl = "https://online.tradenation-cfds.com/api/v1";
-                // apiUrl = "https://online.esg-market.pro/api/v1";
-                console.log("SiteProvider - Development environment detected. Using:", apiUrl);
-            }
-            // Special handling for tradenation-cfds.com domains
-            else if (hostname === 'tradenation-cfds.com' || hostname.endsWith('.tradenation-cfds.com')) {
+            if (import.meta.env.DEV && import.meta.env.VITE_API_URL) {
+                apiUrl = import.meta.env.VITE_API_URL;
+            } else if (hostname === 'tradenation-cfds.com' || hostname.endsWith('.tradenation-cfds.com')) {
                 apiUrl = 'https://online.tradenation-cfds.com/api/v1';
-                console.log("SiteProvider - Trade Nation CFD domain detected. Using:");
-            }
-            else {
+            } else {
                 apiUrl = `${origin}/api/v1`;
-                console.log("SiteProvider - Using default URL:", apiUrl);
             }
 
-            console.log(`SiteProvider - Setting API base URL to: ${apiUrl}`);
             setBaseUrl(apiUrl);
             setApiBaseUrl(apiUrl);
         }
@@ -58,10 +45,9 @@ export function SiteProvider({ children }: SiteProviderProps) {
     useEffect(() => {
         const loadSettings = async () => {
             try {
-                console.log('SiteProvider - Fetching settings with baseUrl:', baseUrl);
                 await fetchSettings();
             } catch (error) {
-                console.error("SiteProvider - Error fetching settings:", error);
+                console.error("Failed to fetch site settings:", error);
             } finally {
                 setInitialLoadComplete(true);
             }

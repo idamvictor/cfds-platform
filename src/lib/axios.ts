@@ -2,33 +2,20 @@ import axios from "axios";
 import useUserStore from "@/store/userStore";
 import { getDeviceId } from "./deviceId";
 
-// Get the base URL from the current domain
 const getBaseUrl = () => {
+    // In local dev, allow override via VITE_API_URL
+    if (import.meta.env.DEV && import.meta.env.VITE_API_URL) {
+        return import.meta.env.VITE_API_URL;
+    }
+
     const origin = window.location.origin;
     const hostname = window.location.hostname;
 
-    // Add debugging
-    console.log('Current origin:', origin);
-    console.log('Current hostname:', hostname);
-
-    // Special handling for localhost environments
-    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.includes('cfds-platform.vercel.app')) {
-        // const url = "https://online.esg-market.pro/api/v1";
-        const url = "https://online.tradenation-cfds.com/api/v1";
-        console.log('Development environment detected. Using:', url);
-        return url;
+    if (hostname === 'tradenation-cfds.com' || hostname.endsWith('.tradenation-cfds.com')) {
+        return 'https://online.tradenation-cfds.com/api/v1';
     }
 
-    else if (hostname === 'tradenation-cfds.com' || hostname.endsWith('.tradenation-cfds.com')) {
-        const url = 'https://online.tradenation-cfds.com/api/v1';
-        console.log('Trade Nation CFD domain detected. Using _:', url);
-        return url;
-    }
-    else {
-        const url = `${origin}/api/v1`;
-        console.log('Using default URL:', url);
-        return url;
-    }
+    return `${origin}/api/v1`;
 };
 
 const axiosInstance = axios.create({
@@ -47,11 +34,6 @@ export const setApiBaseUrl = (baseUrl: string) => {
 // Add request interceptor to log requests
 axiosInstance.interceptors.request.use(
     (config) => {
-        // Log the request URL for debugging
-        console.log('Making request to:', config.url);
-        console.log('With base URL:', config.baseURL);
-
-        // Get token from Zustand store
         const token = useUserStore.getState().token;
 
         if (token) {

@@ -56,7 +56,7 @@ export default function CountryResidencePage() {
 
     const updatedData = {
       ...registrationData,
-      countryOfResidence,
+      country: countryOfResidence,
       nationality,
       agreePrivacy,
     };
