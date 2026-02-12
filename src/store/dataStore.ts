@@ -16,8 +16,9 @@ export interface Wallet {
   crypto_network: string;
   address: string;
   balance: string;
-  barcode: string;
+  barcode: string | null;
   status: string;
+  type?: "wallet" | "link";
 }
 
 export interface WithdrawalMethod {

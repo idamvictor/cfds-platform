@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import useDataStore from "@/store/dataStore";
-import { Cloud, CreditCard, Loader2 } from "lucide-react";
+import useSiteSettingsStore from "@/store/siteSettingStore";
+import { Cloud, CreditCard, Link, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CardDeposit from "./deposit/CardDeposit";
 import QRCodeDeposit from "@/pages/deposit/qr-code-deposit.tsx";
@@ -58,23 +59,30 @@ function DirectPaymentMethods({
   );
 }
 
-// Static payment methods
-const staticPaymentMethods: PaymentMethod[] = [
-  {
-    id: "credit-card",
-    name: "Credit/Debit Card",
-    icon: <CreditCard className="h-5 w-5 opacity-70" />,
-    processingTime: "5-10 minutes",
-  },
-];
-
 export default function DepositPage({
   onDepositSuccess,
 }: {
   onDepositSuccess?: () => void;
 }) {
   const { data, fetchData, isLoading } = useDataStore();
+  const { settings } = useSiteSettingsStore();
   const [selectedMethodId, setSelectedMethodId] = useState<string | null>(null);
+
+  // Static payment methods - conditionally include credit card based on settings
+  const staticPaymentMethods: PaymentMethod[] = useMemo(() => {
+    const methods: PaymentMethod[] = [];
+
+    if (settings?.credit_card_deposit) {
+      methods.push({
+        id: "credit-card",
+        name: "Credit/Debit Card",
+        icon: <CreditCard className="h-5 w-5 opacity-70" />,
+        processingTime: "5-10 minutes",
+      });
+    }
+
+    return methods;
+  }, [settings?.credit_card_deposit]);
 
   useEffect(() => {
     fetchData();
@@ -110,17 +118,26 @@ export default function DepositPage({
   const cryptoPaymentMethods: PaymentMethod[] = useMemo(() => {
     if (!data?.wallets) return [];
 
-    return data.wallets.map((wallet) => ({
-      id: wallet.id,
-      name: `${wallet.crypto} Wallet (${wallet.address.substring(0, 8)}...)`,
-      icon: <Cloud className="h-5 w-5 opacity-70" />,
-      processingTime: "5-10 minutes",
-    }));
+    return data.wallets.map((wallet) => {
+      const isLinkWallet = wallet.type?.toLowerCase() === "link";
+      return {
+        id: wallet.id,
+        name: isLinkWallet
+          ? wallet.crypto
+          : `${wallet.crypto} Wallet (${wallet.address.substring(0, 8)}...)`,
+        icon: isLinkWallet ? (
+          <Link className="h-5 w-5 opacity-70" />
+        ) : (
+          <Cloud className="h-5 w-5 opacity-70" />
+        ),
+        processingTime: "5-10 minutes",
+      };
+    });
   }, [data?.wallets]);
 
   const paymentMethods = useMemo(() => {
     return [...cryptoPaymentMethods, ...staticPaymentMethods];
-  }, [cryptoPaymentMethods]);
+  }, [cryptoPaymentMethods, staticPaymentMethods]);
 
   // Auto-select first method if none selected and data is loaded
   useEffect(() => {
@@ -134,6 +151,7 @@ export default function DepositPage({
     if (!selectedMethodId || !data?.wallets) return null;
     return data.wallets.find((w) => w.id === selectedMethodId);
   }, [selectedMethodId, data?.wallets]);
+  const isLinkWallet = selectedWallet?.type?.toLowerCase() === "link";
 
   return (
     <div className="animate-fade-in pt-3">
@@ -191,8 +209,16 @@ export default function DepositPage({
                 address={selectedWallet.address}
                 barcode={selectedWallet.barcode}
                 title={`${selectedWallet.crypto} Deposit`}
-                qrTitle={`${selectedWallet.crypto} QR CODE`}
-                addressTitle={`${selectedWallet.crypto} ADDRESS`}
+                qrTitle={
+                  isLinkWallet ? null : `${selectedWallet.crypto} QR CODE`
+                }
+                addressTitle={
+                  isLinkWallet ? "PAYMENT LINK" : `${selectedWallet.crypto} ADDRESS`
+                }
+                instruction={isLinkWallet ? selectedWallet.crypto_network : undefined}
+                addressIsLink={isLinkWallet}
+                generateQr={!isLinkWallet}
+                destinationLabel={isLinkWallet ? "link" : "address"}
                 onSubmit={handleSubmit}
                 onDepositSuccess={onDepositSuccess}
               />

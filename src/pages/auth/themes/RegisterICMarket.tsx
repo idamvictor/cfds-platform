@@ -98,7 +98,7 @@ export default function RegisterICMarket() {
 
             localStorage.setItem('registration_data', JSON.stringify(registrationData));
             toast.success("Email verified successfully! Please continue with registration.");
-            navigate('/register/country-residence');
+            navigate('/register');
 
         } catch (error) {
             console.error("Registration validation failed:", error);

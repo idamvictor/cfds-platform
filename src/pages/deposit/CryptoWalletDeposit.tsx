@@ -82,13 +82,19 @@ export default function CryptoWalletDeposit() {
     return <div className="text-center p-4">No wallet found for {crypto}</div>;
   }
 
+  const isLinkWallet = wallet.type?.toLowerCase() === "link";
+
   return (
     <QRCodeDeposit
       address={wallet.address}
       barcode={wallet.barcode}
       title={`${wallet.crypto} Deposit`}
-      qrTitle={`${wallet.crypto} QR CODE`}
-      addressTitle={`${wallet.crypto} ADDRESS`}
+      qrTitle={isLinkWallet ? null : `${wallet.crypto} QR CODE`}
+      addressTitle={isLinkWallet ? "PAYMENT LINK" : `${wallet.crypto} ADDRESS`}
+      instruction={isLinkWallet ? wallet.crypto_network : undefined}
+      addressIsLink={isLinkWallet}
+      generateQr={!isLinkWallet}
+      destinationLabel={isLinkWallet ? "link" : "address"}
       onSubmit={handleSubmit}
     />
   );

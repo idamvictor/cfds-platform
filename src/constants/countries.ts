@@ -1,97 +1,27 @@
-export const countries = [
-    { value: "afghanistan", label: "Afghanistan", flag: "🇦🇫" },
-    { value: "albania", label: "Albania", flag: "🇦🇱" },
-    { value: "algeria", label: "Algeria", flag: "🇩🇿" },
-    { value: "argentina", label: "Argentina", flag: "🇦🇷" },
-    { value: "australia", label: "Australia", flag: "🇦🇺" },
-    { value: "austria", label: "Austria", flag: "🇦🇹" },
-    { value: "bangladesh", label: "Bangladesh", flag: "🇧🇩" },
-    { value: "belgium", label: "Belgium", flag: "🇧🇪" },
-    { value: "brazil", label: "Brazil", flag: "🇧🇷" },
-    { value: "canada", label: "Canada", flag: "🇨🇦" },
-    { value: "china", label: "China", flag: "🇨🇳" },
-    { value: "denmark", label: "Denmark", flag: "🇩🇰" },
-    { value: "egypt", label: "Egypt", flag: "🇪🇬" },
-    { value: "finland", label: "Finland", flag: "🇫🇮" },
-    { value: "france", label: "France", flag: "🇫🇷" },
-    { value: "germany", label: "Germany", flag: "🇩🇪" },
-    { value: "ghana", label: "Ghana", flag: "🇬🇭" },
-    { value: "india", label: "India", flag: "🇮🇳" },
-    { value: "indonesia", label: "Indonesia", flag: "🇮🇩" },
-    { value: "ireland", label: "Ireland", flag: "🇮🇪" },
-    { value: "italy", label: "Italy", flag: "🇮🇹" },
-    { value: "japan", label: "Japan", flag: "🇯🇵" },
-    { value: "kenya", label: "Kenya", flag: "🇰🇪" },
-    { value: "malaysia", label: "Malaysia", flag: "🇲🇾" },
-    { value: "mexico", label: "Mexico", flag: "🇲🇽" },
-    { value: "netherlands", label: "Netherlands", flag: "🇳🇱" },
-    { value: "new-zealand", label: "New Zealand", flag: "🇳🇿" },
-    { value: "nigeria", label: "Nigeria", flag: "🇳🇬" },
-    { value: "norway", label: "Norway", flag: "🇳🇴" },
-    { value: "pakistan", label: "Pakistan", flag: "🇵🇰" },
-    { value: "philippines", label: "Philippines", flag: "🇵🇭" },
-    { value: "poland", label: "Poland", flag: "🇵🇱" },
-    { value: "portugal", label: "Portugal", flag: "🇵🇹" },
-    { value: "russia", label: "Russia", flag: "🇷🇺" },
-    { value: "saudi-arabia", label: "Saudi Arabia", flag: "🇸🇦" },
-    { value: "singapore", label: "Singapore", flag: "🇸🇬" },
-    { value: "south-africa", label: "South Africa", flag: "🇿🇦" },
-    { value: "spain", label: "Spain", flag: "🇪🇸" },
-    { value: "sweden", label: "Sweden", flag: "🇸🇪" },
-    { value: "switzerland", label: "Switzerland", flag: "🇨🇭" },
-    { value: "thailand", label: "Thailand", flag: "🇹🇭" },
-    { value: "turkey", label: "Turkey", flag: "🇹🇷" },
-    { value: "united-arab-emirates", label: "United Arab Emirates", flag: "🇦🇪" },
-    { value: "united-kingdom", label: "United Kingdom", flag: "🇬🇧" },
-    { value: "united-states", label: "United States", flag: "🇺🇸" },
-    { value: "vietnam", label: "Vietnam", flag: "🇻🇳" },
-].sort((a, b) => a.label.localeCompare(b.label));
+import countriesData from '../../public/config/countries.json';
 
-export const countryCodeMap: { [key: string]: string } = {
-    'AF': 'afghanistan',
-    'AL': 'albania',
-    'DZ': 'algeria',
-    'AR': 'argentina',
-    'AU': 'australia',
-    'AT': 'austria',
-    'BD': 'bangladesh',
-    'BE': 'belgium',
-    'BR': 'brazil',
-    'CA': 'canada',
-    'CN': 'china',
-    'DK': 'denmark',
-    'EG': 'egypt',
-    'FI': 'finland',
-    'FR': 'france',
-    'DE': 'germany',
-    'GH': 'ghana',
-    'IN': 'india',
-    'ID': 'indonesia',
-    'IE': 'ireland',
-    'IT': 'italy',
-    'JP': 'japan',
-    'KE': 'kenya',
-    'MY': 'malaysia',
-    'MX': 'mexico',
-    'NL': 'netherlands',
-    'NZ': 'new-zealand',
-    'NG': 'nigeria',
-    'NO': 'norway',
-    'PK': 'pakistan',
-    'PH': 'philippines',
-    'PL': 'poland',
-    'PT': 'portugal',
-    'RU': 'russia',
-    'SA': 'saudi-arabia',
-    'SG': 'singapore',
-    'ZA': 'south-africa',
-    'ES': 'spain',
-    'SE': 'sweden',
-    'CH': 'switzerland',
-    'TH': 'thailand',
-    'TR': 'turkey',
-    'AE': 'united-arab-emirates',
-    'GB': 'united-kingdom',
-    'US': 'united-states',
-    'VN': 'vietnam'
-};
+function getFlag(code: string): string {
+    return code.toUpperCase().split('').map(c =>
+        String.fromCodePoint(0x1F1E6 + c.charCodeAt(0) - 65)
+    ).join('');
+}
+
+function toSlug(name: string): string {
+    return name.toLowerCase()
+        .replace(/[,'.()]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim();
+}
+
+export const countries = countriesData
+    .map(c => ({
+        value: toSlug(c.name),
+        label: c.name,
+        flag: getFlag(c.code),
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+
+export const countryCodeMap: Record<string, string> = Object.fromEntries(
+    countriesData.map(c => [c.code, toSlug(c.name)])
+);

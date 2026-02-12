@@ -30,7 +30,7 @@ export function SiteProvider({ children }: SiteProviderProps) {
             let apiUrl = "";
             // Special handling for localhost environments
             if (hostname === 'localhost' || hostname === '127.0.0.1') {
-                apiUrl = "https://demo.13i7.com/api/v1";
+                apiUrl = import.meta.env.VITE_API_URL || "https://demo.13i7.com/api/v1";
             }
             // Special handling for tradenation-cfd.com domains
             else if (hostname.includes('cfds-platform.vercel.app')) {

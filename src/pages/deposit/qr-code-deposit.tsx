@@ -29,24 +29,35 @@ type FormData = z.infer<typeof formSchema>;
 
 interface QRCodeDepositProps {
   address: string;
-  barcode: string;
+  barcode?: string | null;
   title?: string;
-  qrTitle?: string;
+  qrTitle?: string | null;
   addressTitle?: string;
+  instruction?: string;
+  addressIsLink?: boolean;
+  generateQr?: boolean;
+  destinationLabel?: string;
   onSubmit?: (amount: string) => Promise<void> | void;
   onDepositSuccess?: () => void;
 }
 
 export default function QRCodeDeposit({
   address = "",
-  barcode = "",
+  barcode = null,
   title = "Deposit",
-  qrTitle = "QR CODE",
+  qrTitle,
   addressTitle = "DEPOSIT ADDRESS",
+  instruction,
+  addressIsLink = false,
+  generateQr = true,
+  destinationLabel = "address",
   onSubmit,
   onDepositSuccess,
 }: QRCodeDepositProps) {
   const [copied, setCopied] = React.useState(false);
+  const shouldShowBarcode = Boolean(barcode);
+  const shouldShowQr = shouldShowBarcode || generateQr;
+  const resolvedQrTitle = qrTitle === undefined ? "QR CODE" : qrTitle;
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -80,30 +91,34 @@ export default function QRCodeDeposit({
       )}
 
       <div className="space-y-6">
-        <div className="space-y-2">
-          <h3 className="text-xs sm:text-sm font-medium text-muted-foreground uppercase tracking-wide">
-            {qrTitle}
-          </h3>
-          {barcode ? (
-            <div className="flex justify-center">
-              <img src={barcode} className="w-auto h-[120px] sm:h-[150px]" />
-            </div>
-          ) : (
-            <div className="flex justify-center">
-              <motion.div
-                className="bg-white p-2 sm:p-4 rounded-md"
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.2 }}
-              >
-                <QRCodeSVG
-                  value={address}
-                  size={150}
-                  className="w-[120px] h-[120px] sm:w-[150px] sm:h-[150px]"
-                />
-              </motion.div>
-            </div>
-          )}
-        </div>
+        {shouldShowQr ? (
+          <div className="space-y-2">
+            {resolvedQrTitle ? (
+              <h3 className="text-xs sm:text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                {resolvedQrTitle}
+              </h3>
+            ) : null}
+            {shouldShowBarcode ? (
+              <div className="flex justify-center">
+                <img src={barcode ?? ""} className="w-auto h-[120px] sm:h-[150px]" />
+              </div>
+            ) : generateQr ? (
+              <div className="flex justify-center">
+                <motion.div
+                  className="bg-white p-2 sm:p-4 rounded-md"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <QRCodeSVG
+                    value={address}
+                    size={150}
+                    className="w-[120px] h-[120px] sm:w-[150px] sm:h-[150px]"
+                  />
+                </motion.div>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
 
         <div className="space-y-2">
           <h3 className="text-xs sm:text-sm font-medium uppercase tracking-wide">
@@ -118,9 +133,20 @@ export default function QRCodeDeposit({
               whileHover={{ scale: 1.01 }}
               transition={{ duration: 0.2 }}
             >
-              <p className="text-muted-foreground font-mono text-xs sm:text-sm md:text-base truncate">
-                {address}
-              </p>
+              {addressIsLink ? (
+                <a
+                  href={address}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-muted-foreground font-mono text-xs sm:text-sm md:text-base break-all underline underline-offset-2"
+                >
+                  {address}
+                </a>
+              ) : (
+                <p className="text-muted-foreground font-mono text-xs sm:text-sm md:text-base truncate">
+                  {address}
+                </p>
+              )}
             </motion.div>
             <Button
               onClick={copyToClipboard}
@@ -136,6 +162,19 @@ export default function QRCodeDeposit({
             </Button>
           </div>
         </div>
+
+        {instruction ? (
+          <div className="space-y-2">
+            <h3 className="text-xs sm:text-sm font-medium uppercase tracking-wide">
+              Instructions
+            </h3>
+            <div className="bg-background/20 border border-primary/10 rounded-md p-2 sm:p-3">
+              <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line">
+                {instruction}
+              </p>
+            </div>
+          </div>
+        ) : null}
 
         <Form {...form}>
           <form
@@ -182,13 +221,13 @@ export default function QRCodeDeposit({
                     <span className="font-medium text-primary">
                       {form.watch("amount") || "[amount]"}
                     </span>{" "}
-                    to the address{" "}
+                    to the {destinationLabel}{" "}
                     <span className="font-medium text-primary break-all">
                       {address
                         ? `${address.substring(0, 6)}...${address.substring(
                             address.length - 4
                           )}`
-                        : "wallet address"}
+                        : destinationLabel}
                     </span>
                   </Label>
                   <FormMessage />
