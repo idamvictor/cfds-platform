@@ -1,4 +1,4 @@
-import countriesData from '../../public/config/countries.json';
+import countriesData from '../config/countries.json';
 
 function getFlag(code: string): string {
     return code.toUpperCase().split('').map(c =>
