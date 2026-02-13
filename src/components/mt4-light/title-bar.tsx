@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Minimize2, Square, X, Moon, Sun } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import useSiteSettingsStore from "@/store/siteSettingStore";
 import { useNavigate } from "react-router-dom";
 import useDarkModeStore from "@/store/darkModeStore";
@@ -29,23 +30,19 @@ export function TitleBar() {
           {settings?.name || "Demo Account"}
         </span>
       </div>
-      <div className="flex items-center gap-1">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => useDarkModeStore.getState().toggleDarkMode()}
-          className={`h-6 w-6 p-0 ${
-            isDarkMode
-              ? "hover:bg-slate-700 text-slate-300"
-              : "hover:bg-slate-300 text-slate-600"
-          }`}
-        >
-          {isDarkMode ? (
-            <Sun className="h-3 w-3" />
-          ) : (
-            <Moon className="h-3 w-3" />
-          )}
-        </Button>
+      <div className="flex items-center gap-2">
+        <Sun
+          className={`h-4 w-4 ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}
+        />
+        <Switch
+          checked={isDarkMode}
+          onCheckedChange={() => useDarkModeStore.getState().toggleDarkMode()}
+          className="data-[state=checked]:bg-slate-600"
+        />
+        <Moon
+          className={`h-4 w-4 ${isDarkMode ? "text-slate-300" : "text-slate-400"}`}
+        />
+
         <Button
           variant="ghost"
           size="sm"

@@ -103,7 +103,7 @@ export default function TotalPortfolioLight() {
                 <span
                   className={cn(
                     "ml-2 font-semibold",
-                    isDarkMode ? "text-slate-200" : "text-slate-900"
+                    isDarkMode ? "text-slate-200" : "text-slate-900",
                   )}
                 >
                   {accountSummary.pnl >= 0 ? "" : "-"}

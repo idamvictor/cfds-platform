@@ -135,11 +135,11 @@ export function ChartTabs() {
                         ? "bg-[#2A3447] text-white"
                         : "text-slate-200"
                       : isActive
-                      ? "bg-white text-slate-900"
-                      : "text-gray-500"
+                        ? "bg-white text-slate-900"
+                        : "text-gray-500"
                   }`}
                 >
-                  <span className="text-xs font-bold">{pair}, M5</span>
+                  <span className="text-xs font-bold">{pair}</span>
                 </DropdownMenuItem>
               );
             })}
@@ -186,12 +186,12 @@ export function ChartTabs() {
                       ? "bg-[#2A3447] text-slate-200 border-primary"
                       : "text-slate-400"
                     : isActive
-                    ? "bg-white text-slate-900 border-primary"
-                    : "text-gray-500"
+                      ? "bg-white text-slate-900 border-primary"
+                      : "text-gray-500"
                 }`}
                 onClick={() => handlePairClick(pair)}
               >
-                {pair}, M5
+                {pair}
                 <button
                   className={`ml-2 ${
                     isDarkMode

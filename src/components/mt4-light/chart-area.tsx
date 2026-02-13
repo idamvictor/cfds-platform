@@ -17,7 +17,7 @@ export function ChartArea() {
       } border-b ${isDarkMode ? "border-slate-600" : "border-slate-400"}`}
     >
       <div className="h-[93%] relative">
-        <div className="absolute top-20 right-4 z-10">
+        <div className="absolute top-1 right-1 z-10">
           <BuySellFloatingButtonsLight />
         </div>
         <TradingViewLightWidget />
