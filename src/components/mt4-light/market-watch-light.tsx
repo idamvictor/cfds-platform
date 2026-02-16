@@ -12,6 +12,25 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+const scrollbarStyles = `
+  .market-watch-scroll::-webkit-scrollbar {
+    width: 16px;
+  }
+  .market-watch-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .market-watch-scroll::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  .market-watch-scroll::-webkit-scrollbar-thumb:hover {
+    background: #333;
+    background-clip: content-box;
+  }
+`;
+
 export default function MarketWatchLight() {
   const { groupedAssets, fetchAssets, setActiveAsset, addPair } =
     useAssetStore();
@@ -30,10 +49,11 @@ export default function MarketWatchLight() {
 
   return (
     <div
-      className={`h-full flex flex-col ${
+      className={`h-full flex flex-col border border-[#70707080] ${
         isDarkMode ? "bg-slate-900" : "bg-white"
       }`}
     >
+      <style>{scrollbarStyles}</style>
       {/* Market Watch Header - Fixed */}
       <div className="flex flex-col h-full">
         <div
@@ -48,7 +68,7 @@ export default function MarketWatchLight() {
                   isDarkMode
                     ? "bg-slate-800 text-slate-200"
                     : "bg-[#D2E0EA] text-gray-900"
-                } w-full p-2`}
+                } w-full p-2 pl-6 font-bold text-base leading-[21px]`}
               >
                 Market Watch: GMT{" "}
                 {time.toLocaleTimeString("en-US", {
@@ -60,67 +80,41 @@ export default function MarketWatchLight() {
                 })}
               </span>
             </div>
-            <div className="relative mt-2 mb-2  ">
+            <div className="relative mt-2 mb-2 pl-4 pr-2">
               <Search
-                className={`w-5 h-5 absolute left-2 top-1/2 transform -translate-y-1/2 ${
-                  isDarkMode ? "text-slate-400" : "text-gray-400"
-                }`}
+                className={`w-5 h-5 absolute left-6 top-1/2 transform -translate-y-1/2 text-black`}
               />
               <input
                 type="text"
                 placeholder="Search Market"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className={`w-full rounded px-10 py-1.5 text-[11px] ${
-                  isDarkMode
-                    ? "bg-slate-800 text-slate-200 placeholder:text-slate-400"
-                    : "bg-white text-slate-900 placeholder:text-gray-400"
-                }`}
+                className={`w-full rounded px-14 py-1.5 text-[14px] leading-[19px] text-black placeholder:text-black h-[15px]`}
               />
             </div>
           </div>
         </div>
 
-        <div className="flex-1 min-h-0 overflow-auto relative">
+        <div className="flex-1 min-h-0 overflow-auto relative market-watch-scroll">
           <Table>
             <TableHeader
-              className={`${
-                isDarkMode ? "bg-slate-900" : "bg-white"
-              } sticky top-0 z-10`}
+              className={`bg-white sticky top-0 z-10 border-2 border-[#70707066]`}
             >
               <TableRow
-                className={`border-y ${
-                  isDarkMode ? "border-slate-600" : "border-slate-400"
-                } hover:bg-transparent`}
+                className={`h-[34px] border border-[#70707066] hover:bg-transparent`}
               >
                 <TableHead
-                  className={`h-10 text-[12px] ${
-                    isDarkMode ? "text-slate-200" : "text-slate-900"
-                  } font-bold border-r ${
-                    isDarkMode
-                      ? "border-slate-600 bg-slate-900"
-                      : "border-slate-400 bg-white"
-                  } py-2 px-4 w-[60%]`}
+                  className={`text-[14px] leading-[19px] text-slate-900 font-semibold border-r border-[#70707066] bg-white py-2 px-4 pl-6 w-[60%]`}
                 >
                   Symbol
                 </TableHead>
                 <TableHead
-                  className={`h-10 text-[12px] ${
-                    isDarkMode ? "text-slate-200" : "text-slate-900"
-                  } font-bold text-right border-r ${
-                    isDarkMode
-                      ? "border-slate-600 bg-slate-900"
-                      : "border-slate-400 bg-white"
-                  } py-2 px-4 w-[20%]`}
+                  className={`text-[14px] leading-[19px] text-slate-900 font-semibold text-right border-r border-[#70707066] bg-white py-2 px-4 w-[20%]`}
                 >
                   Bid
                 </TableHead>
                 <TableHead
-                  className={`h-10 text-[12px] ${
-                    isDarkMode ? "text-slate-200" : "text-slate-900"
-                  } font-bold text-right py-2 px-4 w-[20%] ${
-                    isDarkMode ? "bg-slate-900" : "bg-white"
-                  }`}
+                  className={`text-[14px] leading-[19px] text-slate-900 font-semibold text-right py-2 px-4 w-[20%] bg-white`}
                 >
                   Ask
                 </TableHead>
@@ -135,7 +129,9 @@ export default function MarketWatchLight() {
                     asset.symbol_display
                       .toLowerCase()
                       .includes(searchQuery.toLowerCase()) ||
-                    asset.name.toLowerCase().includes(searchQuery.toLowerCase())
+                    asset.name
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase()),
                 )
                 .map((asset) => {
                   const buyPrice = asset.buy_price;
@@ -148,23 +144,17 @@ export default function MarketWatchLight() {
                         // Convert watchlist asset to assetStore asset type
                         const assetStore = useAssetStore.getState();
                         const found = assetStore.getAssetBySymbol(
-                          asset.symbol_display
+                          asset.symbol_display,
                         );
                         if (found) {
                           setActiveAsset(found);
                         }
                         addPair(asset.symbol_display);
                       }}
-                      className={`h-10 cursor-pointer border-b ${
-                        isDarkMode
-                          ? "border-slate-600 hover:bg-slate-800"
-                          : "border-slate-400 hover:bg-slate-300"
-                      }`}
+                      className={`h-10 cursor-pointer border-b border-[#70707066]`}
                     >
                       <TableCell
-                        className={`py-2 px-4 text-[13px] border-r ${
-                          isDarkMode ? "border-slate-600" : "border-slate-400"
-                        } w-[60%]`}
+                        className={`py-2 px-4 pl-6 text-[13px] border-r border-[#70707066] w-[60%]`}
                       >
                         <div className="flex items-center space-x-2">
                           <img
@@ -190,7 +180,7 @@ export default function MarketWatchLight() {
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="py-2 px-4 text-[13px] text-right font-bold text-blue-400 border-r border-slate-400 w-[20%]">
+                      <TableCell className="py-2 px-4 text-[13px] text-right font-bold text-blue-400 border-r border-[#70707066] w-[20%]">
                         {buyPrice.toFixed(3)}
                       </TableCell>
                       <TableCell className="py-2 px-4 text-[13px] text-right font-bold text-red-400 w-[20%]">
@@ -205,7 +195,7 @@ export default function MarketWatchLight() {
                 const filteredAssets = typeAssets.filter(
                   (asset) =>
                     !watchlist.some(
-                      (w) => w.symbol_display === asset.symbol_display
+                      (w) => w.symbol_display === asset.symbol_display,
                     ) &&
                     (!searchQuery ||
                       asset.symbol_display
@@ -213,7 +203,7 @@ export default function MarketWatchLight() {
                         .includes(searchQuery.toLowerCase()) ||
                       asset.name
                         .toLowerCase()
-                        .includes(searchQuery.toLowerCase()))
+                        .includes(searchQuery.toLowerCase())),
                 );
 
                 if (filteredAssets.length === 0) return [];
@@ -229,16 +219,10 @@ export default function MarketWatchLight() {
                         setActiveAsset(asset);
                         addPair(asset.symbol_display);
                       }}
-                      className={`h-10 cursor-pointer border-b ${
-                        isDarkMode
-                          ? "border-slate-600 hover:bg-slate-800"
-                          : "border-slate-400 hover:bg-slate-300"
-                      }`}
+                      className={`h-10 cursor-pointer border-b border-2 border-[#70707066]`}
                     >
                       <TableCell
-                        className={`py-2 px-4 text-[13px] border-r ${
-                          isDarkMode ? "border-slate-600" : "border-slate-400"
-                        } w-[60%]`}
+                        className={`py-2 px-4 pl-6 text-[13px] border-r border-[#70707066] w-[60%]`}
                       >
                         <div className="flex items-center space-x-2">
                           <img
@@ -255,7 +239,7 @@ export default function MarketWatchLight() {
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="py-2 px-4 text-[13px] text-right font-bold text-blue-400 border-r border-slate-400 w-[20%]">
+                      <TableCell className="py-2 px-4 text-[13px] text-right font-bold text-blue-400 border-r border-[#70707066] w-[20%]">
                         {buyPrice.toFixed(3)}
                       </TableCell>
                       <TableCell className="py-2 px-4 text-[13px] text-right font-bold text-red-400 w-[20%]">
