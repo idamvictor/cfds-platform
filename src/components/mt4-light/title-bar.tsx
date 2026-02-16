@@ -1,14 +1,32 @@
-import { Button } from "@/components/ui/button";
-import { Minimize2, Square, X, Moon, Sun } from "lucide-react";
+// import { Button } from "@/components/ui/button";
+import { Moon, Sun, LogOut } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import useSiteSettingsStore from "@/store/siteSettingStore";
 import { useNavigate } from "react-router-dom";
 import useDarkModeStore from "@/store/darkModeStore";
+import useUserStore from "@/store/userStore";
 
 export function TitleBar() {
   const settings = useSiteSettingsStore((state) => state.settings);
   const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
+  const user = useUserStore((state) => state.user);
+  const clearUser = useUserStore((state) => state.clearUser);
+  const unreadNotifications =
+    user?.notifications.filter((n) => !n.read_at).length || 0;
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    clearUser();
+    navigate("/");
+  };
 
   return (
     <div
@@ -42,8 +60,48 @@ export function TitleBar() {
         <Moon
           className={`h-4 w-4 ${isDarkMode ? "text-slate-300" : "text-slate-400"}`}
         />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div className="relative cursor-pointer">
+              <Avatar className="h-8 w-8">
+                <AvatarImage
+                  src={user?.avatar}
+                  alt={`${user?.first_name} ${user?.last_name}`}
+                />
+                <AvatarFallback>
+                  {user ? `${user.first_name[0]}${user.last_name[0]}` : "U"}
+                </AvatarFallback>
+              </Avatar>
+              {unreadNotifications > 0 && (
+                <Badge className="absolute -top-2 -right-2 rounded-full w-5 h-5 p-0 flex items-center justify-center text-xs bg-red-500 text-white border-2 border-white">
+                  {unreadNotifications}
+                </Badge>
+              )}
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            className={`w-40 ${
+              isDarkMode
+                ? "bg-slate-800 border-slate-600"
+                : "bg-white border-slate-300"
+            }`}
+          >
+            <DropdownMenuItem
+              onClick={handleLogout}
+              className={`cursor-pointer flex items-center gap-2 ${
+                isDarkMode
+                  ? "hover:bg-slate-700 text-slate-200"
+                  : "hover:bg-slate-100 text-slate-900"
+              }`}
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Logout</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
-        <Button
+        {/* <Button
           variant="ghost"
           size="sm"
           className={`h-6 w-6 p-0 ${
@@ -74,7 +132,7 @@ export function TitleBar() {
           onClick={() => navigate("/main/dashboard")}
         >
           <X className="h-3 w-3" />
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

@@ -1,8 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Plus, Play, Menu } from "lucide-react";
-import useUserStore from "@/store/userStore";
 import useDarkModeStore from "@/store/darkModeStore";
 import { useState } from "react";
 import {
@@ -11,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TradingInterface } from "../mt4/trading-interface-copy";
+import BuySellFloatingButtonsLight from "./chart-area/buy-sell-floating-buttons-light";
 
 interface ToolbarProps {
   isMobile?: boolean;
@@ -18,10 +16,7 @@ interface ToolbarProps {
 }
 
 export function Toolbar({ isMobile, onToggleSidebar }: ToolbarProps) {
-  const user = useUserStore((state) => state.user);
   const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
-  const unreadNotifications =
-    user?.notifications.filter((n) => !n.read_at).length || 0;
   const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
 
   return (
@@ -72,7 +67,7 @@ export function Toolbar({ isMobile, onToggleSidebar }: ToolbarProps) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-4">
         <Play className="h-6 w-6 text-slate-500 fill-slate-500" />
         <span
           className={`text-sm font-medium ${
@@ -81,22 +76,7 @@ export function Toolbar({ isMobile, onToggleSidebar }: ToolbarProps) {
         >
           Auto Trading
         </span>
-        <div className="relative">
-          <Avatar className="h-8 w-8">
-            <AvatarImage
-              src={user?.avatar}
-              alt={`${user?.first_name} ${user?.last_name}`}
-            />
-            <AvatarFallback>
-              {user ? `${user.first_name[0]}${user.last_name[0]}` : "U"}
-            </AvatarFallback>
-          </Avatar>
-          {unreadNotifications > 0 && (
-            <Badge className="absolute -top-2 -right-2 rounded-full w-5 h-5 p-0 flex items-center justify-center text-xs bg-red-500 text-white border-2 border-white">
-              {unreadNotifications}
-            </Badge>
-          )}
-        </div>
+        <BuySellFloatingButtonsLight />
       </div>
     </div>
   );

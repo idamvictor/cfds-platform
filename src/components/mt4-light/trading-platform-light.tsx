@@ -7,7 +7,7 @@ import { Toolbar } from "./toolbar";
 import { ChartArea } from "./chart-area";
 import useDarkModeStore from "@/store/darkModeStore";
 // import { TradingHistory } from "./trading-history";
-import { StatusBar } from "./status-bar";
+// import { StatusBar } from "./status-bar";
 import MarketWatch from "./market-watch-light";
 import PositionDisplayLight from "./position-display-light";
 import AlgoTraderLight from "./algo-trader-light";
@@ -96,7 +96,7 @@ export function TradingPlatformLight() {
       <PositionDisplayLight />
       <TotalPortfolioLight />
 
-      <StatusBar />
+      {/* <StatusBar /> */}
     </div>
   );
 }

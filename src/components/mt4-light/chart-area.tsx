@@ -1,7 +1,6 @@
 // import { AssetListingTabs } from "../mt4/header/asset-listing-tabs";
 // import TradingViewWidget from "../trading/trading-interface-components/trading-view-widget";
 // import BuySellFloatingButtons from "../mt4/main-content/buy-sell-floating-buttons";
-import BuySellFloatingButtonsLight from "./chart-area/buy-sell-floating-buttons-light";
 import { ChartTabs } from "./chart-area/ChartTabs";
 import TradingViewLightWidget from "./chart-area/TradingViewLightWidget";
 import useDarkModeStore from "@/store/darkModeStore";
@@ -17,9 +16,6 @@ export function ChartArea() {
       } border-b ${isDarkMode ? "border-slate-600" : "border-slate-400"}`}
     >
       <div className="h-[93%] relative">
-        <div className="absolute top-1 right-1 z-10">
-          <BuySellFloatingButtonsLight />
-        </div>
         <TradingViewLightWidget />
       </div>
       <div className="overflow-x-auto w-full">
