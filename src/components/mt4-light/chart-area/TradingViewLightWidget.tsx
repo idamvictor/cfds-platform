@@ -15,7 +15,7 @@ function TradingViewLightWidget({
   const tvSymbol =
     useAssetStore((state) => state.activeAsset?.tv_symbol) || "OANDA:EURUSD";
   const livetraderStatus = useSiteSettingsStore(
-    (state) => state.settings?.livetrader_status ?? true
+    (state) => state.settings?.livetrader_status ?? true,
   );
   const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
 
@@ -45,7 +45,7 @@ function TradingViewLightWidget({
       symbol: tvSymbol,
       theme: isDarkMode ? "dark" : "light",
       timezone: "Etc/UTC",
-      backgroundColor: isDarkMode ? "#131722" : "#ffffff",
+      backgroundColor: isDarkMode ? "#131722" : "#f8f8f8",
       gridColor: isDarkMode
         ? "rgba(255, 255, 255, 0.06)"
         : "rgba(46, 46, 46, 0.06)",

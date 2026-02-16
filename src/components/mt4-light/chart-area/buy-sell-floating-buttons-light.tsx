@@ -24,7 +24,7 @@ export default function BuySellFloatingButtonsLight() {
     <div className="relative flex items-center w-fit">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button className="bg-[#0D6EFD] hover:bg-[#0b5ed7] text-white px-4 py-1.5 h-auto shadow-none font-semibold text-base w-[100px] rounded-tl-sm rounded-bl-sm rounded-tr-none rounded-br-none">
+          <Button className="bg-[#10B981] hover:bg-[#059669] text-white px-4 py-1.5 h-auto shadow-none font-semibold text-base w-[100px] rounded-tl-sm rounded-bl-sm rounded-tr-none rounded-br-none">
             <span className="flex flex-col items-center gap-0 w-full">
               <span className="text-xs">BUY</span>
               <span className="text-[11px] font-medium tabular-nums">
