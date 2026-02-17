@@ -80,16 +80,26 @@ export default function MarketWatchLight() {
                 })}
               </span>
             </div>
-            <div className="relative mt-2 mb-2 pl-4 pr-2">
+            <div
+              className={`relative  border border-[#70707080] ${
+                isDarkMode ? "bg-slate-800" : "bg-white"
+              }`}
+            >
               <Search
-                className={`w-5 h-5 absolute left-6 top-1/2 transform -translate-y-1/2 text-black`}
+                className={`w-5 h-5 absolute left-6 top-1/2 transform -translate-y-1/2 ${
+                  isDarkMode ? "text-slate-300" : "text-black"
+                }`}
               />
               <input
                 type="text"
                 placeholder="Search Market"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className={`w-full rounded px-14 py-1.5 text-[14px] leading-[19px] text-black placeholder:text-black h-[15px]`}
+                className={`w-full rounded px-14 py-2.5 text-[14px] leading-[19px] ${
+                  isDarkMode
+                    ? "bg-slate-800 text-slate-200 placeholder:text-slate-400"
+                    : "bg-white text-black placeholder:text-black"
+                }`}
               />
             </div>
           </div>
@@ -98,23 +108,37 @@ export default function MarketWatchLight() {
         <div className="flex-1 min-h-0 overflow-auto relative market-watch-scroll">
           <Table>
             <TableHeader
-              className={`bg-white sticky top-0 z-10 border-2 border-[#70707066]`}
+              className={`sticky top-0 z-10 border-2 border-[#70707066] ${
+                isDarkMode ? "bg-slate-800" : "bg-white"
+              }`}
             >
               <TableRow
                 className={`h-[34px] border border-[#70707066] hover:bg-transparent`}
               >
                 <TableHead
-                  className={`text-[14px] leading-[19px] text-slate-900 font-semibold border-r border-[#70707066] bg-white py-2 px-4 pl-6 w-[60%]`}
+                  className={`text-[14px] leading-[19px] font-semibold border-r border-[#70707066] py-2 px-4 pl-6 w-[60%] ${
+                    isDarkMode
+                      ? "bg-slate-800 text-slate-200"
+                      : "bg-white text-slate-900"
+                  }`}
                 >
                   Symbol
                 </TableHead>
                 <TableHead
-                  className={`text-[14px] leading-[19px] text-slate-900 font-semibold text-right border-r border-[#70707066] bg-white py-2 px-4 w-[20%]`}
+                  className={`text-[14px] leading-[19px] font-semibold text-right border-r border-[#70707066] py-2 px-4 w-[20%] ${
+                    isDarkMode
+                      ? "bg-slate-800 text-slate-200"
+                      : "bg-white text-slate-900"
+                  }`}
                 >
                   Bid
                 </TableHead>
                 <TableHead
-                  className={`text-[14px] leading-[19px] text-slate-900 font-semibold text-right py-2 px-4 w-[20%] bg-white`}
+                  className={`text-[14px] leading-[19px] font-semibold text-right py-2 px-4 w-[20%] ${
+                    isDarkMode
+                      ? "bg-slate-800 text-slate-200"
+                      : "bg-white text-slate-900"
+                  }`}
                 >
                   Ask
                 </TableHead>

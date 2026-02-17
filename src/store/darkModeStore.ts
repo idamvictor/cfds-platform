@@ -9,7 +9,7 @@ interface DarkModeState {
 const useDarkModeStore = create<DarkModeState>()(
   persist(
     (set) => ({
-      isDarkMode: false,
+      isDarkMode: true,
       toggleDarkMode: () =>
         set((state) => {
           const newDarkMode = !state.isDarkMode;
@@ -24,8 +24,8 @@ const useDarkModeStore = create<DarkModeState>()(
     }),
     {
       name: "dark-mode-storage", // unique name for localStorage key
-    }
-  )
+    },
+  ),
 );
 
 export default useDarkModeStore;
