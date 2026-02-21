@@ -17,6 +17,7 @@ import useOverlayStore from "@/store/overlayStore";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useMobile } from "@/hooks/use-mobile";
 import useSiteSettingsStore from "@/store/siteSettingStore";
+import AssetPriceStreamInitializer from "@/components/trading/AssetPriceStreamInitializer";
 
 export function TradingPlatformLight() {
   const { automatedTrading, selectedAdvisorId } = useOverlayStore();
@@ -54,6 +55,7 @@ export function TradingPlatformLight() {
         isDarkMode ? "bg-slate-950" : "bg-slate-100"
       } flex flex-col font-sans text-sm`}
     >
+      <AssetPriceStreamInitializer />
       <TitleBar />
       <Toolbar
         isMobile={isMobile}

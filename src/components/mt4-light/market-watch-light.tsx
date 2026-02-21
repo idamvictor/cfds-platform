@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { BadgeCheck, Search } from "lucide-react";
-import useAssetStore from "@/store/assetStore";
+import useAssetStore, { type Asset } from "@/store/assetStore";
 import useWatchlistStore from "@/store/watchlistStore";
 import useDarkModeStore from "@/store/darkModeStore";
+import { useMarketWatchSyntheticTicker } from "@/hooks/useMarketWatchSyntheticTicker";
 import {
   Table,
   TableBody,
@@ -32,12 +33,47 @@ const scrollbarStyles = `
 `;
 
 export default function MarketWatchLight() {
-  const { groupedAssets, fetchAssets, setActiveAsset, addPair } =
-    useAssetStore();
+  const groupedAssets = useAssetStore((state) => state.groupedAssets);
+  const fetchAssets = useAssetStore((state) => state.fetchAssets);
+  const setActiveAsset = useAssetStore((state) => state.setActiveAsset);
+  const addPair = useAssetStore((state) => state.addPair);
   const { watchlist } = useWatchlistStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [time, setTime] = useState(new Date());
   const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
+
+  const filteredWatchlist = useMemo(
+    () =>
+      watchlist.filter(
+        (asset) =>
+          !searchQuery ||
+          asset.symbol_display.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          asset.name.toLowerCase().includes(searchQuery.toLowerCase())
+      ),
+    [searchQuery, watchlist]
+  );
+
+  const filteredMarketAssets = useMemo(
+    () =>
+      Object.entries(groupedAssets).flatMap(([, typeAssets]) =>
+        typeAssets.filter(
+          (asset) =>
+            !watchlist.some((w) => w.symbol_display === asset.symbol_display) &&
+            (!searchQuery ||
+              asset.symbol_display
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+              asset.name.toLowerCase().includes(searchQuery.toLowerCase()))
+        )
+      ),
+    [groupedAssets, searchQuery, watchlist]
+  );
+
+  const visibleAssets = useMemo<Asset[]>(
+    () => [...filteredWatchlist, ...filteredMarketAssets],
+    [filteredMarketAssets, filteredWatchlist]
+  );
+  const { getDisplayQuote } = useMarketWatchSyntheticTicker(visibleAssets);
 
   useEffect(() => {
     fetchAssets();
@@ -146,20 +182,9 @@ export default function MarketWatchLight() {
             </TableHeader>
             <TableBody>
               {/* Watchlist Assets on Top */}
-              {watchlist
-                .filter(
-                  (asset) =>
-                    !searchQuery ||
-                    asset.symbol_display
-                      .toLowerCase()
-                      .includes(searchQuery.toLowerCase()) ||
-                    asset.name
-                      .toLowerCase()
-                      .includes(searchQuery.toLowerCase()),
-                )
-                .map((asset) => {
-                  const buyPrice = asset.buy_price;
-                  const sellPrice = asset.sell_price;
+              {filteredWatchlist.map((asset) => {
+                  const { buyPrice, sellPrice, changePercent } = getDisplayQuote(asset);
+                  const isPositive = changePercent >= 0;
 
                   return (
                     <TableRow
@@ -204,10 +229,18 @@ export default function MarketWatchLight() {
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="py-2 px-4 text-[13px] text-right font-bold text-blue-400 border-r border-[#70707066] w-[20%]">
+                      <TableCell
+                        className={`py-2 px-4 text-[13px] text-right font-bold border-r border-[#70707066] w-[20%] ${
+                          isPositive ? "text-green-500" : "text-red-500"
+                        }`}
+                      >
                         {buyPrice.toFixed(3)}
                       </TableCell>
-                      <TableCell className="py-2 px-4 text-[13px] text-right font-bold text-red-400 w-[20%]">
+                      <TableCell
+                        className={`py-2 px-4 text-[13px] text-right font-bold w-[20%] ${
+                          isPositive ? "text-green-500" : "text-red-500"
+                        }`}
+                      >
                         {sellPrice.toFixed(3)}
                       </TableCell>
                     </TableRow>
@@ -215,26 +248,9 @@ export default function MarketWatchLight() {
                 })}
 
               {/* Remaining Market Assets */}
-              {Object.entries(groupedAssets).flatMap(([, typeAssets]) => {
-                const filteredAssets = typeAssets.filter(
-                  (asset) =>
-                    !watchlist.some(
-                      (w) => w.symbol_display === asset.symbol_display,
-                    ) &&
-                    (!searchQuery ||
-                      asset.symbol_display
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase()) ||
-                      asset.name
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase())),
-                );
-
-                if (filteredAssets.length === 0) return [];
-
-                return filteredAssets.map((asset) => {
-                  const buyPrice = asset.buy_price;
-                  const sellPrice = asset.sell_price;
+              {filteredMarketAssets.map((asset) => {
+                  const { buyPrice, sellPrice, changePercent } = getDisplayQuote(asset);
+                  const isPositive = changePercent >= 0;
 
                   return (
                     <TableRow
@@ -263,16 +279,23 @@ export default function MarketWatchLight() {
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="py-2 px-4 text-[13px] text-right font-bold text-blue-400 border-r border-[#70707066] w-[20%]">
+                      <TableCell
+                        className={`py-2 px-4 text-[13px] text-right font-bold border-r border-[#70707066] w-[20%] ${
+                          isPositive ? "text-green-500" : "text-red-500"
+                        }`}
+                      >
                         {buyPrice.toFixed(3)}
                       </TableCell>
-                      <TableCell className="py-2 px-4 text-[13px] text-right font-bold text-red-400 w-[20%]">
+                      <TableCell
+                        className={`py-2 px-4 text-[13px] text-right font-bold w-[20%] ${
+                          isPositive ? "text-green-500" : "text-red-500"
+                        }`}
+                      >
                         {sellPrice.toFixed(3)}
                       </TableCell>
                     </TableRow>
                   );
-                });
-              })}
+                })}
             </TableBody>
           </Table>
         </div>

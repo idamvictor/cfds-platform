@@ -5,6 +5,7 @@ import MainContent from "./main-content";
 import useAssetStore from "@/store/assetStore";
 import useTradeStore from "@/store/tradeStore";
 import AssetInitializer from "../asset-initializer";
+import AssetPriceStreamInitializer from "@/components/trading/AssetPriceStreamInitializer";
 // import { useMobile } from "@/hooks/use-mobile";
 import { addClickSound } from "@/lib/addClickSound.ts";
 import Footer from "@/components/footer";
@@ -104,6 +105,7 @@ export default function TradingPlatform() {
   return (
     <div className="flex flex-col h-screen bg-background text-foreground">
       <AssetInitializer />
+      <AssetPriceStreamInitializer />
       <Header
         activePairs={activePairs}
         activePair={activePair}

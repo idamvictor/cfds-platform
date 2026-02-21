@@ -1,11 +1,11 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import useAssetStore from "@/store/assetStore";
 import { Button } from "@/components/ui/button";
 import type { Asset } from "@/store/assetStore";
-import { useAssetWebSocket } from "@/hooks/useAssetWebsocket";
 import AssetCategory from "@/components/trading/trading-interface-components/panels/inc/AssetCategory.tsx";
+import { useMarketWatchSyntheticTicker } from "@/hooks/useMarketWatchSyntheticTicker";
 
 interface MarketWatchPanelProps {
     addCurrencyPair: (pair: string) => void;
@@ -22,13 +22,6 @@ const MarketWatchPanel = ({ addCurrencyPair }: MarketWatchPanelProps) => {
     const activeAssetId = useAssetStore((state) => state.activeAsset?.id);
     const isLoading = useAssetStore((state) => state.isLoading);
     const error = useAssetStore((state) => state.error);
-
-    // Initialize the WebSocket connection
-    const { subscribeToAll } = useAssetWebSocket({
-        onConnected: () => {
-            subscribeToAll();
-        }
-    });
 
     // Expand categories when they first load
     // useEffect(() => {
@@ -69,6 +62,11 @@ const MarketWatchPanel = ({ addCurrencyPair }: MarketWatchPanelProps) => {
             }
             return acc;
         }, {} as Record<string, Asset[]>);
+    const visibleAssets = useMemo(
+        () => Object.values(filteredAssets).flat(),
+        [filteredAssets]
+    );
+    const { getDisplayQuote } = useMarketWatchSyntheticTicker(visibleAssets);
 
     const hasResults = Object.keys(filteredAssets).length > 0;
 
@@ -130,6 +128,7 @@ const MarketWatchPanel = ({ addCurrencyPair }: MarketWatchPanelProps) => {
                             toggleCategory={() => toggleCategory(category)}
                             handleAssetClick={handleAssetClick}
                             activeAssetId={activeAssetId}
+                            getDisplayQuote={getDisplayQuote}
                         />
                     ))
                 )}

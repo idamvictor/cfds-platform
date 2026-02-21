@@ -46,6 +46,7 @@ interface AssetStore {
   groupedAssets: Record<string, Asset[]>;
   activePairs: string[];
   activePair: string | null;
+  lastWebsocketUpdateByAsset: Record<string, number>;
 
   fetchAssets: () => Promise<void>;
   setActiveAsset: (asset: Asset) => void;
@@ -60,6 +61,66 @@ interface AssetStore {
 
 const DEFAULT_ASSET_SYMBOL = "BITSTAMP:BTCUSD";
 const DEFAULT_PAIR = "BTC/USD";
+const MIN_PRICE = Number.EPSILON;
+
+function toFiniteNumber(value: unknown): number {
+  const parsed =
+    typeof value === "number"
+      ? value
+      : typeof value === "string"
+        ? Number.parseFloat(value.replace(/,/g, "").trim())
+        : Number.NaN;
+
+  return Number.isFinite(parsed) ? parsed : Number.NaN;
+}
+
+function spreadToOffset(nextRate: number, spreadValue: number): number {
+  if (!Number.isFinite(spreadValue) || spreadValue <= 0) {
+    return 0;
+  }
+
+  // Some feeds send spread as ratio (< 1), others as absolute points (>= 1).
+  return spreadValue < 1 ? nextRate * spreadValue : spreadValue;
+}
+
+function deriveBidAsk(asset: Asset, nextRate: number) {
+  const safeRate = Math.max(nextRate, MIN_PRICE);
+  const currentRate = toFiniteNumber(asset.rate);
+  const currentBuy = toFiniteNumber(asset.buy_price);
+  const currentSell = toFiniteNumber(asset.sell_price);
+  const buySpread = toFiniteNumber(asset.buy_spread);
+  const sellSpread = toFiniteNumber(asset.sell_spread);
+
+  const fallbackBuyOffset = spreadToOffset(safeRate, buySpread);
+  const fallbackSellOffset = spreadToOffset(safeRate, sellSpread);
+
+  let buyOffset =
+    Number.isFinite(currentRate) && Number.isFinite(currentBuy)
+      ? currentBuy - currentRate
+      : Number.NaN;
+  let sellOffset =
+    Number.isFinite(currentRate) && Number.isFinite(currentSell)
+      ? currentRate - currentSell
+      : Number.NaN;
+
+  const maxReasonableOffset = safeRate * 0.2;
+
+  if (!(buyOffset >= 0) || buyOffset > maxReasonableOffset) {
+    buyOffset = fallbackBuyOffset;
+  }
+
+  if (!(sellOffset >= 0) || sellOffset > maxReasonableOffset) {
+    sellOffset = fallbackSellOffset;
+  }
+
+  buyOffset = Math.max(Math.min(buyOffset, maxReasonableOffset), 0);
+  sellOffset = Math.max(Math.min(sellOffset, maxReasonableOffset), 0);
+
+  return {
+    buyPrice: safeRate + buyOffset,
+    sellPrice: Math.max(safeRate - sellOffset, MIN_PRICE),
+  };
+}
 
 const useAssetStore = create<AssetStore>()(
   persist(
@@ -71,6 +132,7 @@ const useAssetStore = create<AssetStore>()(
       groupedAssets: {},
       activePairs: [DEFAULT_PAIR],
       activePair: DEFAULT_PAIR,
+      lastWebsocketUpdateByAsset: {},
 
       fetchAssets: async () => {
         set({ isLoading: true, error: null });
@@ -87,6 +149,7 @@ const useAssetStore = create<AssetStore>()(
           });
 
           const currentActive = get().activeAsset;
+          const currentActivePair = get().activePair;
 
           let defaultAsset = assets.find(
             (a) => a.tv_symbol === DEFAULT_ASSET_SYMBOL
@@ -100,11 +163,32 @@ const useAssetStore = create<AssetStore>()(
             defaultAsset = assets[0];
           }
 
+          const refreshedActiveById = currentActive
+            ? assets.find(
+                (asset) =>
+                  asset.asset_id === currentActive.asset_id ||
+                  asset.id === currentActive.id ||
+                  asset.symbol_display === currentActive.symbol_display
+              )
+            : undefined;
+
+          const refreshedActiveByPair = currentActivePair
+            ? assets.find(
+                (asset) =>
+                  asset.symbol_display === currentActivePair ||
+                  asset.sy === currentActivePair
+              )
+            : undefined;
+
+          const nextActiveAsset =
+            refreshedActiveById || refreshedActiveByPair || defaultAsset || null;
+
           set({
             assets,
             groupedAssets,
             isLoading: false,
-            activeAsset: currentActive || defaultAsset,
+            activeAsset: nextActiveAsset,
+            activePair: nextActiveAsset?.symbol_display || currentActivePair,
           });
         } catch (error) {
           console.log(error);
@@ -147,7 +231,9 @@ const useAssetStore = create<AssetStore>()(
 
           const updatedAssets = [...state.assets];
           const updatedGroupedAssets = { ...state.groupedAssets };
+          const updatedLastWebsocket = { ...state.lastWebsocketUpdateByAsset };
           let updatedActiveAsset = null;
+          const now = Date.now();
 
           updateArray.forEach((update) => {
             const asset = assetsMap.get(update.id);
@@ -156,9 +242,12 @@ const useAssetStore = create<AssetStore>()(
               return;
             }
 
+            const nextRate = update.price;
+            const { buyPrice, sellPrice } = deriveBidAsk(asset, nextRate);
+
             const updatedAsset = {
               ...asset,
-              rate: update.price.toString(),
+              rate: nextRate.toString(),
               ...(update.priceLow24h !== undefined && {
                 price_low: update.priceLow24h.toString(),
               }),
@@ -175,8 +264,8 @@ const useAssetStore = create<AssetStore>()(
                 volume: update.volume24h ? update.volume24h.toString() : null,
               }),
               updated_at: update.lastUpdated,
-              buy_price: update.price * (1 + Number(asset.buy_spread)),
-              sell_price: update.price * (1 - Number(asset.sell_spread)),
+              buy_price: buyPrice,
+              sell_price: sellPrice,
             };
 
             const assetIndex = updatedAssets.findIndex(
@@ -185,6 +274,7 @@ const useAssetStore = create<AssetStore>()(
 
             if (assetIndex !== -1) {
               updatedAssets[assetIndex] = updatedAsset;
+              updatedLastWebsocket[update.id] = now;
 
               if (
                 state.activeAsset &&
@@ -209,6 +299,7 @@ const useAssetStore = create<AssetStore>()(
             assets: updatedAssets,
             groupedAssets: updatedGroupedAssets,
             activeAsset: updatedActiveAsset || state.activeAsset,
+            lastWebsocketUpdateByAsset: updatedLastWebsocket,
           };
         });
       },
@@ -307,10 +398,18 @@ const useAssetStore = create<AssetStore>()(
     {
       name: "asset-storage",
       partialize: (state) => ({
-        activeAsset: state.activeAsset,
         activePairs: state.activePairs,
         activePair: state.activePair,
       }),
+      merge: (persistedState, currentState) => {
+        const incoming = persistedState as Partial<AssetStore>;
+        return {
+          ...currentState,
+          ...incoming,
+          // Prevent stale price objects from flashing on reload.
+          activeAsset: currentState.activeAsset,
+        };
+      },
     }
   )
 );

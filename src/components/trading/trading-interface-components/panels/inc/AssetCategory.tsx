@@ -2,6 +2,7 @@ import { memo } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import type { Asset } from "@/store/assetStore";
 import AssetItem from "./AssetItem";
+import type { MarketWatchDisplayQuote } from "@/hooks/useMarketWatchSyntheticTicker";
 
 interface AssetCategoryProps {
     category: string;
@@ -11,6 +12,7 @@ interface AssetCategoryProps {
     handleAssetClick: (asset: Asset) => void;
     activeAssetId?: string;
     priceColors?: Record<string, string>;
+    getDisplayQuote?: (asset: Asset) => MarketWatchDisplayQuote;
 }
 
 const AssetCategory = memo(({
@@ -20,6 +22,7 @@ const AssetCategory = memo(({
                                 toggleCategory,
                                 handleAssetClick,
                                 activeAssetId,
+                                getDisplayQuote,
                             }: AssetCategoryProps) => {
 
     const getCategoryIcon = (category: string) => {
@@ -135,6 +138,7 @@ const AssetCategory = memo(({
                             asset={asset}
                             isActive={activeAssetId === asset.id}
                             onClick={() => handleAssetClick(asset)}
+                            displayQuote={getDisplayQuote?.(asset)}
                         />
                     ))}
                 </div>

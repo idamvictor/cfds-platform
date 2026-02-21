@@ -36,10 +36,15 @@ interface WebSocketOptions {
  */
 export function useAssetWebSocket(options: WebSocketOptions = {}) {
     const socketRef = useRef<Socket | null>(null);
+    const optionsRef = useRef<WebSocketOptions>(options);
     const updateAssetFromWebsocket = useAssetStore(state => state.updateAssetFromWebsocket);
     const livetraderStatus = useSiteSettingsStore(
         (state) => state.settings?.livetrader_status ?? true
     );
+
+    useEffect(() => {
+        optionsRef.current = options;
+    }, [options.onConnected, options.onDisconnected, options.onError]);
 
     // Connect to WebSocket
     const connect = useCallback(() => {
@@ -67,7 +72,7 @@ export function useAssetWebSocket(options: WebSocketOptions = {}) {
 
         // Handle connection events
         socketRef.current.on('connect', () => {
-            options.onConnected?.();
+            optionsRef.current.onConnected?.();
 
             // Subscribe to all assets immediately when connected
             if (socketRef.current) {
@@ -76,11 +81,11 @@ export function useAssetWebSocket(options: WebSocketOptions = {}) {
         });
 
         socketRef.current.on('disconnect', () => {
-            options.onDisconnected?.();
+            optionsRef.current.onDisconnected?.();
         });
 
         socketRef.current.on('connect_error', (error: Error) => {
-            options.onError?.(error);
+            optionsRef.current.onError?.(error);
         });
 
         // Handle data events
@@ -94,7 +99,7 @@ export function useAssetWebSocket(options: WebSocketOptions = {}) {
             updateAssetFromWebsocket(asset);
         });
 
-    }, [options, updateAssetFromWebsocket]);
+    }, [updateAssetFromWebsocket]);
 
     // Subscribe to all assets
     const subscribeToAll = useCallback(() => {

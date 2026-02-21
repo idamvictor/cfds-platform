@@ -3,27 +3,35 @@ import { Plus, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Asset } from "@/store/assetStore";
 import AssetInfoModal from "./AssetInfoModal";
+import type { MarketWatchDisplayQuote } from "@/hooks/useMarketWatchSyntheticTicker";
 
 interface AssetItemProps {
     asset: Asset;
     isActive: boolean;
     onClick: () => void;
+    displayQuote?: MarketWatchDisplayQuote;
 }
 
 const AssetItem = memo(({
                             asset,
                             isActive,
-                            onClick
+                            onClick,
+                            displayQuote,
                         }: AssetItemProps) => {
     const [priceColor, setPriceColor] = useState<string>("");
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
-    const previousPriceRef = useRef<number>(Number.parseFloat(asset.rate));
+    const initialRate = displayQuote?.rate ?? (Number.parseFloat(asset.rate) || 0);
+    const previousPriceRef = useRef<number>(initialRate);
 
     // Parse numeric values for percentage change
-    const currentPrice = Number.parseFloat(asset.rate);
-    const changePercent = asset.change_percent ? Number.parseFloat(asset.change_percent) : 0;
+    const currentPrice = displayQuote?.rate ?? (Number.parseFloat(asset.rate) || 0);
+    const changePercent =
+        displayQuote?.changePercent ??
+        (asset.change_percent ? Number.parseFloat(asset.change_percent) : 0);
+    const percentPrecision = displayQuote?.isSynthetic ? 3 : 2;
     const isPositiveChange = changePercent >= 0;
-    const formattedPercent = (isPositiveChange ? "+" : "") + changePercent.toFixed(2) + "%";
+    const formattedPercent =
+        (isPositiveChange ? "+" : "") + changePercent.toFixed(percentPrecision) + "%";
 
     // Determine text color for percent change
     const percentColor = isPositiveChange ? "text-green-500" : "text-red-500";
@@ -91,10 +99,10 @@ const AssetItem = memo(({
                         "text-xs font-medium w-14 text-right truncate whitespace-nowrap-block transition-colors duration-300",
                         priceColor
                     )}>
-                        {asset.rate}
+                        {currentPrice.toFixed(5)}
                     </span>
                     <span className={cn(
-                        "text-xs w-12 text-right truncate",
+                        "text-xs w-16 text-right truncate",
                         percentColor
                     )}>
                         {formattedPercent}
