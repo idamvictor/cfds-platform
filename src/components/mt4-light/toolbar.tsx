@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Plus, Square, Menu } from "lucide-react";
+import { Plus, Menu } from "lucide-react";
 import useDarkModeStore from "@/store/darkModeStore";
 import { useState } from "react";
 import {
@@ -68,14 +68,6 @@ export function Toolbar({ isMobile, onToggleSidebar }: ToolbarProps) {
         </DropdownMenu>
       </div>
       <div className="flex items-center gap-2">
-        <Square className="h-6 w-6 text-gray-400 fill-gray-400" />
-        <span
-          className={`text-sm font-medium ${
-            isDarkMode ? "text-slate-200" : "text-slate-700"
-          }`}
-        >
-          Auto Trading
-        </span>
         <BuySellFloatingButtonsLight />
       </div>
     </div>
