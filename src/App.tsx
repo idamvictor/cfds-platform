@@ -27,14 +27,14 @@ const Test = lazy(() => import("./pages/test"));
 const RegisterPage = lazy(() => import("./pages/auth/register-page"));
 const LoginPage = lazy(() => import("./pages/auth/login-page"));
 const ForgotPasswordPage = lazy(
-  () => import("./pages/auth/forgot-password-page")
+  () => import("./pages/auth/forgot-password-page"),
 );
 const ProtectedRoute = lazy(() => import("./components/ProtectedRoute"));
 
 const MainLayout = lazy(() => import("./layouts/MainLayout"));
 const DepositLayout = lazy(() => import("./layouts/DepositLayout"));
 const PersonalInformation = lazy(
-  () => import("./pages/Preferences/PersonalInformation")
+  () => import("./pages/Preferences/PersonalInformation"),
 );
 // const BankDeposit = lazy(() => import("./pages/deposit/BankDeposit"));
 const CardDeposit = lazy(() => import("./pages/deposit/CardDeposit"));
@@ -42,10 +42,10 @@ const CardDeposit = lazy(() => import("./pages/deposit/CardDeposit"));
 // const OtherDeposit = lazy(() => import("./pages/deposit/OtherDeposit"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const TradingDashboard = lazy(
-  () => import("./pages/Preferences/TradingDashboard")
+  () => import("./pages/Preferences/TradingDashboard"),
 );
 const WithdrawalForm = lazy(
-  () => import("./pages/Preferences/withdrawal-form")
+  () => import("./pages/Preferences/withdrawal-form"),
 );
 const Verification = lazy(() => import("./pages/Preferences/verification"));
 const AccountsPage = lazy(() => import("./pages/Preferences/accounts-page"));
@@ -53,7 +53,7 @@ const LiveChat = lazy(() => import("./pages/Preferences/live-chat"));
 const SettingsPage = lazy(() => import("./pages/Preferences/settings-page"));
 const SavingsPage = lazy(() => import("./pages/Preferences/savings-page"));
 const CryptoWalletDeposit = lazy(
-  () => import("./pages/deposit/CryptoWalletDeposit")
+  () => import("./pages/deposit/CryptoWalletDeposit"),
 );
 
 const queryClient = new QueryClient();
@@ -175,7 +175,7 @@ const App = () => {
                   </Route>
 
                   <Route
-                    path="trading"
+                    path="trading/*"
                     element={
                       <ProtectedRoute>
                         <TradingRouter />

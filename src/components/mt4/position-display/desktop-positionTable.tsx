@@ -36,6 +36,9 @@ export function DesktopPositionTable({
   const { setActiveAsset, assets } = useAssetStore();
   const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
 
+  // Provide default empty array if positions is undefined
+  const safePositions = positions || [];
+
   const handleAssetClick = (assetSymbol: string) => {
     const asset = assets.find((a) => a.symbol_display === assetSymbol);
     if (asset) {
@@ -193,7 +196,7 @@ export function DesktopPositionTable({
               isDarkMode ? "border-slate-600" : "border-slate-300"
             }`}
           >
-            {positions.length === 0 && !isLoading ? (
+            {safePositions.length === 0 && !isLoading ? (
               <TableRow>
                 <TableCell
                   colSpan={13}
@@ -206,7 +209,7 @@ export function DesktopPositionTable({
                 </TableCell>
               </TableRow>
             ) : (
-              positions.map((position) => (
+              safePositions.map((position) => (
                 <TableRow
                   key={position.id}
                   className={`border-b ${
@@ -242,7 +245,7 @@ export function DesktopPositionTable({
                       "h-6 py-0.5 px-1 text-[11px] font-medium border-r-1 border-slate-300",
                       position.trade_type === "buy"
                         ? "text-green-500"
-                        : "text-red-500"
+                        : "text-red-500",
                     )}
                   >
                     {position.trade_type.toUpperCase()}
