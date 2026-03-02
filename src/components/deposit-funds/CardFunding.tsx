@@ -19,15 +19,6 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
     cardNumber: "",
     expiryDate: "",
     cvv: "",
-    firstName: "",
-    lastName: "",
-    address: "",
-    addressLine2: "",
-    city: "",
-    stateProvince: "",
-    zipCode: "",
-    country: "",
-    saveCard: false,
   });
 
   return (
@@ -93,7 +84,7 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
             </span>
           </p>
 
-          <div className="space-y-4">
+          <div className="space-y-4 max-w-md">
             {/* Quick Amount Selection */}
             <div className="space-y-2">
               <p className={`text-xs font-semibold ${mutedClass} uppercase`}>
@@ -104,10 +95,10 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
                   <button
                     key={value}
                     onClick={() => setAmount(value)}
-                    className={`px-4 py-2 rounded-lg border transition-colors ${
+                    className={`px-4 py-2 rounded-lg border-2 transition-colors ${
                       amount === value
                         ? "border-accent bg-accent text-primary-foreground"
-                        : `border-border ${mutedClass} hover:border-accent`
+                        : `border-input text-foreground hover:border-accent hover:bg-accent/10`
                     }`}
                   >
                     ${Number(value).toLocaleString()}
@@ -118,17 +109,17 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
 
             {/* Amount Input */}
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground">
+              <label className="text-base font-bold text-foreground">
                 Amount to Add
               </label>
               <div className="flex items-center gap-2">
-                <span className={mutedClass}>$</span>
+                <span className="text-foreground font-semibold">$</span>
                 <input
                   type="number"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="Enter Amount"
-                  className={`flex-1 px-3 py-2 rounded-lg border border-border bg-background text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
+                  className={`flex-1 px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
                 />
               </div>
             </div>
@@ -168,7 +159,7 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
           </p>
 
           {/* Card Details Section */}
-          <div className="space-y-4">
+          <div className="space-y-4 max-w-md">
             <h3 className="text-lg font-semibold text-foreground">
               Card Details
             </h3>
@@ -183,7 +174,7 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
               className={`w-full px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
             />
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-3">
               <input
                 type="text"
                 placeholder="Card Number"
@@ -191,142 +182,31 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
                 onChange={(e) =>
                   setCardDetails({ ...cardDetails, cardNumber: e.target.value })
                 }
-                className={`col-span-2 px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
+                className={`w-full px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
               />
-              <input
-                type="text"
-                placeholder="MM/YY"
-                value={cardDetails.expiryDate}
-                onChange={(e) =>
-                  setCardDetails({ ...cardDetails, expiryDate: e.target.value })
-                }
-                className={`px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
-              />
-              <input
-                type="text"
-                placeholder="CVV"
-                value={cardDetails.cvv}
-                onChange={(e) =>
-                  setCardDetails({ ...cardDetails, cvv: e.target.value })
-                }
-                className={`px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
-              />
-            </div>
-          </div>
-
-          {/* Billing Address Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground">
-              Billing Address
-            </h3>
-
-            <div className="grid grid-cols-2 gap-3">
-              <input
-                type="text"
-                placeholder="First Name"
-                value={cardDetails.firstName}
-                onChange={(e) =>
-                  setCardDetails({ ...cardDetails, firstName: e.target.value })
-                }
-                className={`px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
-              />
-              <input
-                type="text"
-                placeholder="Last Name"
-                value={cardDetails.lastName}
-                onChange={(e) =>
-                  setCardDetails({ ...cardDetails, lastName: e.target.value })
-                }
-                className={`px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <input
-                type="text"
-                placeholder="Address"
-                value={cardDetails.address}
-                onChange={(e) =>
-                  setCardDetails({ ...cardDetails, address: e.target.value })
-                }
-                className={`px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
-              />
-              <input
-                type="text"
-                placeholder="Address line 2 (Optional)"
-                value={cardDetails.addressLine2}
-                onChange={(e) =>
-                  setCardDetails({
-                    ...cardDetails,
-                    addressLine2: e.target.value,
-                  })
-                }
-                className={`px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <input
-                type="text"
-                placeholder="City"
-                value={cardDetails.city}
-                onChange={(e) =>
-                  setCardDetails({ ...cardDetails, city: e.target.value })
-                }
-                className={`px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
-              />
-              <input
-                type="text"
-                placeholder="State/Province"
-                value={cardDetails.stateProvince}
-                onChange={(e) =>
-                  setCardDetails({
-                    ...cardDetails,
-                    stateProvince: e.target.value,
-                  })
-                }
-                className={`px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <input
-                type="text"
-                placeholder="ZIP/Postal Code"
-                value={cardDetails.zipCode}
-                onChange={(e) =>
-                  setCardDetails({ ...cardDetails, zipCode: e.target.value })
-                }
-                className={`px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
-              />
-              <input
-                type="text"
-                placeholder="Country"
-                value={cardDetails.country}
-                onChange={(e) =>
-                  setCardDetails({ ...cardDetails, country: e.target.value })
-                }
-                className={`px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
-              />
-            </div>
-
-            {/* Save Card Checkbox */}
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="saveCard"
-                checked={cardDetails.saveCard}
-                onChange={(e) =>
-                  setCardDetails({ ...cardDetails, saveCard: e.target.checked })
-                }
-                className="w-4 h-4 accent-accent"
-              />
-              <label
-                htmlFor="saveCard"
-                className={`text-sm ${mutedClass} cursor-pointer`}
-              >
-                Save card for later use
-              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <input
+                  type="text"
+                  placeholder="MM/YY"
+                  value={cardDetails.expiryDate}
+                  onChange={(e) =>
+                    setCardDetails({
+                      ...cardDetails,
+                      expiryDate: e.target.value,
+                    })
+                  }
+                  className={`px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
+                />
+                <input
+                  type="text"
+                  placeholder="CVV"
+                  value={cardDetails.cvv}
+                  onChange={(e) =>
+                    setCardDetails({ ...cardDetails, cvv: e.target.value })
+                  }
+                  className={`px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
+                />
+              </div>
             </div>
           </div>
         </div>
