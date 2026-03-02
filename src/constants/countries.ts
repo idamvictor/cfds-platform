@@ -19,6 +19,7 @@ export const countries = countriesData
         value: toSlug(c.name),
         label: c.name,
         flag: getFlag(c.code),
+        code: c.code,
     }))
     .sort((a, b) => a.label.localeCompare(b.label));
 

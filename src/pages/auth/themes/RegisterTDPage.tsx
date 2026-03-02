@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Eye, EyeOff, ChevronDown } from "lucide-react";
+import ReactCountryFlag from "react-country-flag";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -30,29 +31,37 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const formSchema = z.object({
-  first_name: z
-    .string()
-    .min(2, { message: "First name must be at least 2 characters" }),
-  last_name: z
-    .string()
-    .min(2, { message: "Last name must be at least 2 characters" }),
-  username: z
-    .string()
-    .min(3, { message: "Username must be at least 3 characters" }),
-  country_code: z.string().min(1, { message: "Country code is required" }),
-  phone: z
-    .string()
-    .min(6, { message: "Phone number must be at least 6 digits" })
-    .max(15, { message: "Phone number must not exceed 15 digits" })
-    .regex(/^[0-9\s\-\\(\\)]+$/, {
-      message:
-        "Phone number can only contain digits, spaces, dashes, and parentheses",
-    }),
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters" }),
-});
+const formSchema = z
+  .object({
+    first_name: z
+      .string()
+      .min(2, { message: "First name must be at least 2 characters" }),
+    last_name: z
+      .string()
+      .min(2, { message: "Last name must be at least 2 characters" }),
+    username: z
+      .string()
+      .min(3, { message: "Username must be at least 3 characters" }),
+    country_code: z.string().min(1, { message: "Country code is required" }),
+    phone: z
+      .string()
+      .min(6, { message: "Phone number must be at least 6 digits" })
+      .max(15, { message: "Phone number must not exceed 15 digits" })
+      .regex(/^[0-9\s\-\\(\\)]+$/, {
+        message:
+          "Phone number can only contain digits, spaces, dashes, and parentheses",
+      }),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" }),
+    confirm_password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" }),
+  })
+  .refine((data) => data.password === data.confirm_password, {
+    message: "Passwords don't match",
+    path: ["confirm_password"],
+  });
 
 const inputClass =
   "!bg-white !text-gray-900 border-gray-200 placeholder:text-gray-400 rounded-lg py-6 px-4 focus-visible:ring-gray-300 focus-visible:border-gray-400";
@@ -96,6 +105,7 @@ export default function RegisterTDPage() {
       country_code: dialCode,
       phone: "",
       password: stored.password ?? "",
+      confirm_password: stored.password ?? "",
     },
   });
 
@@ -213,7 +223,7 @@ export default function RegisterTDPage() {
         {/* Form */}
         <div className="w-full max-w-xl p-8">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            Almost there!✅
+            Almost there!
           </h1>
           <p className="text-gray-600 mb-8">
             Complete your profile to finish creating your account.
@@ -221,51 +231,6 @@ export default function RegisterTDPage() {
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-              {/* Readonly: Email */}
-              <div>
-                <label className="text-gray-700 text-sm mb-2 block">
-                  Email
-                </label>
-                <Input
-                  value={stored.email ?? ""}
-                  readOnly
-                  tabIndex={-1}
-                  className={readonlyClass}
-                />
-              </div>
-
-              {/* Readonly: Country */}
-              {countryEntry && (
-                <div>
-                  <label className="text-gray-700 text-sm mb-2 block">
-                    Country of Residence
-                  </label>
-                  <Input
-                    value={`${countryEntry.flag}  ${countryEntry.label}`}
-                    readOnly
-                    tabIndex={-1}
-                    className={readonlyClass}
-                  />
-                </div>
-              )}
-
-              {/* Readonly: Nationality (only if different from country) */}
-              {showNationality && (
-                <div>
-                  <label className="text-gray-700 text-sm mb-2 block">
-                    Nationality
-                  </label>
-                  <Input
-                    value={`${nationalityEntry!.flag}  ${nationalityEntry!.label}`}
-                    readOnly
-                    tabIndex={-1}
-                    className={readonlyClass}
-                  />
-                </div>
-              )}
-
-              <hr className="border-gray-100 my-2" />
-
               {/* Editable fields */}
               <div className="grid grid-cols-2 gap-4">
                 <FormField
@@ -307,6 +272,55 @@ export default function RegisterTDPage() {
                   )}
                 />
               </div>
+
+              {/* Readonly: Email */}
+              <div>
+                <label className="text-gray-700 text-sm mb-2 block">
+                  Email
+                </label>
+                <Input
+                  value={stored.email ?? ""}
+                  readOnly
+                  tabIndex={-1}
+                  className={readonlyClass}
+                />
+              </div>
+
+              {/* Readonly: Country */}
+              {countryEntry && (
+                <div>
+                  <label className="text-gray-700 text-sm mb-2 block">
+                    Country of Residence
+                  </label>
+                  <div className="flex items-center gap-2 bg-gray-50 text-gray-500 border border-gray-200 rounded-lg py-6 px-4 cursor-default">
+                    <ReactCountryFlag
+                      countryCode={countryEntry.code}
+                      svg
+                      style={{ fontSize: "1.5em" }}
+                    />
+                    <span>{countryEntry.label}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Readonly: Nationality (only if different from country) */}
+              {showNationality && (
+                <div>
+                  <label className="text-gray-700 text-sm mb-2 block">
+                    Nationality
+                  </label>
+                  <div className="flex items-center gap-2 bg-gray-50 text-gray-500 border border-gray-200 rounded-lg py-6 px-4 cursor-default">
+                    <ReactCountryFlag
+                      countryCode={nationalityEntry!.code}
+                      svg
+                      style={{ fontSize: "1.5em" }}
+                    />
+                    <span>{nationalityEntry!.label}</span>
+                  </div>
+                </div>
+              )}
+
+              <hr className="border-gray-100 my-2" />
 
               <FormField
                 control={form.control}
@@ -350,9 +364,18 @@ export default function RegisterTDPage() {
                             <FormControl>
                               <SelectTrigger className="w-32 !bg-white !text-gray-900 border-gray-200 rounded-lg py-6 px-4 focus:ring-gray-300 focus:border-gray-400">
                                 <SelectValue>
-                                  {selectedCountry
-                                    ? `${selectedCountry.code} ${selectedCountry.dial_code}`
-                                    : "Select code"}
+                                  {selectedCountry ? (
+                                    <div className="flex items-center gap-1">
+                                      <ReactCountryFlag
+                                        countryCode={selectedCountry.code}
+                                        svg
+                                        style={{ fontSize: "1.5em" }}
+                                      />
+                                      <span>{selectedCountry.dial_code}</span>
+                                    </div>
+                                  ) : (
+                                    "Select code"
+                                  )}
                                 </SelectValue>
                               </SelectTrigger>
                             </FormControl>
@@ -362,7 +385,16 @@ export default function RegisterTDPage() {
                                   key={country.code}
                                   value={country.dial_code}
                                 >
-                                  {country.name} {country.dial_code}
+                                  <div className="flex items-center gap-2">
+                                    <ReactCountryFlag
+                                      countryCode={country.code}
+                                      svg
+                                      style={{ fontSize: "1.5em" }}
+                                    />
+                                    <span>
+                                      {country.name} {country.dial_code}
+                                    </span>
+                                  </div>
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -426,12 +458,39 @@ export default function RegisterTDPage() {
                 )}
               />
 
-              <div className="bg-[#00A98D]/90 text-white px-6 py-4 rounded-lg text-sm">
-                You will be onboarded with the Trade Nation LTD, registered in
-                England & Wales under company number 07073413, authorised and
-                regulated by the Financial Conduct Authority under firm
-                reference number 525164.
-              </div>
+              <FormField
+                control={form.control}
+                name="confirm_password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-700 text-sm">
+                      Confirm Password
+                    </FormLabel>
+                    <div className="relative">
+                      <FormControl>
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Confirm Password"
+                          {...field}
+                          className={`${inputClass} pr-10`}
+                        />
+                      </FormControl>
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-5 w-5" />
+                        ) : (
+                          <Eye className="h-5 w-5" />
+                        )}
+                      </button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <Button
                 type="submit"
@@ -444,7 +503,7 @@ export default function RegisterTDPage() {
                     Creating account...
                   </div>
                 ) : (
-                  "Create Account"
+                  "Complete Registration"
                 )}
               </Button>
             </form>
