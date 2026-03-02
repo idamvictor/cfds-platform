@@ -1,19 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import Logo from "./Logo";
 import { Button } from "./ui/button";
-import {useNavigate} from "react-router-dom";
-import {BarChart, Menu} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { BarChart, Menu } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import DepositFunds from "./deposit-funds/DepositFunds";
 
 interface HeaderProps {
   toggleSidebar: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
-    const navigate = useNavigate();
-
+  const navigate = useNavigate();
+  const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
 
   return (
-      <header className="fixed top-0 left-0 right-0 h-16 bg-card border-b border-border flex items-center justify-between px-6 z-50">
+    <header className="fixed top-0 left-0 right-0 h-16 bg-card border-b border-border flex items-center justify-between px-6 z-50">
       <div className="flex items-center gap-4">
         <Button
           className="md:hidden p-2 rounded bg-primary text-white"
@@ -23,33 +25,49 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
         </Button>
         <Logo />
       </div>
-          <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3">
+        <Button
+          className="hidden sm:block header-action-button withdraw-button"
+          onClick={() => navigate("/main/withdrawal")}
+        >
+          Withdraw
+        </Button>
 
-              <Button
-                  className="hidden sm:block header-action-button withdraw-button"
-                  onClick={() => navigate("/main/withdrawal")}
-              >
-                  Withdraw
-              </Button>
+        <Button
+          className="header-action-button deposit-button"
+          onClick={() => navigate("/main/deposit")}
+        >
+          Deposit
+        </Button>
 
-              <Button
-                  className="header-action-button deposit-button"
-                  onClick={() => navigate("/main/deposit")}
-              >
-                  Deposit
-              </Button>
+        <Button onClick={() => setIsDepositModalOpen(true)}>
+          Deposit Funds
+        </Button>
 
-              <Button
-                  className="header-action-button trade-button flex items-center gap-2"
-                  onClick={() => navigate("/trading")}
-              >
-                  <BarChart className="h-4 w-4" />
-                  <span>Trade Room</span>
-              </Button>
+        <Button
+          className="header-action-button trade-button flex items-center gap-2"
+          onClick={() => navigate("/trading")}
+        >
+          <BarChart className="h-4 w-4" />
+          <span>Trade Room</span>
+        </Button>
+      </div>
 
-          </div>
-
-      </header>
+      {/* Deposit Funds Dialog */}
+      <Dialog open={isDepositModalOpen} onOpenChange={setIsDepositModalOpen}>
+        <DialogContent className="!max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {" "}
+              <h1 className="text-2xl font-bold text-foreground">
+                DEPOSIT FUNDS
+              </h1>
+            </DialogTitle>
+          </DialogHeader>
+          <DepositFunds />
+        </DialogContent>
+      </Dialog>
+    </header>
   );
 };
 
