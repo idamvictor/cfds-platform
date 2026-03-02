@@ -49,6 +49,20 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
           Deposit Funds
         </Button>
 
+        {/* Balance Display */}
+        <div
+          className="hidden lg:flex items-center gap-2 px-4 py-2.5 rounded-lg border border-border transition-all hover:border-primary/50"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(16, 185, 129, 0.1))",
+          }}
+        >
+          <Wallet className="h-5 w-5 text-primary" />
+          <span className="text-sm font-semibold text-foreground">
+            {formatCurrency(balance)}
+          </span>
+        </div>
+
         <Button
           className="header-action-button trade-button flex items-center gap-2"
           onClick={() => window.open("/trading", "_blank")}
@@ -56,23 +70,6 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
           <BarChart className="h-4 w-4" />
           <span>Trade Room</span>
         </Button>
-
-        {/* Balance Display */}
-        <div
-          className="hidden lg:flex items-center gap-2 px-4 py-2 rounded-lg border border-border transition-all hover:border-primary/50"
-          style={{
-            background:
-              "linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(16, 185, 129, 0.1))",
-          }}
-        >
-          <Wallet className="h-5 w-5 text-primary" />
-          <div className="flex flex-col">
-            <span className="text-xs text-muted-foreground">Balance</span>
-            <span className="text-sm font-semibold text-foreground">
-              {formatCurrency(balance)}
-            </span>
-          </div>
-        </div>
       </div>
 
       {/* Deposit Funds Dialog */}
