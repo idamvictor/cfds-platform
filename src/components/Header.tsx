@@ -74,7 +74,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
 
       {/* Deposit Funds Dialog */}
       <Dialog open={isDepositModalOpen} onOpenChange={setIsDepositModalOpen}>
-        <DialogContent className="!max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+        <DialogContent className="!max-w-6xl w-full max-h-[90vh] overflow-y-auto mx-4 md:mx-0">
           <DialogHeader>
             <DialogTitle>
               {" "}

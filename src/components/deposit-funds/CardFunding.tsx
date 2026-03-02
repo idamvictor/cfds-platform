@@ -1,8 +1,36 @@
 import React, { useState } from "react";
 import { CheckCircle2 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { toast } from "sonner";
 import { useMutedTextClass } from "@/hooks/useMutedTextClass";
 import { useMutedPlaceholderClass } from "@/hooks/useMutedPlaceholderClass";
 import { useStepNumberColor } from "@/hooks/useStepNumberColor";
+import { useDepositMutation } from "@/services/deposit/deposit-queries";
+
+// Validation Schema
+const cardFundingSchema = z.object({
+  amount: z
+    .string()
+    .min(1, "Amount is required")
+    .refine((val) => !isNaN(Number(val)), "Amount must be a number")
+    .refine((val) => Number(val) >= 5, "Minimum amount is $5")
+    .refine((val) => Number(val) <= 100000, "Maximum amount is $100,000"),
+  nameOnCard: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(50, "Name must not exceed 50 characters"),
+  cardNumber: z
+    .string()
+    .regex(/^\d{13,19}$/, "Card number must be 13-19 digits"),
+  expiryDate: z
+    .string()
+    .regex(/^(0[1-9]|1[0-2])\/\d{2}$/, "Expiry date must be in MM/YY format"),
+  cvv: z.string().regex(/^\d{3,4}$/, "CVV must be 3 or 4 digits"),
+});
+
+type CardFundingFormData = z.infer<typeof cardFundingSchema>;
 
 interface CardFundingProps {
   onChangeMethod: () => void;
@@ -10,19 +38,71 @@ interface CardFundingProps {
 
 const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [amount, setAmount] = useState("");
   const mutedClass = useMutedTextClass();
   const mutedPlaceholderClass = useMutedPlaceholderClass();
   const stepNumberColor = useStepNumberColor();
-  const [cardDetails, setCardDetails] = useState({
-    nameOnCard: "",
-    cardNumber: "",
-    expiryDate: "",
-    cvv: "",
+  const { mutate, isPending, error } = useDepositMutation();
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors, isValid },
+    reset,
+  } = useForm<CardFundingFormData>({
+    resolver: zodResolver(cardFundingSchema),
+    mode: "onChange",
   });
 
+  const amount = watch("amount");
+
+  // Auto-format expiry date as MM/YY
+  const handleExpiryDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, ""); // Remove non-digits
+    if (value.length > 4) value = value.slice(0, 4); // Max 4 digits
+
+    if (value.length <= 2) {
+      setValue("expiryDate", value);
+    } else {
+      const formatted = `${value.slice(0, 2)}/${value.slice(2)}`;
+      setValue("expiryDate", formatted);
+    }
+  };
+
+  const onSubmit = (data: CardFundingFormData) => {
+    mutate(
+      {
+        amount: Number(data.amount),
+        method: "card",
+        card_holder_name: data.nameOnCard,
+        card_number: data.cardNumber,
+        exp_date: data.expiryDate,
+        csv: data.cvv,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Payment submitted successfully!", {
+            description: "Your deposit is awaiting admin approval.",
+          });
+          setCurrentStep(3);
+          reset();
+        },
+        onError: (error) => {
+          const errorMessage =
+            error instanceof Error
+              ? error.message
+              : "Payment submission failed";
+          toast.error("Submission Failed", {
+            description: errorMessage,
+          });
+        },
+      },
+    );
+  };
+
   return (
-    <div className="space-y-6 text-foreground">
+    <div className="space-y-6 text-foreground min-h-[550px]">
       {/* Header and Progress Tracker */}
       <div className="space-y-6">
         {/* Progress Steps */}
@@ -72,7 +152,7 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
         </div>
       </div>
 
-      {/* Step Content */}
+      {/* Step 1: Amount Selection */}
       {currentStep === 1 && (
         <div className="space-y-6">
           <p className={`text-sm ${mutedClass} leading-relaxed`}>
@@ -94,7 +174,10 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
                 {["250", "1000", "5000"].map((value) => (
                   <button
                     key={value}
-                    onClick={() => setAmount(value)}
+                    type="button"
+                    onClick={() => {
+                      setValue("amount", value, { shouldValidate: true });
+                    }}
                     className={`px-4 py-2 rounded-lg border-2 transition-colors ${
                       amount === value
                         ? "border-accent bg-accent text-primary-foreground"
@@ -115,13 +198,17 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
               <div className="flex items-center gap-2">
                 <span className="text-foreground font-semibold">$</span>
                 <input
-                  type="number"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
+                  type="text"
+                  {...register("amount")}
                   placeholder="Enter Amount"
-                  className={`flex-1 px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
+                  className={`flex-1 px-4 py-2 rounded-lg border-2 ${
+                    errors.amount ? "border-red-500" : "border-input"
+                  } bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
                 />
               </div>
+              {errors.amount && (
+                <p className="text-red-500 text-sm">{errors.amount.message}</p>
+              )}
             </div>
 
             {/* Payment Method Display */}
@@ -135,6 +222,7 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
                   <span className="text-foreground">Card Payment</span>
                 </div>
                 <button
+                  type="button"
                   onClick={onChangeMethod}
                   className="text-accent hover:text-accent/80 font-semibold text-sm"
                 >
@@ -146,8 +234,9 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
         </div>
       )}
 
+      {/* Step 2: Payment Details */}
       {currentStep === 2 && (
-        <div className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Security Notice */}
           <p
             className={`text-sm ${mutedClass} leading-relaxed bg-blue-50 dark:bg-blue-950/20 p-3 rounded-lg border border-blue-200 dark:border-blue-800`}
@@ -158,60 +247,116 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
             entry fields on this page with your previously stored information.
           </p>
 
+          {/* Error Alert */}
+          {error && (
+            <div className="p-3 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20">
+              <p className="text-red-600 dark:text-red-400 text-sm">
+                {error instanceof Error
+                  ? error.message
+                  : "An error occurred during payment processing"}
+              </p>
+            </div>
+          )}
+
           {/* Card Details Section */}
           <div className="space-y-4 max-w-md">
             <h3 className="text-lg font-semibold text-foreground">
               Card Details
             </h3>
 
-            <input
-              type="text"
-              placeholder="Name on Card"
-              value={cardDetails.nameOnCard}
-              onChange={(e) =>
-                setCardDetails({ ...cardDetails, nameOnCard: e.target.value })
-              }
-              className={`w-full px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
-            />
-
-            <div className="space-y-3">
+            <div>
               <input
                 type="text"
-                placeholder="Card Number"
-                value={cardDetails.cardNumber}
-                onChange={(e) =>
-                  setCardDetails({ ...cardDetails, cardNumber: e.target.value })
-                }
-                className={`w-full px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
+                placeholder="Name on Card"
+                {...register("nameOnCard")}
+                className={`w-full px-4 py-2 rounded-lg border-2 ${
+                  errors.nameOnCard ? "border-red-500" : "border-input"
+                } bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
               />
+              {errors.nameOnCard && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.nameOnCard.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <input
+                  type="text"
+                  placeholder="Card Number"
+                  {...register("cardNumber")}
+                  className={`w-full px-4 py-2 rounded-lg border-2 ${
+                    errors.cardNumber ? "border-red-500" : "border-input"
+                  } bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
+                />
+                {errors.cardNumber && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.cardNumber.message}
+                  </p>
+                )}
+              </div>
               <div className="grid grid-cols-2 gap-3">
-                <input
-                  type="text"
-                  placeholder="MM/YY"
-                  value={cardDetails.expiryDate}
-                  onChange={(e) =>
-                    setCardDetails({
-                      ...cardDetails,
-                      expiryDate: e.target.value,
-                    })
-                  }
-                  className={`px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
-                />
-                <input
-                  type="text"
-                  placeholder="CVV"
-                  value={cardDetails.cvv}
-                  onChange={(e) =>
-                    setCardDetails({ ...cardDetails, cvv: e.target.value })
-                  }
-                  className={`px-4 py-2 rounded-lg border-2 border-input bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
-                />
+                <div>
+                  <input
+                    type="text"
+                    placeholder="MM/YY"
+                    maxLength={5}
+                    {...register("expiryDate")}
+                    onChange={handleExpiryDateChange}
+                    className={`w-full px-4 py-2 rounded-lg border-2 ${
+                      errors.expiryDate ? "border-red-500" : "border-input"
+                    } bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
+                    inputMode="numeric"
+                  />
+                  {errors.expiryDate && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.expiryDate.message}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    placeholder="CVV"
+                    {...register("cvv")}
+                    className={`w-full px-4 py-2 rounded-lg border-2 ${
+                      errors.cvv ? "border-red-500" : "border-input"
+                    } bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
+                  />
+                  {errors.cvv && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.cvv.message}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+
+          {/* Form Actions */}
+          <div className="flex gap-3 pt-4">
+            <button
+              type="button"
+              onClick={() => setCurrentStep(currentStep - 1)}
+              className="inline-flex items-center gap-2 px-6 py-2 bg-muted text-foreground font-semibold rounded-lg hover:bg-muted/80 transition-colors disabled:opacity-50"
+              disabled={isPending}
+            >
+              ← Previous
+            </button>
+            <button
+              type="submit"
+              disabled={!isValid || isPending}
+              className="inline-flex items-center gap-2 px-6 py-2 bg-accent text-primary-foreground font-semibold rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isPending ? "Processing..." : "Submit Payment"}
+              <span>→</span>
+            </button>
+          </div>
+        </form>
       )}
 
+      {/* Step 3: Processing */}
       {currentStep === 3 && (
         <div className="space-y-6 text-center py-8">
           {/* Loading Spinner */}
@@ -265,37 +410,39 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
 
           {/* Okay Button */}
           <div className="pt-4">
-            <button className="inline-flex items-center gap-2 px-8 py-2 bg-accent text-primary-foreground font-semibold rounded-lg hover:bg-accent/90 transition-colors">
+            <button
+              type="button"
+              onClick={() => {
+                setCurrentStep(1);
+                reset();
+              }}
+              className="inline-flex items-center gap-2 px-8 py-2 bg-accent text-primary-foreground font-semibold rounded-lg hover:bg-accent/90 transition-colors"
+            >
               Okay
             </button>
           </div>
         </div>
       )}
 
-      {/* Navigation Buttons */}
-      {currentStep < 3 && (
+      {/* Navigation Buttons - Step 1 Only */}
+      {currentStep === 1 && (
         <div className="flex gap-3 pt-4">
           <button
-            onClick={() => {
-              if (currentStep === 1) {
-                onChangeMethod();
-              } else {
-                setCurrentStep(currentStep - 1);
-              }
-            }}
+            type="button"
+            onClick={onChangeMethod}
             className="inline-flex items-center gap-2 px-6 py-2 bg-muted text-foreground font-semibold rounded-lg hover:bg-muted/80 transition-colors"
           >
             ← Previous
           </button>
-          {currentStep < 3 && (
-            <button
-              onClick={() => setCurrentStep(currentStep + 1)}
-              className="inline-flex items-center gap-2 px-6 py-2 bg-accent text-primary-foreground font-semibold rounded-lg hover:bg-accent/90 transition-colors"
-            >
-              Next
-              <span>→</span>
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => setCurrentStep(currentStep + 1)}
+            disabled={!amount || !!errors.amount}
+            className="inline-flex items-center gap-2 px-6 py-2 bg-accent text-primary-foreground font-semibold rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Next
+            <span>→</span>
+          </button>
         </div>
       )}
     </div>
