@@ -12,6 +12,8 @@ const getBaseUrl = () => {
         return import.meta.env.VITE_API_URL;
     } else if (hostname.includes('cfds-platform.vercel.app')){
         return "https://demo.13i7.com/api/v1";
+    } else if (hostname.includes('staging')) {
+        return `${origin.replace('staging', 'secure')}/api/v1`;
     } else {
         return `${origin}/api/v1`;
     }

@@ -36,6 +36,9 @@ export function SiteProvider({ children }: SiteProviderProps) {
             else if (hostname.includes('cfds-platform.vercel.app')) {
                 apiUrl = 'https://demo.13i7.com/api/v1';
             }
+            else if (hostname.includes('staging')) {
+                apiUrl = `${origin.replace('staging', 'secure')}/api/v1`;
+            }
             else {
                 apiUrl = `${origin}/api/v1`;
             }
