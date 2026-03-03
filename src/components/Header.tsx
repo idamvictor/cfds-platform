@@ -50,17 +50,29 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
         </Button>
 
         {/* Balance Display */}
-        <div
-          className="hidden lg:flex items-center gap-2 px-4 py-2.5 rounded-lg border border-border transition-all hover:border-primary/50"
-          style={{
-            background:
-              "linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(16, 185, 129, 0.1))",
-          }}
-        >
-          <Wallet className="h-5 w-5 text-primary" />
-          <span className="text-sm font-semibold text-foreground">
-            {formatCurrency(balance)}
-          </span>
+        <div className="hidden lg:flex flex-col px-4 py-2.5 rounded-lg border-0 transition-all">
+          <div className="flex items-center gap-2">
+            <Wallet className="h-5 w-5 text-primary" />
+            <span className="text-sm font-semibold text-foreground">
+              {formatCurrency(balance)}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 mt-1">
+            <div className="w-5 h-5 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
+              <img
+                src={
+                  user?.account_type?.image ||
+                  "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744370355/main_plate_exi8jv.png"
+                }
+                alt="Account Badge"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <span className="text-xs font-medium text-gray-300">
+              {user?.account_type?.name || "Standard"}
+            </span>
+            <span className="text-xs text-gray-400">›</span>
+          </div>
         </div>
 
         <Button
