@@ -71,7 +71,13 @@ axiosInstance.interceptors.response.use(
             const isAuthRoute = authRoutes.some((route) => currentPath === route);
 
             if (!isAuthRoute) {
-                useUserStore.getState().clearUser();
+                try {
+                    const { clearAuthenticatedSession } = await import("@/lib/session");
+                    clearAuthenticatedSession();
+                } catch (sessionError) {
+                    console.error("Failed to run full session cleanup:", sessionError);
+                    useUserStore.getState().clearUser();
+                }
                 window.history.pushState({}, "", "/");
                 window.dispatchEvent(new Event("popstate"));
             }

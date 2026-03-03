@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "@/lib/axios";
-import useUserStore from "@/store/userStore";
+import { replaceAuthenticatedUser } from "@/lib/session";
 import { toast } from "@/components/ui/sonner";
 import { AxiosError } from "axios";
 import Logo from "@/components/Logo";
@@ -72,7 +72,6 @@ export default function RegisterTDPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const setUser = useUserStore((state) => state.setUser);
 
   useEffect(() => {
     const data = localStorage.getItem("registration_data");
@@ -143,7 +142,7 @@ export default function RegisterTDPage() {
       localStorage.removeItem("registration_data");
 
       const { user: newUser, token: newToken } = response.data.data;
-      setUser(newUser, newToken);
+      replaceAuthenticatedUser(newUser, newToken);
       toast.success("Account created successfully! Welcome aboard.");
       navigate("/main");
     } catch (error) {

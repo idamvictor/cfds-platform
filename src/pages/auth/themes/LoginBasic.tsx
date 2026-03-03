@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "@/lib/axios";
-import useUserStore from "@/store/userStore";
+import { replaceAuthenticatedUser } from "@/lib/session";
 import { AxiosError } from "axios";
 import { toast } from "@/components/ui/sonner";
 import { OTPVerification } from "@/components/auth/OTPVerification";
@@ -45,7 +45,6 @@ export default function LoginBasic() {
     } | null>(null);
 
     const navigate = useNavigate();
-    const setUser = useUserStore((state) => state.setUser);
 
     // Initialize form
     const form = useForm<z.infer<typeof formSchema>>({
@@ -82,7 +81,7 @@ export default function LoginBasic() {
                 });
             }
 
-            setUser(user, token);
+            replaceAuthenticatedUser(user, token);
 
             setTimeout(() => {
                 navigate("/main");
@@ -116,7 +115,7 @@ export default function LoginBasic() {
 
             // Store the user object and token in Zustand store
             const { user, token } = response.data.data;
-            setUser(user, token);
+            replaceAuthenticatedUser(user, token);
 
             // Short delay before redirect to show the success message
             setTimeout(() => {

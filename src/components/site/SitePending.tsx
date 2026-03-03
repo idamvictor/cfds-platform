@@ -1,12 +1,10 @@
 import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 // import useSiteSettingsStore from "@/store/siteSettingStore";
-import useUserStore from "@/store/userStore.ts";
+import { clearAuthenticatedSession } from "@/lib/session";
 
 export function SitePending() {
     // const { settings } = useSiteSettingsStore();
-
-    const { clearUser } = useUserStore();
 
     return (
         <div className="h-screen w-screen flex flex-col items-center justify-center bg-background">
@@ -26,7 +24,7 @@ export function SitePending() {
                 {/*    </p>*/}
                 {/*)}*/}
 
-                <Button variant="outline" onClick={() => clearUser()}>
+                <Button variant="outline" onClick={clearAuthenticatedSession}>
                     Logout
                 </Button>
             </div>

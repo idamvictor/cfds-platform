@@ -21,7 +21,7 @@ import { Link } from "react-router-dom";
 import {countries, countryCodeMap} from "@/constants/countries.ts";
 import {AxiosError} from "axios";
 import {OTPVerification} from "@/components/auth/OTPVerification.tsx";
-import useUserStore from "@/store/userStore.ts";
+import { replaceAuthenticatedUser } from "@/lib/session";
 
 const formSchema = z.object({
     email: z.string().email({ message: "Please enter a valid email address" }),
@@ -45,8 +45,6 @@ export default function LoginRegisterTradeNation() {
     const [showWarning, setShowWarning] = useState(true);
     const [requireOTP, setRequireOTP] = useState(false);
     const navigate = useNavigate();
-
-    const setUser = useUserStore((state) => state.setUser);
 
     const [loginCredentials, setLoginCredentials] = useState<{
         email: string;
@@ -157,7 +155,7 @@ export default function LoginRegisterTradeNation() {
                 });
             }
 
-            setUser(user, token);
+            replaceAuthenticatedUser(user, token);
 
             setTimeout(() => {
                 navigate("/main");
@@ -190,7 +188,7 @@ export default function LoginRegisterTradeNation() {
             toast.success("Login successful! Redirecting...");
 
             const { user, token } = response.data.data;
-            setUser(user, token);
+            replaceAuthenticatedUser(user, token);
 
             setTimeout(() => {
                 navigate("/main");

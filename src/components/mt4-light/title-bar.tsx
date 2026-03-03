@@ -13,18 +13,18 @@ import useSiteSettingsStore from "@/store/siteSettingStore";
 import { useNavigate } from "react-router-dom";
 import useDarkModeStore from "@/store/darkModeStore";
 import useUserStore from "@/store/userStore";
+import { clearAuthenticatedSession } from "@/lib/session";
 
 export function TitleBar() {
   const settings = useSiteSettingsStore((state) => state.settings);
   const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
   const user = useUserStore((state) => state.user);
-  const clearUser = useUserStore((state) => state.clearUser);
   const unreadNotifications =
     user?.notifications.filter((n) => !n.read_at).length || 0;
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    clearUser();
+    clearAuthenticatedSession();
     navigate("/");
   };
 

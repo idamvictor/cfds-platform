@@ -17,6 +17,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import AutoTraderModal from "./trading/trading-interface-components/auto-trader-modal";
+import { clearAuthenticatedSession } from "@/lib/session";
 
 interface SidebarProps {
   onLinkClick: () => void;
@@ -25,11 +26,10 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const clearUser = useUserStore((state) => state.clearUser);
   const user = useUserStore((state) => state.user);
 
   const handleLogout = () => {
-    clearUser();
+    clearAuthenticatedSession();
     navigate("/main/deposit");
   };
 

@@ -96,6 +96,17 @@ interface TradeStore {
 // Global socket instance to prevent multiple connections
 let socket: Socket | null = null;
 
+const defaultAccountSummary: AccountSummary = {
+  balance: 0,
+  credit: 0.0,
+  equity: 0,
+  margin: 0.0,
+  marginLevel: "∞",
+  freeMargin: 0,
+  pnl: 0,
+  lifetimePnl: 0,
+};
+
 // Helper function to calculate PnL
 const calculatePnL = (trade: Trade, currentPrice: number): number => {
   // const contractSize = 100000;
@@ -131,16 +142,7 @@ function isAssetUpdate(data: unknown): data is AssetUpdate {
 const useTradeStore = create<TradeStore>((set, get) => ({
   openTrades: [],
   closedTrades: [],
-  accountSummary: {
-    balance: 0,
-    credit: 0.0,
-    equity: 0,
-    margin: 0.0,
-    marginLevel: "∞",
-    freeMargin: 0,
-    pnl: 0,
-    lifetimePnl: 0,
-  },
+  accountSummary: { ...defaultAccountSummary },
   isLoadingOpen: false,
   isLoadingClosed: false,
   errorOpen: null,
@@ -152,7 +154,18 @@ const useTradeStore = create<TradeStore>((set, get) => ({
   wsConnected: false,
 
   fetchOpenTrades: async (page = 1) => {
-    set({ isLoadingOpen: true, errorOpen: null });
+    if (page === 1) {
+      set({
+        isLoadingOpen: true,
+        errorOpen: null,
+        openTrades: [],
+        openTradesMeta: null,
+        openTradesLinks: null,
+      });
+    } else {
+      set({ isLoadingOpen: true, errorOpen: null });
+    }
+
     try {
       const response = await axiosInstance.get(`/open/trades?page=${page}`);
 
@@ -181,14 +194,35 @@ const useTradeStore = create<TradeStore>((set, get) => ({
       get().calculateAccountSummary();
     } catch (error) {
       console.error("Failed to fetch open trades:", error);
-      set({ errorOpen: "Failed to fetch open trades. Please try again." });
+      if (page === 1) {
+        set({
+          openTrades: [],
+          openTradesMeta: null,
+          openTradesLinks: null,
+          errorOpen: "Failed to fetch open trades. Please try again.",
+        });
+        get().calculateAccountSummary();
+      } else {
+        set({ errorOpen: "Failed to fetch open trades. Please try again." });
+      }
     } finally {
       set({ isLoadingOpen: false });
     }
   },
 
   fetchClosedTrades: async (page = 1) => {
-    set({ isLoadingClosed: true, errorClosed: null });
+    if (page === 1) {
+      set({
+        isLoadingClosed: true,
+        errorClosed: null,
+        closedTrades: [],
+        closedTradesMeta: null,
+        closedTradesLinks: null,
+      });
+    } else {
+      set({ isLoadingClosed: true, errorClosed: null });
+    }
+
     try {
       const response = await axiosInstance.get(`/closed/trades?page=${page}`);
 
@@ -207,7 +241,16 @@ const useTradeStore = create<TradeStore>((set, get) => ({
       }
     } catch (error) {
       console.error("Failed to fetch closed trades:", error);
-      set({ errorClosed: "Failed to fetch closed trades. Please try again." });
+      if (page === 1) {
+        set({
+          closedTrades: [],
+          closedTradesMeta: null,
+          closedTradesLinks: null,
+          errorClosed: "Failed to fetch closed trades. Please try again.",
+        });
+      } else {
+        set({ errorClosed: "Failed to fetch closed trades. Please try again." });
+      }
     } finally {
       set({ isLoadingClosed: false });
     }
@@ -256,6 +299,11 @@ const useTradeStore = create<TradeStore>((set, get) => ({
       closedTradesMeta: null,
       openTradesLinks: null,
       closedTradesLinks: null,
+      accountSummary: { ...defaultAccountSummary },
+      errorOpen: null,
+      errorClosed: null,
+      isLoadingOpen: false,
+      isLoadingClosed: false,
     });
   },
 

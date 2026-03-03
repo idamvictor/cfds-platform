@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import useUserStore, { User } from "@/store/userStore";
+import { replaceAuthenticatedUser } from "@/lib/session";
 import LoadingScreen from "@/components/loading-screen";
 import { toast } from "@/components/ui/sonner";
 
 export default function AutoLoginPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const setUser = useUserStore((state) => state.setUser);
   const getCurrentUser = useUserStore((state) => state.getCurrentUser);
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export default function AutoLoginPage() {
           notifications: [],
         };
 
-        setUser(dummyUser, token);
+        replaceAuthenticatedUser(dummyUser, token);
 
         console.log("token", token);
 
@@ -81,7 +81,7 @@ export default function AutoLoginPage() {
     };
 
     handleAutoLogin();
-  }, [searchParams, navigate, setUser, getCurrentUser]);
+  }, [searchParams, navigate, getCurrentUser]);
 
   return <LoadingScreen />;
 }

@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "@/lib/axios";
-import useUserStore from "@/store/userStore";
+import { replaceAuthenticatedUser } from "@/lib/session";
 import { AxiosError } from "axios";
 import { toast } from "@/components/ui/sonner";
 import { OTPVerification } from "@/components/auth/OTPVerification";
@@ -29,7 +29,6 @@ export default function ICMarketLogin() {
     } | null>(null);
 
     const navigate = useNavigate();
-    const setUser = useUserStore((state) => state.setUser);
 
     const settings = useSiteSettingsStore((state) => state.settings);
 
@@ -69,7 +68,7 @@ export default function ICMarketLogin() {
                 });
             }
 
-            setUser(user, token);
+            replaceAuthenticatedUser(user, token);
 
             setTimeout(() => {
                 navigate("/main");
@@ -103,7 +102,7 @@ export default function ICMarketLogin() {
 
             // Store the user object and token in Zustand store
             const { user, token } = response.data.data;
-            setUser(user, token);
+            replaceAuthenticatedUser(user, token);
 
             // Short delay before redirect to show the success message
             setTimeout(() => {

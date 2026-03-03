@@ -3,9 +3,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LogOut, LayoutDashboard, User, ArrowUpDown, FileCheck, Folders, MessageSquare, PiggyBank, Settings, Store,
 } from "lucide-react";
-import useUserStore from "@/store/userStore";
 import AutoTraderModal from "@/components/trading/trading-interface-components/auto-trader-modal.tsx";
 import useSiteSettingsStore from "@/store/siteSettingStore.ts";
+import { clearAuthenticatedSession } from "@/lib/session";
 
 interface SidebarProps {
   onLinkClick?: () => void;
@@ -14,7 +14,6 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const clearUser = useUserStore((state) => state.clearUser);
 
   const settings = useSiteSettingsStore((state) => state.settings);
 
@@ -25,7 +24,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   };
 
   const handleLogout = () => {
-    clearUser();
+    clearAuthenticatedSession();
     if (onLinkClick) onLinkClick();
     navigate("/");
   };

@@ -34,6 +34,7 @@ import { useCurrency } from "@/hooks/useCurrency";
 import AccountPlansModal from "@/components/AccountPlanModal";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import MarketWatchPanel from "./panels/market-watch-panel";
+import { clearAuthenticatedSession } from "@/lib/session";
 
 // Define the ActiveView type
 type ActiveView =
@@ -487,7 +488,7 @@ export default function Header({
                         variant="ghost"
                         className="w-full justify-start text-red-500"
                         onClick={() => {
-                          useUserStore.getState().clearUser();
+                          clearAuthenticatedSession();
                           window.location.href = "/";
                         }}
                       >
@@ -758,7 +759,7 @@ export default function Header({
                 <DropdownMenuItem
                   className="text-red-500"
                   onClick={() => {
-                    useUserStore.getState().clearUser();
+                    clearAuthenticatedSession();
                     window.location.href = "/";
                   }}
                 >
