@@ -75,38 +75,6 @@ const DepositFunds = () => {
                 </p>
               </div>
             </div>
-
-            {/* Crypto Option - Disabled */}
-            <div className="flex items-start space-x-4 rounded-lg border p-4 cursor-not-allowed opacity-50 transition-colors border-border">
-              <RadioGroupItem
-                value="crypto"
-                id="crypto"
-                className="mt-1"
-                disabled
-              />
-              <div className="flex-1">
-                <label htmlFor="crypto" className="cursor-not-allowed">
-                  <span className={`font-semibold ${mutedClass}`}>
-                    Crypto (Coming Soon)
-                  </span>
-                </label>
-                <div className="flex items-center gap-6 mt-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg">₿</span>
-                    <span className={`text-sm ${mutedClass}`}>Bitcoin</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg">Ξ</span>
-                    <span className={`text-sm ${mutedClass}`}>
-                      Ethereum, and more
-                    </span>
-                  </div>
-                </div>
-                <p className={`text-sm ${mutedClass} mt-2`}>
-                  Cryptocurrency payments are coming soon.
-                </p>
-              </div>
-            </div>
           </div>
         </RadioGroup>
       </div>
