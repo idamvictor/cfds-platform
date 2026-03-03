@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Logo from "./Logo";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
-import { BarChart, Menu, Wallet } from "lucide-react";
+import { Menu, Wallet } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import DepositFunds from "./deposit-funds/DepositFunds";
 import useUserStore from "@/store/userStore";
@@ -31,13 +31,6 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
         <Logo />
       </div>
       <div className="flex items-center gap-3">
-        <Button
-          className="hidden sm:block header-action-button withdraw-button"
-          onClick={() => navigate("/main/withdrawal")}
-        >
-          Withdraw
-        </Button>
-
         <Button
           className="header-action-button deposit-button"
           onClick={() => navigate("/main/deposit")}
@@ -69,19 +62,11 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
               />
             </div>
             <span className="text-xs font-medium text-gray-300">
-              {user?.account_type?.name || "Standard"}
+              {"Standard"}
             </span>
             <span className="text-xs text-gray-400">›</span>
           </div>
         </div>
-
-        <Button
-          className="header-action-button trade-button flex items-center gap-2"
-          onClick={() => window.open("/trading", "_blank")}
-        >
-          <BarChart className="h-4 w-4" />
-          <span>Trade Room</span>
-        </Button>
       </div>
 
       {/* Deposit Funds Dialog */}
