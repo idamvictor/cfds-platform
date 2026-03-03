@@ -63,12 +63,20 @@ export function TitleBar() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <div className="relative cursor-pointer">
-              <Avatar className="h-8 w-8">
+              <Avatar
+                className={`h-8 w-8 border-2 ${isDarkMode ? "border-slate-600" : "border-slate-300"}`}
+              >
                 <AvatarImage
                   src={user?.avatar}
                   alt={`${user?.first_name} ${user?.last_name}`}
                 />
-                <AvatarFallback>
+                <AvatarFallback
+                  className={
+                    isDarkMode
+                      ? "bg-slate-700 text-slate-200"
+                      : "bg-slate-200 text-slate-800"
+                  }
+                >
                   {user ? `${user.first_name[0]}${user.last_name[0]}` : "U"}
                 </AvatarFallback>
               </Avatar>

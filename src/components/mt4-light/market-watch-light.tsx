@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { BadgeCheck, Search } from "lucide-react";
+import { BadgeCheck, Search, Plus } from "lucide-react";
 import useAssetStore, { type Asset } from "@/store/assetStore";
 import useWatchlistStore from "@/store/watchlistStore";
 import useDarkModeStore from "@/store/darkModeStore";
@@ -47,10 +47,12 @@ export default function MarketWatchLight() {
       watchlist.filter(
         (asset) =>
           !searchQuery ||
-          asset.symbol_display.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          asset.name.toLowerCase().includes(searchQuery.toLowerCase())
+          asset.symbol_display
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          asset.name.toLowerCase().includes(searchQuery.toLowerCase()),
       ),
-    [searchQuery, watchlist]
+    [searchQuery, watchlist],
   );
 
   const filteredMarketAssets = useMemo(
@@ -63,15 +65,15 @@ export default function MarketWatchLight() {
               asset.symbol_display
                 .toLowerCase()
                 .includes(searchQuery.toLowerCase()) ||
-              asset.name.toLowerCase().includes(searchQuery.toLowerCase()))
-        )
+              asset.name.toLowerCase().includes(searchQuery.toLowerCase())),
+        ),
       ),
-    [groupedAssets, searchQuery, watchlist]
+    [groupedAssets, searchQuery, watchlist],
   );
 
   const visibleAssets = useMemo<Asset[]>(
     () => [...filteredWatchlist, ...filteredMarketAssets],
-    [filteredMarketAssets, filteredWatchlist]
+    [filteredMarketAssets, filteredWatchlist],
   );
   const { getDisplayQuote } = useMarketWatchSyntheticTicker(visibleAssets);
 
@@ -117,13 +119,15 @@ export default function MarketWatchLight() {
               </span>
             </div>
             <div
-              className={`relative  border border-[#70707080] ${
-                isDarkMode ? "bg-slate-800" : "bg-white"
+              className={`relative border-2  ${
+                isDarkMode
+                  ? "bg-slate-700/50 border-slate-600"
+                  : "bg-slate-100/50 border-slate-300"
               }`}
             >
-              <Search
-                className={`w-5 h-5 absolute left-6 top-1/2 transform -translate-y-1/2 ${
-                  isDarkMode ? "text-slate-300" : "text-black"
+              <Plus
+                className={`w-5 h-5 absolute left-6 top-1/2 transform -translate-y-1/2 cursor-pointer ${
+                  isDarkMode ? "text-slate-300" : "text-slate-600"
                 }`}
               />
               <input
@@ -131,10 +135,15 @@ export default function MarketWatchLight() {
                 placeholder="Search Market"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className={`w-full rounded px-14 py-2.5 text-[14px] leading-[19px] ${
+                className={`w-full rounded px-14 py-2.5 text-[14px] leading-[19px] border-0 outline-none ${
                   isDarkMode
-                    ? "bg-slate-800 text-slate-200 placeholder:text-slate-400"
-                    : "bg-white text-black placeholder:text-black"
+                    ? "bg-slate-700/50 text-slate-200 placeholder:text-slate-400"
+                    : "bg-slate-100/50 text-black placeholder:text-slate-600"
+                }`}
+              />
+              <Search
+                className={`w-5 h-5 absolute right-6 top-1/2 transform -translate-y-1/2 ${
+                  isDarkMode ? "text-slate-300" : "text-slate-600"
                 }`}
               />
             </div>
@@ -183,119 +192,121 @@ export default function MarketWatchLight() {
             <TableBody>
               {/* Watchlist Assets on Top */}
               {filteredWatchlist.map((asset) => {
-                  const { buyPrice, sellPrice, changePercent } = getDisplayQuote(asset);
-                  const isPositive = changePercent >= 0;
+                const { buyPrice, sellPrice, changePercent } =
+                  getDisplayQuote(asset);
+                const isPositive = changePercent >= 0;
 
-                  return (
-                    <TableRow
-                      key={`watchlist-${asset.id}`}
-                      onClick={() => {
-                        // Convert watchlist asset to assetStore asset type
-                        const assetStore = useAssetStore.getState();
-                        const found = assetStore.getAssetBySymbol(
-                          asset.symbol_display,
-                        );
-                        if (found) {
-                          setActiveAsset(found);
-                        }
-                        addPair(asset.symbol_display);
-                      }}
-                      className={`h-10 cursor-pointer border-b border-[#70707066]`}
+                return (
+                  <TableRow
+                    key={`watchlist-${asset.id}`}
+                    onClick={() => {
+                      // Convert watchlist asset to assetStore asset type
+                      const assetStore = useAssetStore.getState();
+                      const found = assetStore.getAssetBySymbol(
+                        asset.symbol_display,
+                      );
+                      if (found) {
+                        setActiveAsset(found);
+                      }
+                      addPair(asset.symbol_display);
+                    }}
+                    className={`h-10 cursor-pointer border-b border-[#70707066]`}
+                  >
+                    <TableCell
+                      className={`py-2 px-4 pl-6 text-[13px] border-r border-[#70707066] w-[60%]`}
                     >
-                      <TableCell
-                        className={`py-2 px-4 pl-6 text-[13px] border-r border-[#70707066] w-[60%]`}
-                      >
-                        <div className="flex items-center space-x-2">
-                          <img
-                            src={asset.image}
-                            alt={asset.name}
-                            className="w-5 h-5 object-contain rounded-full"
-                          />
-                          <span
-                            className={`${
+                      <div className="flex items-center space-x-2">
+                        <img
+                          src={asset.image}
+                          alt={asset.name}
+                          className="w-5 h-5 object-contain rounded-full"
+                        />
+                        <span
+                          className={`${
+                            isDarkMode ? "text-slate-200" : "text-slate-900"
+                          } font-bold`}
+                        >
+                          {asset.symbol_display}
+                        </span>
+                        <span>
+                          <BadgeCheck
+                            size={18}
+                            strokeWidth={1.5}
+                            className={
                               isDarkMode ? "text-slate-200" : "text-slate-900"
-                            } font-bold`}
-                          >
-                            {asset.symbol_display}
-                          </span>
-                          <span>
-                            <BadgeCheck
-                              size={18}
-                              strokeWidth={1.5}
-                              className={
-                                isDarkMode ? "text-slate-200" : "text-slate-900"
-                              }
-                            />
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell
-                        className={`py-2 px-4 text-[13px] text-right font-bold border-r border-[#70707066] w-[20%] ${
-                          isPositive ? "text-green-500" : "text-red-500"
-                        }`}
-                      >
-                        {buyPrice.toFixed(3)}
-                      </TableCell>
-                      <TableCell
-                        className={`py-2 px-4 text-[13px] text-right font-bold w-[20%] ${
-                          isPositive ? "text-green-500" : "text-red-500"
-                        }`}
-                      >
-                        {sellPrice.toFixed(3)}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                            }
+                          />
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell
+                      className={`py-2 px-4 text-[13px] text-right font-bold border-r border-[#70707066] w-[20%] ${
+                        isPositive ? "text-green-500" : "text-red-500"
+                      }`}
+                    >
+                      {buyPrice.toFixed(3)}
+                    </TableCell>
+                    <TableCell
+                      className={`py-2 px-4 text-[13px] text-right font-bold w-[20%] ${
+                        isPositive ? "text-green-500" : "text-red-500"
+                      }`}
+                    >
+                      {sellPrice.toFixed(3)}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
 
               {/* Remaining Market Assets */}
               {filteredMarketAssets.map((asset) => {
-                  const { buyPrice, sellPrice, changePercent } = getDisplayQuote(asset);
-                  const isPositive = changePercent >= 0;
+                const { buyPrice, sellPrice, changePercent } =
+                  getDisplayQuote(asset);
+                const isPositive = changePercent >= 0;
 
-                  return (
-                    <TableRow
-                      key={asset.id}
-                      onClick={() => {
-                        setActiveAsset(asset);
-                        addPair(asset.symbol_display);
-                      }}
-                      className={`h-10 cursor-pointer border-b border-2 border-[#70707066]`}
+                return (
+                  <TableRow
+                    key={asset.id}
+                    onClick={() => {
+                      setActiveAsset(asset);
+                      addPair(asset.symbol_display);
+                    }}
+                    className={`h-10 cursor-pointer border-b border-2 border-[#70707066]`}
+                  >
+                    <TableCell
+                      className={`py-2 px-4 pl-6 text-[13px] border-r border-[#70707066] w-[60%]`}
                     >
-                      <TableCell
-                        className={`py-2 px-4 pl-6 text-[13px] border-r border-[#70707066] w-[60%]`}
-                      >
-                        <div className="flex items-center space-x-2">
-                          <img
-                            src={asset.image}
-                            alt={asset.name}
-                            className="w-5 h-5 object-contain rounded-full"
-                          />
-                          <span
-                            className={`${
-                              isDarkMode ? "text-slate-200" : "text-slate-900"
-                            } font-bold`}
-                          >
-                            {asset.symbol_display}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell
-                        className={`py-2 px-4 text-[13px] text-right font-bold border-r border-[#70707066] w-[20%] ${
-                          isPositive ? "text-green-500" : "text-red-500"
-                        }`}
-                      >
-                        {buyPrice.toFixed(3)}
-                      </TableCell>
-                      <TableCell
-                        className={`py-2 px-4 text-[13px] text-right font-bold w-[20%] ${
-                          isPositive ? "text-green-500" : "text-red-500"
-                        }`}
-                      >
-                        {sellPrice.toFixed(3)}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                      <div className="flex items-center space-x-2">
+                        <img
+                          src={asset.image}
+                          alt={asset.name}
+                          className="w-5 h-5 object-contain rounded-full"
+                        />
+                        <span
+                          className={`${
+                            isDarkMode ? "text-slate-200" : "text-slate-900"
+                          } font-bold`}
+                        >
+                          {asset.symbol_display}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell
+                      className={`py-2 px-4 text-[13px] text-right font-bold border-r border-[#70707066] w-[20%] ${
+                        isPositive ? "text-green-500" : "text-red-500"
+                      }`}
+                    >
+                      {buyPrice.toFixed(3)}
+                    </TableCell>
+                    <TableCell
+                      className={`py-2 px-4 text-[13px] text-right font-bold w-[20%] ${
+                        isPositive ? "text-green-500" : "text-red-500"
+                      }`}
+                    >
+                      {sellPrice.toFixed(3)}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>

@@ -9,7 +9,7 @@ interface TradingViewLightWidgetProps {
 }
 
 function TradingViewLightWidget({
-  interval = "D",
+  interval = "1",
 }: TradingViewLightWidgetProps) {
   const container = useRef<HTMLDivElement>(null);
   const tvSymbol =
