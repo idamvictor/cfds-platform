@@ -139,6 +139,34 @@ function isAssetUpdate(data: unknown): data is AssetUpdate {
   );
 }
 
+function extractPricesFromSocketPayload(payload: unknown): Record<string, number> {
+  const prices: Record<string, number> = {};
+
+  const addPrice = (candidate: unknown) => {
+    if (isAssetUpdate(candidate)) {
+      prices[candidate.id] = candidate.price;
+    }
+  };
+
+  if (Array.isArray(payload)) {
+    payload.forEach(addPrice);
+    return prices;
+  }
+
+  if (
+    typeof payload === "object" &&
+    payload !== null &&
+    "data" in payload &&
+    Array.isArray((payload as { data?: unknown[] }).data)
+  ) {
+    (payload as { data: unknown[] }).data.forEach(addPrice);
+    return prices;
+  }
+
+  addPrice(payload);
+  return prices;
+}
+
 const useTradeStore = create<TradeStore>((set, get) => ({
   openTrades: [],
   closedTrades: [],
@@ -432,27 +460,20 @@ function initWebSocket() {
       useTradeStore.setState({ wsConnected: false });
     });
 
-    socket.on("data:update", (assetUpdates: unknown) => {
+    const handleSocketPricePayload = (payload: unknown) => {
       try {
-        if (Array.isArray(assetUpdates)) {
-          const prices: Record<string, number> = {};
-
-          // Process each asset in the array
-          assetUpdates.forEach((asset: unknown) => {
-            if (isAssetUpdate(asset)) {
-              prices[asset.id] = asset.price;
-            }
-          });
-
-          if (Object.keys(prices).length > 0) {
-            // console.log('prices', prices)
-            updateTradesWithPrices(prices);
-          }
+        const prices = extractPricesFromSocketPayload(payload);
+        if (Object.keys(prices).length > 0) {
+          updateTradesWithPrices(prices);
         }
       } catch (err) {
-        console.error("Error processing batch update:", err);
+        console.error("Error processing websocket trade price update:", err);
       }
-    });
+    };
+
+    // Some environments emit snapshots on connect and single updates afterwards.
+    socket.on("data:all", handleSocketPricePayload);
+    socket.on("data:update", handleSocketPricePayload);
   } catch (err) {
     console.error("WebSocket initialization error:", err);
   }
