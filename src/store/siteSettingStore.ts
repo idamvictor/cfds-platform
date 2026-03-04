@@ -30,6 +30,9 @@ export interface SiteSettings {
   has_marketplace: boolean;
   livetrader_status?: boolean;
   credit_card_deposit?: boolean;
+  enable_plan?: boolean;
+  enable_autotrader?: boolean;
+  use_deposit_modal?: boolean;
 }
 
 interface SiteSettingsState {

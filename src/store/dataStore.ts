@@ -34,6 +34,7 @@ export interface Plan {
   color: string;
   icon: string;
   leverage: number;
+  price?: number | string | null;
   features: string[];
 }
 

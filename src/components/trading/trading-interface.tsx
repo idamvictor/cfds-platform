@@ -14,6 +14,7 @@ import useAssetStore from "@/store/assetStore";
 import useUserStore from "@/store/userStore";
 import useTradeStore from "@/store/tradeStore";
 import axiosInstance from "@/lib/axios";
+import useSiteSettingsStore from "@/store/siteSettingStore";
 import { ProfitCalculatorModal } from "./trading-interface-components/profit-calculator-modal";
 import { TakeProfitStopLossModal } from "./trading-interface-components/take-profit-stop-loss-modal";
 import { PendingOrderModal } from "./trading-interface-components/pending-order-modal";
@@ -36,13 +37,20 @@ const formSchema = z.object({
   stopLoss: z.number().optional(),
 });
 
+const AUTO_TRADER_LOCK_MESSAGE =
+  "Auto trader is currently enabled on your account please contact support....";
+
 export function TradingInterface() {
   const isLandscape = useOrientation();
   // Get asset and user data
   const { activeAsset, getActiveLeverage } = useAssetStore();
   const user = useUserStore((state) => state.user);
   const leverage = useDataStore((state) => state.leverage);
+  const enableAutotrader = useSiteSettingsStore(
+    (state) => state.settings?.enable_autotrader === true
+  );
   const { fetchOpenTrades, accountSummary } = useTradeStore();
+  const isAutoTraderLocked = enableAutotrader && Boolean(user?.autotrader);
 
 
   // State
@@ -358,6 +366,11 @@ export function TradingInterface() {
 
   // Form submission - create trade
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (isAutoTraderLocked) {
+      toast.error(AUTO_TRADER_LOCK_MESSAGE);
+      return;
+    }
+
     if (!activeAsset) {
       toast.error("No asset selected for trading");
       return;
@@ -430,6 +443,19 @@ export function TradingInterface() {
       form.setValue("id", uuidv4());
     }
   };
+
+  const handleTradeButtonClick =
+    (type: "buy" | "sell") => (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (isAutoTraderLocked) {
+        event.preventDefault();
+        toast.error(AUTO_TRADER_LOCK_MESSAGE);
+        return;
+      }
+
+      form.setValue("type", type);
+      form.setValue("id", uuidv4());
+      form.setValue("amount", baseVolumeLots * tradingInfo.contractSize);
+    };
 
   // Get TP/SL display text
   const getTpSlText = () => {
@@ -698,15 +724,12 @@ export function TradingInterface() {
                   <div className="grid grid-cols-1 gap-1 mt-1">
                     <Button
                       type="submit"
-                      className="bg-green-500 hover:bg-green-600 text-white h-8 px-1"
-                      onClick={() => {
-                        form.setValue("type", "buy");
-                        form.setValue("id", uuidv4());
-                        form.setValue(
-                          "amount",
-                          baseVolumeLots * tradingInfo.contractSize
-                        );
-                      }}
+                      className={cn(
+                        "bg-green-500 hover:bg-green-600 text-white h-8 px-1",
+                        isAutoTraderLocked &&
+                          "opacity-60 cursor-not-allowed hover:bg-green-500"
+                      )}
+                      onClick={handleTradeButtonClick("buy")}
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? (
@@ -722,15 +745,12 @@ export function TradingInterface() {
                     </Button>
                     <Button
                       type="submit"
-                      className="bg-red-500 hover:bg-red-600 text-white h-8 px-1"
-                      onClick={() => {
-                        form.setValue("type", "sell");
-                        form.setValue("id", uuidv4());
-                        form.setValue(
-                          "amount",
-                          baseVolumeLots * tradingInfo.contractSize
-                        );
-                      }}
+                      className={cn(
+                        "bg-red-500 hover:bg-red-600 text-white h-8 px-1",
+                        isAutoTraderLocked &&
+                          "opacity-60 cursor-not-allowed hover:bg-red-500"
+                      )}
+                      onClick={handleTradeButtonClick("sell")}
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? (
@@ -814,15 +834,12 @@ export function TradingInterface() {
                 <div className="flex gap-2">
                   <Button
                     type="submit"
-                    className="bg-green-500 hover:bg-green-600 text-white h-7 w-20"
-                    onClick={() => {
-                      form.setValue("type", "buy");
-                      form.setValue("id", uuidv4());
-                      form.setValue(
-                        "amount",
-                        baseVolumeLots * tradingInfo.contractSize
-                      );
-                    }}
+                    className={cn(
+                      "bg-green-500 hover:bg-green-600 text-white h-7 w-20",
+                      isAutoTraderLocked &&
+                        "opacity-60 cursor-not-allowed hover:bg-green-500"
+                    )}
+                    onClick={handleTradeButtonClick("buy")}
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
@@ -833,15 +850,12 @@ export function TradingInterface() {
                   </Button>
                   <Button
                     type="submit"
-                    className="bg-red-500 hover:bg-red-600 text-white h-7 w-20"
-                    onClick={() => {
-                      form.setValue("type", "sell");
-                      form.setValue("id", uuidv4());
-                      form.setValue(
-                        "amount",
-                        baseVolumeLots * tradingInfo.contractSize
-                      );
-                    }}
+                    className={cn(
+                      "bg-red-500 hover:bg-red-600 text-white h-7 w-20",
+                      isAutoTraderLocked &&
+                        "opacity-60 cursor-not-allowed hover:bg-red-500"
+                    )}
+                    onClick={handleTradeButtonClick("sell")}
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
@@ -1024,15 +1038,12 @@ export function TradingInterface() {
               <div className="grid grid-cols-2 gap-1 pt-1">
                 <Button
                   type="submit"
-                  className="bg-green-500 hover:bg-green-600 text-white h-10 text-xs"
-                  onClick={() => {
-                    form.setValue("type", "buy");
-                    form.setValue("id", uuidv4());
-                    form.setValue(
-                      "amount",
-                      baseVolumeLots * tradingInfo.contractSize
-                    );
-                  }}
+                  className={cn(
+                    "bg-green-500 hover:bg-green-600 text-white h-10 text-xs",
+                    isAutoTraderLocked &&
+                      "opacity-60 cursor-not-allowed hover:bg-green-500"
+                  )}
+                  onClick={handleTradeButtonClick("buy")}
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
@@ -1051,15 +1062,12 @@ export function TradingInterface() {
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-red-500 hover:bg-red-600 text-white h-10 text-xs"
-                  onClick={() => {
-                    form.setValue("type", "sell");
-                    form.setValue("id", uuidv4());
-                    form.setValue(
-                      "amount",
-                      baseVolumeLots * tradingInfo.contractSize
-                    );
-                  }}
+                  className={cn(
+                    "bg-red-500 hover:bg-red-600 text-white h-10 text-xs",
+                    isAutoTraderLocked &&
+                      "opacity-60 cursor-not-allowed hover:bg-red-500"
+                  )}
+                  onClick={handleTradeButtonClick("sell")}
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (

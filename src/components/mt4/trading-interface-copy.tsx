@@ -14,6 +14,7 @@ import useAssetStore from "@/store/assetStore";
 import useUserStore from "@/store/userStore";
 import useTradeStore from "@/store/tradeStore";
 import axiosInstance from "@/lib/axios";
+import useSiteSettingsStore from "@/store/siteSettingStore";
 // import { ProfitCalculatorModal } from "./trading-interface-components/profit-calculator-modal";
 // import { TakeProfitStopLossModal } from "./trading-interface-components/take-profit-stop-loss-modal";
 // import { PendingOrderModal } from "./trading-interface-components/pending-order-modal";
@@ -40,12 +41,19 @@ interface TradingInterfaceProps {
   type?: "buy" | "sell";
 }
 
+const AUTO_TRADER_LOCK_MESSAGE =
+  "Auto trader is currently enabled on your account please contact support....";
+
 export function TradingInterface({ type }: TradingInterfaceProps) {
   // const isLandscape = useOrientation();
   // Get asset and user data
   const { activeAsset } = useAssetStore();
   const user = useUserStore((state) => state.user);
+  const enableAutotrader = useSiteSettingsStore(
+    (state) => state.settings?.enable_autotrader === true
+  );
   const { fetchOpenTrades, accountSummary } = useTradeStore();
+  const isAutoTraderLocked = enableAutotrader && Boolean(user?.autotrader);
 
   // State
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -355,6 +363,11 @@ export function TradingInterface({ type }: TradingInterfaceProps) {
 
   // Form submission - create trade
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (isAutoTraderLocked) {
+      toast.error(AUTO_TRADER_LOCK_MESSAGE);
+      return;
+    }
+
     if (!activeAsset) {
       toast.error("No asset selected for trading");
       return;
@@ -427,6 +440,20 @@ export function TradingInterface({ type }: TradingInterfaceProps) {
       form.setValue("id", uuidv4());
     }
   };
+
+  const handleTradeButtonClick =
+    (tradeType: "buy" | "sell") =>
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (isAutoTraderLocked) {
+        event.preventDefault();
+        toast.error(AUTO_TRADER_LOCK_MESSAGE);
+        return;
+      }
+
+      form.setValue("type", tradeType);
+      form.setValue("id", uuidv4());
+      form.setValue("amount", baseVolumeLots * tradingInfo.contractSize);
+    };
 
   // Get TP/SL display text
   const getTpSlText = () => {
@@ -626,15 +653,12 @@ export function TradingInterface({ type }: TradingInterfaceProps) {
                 {(!type || type === "buy") && (
                   <Button
                     type="submit"
-                    className="bg-green-500 hover:bg-green-600 text-white h-10 text-xs w-full"
-                    onClick={() => {
-                      form.setValue("type", "buy");
-                      form.setValue("id", uuidv4());
-                      form.setValue(
-                        "amount",
-                        baseVolumeLots * tradingInfo.contractSize
-                      );
-                    }}
+                    className={cn(
+                      "bg-green-500 hover:bg-green-600 text-white h-10 text-xs w-full",
+                      isAutoTraderLocked &&
+                        "opacity-60 cursor-not-allowed hover:bg-green-500"
+                    )}
+                    onClick={handleTradeButtonClick("buy")}
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
@@ -655,15 +679,12 @@ export function TradingInterface({ type }: TradingInterfaceProps) {
                 {(!type || type === "sell") && (
                   <Button
                     type="submit"
-                    className="bg-red-500 hover:bg-red-600 text-white h-10 text-xs w-full"
-                    onClick={() => {
-                      form.setValue("type", "sell");
-                      form.setValue("id", uuidv4());
-                      form.setValue(
-                        "amount",
-                        baseVolumeLots * tradingInfo.contractSize
-                      );
-                    }}
+                    className={cn(
+                      "bg-red-500 hover:bg-red-600 text-white h-10 text-xs w-full",
+                      isAutoTraderLocked &&
+                        "opacity-60 cursor-not-allowed hover:bg-red-500"
+                    )}
+                    onClick={handleTradeButtonClick("sell")}
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (

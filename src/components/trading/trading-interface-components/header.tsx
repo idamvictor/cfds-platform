@@ -35,6 +35,7 @@ import AccountPlansModal from "@/components/AccountPlanModal";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import MarketWatchPanel from "./panels/market-watch-panel";
 import { clearAuthenticatedSession } from "@/lib/session";
+import useSiteSettingsStore from "@/store/siteSettingStore";
 
 // Define the ActiveView type
 type ActiveView =
@@ -176,6 +177,9 @@ export default function Header({
   const [isMarketWatchOpen, setIsMarketWatchOpen] = useState(false);
   const { activeAsset, setActiveAsset, assets } = useAssetStore();
   const user = useUserStore((state) => state.user);
+  const enablePlan = useSiteSettingsStore(
+    (state) => state.settings?.enable_plan === true
+  );
   const selectedAccountIndex = useUserStore(
     (state) => state.selectedAccountIndex
   );
@@ -406,35 +410,37 @@ export default function Header({
                       </div>
 
                       {/* Plan Type */}
-                      <div className="flex mt-2 px-3 py-2 w-full">
-                        {user?.account_type ? (
-                          <Button
-                            style={headerStyle}
-                            onClick={() => setIsPlansModalOpen(true)}
-                            className="text-white cursor-pointer font-medium rounded-md shadow-md transition-all duration-300 group"
-                          >
-                            <div className="flex items-center gap-1">
-                              <div className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 backdrop-blur-sm">
-                                <img
-                                  src={user?.account_type?.icon}
-                                  alt={`${user?.account_type?.title} icon`}
-                                  className="w-4 h-4 object-contain"
-                                />
+                      {enablePlan && (
+                        <div className="flex mt-2 px-3 py-2 w-full">
+                          {user?.account_type ? (
+                            <Button
+                              style={headerStyle}
+                              onClick={() => setIsPlansModalOpen(true)}
+                              className="text-white cursor-pointer font-medium rounded-md shadow-md transition-all duration-300 group"
+                            >
+                              <div className="flex items-center gap-1">
+                                <div className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 backdrop-blur-sm">
+                                  <img
+                                    src={user?.account_type?.icon}
+                                    alt={`${user?.account_type?.title} icon`}
+                                    className="w-4 h-4 object-contain"
+                                  />
+                                </div>
+                                <div className="flex flex-col items-start">
+                                  <span className="text-xs text-white font-bold">
+                                    {user?.account_type?.title}
+                                  </span>
+                                </div>
                               </div>
-                              <div className="flex flex-col items-start">
-                                <span className="text-xs text-white font-bold">
-                                  {user?.account_type?.title}
-                                </span>
-                              </div>
-                            </div>
-                          </Button>
-                        ) : null}
+                            </Button>
+                          ) : null}
 
-                        <AccountPlansModal
-                          open={isPlansModalOpen}
-                          onOpenChange={setIsPlansModalOpen}
-                        />
-                      </div>
+                          <AccountPlansModal
+                            open={isPlansModalOpen}
+                            onOpenChange={setIsPlansModalOpen}
+                          />
+                        </div>
+                      )}
 
                       <div className="border-t border-border mt-2 px-3 py-2">
                         <h3 className="text-sm font-medium mb-2">
@@ -627,10 +633,12 @@ export default function Header({
                 </Button>
               </Link>
 
-              <div className="flex flex-col items-center gap-1">
-                <div className="text-xs font-bold text-primary">
-                  {user?.account_type?.title || "STANDARD"}
-                </div>
+	              <div className="flex flex-col items-center gap-1">
+	                {enablePlan && (
+	                  <div className="text-xs font-bold text-primary">
+	                    {user?.account_type?.title || "STANDARD"}
+	                  </div>
+	                )}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -726,14 +734,16 @@ export default function Header({
           )}
 
           <div className="flex items-center gap-2">
-            <img
-              src={
-                user?.account_type?.image ||
-                "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744370355/main_plate_exi8jv.png"
-              }
-              alt={`${user?.account_type?.title || "Basic"} Badge`}
-              className="w-10 h-10 md:w-12 md:h-12"
-            />
+            {enablePlan && (
+              <img
+                src={
+                  user?.account_type?.image ||
+                  "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744370355/main_plate_exi8jv.png"
+                }
+                alt={`${user?.account_type?.title || "Basic"} Badge`}
+                className="w-10 h-10 md:w-12 md:h-12"
+              />
+            )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button

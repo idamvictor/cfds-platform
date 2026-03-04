@@ -2,10 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useCurrency } from "@/hooks/useCurrency";
 import useUserStore from "@/store/userStore";
+import useSiteSettingsStore from "@/store/siteSettingStore";
 import { useNavigate } from "react-router-dom";
 
 export function AccountSection() {
   const user = useUserStore((state) => state.user);
+  const enablePlan = useSiteSettingsStore((state) => state.settings?.enable_plan === true);
   const { formatCurrency } = useCurrency();
   const balance = user?.balance || 0;  // Fallback to original value if no user
   const navigate = useNavigate()
@@ -18,14 +20,16 @@ export function AccountSection() {
 
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold">Account</h2>
-            <img
-                src={
-                    user?.account_type?.image ||
-                    "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744370355/main_plate_exi8jv.png"
-                }
-                alt={`${user?.account_type?.title || "Basic"} Badge`}
-                className="w-8 h-8"
-            />
+            {enablePlan && (
+              <img
+                  src={
+                      user?.account_type?.image ||
+                      "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744370355/main_plate_exi8jv.png"
+                  }
+                  alt={`${user?.account_type?.title || "Basic"} Badge`}
+                  className="w-8 h-8"
+              />
+            )}
 
           </div>
 

@@ -11,14 +11,22 @@ import { toast } from "sonner";
 import useAssetStore from "@/store/assetStore";
 import useUserStore from "@/store/userStore";
 import useTradeStore from "@/store/tradeStore";
+import useSiteSettingsStore from "@/store/siteSettingStore";
 import { AxiosError } from "axios";
 // import axiosInstance from "@/lib/axios";
+
+const AUTO_TRADER_LOCK_MESSAGE =
+  "Auto trader is currently enabled on your account please contact support....";
 
 export default function TradingInterface() {
   // Get data from stores
   const { activeAsset } = useAssetStore();
   const user = useUserStore((state) => state.user);
+  const enableAutotrader = useSiteSettingsStore(
+    (state) => state.settings?.enable_autotrader === true
+  );
   const { fetchOpenTrades } = useTradeStore();
+  const isAutoTraderLocked = enableAutotrader && Boolean(user?.autotrader);
 
   // Local state
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -42,6 +50,11 @@ export default function TradingInterface() {
 
   // Handle trade execution
   const handleTrade = async (type: "buy" | "sell") => {
+    if (isAutoTraderLocked) {
+      toast.error(AUTO_TRADER_LOCK_MESSAGE);
+      return;
+    }
+
     if (!activeAsset) {
       toast.error("No asset selected for trading");
       return;
@@ -270,7 +283,11 @@ export default function TradingInterface() {
           {/* Buy/Sell Buttons */}
           <div className="grid grid-cols-2 gap-2">
             <Button
-              className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3"
+              className={`w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 ${
+                isAutoTraderLocked
+                  ? "opacity-60 cursor-not-allowed hover:bg-green-500"
+                  : ""
+              }`}
               onClick={() => handleTrade("buy")}
               disabled={isSubmitting}
             >
@@ -284,7 +301,11 @@ export default function TradingInterface() {
               )}
             </Button>
             <Button
-              className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3"
+              className={`w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 ${
+                isAutoTraderLocked
+                  ? "opacity-60 cursor-not-allowed hover:bg-red-500"
+                  : ""
+              }`}
               onClick={() => handleTrade("sell")}
               disabled={isSubmitting}
             >

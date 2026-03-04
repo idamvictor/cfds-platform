@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button.tsx";
 import AccountPlansModal from "@/components/AccountPlanModal.tsx";
 import useSoundStore from "@/store/soundStore";
 import useUserStore from "@/store/userStore.ts";
+import useSiteSettingsStore from "@/store/siteSettingStore.ts";
 
 export default function Footer() {
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleString());
@@ -14,6 +15,7 @@ export default function Footer() {
   const { isSoundEnabled, toggleSound } = useSoundStore();
 
   const user = useUserStore((state) => state.user);
+  const enablePlan = useSiteSettingsStore((state) => state.settings?.enable_plan === true);
 
 
   useEffect(() => {
@@ -41,7 +43,7 @@ export default function Footer() {
   return (
     <div className="flex justify-between items-center bg-background text-muted-foreground p-2 text-xs border-t-2 border-secondary mt-2">
       {/* Left Section */}
-      { user?.account_type ? (
+      { enablePlan && user?.account_type ? (
           <div className="hidden md:flex">
             <Button
                 style={headerStyle}
@@ -97,10 +99,12 @@ export default function Footer() {
           )}
         </div>
       </div>
-      <AccountPlansModal
-        open={isPlansModalOpen}
-        onOpenChange={setIsPlansModalOpen}
-      />
+      {enablePlan && (
+        <AccountPlansModal
+          open={isPlansModalOpen}
+          onOpenChange={setIsPlansModalOpen}
+        />
+      )}
     </div>
   );
 }
