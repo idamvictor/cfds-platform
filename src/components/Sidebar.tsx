@@ -76,23 +76,40 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
       <div className="flex-1 w-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
         <nav className="py-4 w-full">
           <ul className="space-y-1">
-            {navItems.map((item) => (
-              <li key={item.title} className="px-2">
-                <Link
-                  to={item.path}
-                  className={`flex flex-col items-center justify-center py-3 px-1 rounded-md text-xs ${
-                    isActive(item.path)
-                      ? "bg-[#2E3454] text-[#52e5ab]"
-                      : "text-gray-300 hover:bg-[#2E3454]/50 hover:text-[#52e5ab]"
-                  } transition-all duration-200`}
-                  onClick={onLinkClick}
-                >
-                  <div className="relative">
-                    <item.icon className="h-5 w-5 mb-1" />
-                  </div>
-                  <span className="text-center text-[10px]">{item.title}</span>
-                </Link>
-              </li>
+            {navItems.map((item, index) => (
+              <React.Fragment key={index}>
+                <li className="px-2">
+                  <Link
+                    to={item.path}
+                    className={`flex flex-col items-center justify-center py-3 px-1 rounded-md text-xs ${
+                      isActive(item.path)
+                        ? "bg-[#2E3454] text-[#52e5ab]"
+                        : "text-gray-300 hover:bg-[#2E3454]/50 hover:text-[#52e5ab]"
+                    } transition-all duration-200`}
+                    onClick={onLinkClick}
+                  >
+                    <div className="relative">
+                      <item.icon className="h-5 w-5 mb-1" />
+                    </div>
+                    <span className="text-center text-[10px]">
+                      {item.title}
+                    </span>
+                  </Link>
+                </li>
+                {item.path === "/main/dashboard" && (
+                  <li className="px-2">
+                    <button
+                      onClick={() => window.open("/trading", "_blank")}
+                      className="w-full flex flex-col items-center justify-center py-3 px-1 rounded-md text-xs text-gray-300 hover:bg-[#2E3454]/50 hover:text-[#52e5ab] transition-all duration-200"
+                    >
+                      <BarChart className="h-5 w-5 mb-1" />
+                      <span className="text-center text-[10px]">
+                        TRADE ROOM
+                      </span>
+                    </button>
+                  </li>
+                )}
+              </React.Fragment>
             ))}
           </ul>
         </nav>
@@ -101,13 +118,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
       {/* Logout button at the bottom - fixed position */}
       <div className="py-4 w-full px-2 border-t border-gray-700/30">
         <div>
-          <button
-            onClick={() => window.open("/trading", "_blank")}
-            className="w-full flex flex-col items-center justify-center py-3 px-1 rounded-md text-xs text-gray-300 hover:bg-[#2E3454]/50 hover:text-[#52e5ab] transition-all duration-200 mb-2"
-          >
-            <BarChart className="h-5 w-5 mb-1" />
-            <span className="text-center text-[10px]">TRADE ROOM</span>
-          </button>
           <Link
             to="/main/chat"
             className={`flex flex-col items-center justify-center py-3 px-1 rounded-md text-xs ${
