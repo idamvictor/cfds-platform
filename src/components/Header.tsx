@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Logo from "./Logo";
 import { Button } from "./ui/button";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { Menu, Wallet } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import DepositFunds from "./deposit-funds/DepositFunds";
@@ -13,7 +13,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
   const user = useUserStore((state) => state.user);
   const { formatCurrency } = useCurrency();
@@ -31,14 +31,17 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
         <Logo />
       </div>
       <div className="flex items-center gap-3">
-        <Button
+        {/* <Button
           className="header-action-button deposit-button"
           onClick={() => navigate("/main/deposit")}
         >
           Deposit
-        </Button>
+        </Button> */}
 
-        <Button onClick={() => setIsDepositModalOpen(true)}>
+        <Button
+          onClick={() => setIsDepositModalOpen(true)}
+          className="text-black"
+        >
           Deposit Funds
         </Button>
 
