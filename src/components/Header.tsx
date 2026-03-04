@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import Logo from "./Logo";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
-import { Menu, Wallet } from "lucide-react";
+import { Menu, Wallet, BarChart } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import DepositFunds from "./deposit-funds/DepositFunds";
 import useUserStore from "@/store/userStore";
 import { useCurrency } from "@/hooks/useCurrency";
 import useSiteSettingsStore from "@/store/siteSettingStore";
+import AccountPlansModal from "./AccountPlanModal";
 
 interface HeaderProps {
   toggleSidebar: () => void;
@@ -16,10 +17,12 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const navigate = useNavigate();
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
+  const [isPlansModalOpen, setIsPlansModalOpen] = useState(false);
   const user = useUserStore((state) => state.user);
   const useDepositModal = useSiteSettingsStore(
-    (state) => state.settings?.use_deposit_modal === true
+    (state) => state.settings?.use_deposit_modal === true,
   );
+
   const { formatCurrency } = useCurrency();
   const balance = user?.balance || 0;
 
@@ -41,9 +44,17 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
               ? setIsDepositModalOpen(true)
               : navigate("/main/deposit")
           }
-          className="text-black"
+          className="text-white"
         >
           {useDepositModal ? "Deposit Funds" : "Deposit"}
+        </Button>
+
+        <Button
+          onClick={() => window.open("/trading", "_blank")}
+          className="text-white flex items-center gap-2"
+        >
+          <BarChart className="h-4 w-4" />
+          Trade Room
         </Button>
 
         {/* Balance Display */}
@@ -54,7 +65,10 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
               {formatCurrency(balance)}
             </span>
           </div>
-          <div className="flex items-center gap-1.5 mt-1">
+          <button
+            onClick={() => setIsPlansModalOpen(true)}
+            className="flex items-center gap-1.5 mt-1 hover:opacity-80 transition-opacity cursor-pointer"
+          >
             <div className="w-5 h-5 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
               <img
                 src={
@@ -66,10 +80,10 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
               />
             </div>
             <span className="text-xs font-medium text-gray-300">
-              {"Standard"}
+              {user?.account_type?.title || ""}
             </span>
             <span className="text-xs text-gray-400">›</span>
-          </div>
+          </button>
         </div>
       </div>
 
@@ -90,6 +104,12 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
           <DepositFunds />
         </DialogContent>
       </Dialog>
+
+      {/* Account Plans Modal */}
+      <AccountPlansModal
+        open={isPlansModalOpen}
+        onOpenChange={setIsPlansModalOpen}
+      />
     </header>
   );
 };
