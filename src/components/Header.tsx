@@ -39,6 +39,14 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
       </div>
       <div className="flex items-center gap-3">
         <Button
+          onClick={() => window.open("/trading", "_blank")}
+          className="bg-gray-600 hover:bg-gray-700 text-white flex items-center gap-2"
+        >
+          <BarChart className="h-4 w-4" />
+          Trade Room
+        </Button>
+
+        <Button
           onClick={() =>
             useDepositModal
               ? setIsDepositModalOpen(true)
@@ -47,14 +55,6 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
           className="text-white"
         >
           {useDepositModal ? "Deposit Funds" : "Deposit"}
-        </Button>
-
-        <Button
-          onClick={() => window.open("/trading", "_blank")}
-          className="text-white flex items-center gap-2"
-        >
-          <BarChart className="h-4 w-4" />
-          Trade Room
         </Button>
 
         {/* Balance Display */}
