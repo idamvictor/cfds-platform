@@ -242,11 +242,14 @@ export default function Header({
     }
   };
 
+  const findAssetByPair = (pair: string) =>
+    assets.find((a) => a.sy === pair || a.symbol_display === pair);
+
   const handlePairClick = (pair: string) => {
     setActivePair(pair);
 
     // Find and set the corresponding asset
-    const asset = assets.find((a) => a.symbol_display === pair);
+    const asset = findAssetByPair(pair);
     if (asset) {
       setActiveAsset(asset);
     }
@@ -254,7 +257,7 @@ export default function Header({
 
   const getAssetCategory = (pair: string) => {
     // Find and set the corresponding asset
-    const asset = assets.find((a) => a.symbol_display === pair);
+    const asset = findAssetByPair(pair);
     if (asset) {
       return asset.type
     }
