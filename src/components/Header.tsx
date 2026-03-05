@@ -27,7 +27,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const balance = user?.balance || 0;
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-16 bg-card border-b border-border flex items-center justify-between px-6 z-50">
+    <header className="fixed top-0 left-0 right-0 h-16 bg-card border-b border-border flex items-center justify-between px-2 md:px-6 z-50">
       <div className="flex items-center gap-4">
         <Button
           className="md:hidden p-2 rounded bg-primary text-white"
@@ -40,10 +40,11 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
       <div className="flex items-center gap-3">
         <Button
           onClick={() => window.open("/trading", "_blank")}
-          className="bg-gray-600 hover:bg-gray-700 text-white flex items-center gap-2"
+          className="bg-gray-600 hover:bg-gray-700 text-white flex items-center gap-2 p-2 lg:px-4"
+          title="Trade Room"
         >
           <BarChart className="h-4 w-4" />
-          Trade Room
+          <span className="hidden lg:inline">Trade Room</span>
         </Button>
 
         <Button
@@ -52,10 +53,20 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
               ? setIsDepositModalOpen(true)
               : navigate("/main/deposit")
           }
-          className="text-white"
+          className="text-white flex items-center gap-2 p-2 lg:px-4"
+          title="Deposit Funds"
         >
-          {useDepositModal ? "Deposit Funds" : "Deposit"}
+          <Wallet className="h-4 w-4" />
+          <span className="hidden lg:inline">
+            {useDepositModal ? "Deposit Funds" : "Deposit"}
+          </span>
         </Button>
+
+        {/* Mobile Balance Display */}
+        <div className="lg:hidden flex items-center gap-1 px-1 py-1.5 rounded text-xs font-semibold text-primary">
+          <Wallet className="h-3.5 w-3.5" />
+          <span>{formatCurrency(balance)}</span>
+        </div>
 
         {/* Balance Display */}
         <div className="hidden lg:flex flex-col px-4 py-2.5 rounded-lg border-0 transition-all">

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useMutedTextClass } from "@/hooks/useMutedTextClass";
 import CardFunding from "./CardFunding";
+import DepositHistory from "@/components/deposit-history";
 
 const DepositFunds = () => {
   const [selectedMethod, setSelectedMethod] = useState("card");
@@ -89,6 +90,9 @@ const DepositFunds = () => {
           <span>→</span>
         </button>
       </div>
+
+      {/* Deposit History */}
+      <DepositHistory />
     </div>
   );
 };
