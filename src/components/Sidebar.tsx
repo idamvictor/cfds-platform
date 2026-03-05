@@ -24,8 +24,22 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [showScrollIndicator, setShowScrollIndicator] = React.useState(true);
+  const [showScrollUpIndicator, setShowScrollUpIndicator] =
+    React.useState(false);
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
 
   const settings = useSiteSettingsStore((state) => state.settings);
+
+  // Handle scroll to show/hide indicator
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const element = e.currentTarget;
+    const isAtBottom =
+      element.scrollHeight - element.scrollTop - element.clientHeight < 10;
+    const isAtTop = element.scrollTop < 10;
+    setShowScrollIndicator(!isAtBottom);
+    setShowScrollUpIndicator(!isAtTop);
+  };
 
   // Function to check if a nav item is active
   const isActive = (path: string) => {
@@ -71,77 +85,111 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
   }, [settings?.is_mt4]);
 
   return (
-    <aside className="bg-[#1E223D] h-full w-20 flex flex-col items-center shadow-lg">
-      {/* Scrollable navigation container */}
-      <div className="flex-1 w-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
-        <nav className="py-4 w-full">
-          <ul className="space-y-1">
-            {navItems.map((item, index) => (
-              <React.Fragment key={index}>
-                <li className="px-2">
-                  <Link
-                    to={item.path}
-                    className={`flex flex-col items-center justify-center py-3 px-1 rounded-md text-xs ${
-                      isActive(item.path)
-                        ? "bg-[#2E3454] text-[#52e5ab]"
-                        : "text-gray-300 hover:bg-[#2E3454]/50 hover:text-[#52e5ab]"
-                    } transition-all duration-200`}
-                    onClick={onLinkClick}
-                  >
-                    <div className="relative">
-                      <item.icon className="h-5 w-5 mb-1" />
-                    </div>
-                    <span className="text-center text-[10px]">
-                      {item.title}
-                    </span>
-                  </Link>
-                </li>
-                {item.path === "/main/dashboard" && (
+    <>
+      <style>{`
+        .sidebar-scrollable::-webkit-scrollbar {
+          width: 4px;
+        }
+        .sidebar-scrollable::-webkit-scrollbar-track {
+          background: rgba(31, 41, 55, 0.5);
+          border-radius: 4px;
+        }
+        .sidebar-scrollable::-webkit-scrollbar-thumb {
+          background: rgba(107, 114, 128, 0.8);
+          border-radius: 4px;
+        }
+        .sidebar-scrollable::-webkit-scrollbar-thumb:hover {
+          background: rgba(107, 114, 128, 1);
+        }
+      `}</style>
+      <aside className="bg-[#1E223D] h-full w-20 flex flex-col items-center shadow-lg">
+        {/* Scrollable navigation container */}
+        <div
+          ref={scrollContainerRef}
+          onScroll={handleScroll}
+          className="sidebar-scrollable flex-1 w-full overflow-y-auto scrollbar-thin md:scrollbar-thumb-gray-600 md:scrollbar-track-transparent scrollbar-thumb-gray-100 scrollbar-track-gray-800 relative group"
+        >
+          {/* Scrollable indicator for mobile - up arrow */}
+          {showScrollUpIndicator && (
+            <div className="md:hidden h-8 bg-gradient-to-b from-[#1E223D] to-transparent pointer-events-none sticky top-3 flex items-start justify-center z-10">
+              <div className="text-gray-500 text-xs animate-bounce">↑</div>
+            </div>
+          )}
+          <nav className="py-4 w-full">
+            <ul className="space-y-1">
+              {navItems.map((item, index) => (
+                <React.Fragment key={index}>
                   <li className="px-2">
-                    <button
-                      onClick={() => window.open("/trading", "_blank")}
-                      className="w-full flex flex-col items-center justify-center py-3 px-1 rounded-md text-xs text-gray-300 hover:bg-[#2E3454]/50 hover:text-[#52e5ab] transition-all duration-200"
+                    <Link
+                      to={item.path}
+                      className={`flex flex-col items-center justify-center py-3 px-1 rounded-md text-xs ${
+                        isActive(item.path)
+                          ? "bg-[#2E3454] text-[#52e5ab]"
+                          : "text-gray-300 hover:bg-[#2E3454]/50 hover:text-[#52e5ab]"
+                      } transition-all duration-200`}
+                      onClick={onLinkClick}
                     >
-                      <BarChart className="h-5 w-5 mb-1" />
+                      <div className="relative">
+                        <item.icon className="h-5 w-5 mb-1" />
+                      </div>
                       <span className="text-center text-[10px]">
-                        TRADE ROOM
+                        {item.title}
                       </span>
-                    </button>
+                    </Link>
                   </li>
-                )}
-              </React.Fragment>
-            ))}
-          </ul>
-        </nav>
-      </div>
-
-      {/* Logout button at the bottom - fixed position */}
-      <div className="py-4 w-full px-2 border-t border-gray-700/30">
-        <div>
-          <Link
-            to="/main/chat"
-            className={`flex flex-col items-center justify-center py-3 px-1 rounded-md text-xs ${
-              isActive("/main/chat")
-                ? "bg-[#2E3454] text-[#52e5ab]"
-                : "text-gray-300 hover:bg-[#2E3454]/50 hover:text-[#52e5ab]"
-            } transition-all duration-200 w-full mb-2`}
-            onClick={onLinkClick}
-          >
-            <MessageSquare className="h-5 w-5 mb-1" />
-            <span className="text-center text-[10px]">LIVE CHAT</span>
-          </Link>
-          {/* <AutoTraderModal isMini={true} /> */}
-
-          <button
-            onClick={handleLogout}
-            className="w-full flex flex-col items-center justify-center py-3 px-1 rounded-md text-xs text-gray-300 hover:bg-[#2E3454]/50 hover:text-[#52e5ab] transition-all duration-200"
-          >
-            <LogOut className="h-5 w-5 mb-1" />
-            <span className="text-center text-[10px]">LOG OUT</span>
-          </button>
+                  {item.path === "/main/dashboard" && (
+                    <li className="px-2">
+                      <button
+                        onClick={() => window.open("/trading", "_blank")}
+                        className="w-full flex flex-col items-center justify-center py-3 px-1 rounded-md text-xs text-gray-300 hover:bg-[#2E3454]/50 hover:text-[#52e5ab] transition-all duration-200"
+                      >
+                        <BarChart className="h-5 w-5 mb-1" />
+                        <span className="text-center text-[10px]">
+                          TRADE ROOM
+                        </span>
+                      </button>
+                    </li>
+                  )}
+                </React.Fragment>
+              ))}
+            </ul>
+          </nav>
+          {/* Scrollable indicator for mobile */}
+          {showScrollIndicator && (
+            <div className="md:hidden h-8 bg-gradient-to-t from-[#1E223D] to-transparent pointer-events-none sticky bottom-0 flex items-end justify-center">
+              <div className="text-gray-500 text-xs animate-bounce">↓</div>
+            </div>
+          )}
         </div>
-      </div>
-    </aside>
+
+        {/* Logout button at the bottom - fixed position */}
+        <div className="py-4 w-full px-2 border-t border-gray-700/30">
+          <div>
+            <Link
+              to="/main/chat"
+              className={`flex flex-col items-center justify-center py-3 px-1 rounded-md text-xs ${
+                isActive("/main/chat")
+                  ? "bg-[#2E3454] text-[#52e5ab]"
+                  : "text-gray-300 hover:bg-[#2E3454]/50 hover:text-[#52e5ab]"
+              } transition-all duration-200 w-full mb-2`}
+              onClick={onLinkClick}
+            >
+              <MessageSquare className="h-5 w-5 mb-1" />
+              <span className="text-center text-[10px]">LIVE CHAT</span>
+            </Link>
+            {/* <AutoTraderModal isMini={true} /> */}
+
+            <button
+              onClick={handleLogout}
+              className="w-full flex flex-col items-center justify-center py-3 px-1 rounded-md text-xs text-gray-300 hover:bg-[#2E3454]/50 hover:text-[#52e5ab] transition-all duration-200"
+            >
+              <LogOut className="h-5 w-5 mb-1" />
+              <span className="text-center text-[10px]">LOG OUT</span>
+            </button>
+          </div>
+        </div>
+      </aside>
+    </>
   );
 };
 

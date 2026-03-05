@@ -27,7 +27,10 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const balance = user?.balance || 0;
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-16 bg-card border-b border-border flex items-center justify-between px-2 md:px-6 z-50">
+    <header
+      className="fixed top-0 left-0 right-0 h-16 bg-card border-b border-border flex items-center justify-between px-2 md:px-6 z-50"
+      style={{ paddingTop: "max(0.5rem, env(safe-area-inset-top))" }}
+    >
       <div className="flex items-center gap-4">
         <Button
           className="md:hidden p-2 rounded bg-primary text-white"
