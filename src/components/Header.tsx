@@ -66,9 +66,29 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
         </Button>
 
         {/* Mobile Balance Display */}
-        <div className="lg:hidden flex items-center gap-1 px-1 py-1.5 rounded text-xs font-semibold text-primary">
-          <Wallet className="h-3.5 w-3.5" />
-          <span>{formatCurrency(balance)}</span>
+        <div className="lg:hidden flex flex-col gap-1 px-2 py-1.5 rounded text-xs font-semibold text-primary">
+          <div className="flex items-center gap-1">
+            <Wallet className="h-3.5 w-3.5" />
+            <span>{formatCurrency(balance)}</span>
+          </div>
+          <button
+            onClick={() => setIsPlansModalOpen(true)}
+            className="flex items-center gap-1 hover:opacity-80 transition-opacity cursor-pointer text-gray-300"
+          >
+            <div className="w-4 h-4 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden flex-shrink-0">
+              <img
+                src={
+                  user?.account_type?.image ||
+                  "https://res.cloudinary.com/dyp8gtllq/image/upload/v1744370355/main_plate_exi8jv.png"
+                }
+                alt="Account Badge"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <span className="text-xs font-medium">
+              {(user?.account_type?.title || "").split(" ")[0]}
+            </span>
+          </button>
         </div>
 
         {/* Balance Display */}

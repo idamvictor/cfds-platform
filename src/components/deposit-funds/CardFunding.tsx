@@ -102,20 +102,20 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
   };
 
   return (
-    <div className="space-y-6 text-foreground min-h-[550px]">
+    <div className="space-y-3 md:space-y-6 text-foreground min-h-[550px] w-full overflow-x-hidden">
       {/* Header and Progress Tracker */}
-      <div className="space-y-6">
+      <div className="space-y-2 md:space-y-6">
         {/* Progress Steps */}
-        <div className="flex items-center justify-between max-w-2xl">
+        <div className="flex items-center justify-between gap-1 md:gap-4 w-full">
           {[
             { number: 1, label: "Fund Account" },
             { number: 2, label: "Payment Details" },
             { number: 3, label: "Successful" },
           ].map((step, index, allSteps) => (
-            <div key={step.number} className="flex items-center flex-1">
+            <div key={step.number} className="flex items-center flex-1 min-w-0">
               {/* Step Circle */}
               <div
-                className={`flex items-center justify-center w-8 h-8 rounded-full font-semibold text-sm transition-colors ${
+                className={`flex items-center justify-center w-5 h-5 md:w-8 md:h-8 rounded-full font-semibold text-[10px] md:text-sm transition-colors flex-shrink-0 ${
                   step.number < currentStep
                     ? "bg-accent text-primary-foreground"
                     : step.number === currentStep
@@ -124,15 +124,15 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
                 }`}
               >
                 {step.number < currentStep ? (
-                  <CheckCircle2 className="w-4 h-4" />
+                  <CheckCircle2 className="w-3 h-3 md:w-4 md:h-4" />
                 ) : (
                   step.number
                 )}
               </div>
 
-              {/* Step Label */}
+              {/* Step Label - Hidden on mobile */}
               <span
-                className={`ml-2 text-sm font-medium ${
+                className={`hidden md:inline ml-2 text-xs md:text-sm font-medium whitespace-nowrap ${
                   step.number <= currentStep ? "text-foreground" : mutedClass
                 }`}
               >
@@ -142,7 +142,7 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
               {/* Divider */}
               {index < allSteps.length - 1 && (
                 <div
-                  className={`flex-1 h-px mx-4 ${
+                  className={`flex-1 h-px mx-1 md:mx-3 min-w-[8px] ${
                     step.number < currentStep ? "bg-accent" : "bg-border"
                   }`}
                 />
@@ -150,12 +150,25 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
             </div>
           ))}
         </div>
+
+        {/* Current Step Title - Mobile Only */}
+        <div className="md:hidden text-center">
+          <p className="text-xs font-semibold text-foreground">
+            {
+              [
+                { number: 1, label: "Fund Account" },
+                { number: 2, label: "Payment Details" },
+                { number: 3, label: "Successful" },
+              ].find((s) => s.number === currentStep)?.label
+            }
+          </p>
+        </div>
       </div>
 
       {/* Step 1: Amount Selection */}
       {currentStep === 1 && (
-        <div className="space-y-6">
-          <p className={`text-sm ${mutedClass} leading-relaxed`}>
+        <div className="space-y-4 md:space-y-6">
+          <p className={`text-xs md:text-sm ${mutedClass} leading-relaxed`}>
             When topping up your account balance with credit card, the minimum
             amount is $250.00 and the maximum amount is $100000.00 a day. If you
             need to increase your limit, please{" "}
@@ -164,13 +177,13 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
             </span>
           </p>
 
-          <div className="space-y-4 max-w-md">
+          <div className="w-full space-y-4">
             {/* Quick Amount Selection */}
             <div className="space-y-2">
               <p className={`text-xs font-semibold ${mutedClass} uppercase`}>
                 Quick Select
               </p>
-              <div className="flex gap-3">
+              <div className="flex gap-2 md:gap-3 flex-wrap">
                 {["250", "1000", "5000"].map((value) => (
                   <button
                     key={value}
@@ -178,7 +191,7 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
                     onClick={() => {
                       setValue("amount", value, { shouldValidate: true });
                     }}
-                    className={`px-4 py-2 rounded-lg border-2 transition-colors ${
+                    className={`px-3 md:px-4 py-2 rounded-lg border-2 text-xs md:text-sm font-semibold transition-colors ${
                       amount === value
                         ? "border-accent bg-accent text-primary-foreground"
                         : `border-input text-foreground hover:border-accent hover:bg-accent/10`
@@ -192,39 +205,45 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
 
             {/* Amount Input */}
             <div className="space-y-2">
-              <label className="text-base font-bold text-foreground">
+              <label className="text-sm md:text-base font-bold text-foreground">
                 Amount to Add
               </label>
               <div className="flex items-center gap-2">
-                <span className="text-foreground font-semibold">$</span>
+                <span className="text-foreground font-semibold text-sm md:text-base">
+                  $
+                </span>
                 <input
                   type="text"
                   {...register("amount")}
                   placeholder="Enter Amount"
-                  className={`flex-1 px-4 py-2 rounded-lg border-2 ${
+                  className={`flex-1 px-3 md:px-4 py-2 rounded-lg border-2 text-xs md:text-sm ${
                     errors.amount ? "border-red-500" : "border-input"
                   } bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
                 />
               </div>
               {errors.amount && (
-                <p className="text-red-500 text-sm">{errors.amount.message}</p>
+                <p className="text-red-500 text-xs md:text-sm">
+                  {errors.amount.message}
+                </p>
               )}
             </div>
 
             {/* Payment Method Display */}
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground">
+              <label className="text-xs md:text-sm font-semibold text-foreground">
                 Payment Method
               </label>
-              <div className="flex items-center justify-between px-4 py-3 rounded-lg border border-border bg-card">
-                <div className="flex items-center gap-3">
-                  <span className="text-lg">💳</span>
-                  <span className="text-foreground">Card Payment</span>
+              <div className="flex items-center justify-between px-3 md:px-4 py-2 md:py-3 rounded-lg border border-border bg-card">
+                <div className="flex items-center gap-2 md:gap-3">
+                  <span className="text-lg md:text-xl">💳</span>
+                  <span className="text-xs md:text-sm text-foreground">
+                    Card Payment
+                  </span>
                 </div>
                 <button
                   type="button"
                   onClick={onChangeMethod}
-                  className="text-accent hover:text-accent/80 font-semibold text-sm"
+                  className="text-accent hover:text-accent/80 font-semibold text-xs md:text-sm"
                 >
                   CHANGE
                 </button>
@@ -236,10 +255,13 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
 
       {/* Step 2: Payment Details */}
       {currentStep === 2 && (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-4 md:space-y-6 w-full"
+        >
           {/* Security Notice */}
           <p
-            className={`text-sm ${mutedClass} leading-relaxed bg-blue-50 dark:bg-blue-950/20 p-3 rounded-lg border border-blue-200 dark:border-blue-800`}
+            className={`text-xs md:text-sm ${mutedClass} leading-relaxed bg-blue-50 dark:bg-blue-950/20 p-3 md:p-4 rounded-lg border border-blue-200 dark:border-blue-800`}
           >
             Citation invest uses secure, encrypted technology to store and
             handle your credit card information. Rest assured, the confidential
@@ -249,8 +271,8 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
 
           {/* Error Alert */}
           {error && (
-            <div className="p-3 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20">
-              <p className="text-red-600 dark:text-red-400 text-sm">
+            <div className="p-3 md:p-4 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20">
+              <p className="text-red-600 dark:text-red-400 text-xs md:text-sm">
                 {error instanceof Error
                   ? error.message
                   : "An error occurred during payment processing"}
@@ -259,8 +281,8 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
           )}
 
           {/* Card Details Section */}
-          <div className="space-y-4 max-w-md">
-            <h3 className="text-lg font-semibold text-foreground">
+          <div className="w-full space-y-3 md:space-y-4">
+            <h3 className="text-base md:text-lg font-semibold text-foreground">
               Card Details
             </h3>
 
@@ -269,34 +291,34 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
                 type="text"
                 placeholder="Name on Card"
                 {...register("nameOnCard")}
-                className={`w-full px-4 py-2 rounded-lg border-2 ${
+                className={`w-full px-3 md:px-4 py-2 rounded-lg border-2 text-xs md:text-sm ${
                   errors.nameOnCard ? "border-red-500" : "border-input"
                 } bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
               />
               {errors.nameOnCard && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="text-red-500 text-xs md:text-sm mt-1">
                   {errors.nameOnCard.message}
                 </p>
               )}
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2 md:space-y-3">
               <div>
                 <input
                   type="text"
                   placeholder="Card Number"
                   {...register("cardNumber")}
-                  className={`w-full px-4 py-2 rounded-lg border-2 ${
+                  className={`w-full px-3 md:px-4 py-2 rounded-lg border-2 text-xs md:text-sm ${
                     errors.cardNumber ? "border-red-500" : "border-input"
                   } bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
                 />
                 {errors.cardNumber && (
-                  <p className="text-red-500 text-sm mt-1">
+                  <p className="text-red-500 text-xs md:text-sm mt-1">
                     {errors.cardNumber.message}
                   </p>
                 )}
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2 md:gap-3">
                 <div>
                   <input
                     type="text"
@@ -304,13 +326,13 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
                     maxLength={5}
                     {...register("expiryDate")}
                     onChange={handleExpiryDateChange}
-                    className={`w-full px-4 py-2 rounded-lg border-2 ${
+                    className={`w-full px-3 md:px-4 py-2 rounded-lg border-2 text-xs md:text-sm ${
                       errors.expiryDate ? "border-red-500" : "border-input"
                     } bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
                     inputMode="numeric"
                   />
                   {errors.expiryDate && (
-                    <p className="text-red-500 text-sm mt-1">
+                    <p className="text-red-500 text-xs md:text-sm mt-1">
                       {errors.expiryDate.message}
                     </p>
                   )}
@@ -320,12 +342,12 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
                     type="text"
                     placeholder="CVV"
                     {...register("cvv")}
-                    className={`w-full px-4 py-2 rounded-lg border-2 ${
+                    className={`w-full px-3 md:px-4 py-2 rounded-lg border-2 text-xs md:text-sm ${
                       errors.cvv ? "border-red-500" : "border-input"
                     } bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
                   />
                   {errors.cvv && (
-                    <p className="text-red-500 text-sm mt-1">
+                    <p className="text-red-500 text-xs md:text-sm mt-1">
                       {errors.cvv.message}
                     </p>
                   )}
@@ -335,11 +357,11 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
           </div>
 
           {/* Form Actions */}
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-2 md:gap-3 pt-2 md:pt-4 w-full">
             <button
               type="button"
               onClick={() => setCurrentStep(currentStep - 1)}
-              className="inline-flex items-center gap-2 px-6 py-2 bg-muted text-foreground font-semibold rounded-lg hover:bg-muted/80 transition-colors disabled:opacity-50"
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-muted text-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-muted/80 transition-colors disabled:opacity-50"
               disabled={isPending}
             >
               ← Previous
@@ -347,7 +369,7 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
             <button
               type="submit"
               disabled={!isValid || isPending}
-              className="inline-flex items-center gap-2 px-6 py-2 bg-accent text-primary-foreground font-semibold rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-accent text-primary-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isPending ? "Processing..." : "Submit Payment"}
               <span>→</span>
@@ -358,12 +380,12 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
 
       {/* Step 3: Processing */}
       {currentStep === 3 && (
-        <div className="space-y-6 text-center py-8">
+        <div className="space-y-4 md:space-y-6 text-center py-6 md:py-8">
           {/* Loading Spinner */}
           <div className="flex justify-center">
             <div className="animate-spin">
               <svg
-                className="w-12 h-12 text-accent"
+                className="w-8 h-8 md:w-12 md:h-12 text-accent"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -386,22 +408,22 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
           </div>
 
           {/* Payment Processing Heading */}
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-foreground">
+          <div className="space-y-3 md:space-y-4">
+            <h2 className="text-xl md:text-2xl font-bold text-foreground">
               Payment Processing
             </h2>
 
             {/* Status Messages */}
-            <div className={`space-y-3 ${mutedClass}`}>
-              <p className="text-sm leading-relaxed">
+            <div className={`space-y-2 md:space-y-3 ${mutedClass}`}>
+              <p className="text-xs md:text-sm leading-relaxed">
                 Your payment is under review
               </p>
-              <p className="text-sm leading-relaxed">
+              <p className="text-xs md:text-sm leading-relaxed">
                 as part of compliance and regulation, the account department
                 <br />
                 may call the client to complete verification.
               </p>
-              <p className="text-sm leading-relaxed">
+              <p className="text-xs md:text-sm leading-relaxed">
                 Once payment is approved and verified, the account will be
                 funded.
               </p>
@@ -409,14 +431,14 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
           </div>
 
           {/* Okay Button */}
-          <div className="pt-4">
+          <div className="pt-2 md:pt-4">
             <button
               type="button"
               onClick={() => {
                 setCurrentStep(1);
                 reset();
               }}
-              className="inline-flex items-center gap-2 px-8 py-2 bg-accent text-primary-foreground font-semibold rounded-lg hover:bg-accent/90 transition-colors"
+              className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 md:px-8 py-2 bg-accent text-primary-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors"
             >
               Okay
             </button>
@@ -426,11 +448,11 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
 
       {/* Navigation Buttons - Step 1 Only */}
       {currentStep === 1 && (
-        <div className="flex gap-3 pt-4">
+        <div className="flex gap-2 md:gap-3 pt-2 md:pt-4 w-full">
           <button
             type="button"
             onClick={onChangeMethod}
-            className="inline-flex items-center gap-2 px-6 py-2 bg-muted text-foreground font-semibold rounded-lg hover:bg-muted/80 transition-colors"
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-muted text-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-muted/80 transition-colors"
           >
             ← Previous
           </button>
@@ -438,7 +460,7 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
             type="button"
             onClick={() => setCurrentStep(currentStep + 1)}
             disabled={!amount || !!errors.amount}
-            className="inline-flex items-center gap-2 px-6 py-2 bg-accent text-primary-foreground font-semibold rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-accent text-primary-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next
             <span>→</span>
