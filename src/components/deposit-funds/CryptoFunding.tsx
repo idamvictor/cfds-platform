@@ -74,8 +74,8 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
         <div className="flex items-center justify-between max-w-2xl">
           {[
             { number: 1, label: "Network" },
-            { number: 2, label: "Step 2" },
-            { number: 3, label: "Step 3" },
+            { number: 2, label: "Address" },
+            { number: 3, label: "Confirm" },
           ].map((step, index, allSteps) => (
             <div key={step.number} className="flex items-center flex-1">
               {/* Step Circle */}

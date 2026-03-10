@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useMutedTextClass } from "@/hooks/useMutedTextClass";
 import CardFunding from "./CardFunding";
 import CryptoFunding from "./CryptoFunding";
@@ -52,77 +51,105 @@ const DepositFunds = () => {
           Payment Method
         </h3>
 
-        <RadioGroup value={selectedMethod} onValueChange={setSelectedMethod}>
-          <div className="space-y-4">
-            {/* Card Payment Option */}
-            <div
-              className={`flex items-start space-x-4 rounded-lg border p-4 cursor-pointer transition-colors ${
-                selectedMethod === "card"
-                  ? "border-accent bg-accent/5"
-                  : "border-border hover:bg-card/50"
-              }`}
-              onClick={() => setSelectedMethod("card")}
-            >
-              <RadioGroupItem value="card" id="card" className="mt-1" />
-              <div className="flex-1">
-                <label
-                  htmlFor="card"
-                  className="flex items-center gap-2 cursor-pointer"
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Card Payment Option */}
+          <div
+            onClick={() => setSelectedMethod("card")}
+            className={`rounded-2xl border-2 p-6 cursor-pointer transition-all ${
+              selectedMethod === "card"
+                ? "border-accent bg-accent/5 shadow-md"
+                : "border-border hover:border-border/80 hover:shadow-sm"
+            }`}
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg">
+                <svg
+                  className="w-6 h-6 text-blue-600"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  <div className="w-6 h-6 bg-muted-foreground/20 rounded flex items-center justify-center">
-                    <span className="text-xs">💳</span>
-                  </div>
-                  <span className="font-semibold text-foreground">
-                    Card Payment
-                  </span>
-                </label>
-                <p className={`text-sm ${mutedClass} mt-2`}>
-                  We accept Visa, Mastercard, American Express and Discover
-                </p>
+                  <path d="M20 8H4V6h16m0 12H4v-6h16m0-8H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
+                </svg>
               </div>
+              {selectedMethod === "card" && (
+                <div className="flex items-center justify-center w-6 h-6 bg-accent rounded-full">
+                  <svg
+                    className="w-4 h-4 text-white"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                  </svg>
+                </div>
+              )}
             </div>
-
-            {/* Crypto Payment Option */}
-            <div
-              className={`flex items-start space-x-4 rounded-lg border p-4 cursor-pointer transition-colors ${
-                selectedMethod === "crypto"
-                  ? "border-accent bg-accent/5"
-                  : "border-border hover:bg-card/50"
-              }`}
-              onClick={() => setSelectedMethod("crypto")}
-            >
-              <RadioGroupItem value="crypto" id="crypto" className="mt-1" />
-              <div className="flex-1">
-                <label
-                  htmlFor="crypto"
-                  className="flex items-center gap-2 cursor-pointer"
-                >
-                  <div className="w-6 h-6 bg-muted-foreground/20 rounded flex items-center justify-center">
-                    <span className="text-xs">₿</span>
-                  </div>
-                  <span className="font-semibold text-foreground">
-                    Crypto Payment
-                  </span>
-                </label>
-                <p className={`text-sm ${mutedClass} mt-2`}>
-                  We accept Bitcoin, Ethereum, and other cryptocurrencies
-                </p>
-              </div>
+            <h4 className="text-lg font-semibold text-foreground mb-1">
+              Credit/Debit Card
+            </h4>
+            <div className="flex items-center gap-1 text-accent text-sm mb-2">
+              <span>⚡</span>
+              <span>Instant processing</span>
             </div>
+            <p className={`text-sm ${mutedClass}`}>
+              Visa, Mastercard, Amex, Discover
+            </p>
           </div>
-        </RadioGroup>
+
+          {/* Crypto Payment Option */}
+          <div
+            onClick={() => setSelectedMethod("crypto")}
+            className={`rounded-2xl border-2 p-6 cursor-pointer transition-all ${
+              selectedMethod === "crypto"
+                ? "border-accent bg-accent/5 shadow-md"
+                : "border-border hover:border-border/80 hover:shadow-sm"
+            }`}
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-lg">
+                <svg
+                  className="w-6 h-6 text-gray-700"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6z" />
+                </svg>
+              </div>
+              {selectedMethod === "crypto" && (
+                <div className="flex items-center justify-center w-6 h-6 bg-accent rounded-full">
+                  <svg
+                    className="w-4 h-4 text-white"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                  </svg>
+                </div>
+              )}
+            </div>
+            <h4 className="text-lg font-semibold text-foreground mb-1">
+              Cryptocurrency
+            </h4>
+            <div className="flex items-center gap-1 text-accent text-sm mb-2">
+              <span>⏱</span>
+              <span>Instant</span>
+            </div>
+            <p className={`text-sm ${mutedClass}`}>BTC, ETH, USDT, and more</p>
+          </div>
+        </div>
       </div>
 
       {/* Next Button */}
-      <div className="flex gap-3 pt-4">
-        <button
-          onClick={() => setShowCardFunding(true)}
-          className="inline-flex items-center gap-2 px-6 py-2 bg-accent text-primary-foreground font-semibold rounded-lg hover:bg-accent/90 transition-colors"
-        >
-          Next
-          <span>→</span>
-        </button>
-      </div>
+      {selectedMethod && (
+        <div className="flex gap-3 pt-4">
+          <button
+            onClick={() => setShowCardFunding(true)}
+            className="inline-flex items-center gap-2 px-6 py-2 bg-accent text-primary-foreground font-semibold rounded-lg hover:bg-accent/90 transition-colors"
+          >
+            Next
+            <span>→</span>
+          </button>
+        </div>
+      )}
 
       {/* Deposit History */}
       <DepositHistory />
