@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutedTextClass } from "@/hooks/useMutedTextClass";
 import CardFunding from "./CardFunding";
 import CryptoFunding from "./CryptoFunding";
-import DepositHistory from "@/components/deposit-history";
+// import DepositHistory from "@/components/deposit-history";
 
 const DepositFunds = () => {
   const [selectedMethod, setSelectedMethod] = useState("card");
@@ -11,7 +11,7 @@ const DepositFunds = () => {
 
   if (showCardFunding) {
     return (
-      <div className="px-10">
+      <div className="px-4 md:px-6 lg:px-10">
         {" "}
         {selectedMethod === "card" ? (
           <CardFunding onChangeMethod={() => setShowCardFunding(false)} />
@@ -23,10 +23,10 @@ const DepositFunds = () => {
   }
 
   return (
-    <div className="space-y-6 text-foreground px-10">
+    <div className="space-y-6 text-foreground px-4 md:px-6 lg:px-10">
       {/* Info Text */}
       <div className="space-y-4">
-        <p className={`text-sm ${mutedClass} leading-relaxed`}>
+        <p className={`text-xs md:text-sm ${mutedClass} leading-relaxed`}>
           You can speed up the checkout process by ensuring ahead of time that
           you have adequate funds in your account to cover all planned
           purchases. On this page, you can top-up your account funds using any
@@ -37,7 +37,7 @@ const DepositFunds = () => {
           </span>
         </p>
 
-        <p className={`text-sm ${mutedClass} leading-relaxed`}>
+        <p className={`text-xs md:text-sm ${mutedClass} leading-relaxed`}>
           When topping up your balance, please note: Per our fraud control
           guidelines, some transactions (especially those involving third-party
           payments) may require additional verification. In some cases, we'll
@@ -47,24 +47,24 @@ const DepositFunds = () => {
 
       {/* Payment Method Section */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-foreground">
+        <h3 className="text-base md:text-lg font-semibold text-foreground">
           Payment Method
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
           {/* Card Payment Option */}
           <div
             onClick={() => setSelectedMethod("card")}
-            className={`rounded-2xl border-2 p-6 cursor-pointer transition-all ${
+            className={`rounded-lg md:rounded-2xl border-2 p-4 md:p-6 cursor-pointer transition-all ${
               selectedMethod === "card"
                 ? "border-accent bg-accent/5 shadow-md"
                 : "border-border hover:border-border/80 hover:shadow-sm"
             }`}
           >
             <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg">
+              <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-lg flex-shrink-0">
                 <svg
-                  className="w-6 h-6 text-blue-600"
+                  className="w-5 h-5 md:w-6 md:h-6 text-blue-600"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -72,9 +72,9 @@ const DepositFunds = () => {
                 </svg>
               </div>
               {selectedMethod === "card" && (
-                <div className="flex items-center justify-center w-6 h-6 bg-accent rounded-full">
+                <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 bg-accent rounded-full flex-shrink-0">
                   <svg
-                    className="w-4 h-4 text-white"
+                    className="w-3 h-3 md:w-4 md:h-4 text-white"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -83,14 +83,14 @@ const DepositFunds = () => {
                 </div>
               )}
             </div>
-            <h4 className="text-lg font-semibold text-foreground mb-1">
+            <h4 className="text-base md:text-lg font-semibold text-foreground mb-1">
               Credit/Debit Card
             </h4>
-            <div className="flex items-center gap-1 text-accent text-sm mb-2">
+            <div className="flex items-center gap-1 text-accent text-xs md:text-sm mb-2">
               <span>⚡</span>
               <span>Instant processing</span>
             </div>
-            <p className={`text-sm ${mutedClass}`}>
+            <p className={`text-xs md:text-sm ${mutedClass}`}>
               Visa, Mastercard, Amex, Discover
             </p>
           </div>
@@ -98,16 +98,16 @@ const DepositFunds = () => {
           {/* Crypto Payment Option */}
           <div
             onClick={() => setSelectedMethod("crypto")}
-            className={`rounded-2xl border-2 p-6 cursor-pointer transition-all ${
+            className={`rounded-lg md:rounded-2xl border-2 p-4 md:p-6 cursor-pointer transition-all ${
               selectedMethod === "crypto"
                 ? "border-accent bg-accent/5 shadow-md"
                 : "border-border hover:border-border/80 hover:shadow-sm"
             }`}
           >
             <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-lg">
+              <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-gray-100 rounded-lg flex-shrink-0">
                 <svg
-                  className="w-6 h-6 text-gray-700"
+                  className="w-5 h-5 md:w-6 md:h-6 text-gray-700"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -115,9 +115,9 @@ const DepositFunds = () => {
                 </svg>
               </div>
               {selectedMethod === "crypto" && (
-                <div className="flex items-center justify-center w-6 h-6 bg-accent rounded-full">
+                <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 bg-accent rounded-full flex-shrink-0">
                   <svg
-                    className="w-4 h-4 text-white"
+                    className="w-3 h-3 md:w-4 md:h-4 text-white"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -126,14 +126,16 @@ const DepositFunds = () => {
                 </div>
               )}
             </div>
-            <h4 className="text-lg font-semibold text-foreground mb-1">
+            <h4 className="text-base md:text-lg font-semibold text-foreground mb-1">
               Cryptocurrency
             </h4>
-            <div className="flex items-center gap-1 text-accent text-sm mb-2">
+            <div className="flex items-center gap-1 text-accent text-xs md:text-sm mb-2">
               <span>⏱</span>
               <span>Instant</span>
             </div>
-            <p className={`text-sm ${mutedClass}`}>BTC, ETH, USDT, and more</p>
+            <p className={`text-xs md:text-sm ${mutedClass}`}>
+              BTC, ETH, USDT, and more
+            </p>
           </div>
         </div>
       </div>
@@ -143,7 +145,7 @@ const DepositFunds = () => {
         <div className="flex gap-3 pt-4">
           <button
             onClick={() => setShowCardFunding(true)}
-            className="inline-flex items-center gap-2 px-6 py-2 bg-accent text-primary-foreground font-semibold rounded-lg hover:bg-accent/90 transition-colors"
+            className="w-full md:w-auto inline-flex items-center justify-center md:justify-start gap-2 px-6 py-2 bg-accent text-primary-foreground font-semibold rounded-lg hover:bg-accent/90 transition-colors"
           >
             Next
             <span>→</span>
@@ -152,7 +154,7 @@ const DepositFunds = () => {
       )}
 
       {/* Deposit History */}
-      <DepositHistory />
+      {/* <DepositHistory /> */}
     </div>
   );
 };
