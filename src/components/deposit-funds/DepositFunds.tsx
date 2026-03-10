@@ -2,6 +2,7 @@ import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useMutedTextClass } from "@/hooks/useMutedTextClass";
 import CardFunding from "./CardFunding";
+import CryptoFunding from "./CryptoFunding";
 import DepositHistory from "@/components/deposit-history";
 
 const DepositFunds = () => {
@@ -13,7 +14,11 @@ const DepositFunds = () => {
     return (
       <div className="px-10">
         {" "}
-        <CardFunding onChangeMethod={() => setShowCardFunding(false)} />
+        {selectedMethod === "card" ? (
+          <CardFunding onChangeMethod={() => setShowCardFunding(false)} />
+        ) : (
+          <CryptoFunding onChangeMethod={() => setShowCardFunding(false)} />
+        )}
       </div>
     );
   }
@@ -73,6 +78,34 @@ const DepositFunds = () => {
                 </label>
                 <p className={`text-sm ${mutedClass} mt-2`}>
                   We accept Visa, Mastercard, American Express and Discover
+                </p>
+              </div>
+            </div>
+
+            {/* Crypto Payment Option */}
+            <div
+              className={`flex items-start space-x-4 rounded-lg border p-4 cursor-pointer transition-colors ${
+                selectedMethod === "crypto"
+                  ? "border-accent bg-accent/5"
+                  : "border-border hover:bg-card/50"
+              }`}
+              onClick={() => setSelectedMethod("crypto")}
+            >
+              <RadioGroupItem value="crypto" id="crypto" className="mt-1" />
+              <div className="flex-1">
+                <label
+                  htmlFor="crypto"
+                  className="flex items-center gap-2 cursor-pointer"
+                >
+                  <div className="w-6 h-6 bg-muted-foreground/20 rounded flex items-center justify-center">
+                    <span className="text-xs">₿</span>
+                  </div>
+                  <span className="font-semibold text-foreground">
+                    Crypto Payment
+                  </span>
+                </label>
+                <p className={`text-sm ${mutedClass} mt-2`}>
+                  We accept Bitcoin, Ethereum, and other cryptocurrencies
                 </p>
               </div>
             </div>
