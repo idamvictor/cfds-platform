@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutedTextClass } from "@/hooks/useMutedTextClass";
 import CardFunding from "./CardFunding";
 import CryptoFunding from "./CryptoFunding";
-// import DepositHistory from "@/components/deposit-history";
+import DepositHistory from "@/components/deposit-history";
 
 const DepositFunds = () => {
   const [selectedMethod, setSelectedMethod] = useState("card");
@@ -154,7 +154,7 @@ const DepositFunds = () => {
       )}
 
       {/* Deposit History */}
-      {/* <DepositHistory /> */}
+      <DepositHistory />
     </div>
   );
 };
