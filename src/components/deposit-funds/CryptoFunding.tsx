@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   CheckCircle2,
   Info,
@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import { useMutedTextClass } from "@/hooks/useMutedTextClass";
 import { useStepNumberColor } from "@/hooks/useStepNumberColor";
+import useDataStore from "@/store/dataStore";
+import { useDepositMutation } from "@/services/deposit/deposit-queries";
 
 interface CryptoFundingProps {
   onChangeMethod: () => void;
@@ -17,54 +19,62 @@ interface CryptoFundingProps {
 
 const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [selectedCrypto, setSelectedCrypto] = useState("usdc");
+  const [selectedWallet, setSelectedWallet] = useState<string | null>(null);
+  const [depositAmount, setDepositAmount] = useState<string>("");
   const [copied, setCopied] = useState(false);
   const mutedClass = useMutedTextClass();
   const stepNumberColor = useStepNumberColor();
 
-  const depositAddress = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivNa";
+  const { data } = useDataStore();
+  const depositMutation = useDepositMutation();
+
+  const wallets = useMemo(() => data?.wallets || [], [data?.wallets]);
+  const cryptoNetworks = useMemo(
+    () => data?.crypto_networks || [],
+    [data?.crypto_networks],
+  );
+
+  // Set first wallet as default
+  useEffect(() => {
+    if (wallets.length > 0 && !selectedWallet) {
+      setSelectedWallet(wallets[0].id);
+    }
+  }, [wallets, selectedWallet]);
+
+  const selectedWalletData = wallets.find((w) => w.id === selectedWallet);
 
   const handleCopyAddress = () => {
-    navigator.clipboard.writeText(depositAddress);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (selectedWalletData) {
+      navigator.clipboard.writeText(selectedWalletData.address);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
-  const cryptoOptions = [
-    {
-      id: "btc",
-      name: "Bitcoin",
-      symbol: "BTC",
-      price: "$64,240.21",
-      change: "+1.24%",
-      icon: "₿",
-    },
-    {
-      id: "eth",
-      name: "Ethereum",
-      symbol: "ETH",
-      price: "$3,452.12",
-      change: "-0.45%",
-      icon: "Ξ",
-    },
-    {
-      id: "usdt",
-      name: "Tether",
-      symbol: "USDT",
-      price: "$1.00",
-      change: "0.00%",
-      icon: "₮",
-    },
-    {
-      id: "usdc",
-      name: "USD Coin",
-      symbol: "USDC",
-      price: "$1.00",
-      change: "0.00%",
-      icon: "◇",
-      selected: true,
-    },
-  ];
+  const handleSubmitDeposit = async () => {
+    if (!depositAmount || !selectedWallet) return;
+
+    try {
+      await depositMutation.mutateAsync({
+        amount: parseFloat(depositAmount),
+        method: "crypto",
+        wallet_id: selectedWallet,
+        card_holder_name: "",
+        card_number: "",
+        exp_date: "",
+        csv: "",
+      });
+    } catch (error) {
+      console.error("Deposit submission failed:", error);
+    }
+  };
+
+  const handleNextStep = () => {
+    if (currentStep === 2) {
+      handleSubmitDeposit();
+    }
+    setCurrentStep(currentStep + 1);
+  };
 
   return (
     <div className="space-y-6 text-foreground min-h-[550px]">
@@ -123,14 +133,14 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Crypto Selection Cards */}
             <div className="lg:col-span-2 space-y-4">
-              {/* Crypto Cards Grid */}
+              {/* Wallet Cards Grid */}
               <div className="grid grid-cols-2 gap-4">
-                {cryptoOptions.map((crypto) => (
+                {wallets.map((wallet) => (
                   <div
-                    key={crypto.id}
-                    onClick={() => setSelectedCrypto(crypto.id)}
+                    key={wallet.id}
+                    onClick={() => setSelectedWallet(wallet.id)}
                     className={`p-4 rounded-lg border-2 cursor-pointer transition-all relative ${
-                      selectedCrypto === crypto.id
+                      selectedWallet === wallet.id
                         ? "border-blue-500 bg-blue-50 dark:border-blue-500 dark:bg-blue-900/40"
                         : "border-border bg-card dark:bg-slate-800 hover:border-border/80"
                     }`}
@@ -138,35 +148,36 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
                     <div className="flex items-center gap-3">
                       {/* Icon */}
                       <div className="flex-shrink-0">
-                        <div className="text-3xl">{crypto.icon}</div>
+                        <div className="text-3xl">
+                          {wallet.crypto === "BTC"
+                            ? "₿"
+                            : wallet.crypto === "ETH"
+                              ? "Ξ"
+                              : "◇"}
+                        </div>
                       </div>
 
-                      {/* Name and Symbol */}
+                      {/* Name and Network */}
                       <div className="flex-grow">
                         <p className="font-semibold text-foreground text-sm">
-                          {crypto.name}
+                          {wallet.crypto}
                         </p>
                         <p className={`text-xs ${mutedClass}`}>
-                          {crypto.symbol}
+                          {wallet.crypto_network}
                         </p>
                       </div>
 
-                      {/* Price and Change */}
+                      {/* Type Badge */}
                       <div className="flex-shrink-0 text-right">
-                        <p className="font-semibold text-foreground text-sm">
-                          {crypto.price}
-                        </p>
-                        <p
-                          className={`text-xs ${
-                            crypto.change.startsWith("+")
-                              ? "text-green-600 dark:text-green-400"
-                              : crypto.change.startsWith("0")
-                                ? mutedClass
-                                : "text-red-600 dark:text-red-400"
+                        <span
+                          className={`text-xs font-semibold px-2 py-1 rounded ${
+                            wallet.type === "wallet"
+                              ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
+                              : "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
                           }`}
                         >
-                          {crypto.change}
-                        </p>
+                          {wallet.type === "wallet" ? "Wallet" : "Link"}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -260,46 +271,100 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
       )}
 
       {/* Step 2: Select Network and Get Deposit Address */}
-      {currentStep === 2 && (
+      {currentStep === 2 && selectedWallet && (
         <div className="space-y-6">
           {/* Description */}
           <p className={`text-sm ${mutedClass}`}>
-            Select your preferred network and get your deposit address.
+            Confirm your deposit method and get your deposit address.
           </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Left Side: Select Coin, Network, and Warning */}
+            {/* Left Side: Selected Wallet and Networks */}
             <div className="space-y-4">
-              {/* Select Coin */}
+              {/* Selected Wallet */}
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-foreground">
-                  Select Coin
+                  Deposit Method
                 </label>
                 <div className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card dark:bg-slate-800">
                   <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                    ₿
+                    {wallets.find((w) => w.id === selectedWallet)?.crypto ===
+                    "BTC"
+                      ? "₿"
+                      : "◇"}
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-foreground">
-                      Bitcoin
+                      {wallets.find((w) => w.id === selectedWallet)?.crypto}
                     </p>
-                    <p className={`text-xs ${mutedClass}`}>BTC</p>
+                    <p className={`text-xs ${mutedClass}`}>
+                      {
+                        wallets.find((w) => w.id === selectedWallet)
+                          ?.crypto_network
+                      }
+                    </p>
                   </div>
-                  <RotateCw className="w-4 h-4 text-foreground" />
+                  <span
+                    className={`text-xs font-semibold px-2 py-1 rounded ${
+                      wallets.find((w) => w.id === selectedWallet)?.type ===
+                      "wallet"
+                        ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
+                        : "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
+                    }`}
+                  >
+                    {wallets.find((w) => w.id === selectedWallet)?.type ===
+                    "wallet"
+                      ? "Wallet"
+                      : "Link"}
+                  </span>
                 </div>
               </div>
 
-              {/* Select Network */}
+              {/* Available Networks */}
+              {cryptoNetworks.length > 0 && (
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-foreground">
+                    Available Networks
+                  </label>
+                  <div className="space-y-2 max-h-40 overflow-y-auto">
+                    {cryptoNetworks.map((network) => (
+                      <div
+                        key={network}
+                        className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card dark:bg-slate-800"
+                      >
+                        <p className="flex-1 text-sm text-foreground">
+                          {network}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Deposit Amount */}
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-foreground">
-                  Select Network
+                  Deposit Amount
                 </label>
-                <div className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card dark:bg-slate-800">
-                  <p className="flex-1 text-sm text-foreground">
-                    Bitcoin (BTC)
-                  </p>
-                  <RotateCw className="w-4 h-4 text-foreground" />
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    value={depositAmount}
+                    onChange={(e) => setDepositAmount(e.target.value)}
+                    placeholder="Enter amount"
+                    className="flex-1 px-3 py-2 rounded-lg border border-border bg-card dark:bg-slate-800 text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+                  />
+                  <span className="px-3 py-2 text-sm font-semibold text-foreground bg-card dark:bg-slate-800 rounded-lg border border-border">
+                    {wallets.find((w) => w.id === selectedWallet)?.crypto ||
+                      "BTC"}
+                  </span>
                 </div>
+                {depositAmount && (
+                  <p className={`text-xs ${mutedClass}`}>
+                    You will deposit {depositAmount}{" "}
+                    {wallets.find((w) => w.id === selectedWallet)?.crypto}
+                  </p>
+                )}
               </div>
 
               {/* Safety Warning */}
@@ -313,9 +378,15 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
                     <p
                       className={`text-sm leading-relaxed mt-1 text-yellow-800 dark:text-yellow-300`}
                     >
-                      Ensure you are sending Bitcoin (BTC) only to this address
-                      via the BTC network. Sending any other asset or using a
-                      different network may result in permanent loss of funds.
+                      Ensure you are sending{" "}
+                      {wallets.find((w) => w.id === selectedWallet)?.crypto}{" "}
+                      only to this address via the{" "}
+                      {
+                        wallets.find((w) => w.id === selectedWallet)
+                          ?.crypto_network
+                      }{" "}
+                      network. Sending any other asset or using a different
+                      network may result in permanent loss of funds.
                     </p>
                   </div>
                 </div>
@@ -327,133 +398,24 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
               {/* QR Code Section */}
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-foreground">
-                  Scan QR code to deposit
+                  {selectedWalletData?.barcode
+                    ? "Scan QR code to deposit"
+                    : "Deposit Information"}
                 </label>
                 <div className="flex items-center justify-center p-8 rounded-lg bg-black dark:bg-black">
-                  <div className="w-48 h-48 bg-white rounded-lg flex items-center justify-center">
-                    <div className="text-center">
-                      <svg
-                        className="w-24 h-24"
-                        viewBox="0 0 100 100"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        {/* Simple QR code placeholder */}
-                        <rect
-                          x="10"
-                          y="10"
-                          width="10"
-                          height="10"
-                          fill="black"
-                        />
-                        <rect
-                          x="20"
-                          y="10"
-                          width="10"
-                          height="10"
-                          fill="black"
-                        />
-                        <rect
-                          x="30"
-                          y="10"
-                          width="10"
-                          height="10"
-                          fill="black"
-                        />
-                        <rect
-                          x="10"
-                          y="20"
-                          width="10"
-                          height="10"
-                          fill="black"
-                        />
-                        <rect
-                          x="30"
-                          y="20"
-                          width="10"
-                          height="10"
-                          fill="black"
-                        />
-                        <rect
-                          x="10"
-                          y="30"
-                          width="10"
-                          height="10"
-                          fill="black"
-                        />
-                        <rect
-                          x="20"
-                          y="30"
-                          width="10"
-                          height="10"
-                          fill="black"
-                        />
-                        <rect
-                          x="30"
-                          y="30"
-                          width="10"
-                          height="10"
-                          fill="black"
-                        />
-                        <rect
-                          x="50"
-                          y="50"
-                          width="10"
-                          height="10"
-                          fill="black"
-                        />
-                        <rect
-                          x="60"
-                          y="50"
-                          width="10"
-                          height="10"
-                          fill="black"
-                        />
-                        <rect
-                          x="70"
-                          y="50"
-                          width="10"
-                          height="10"
-                          fill="black"
-                        />
-                        <rect
-                          x="50"
-                          y="60"
-                          width="10"
-                          height="10"
-                          fill="black"
-                        />
-                        <rect
-                          x="70"
-                          y="60"
-                          width="10"
-                          height="10"
-                          fill="black"
-                        />
-                        <rect
-                          x="50"
-                          y="70"
-                          width="10"
-                          height="10"
-                          fill="black"
-                        />
-                        <rect
-                          x="60"
-                          y="70"
-                          width="10"
-                          height="10"
-                          fill="black"
-                        />
-                        <rect
-                          x="70"
-                          y="70"
-                          width="10"
-                          height="10"
-                          fill="black"
-                        />
-                      </svg>
+                  {selectedWalletData?.barcode ? (
+                    <img
+                      src={selectedWalletData.barcode}
+                      alt="QR Code"
+                      className="w-48 h-48 object-contain rounded-lg"
+                    />
+                  ) : (
+                    <div className="w-48 h-48 bg-gray-300 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                      <span className={`text-sm ${mutedClass}`}>
+                        No QR code available
+                      </span>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
 
@@ -461,7 +423,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
               <div className="flex items-center gap-2">
                 <div className="flex-1 p-3 rounded-lg border border-border bg-card dark:bg-slate-800">
                   <span className={`text-sm break-all ${mutedClass}`}>
-                    {depositAddress}
+                    {selectedWalletData?.address || "No address"}
                   </span>
                 </div>
 
@@ -520,65 +482,107 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
       {currentStep === 3 && (
         <div className="space-y-6 text-center py-8">
           {/* Loading Spinner */}
-          <div className="flex justify-center">
-            <div className="animate-spin">
-              <svg
-                className="w-12 h-12 text-accent"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
+          {depositMutation.isPending && (
+            <div className="flex justify-center">
+              <div className="animate-spin">
+                <svg
+                  className="w-12 h-12 text-accent"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Payment Processing Heading */}
           <div className="space-y-4">
             <h2 className="text-2xl font-bold text-foreground">
-              Payment Processing
+              {depositMutation.isPending
+                ? "Payment Processing"
+                : depositMutation.isSuccess
+                  ? "Waiting for Confirmation"
+                  : "Deposit Failed"}
             </h2>
 
             {/* Status Messages */}
             <div className={`space-y-3 ${mutedClass}`}>
-              <p className="text-sm leading-relaxed">
-                Your crypto deposit is being processed
-              </p>
-              <p className="text-sm leading-relaxed">
-                once the required blockchain confirmations are complete,
-                <br />
-                your funds will appear in your trading account.
-              </p>
-              <p className="text-sm leading-relaxed">
-                This process typically takes 10-60 minutes depending on network
-                congestion.
-              </p>
+              {depositMutation.isSuccess &&
+                selectedWalletData &&
+                depositAmount && (
+                  <p className="text-sm leading-relaxed">
+                    Your deposit of{" "}
+                    <span className="text-foreground font-semibold">
+                      {depositAmount} {selectedWalletData.crypto}
+                    </span>{" "}
+                    is being processed on the{" "}
+                    <span className="text-foreground font-semibold">
+                      {selectedWalletData.crypto_network}
+                    </span>{" "}
+                    network. Funds will appear in your account after
+                    confirmations.
+                  </p>
+                )}
+
+              {depositMutation.isPending && (
+                <>
+                  <p className="text-lg font-semibold text-foreground">
+                    Sending {depositAmount} {selectedWalletData?.crypto}
+                  </p>
+                  <p className="text-sm leading-relaxed">
+                    Your crypto deposit is being processed
+                  </p>
+                  <p className="text-sm leading-relaxed">
+                    once the required blockchain confirmations are complete,
+                    <br />
+                    your funds will appear in your trading account.
+                  </p>
+                  <p className="text-sm leading-relaxed">
+                    This process typically takes 10-60 minutes depending on
+                    network congestion.
+                  </p>
+                </>
+              )}
+
+              {depositMutation.isError && (
+                <p className="text-sm leading-relaxed text-red-600 dark:text-red-400">
+                  {depositMutation.error instanceof Error
+                    ? depositMutation.error.message
+                    : "Failed to submit deposit. Please try again."}
+                </p>
+              )}
             </div>
           </div>
 
-          {/* Okay Button */}
+          {/* Action Buttons */}
           <div className="pt-4">
-            <button
-              type="button"
-              onClick={() => {
-                setCurrentStep(1);
-              }}
-              className="inline-flex items-center gap-2 px-8 py-2 bg-accent text-primary-foreground font-semibold rounded-lg hover:bg-accent/90 transition-colors"
-            >
-              Okay
-            </button>
+            {!depositMutation.isPending && (
+              <button
+                type="button"
+                onClick={() => {
+                  setCurrentStep(1);
+                  setDepositAmount("");
+                  depositMutation.reset();
+                }}
+                className="inline-flex items-center gap-2 px-8 py-2 bg-accent text-primary-foreground font-semibold rounded-lg hover:bg-accent/90 transition-colors"
+              >
+                {depositMutation.isSuccess ? "Deposit Another" : "Try Again"}
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -606,8 +610,9 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
         {currentStep < 3 && (
           <button
             type="button"
-            onClick={() => setCurrentStep(currentStep + 1)}
-            className="inline-flex items-center gap-2 px-6 py-2 bg-accent text-primary-foreground font-semibold rounded-lg hover:bg-accent/90 transition-colors"
+            onClick={handleNextStep}
+            disabled={currentStep === 2 && (!depositAmount || !selectedWallet)}
+            className="inline-flex items-center gap-2 px-6 py-2 bg-accent text-primary-foreground font-semibold rounded-lg hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Next
             <span>→</span>
