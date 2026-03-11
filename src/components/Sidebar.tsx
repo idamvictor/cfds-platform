@@ -111,8 +111,10 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
         >
           {/* Scrollable indicator for mobile - up arrow */}
           {showScrollUpIndicator && (
-            <div className="md:hidden h-8 bg-gradient-to-b from-[#1E223D] to-transparent pointer-events-none sticky top-3 flex items-start justify-center z-10">
-              <div className="text-gray-500 text-xs animate-bounce">↑</div>
+            <div className="md:hidden h-10 bg-gradient-to-b from-[#1E223D] via-[#1E223D] to-transparent pointer-events-none sticky top-0 flex items-start justify-center z-10">
+              <div className="text-[#52e5ab] text-lg font-bold animate-bounce drop-shadow-lg">
+                ↑
+              </div>
             </div>
           )}
           <nav className="py-4 w-full">
@@ -156,8 +158,10 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
           </nav>
           {/* Scrollable indicator for mobile */}
           {showScrollIndicator && (
-            <div className="md:hidden h-8 bg-gradient-to-t from-[#1E223D] to-transparent pointer-events-none sticky bottom-0 flex items-end justify-center">
-              <div className="text-gray-500 text-xs animate-bounce">↓</div>
+            <div className="md:hidden h-10 bg-gradient-to-t from-[#1E223D] via-[#1E223D] to-transparent pointer-events-none sticky bottom-0 flex items-end justify-center">
+              <div className="text-[#52e5ab] text-lg font-bold animate-bounce drop-shadow-lg">
+                ↓
+              </div>
             </div>
           )}
         </div>
