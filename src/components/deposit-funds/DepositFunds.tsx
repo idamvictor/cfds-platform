@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useMutedTextClass } from "@/hooks/useMutedTextClass";
 import CardFunding from "./CardFunding";
 import CryptoFunding from "./CryptoFunding";
@@ -8,6 +8,7 @@ const DepositFunds = () => {
   const [selectedMethod, setSelectedMethod] = useState("card");
   const [showCardFunding, setShowCardFunding] = useState(false);
   const mutedClass = useMutedTextClass();
+  const depositHistoryRef = useRef<HTMLDivElement>(null);
 
   if (showCardFunding) {
     return (
@@ -32,7 +33,12 @@ const DepositFunds = () => {
           purchases. On this page, you can top-up your account funds using any
           accepted payment method. To view your previous top-up transactions,
           click here:{" "}
-          <span className="text-accent cursor-pointer">
+          <span
+            className="text-accent cursor-pointer"
+            onClick={() =>
+              depositHistoryRef.current?.scrollIntoView({ behavior: "smooth" })
+            }
+          >
             Transaction History
           </span>
         </p>
@@ -154,7 +160,9 @@ const DepositFunds = () => {
       )}
 
       {/* Deposit History */}
-      <DepositHistory />
+      <div ref={depositHistoryRef}>
+        <DepositHistory />
+      </div>
     </div>
   );
 };
