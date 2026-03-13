@@ -3,10 +3,16 @@ import { useMutedTextClass } from "@/hooks/useMutedTextClass";
 import CardFunding from "./CardFunding";
 import CryptoFunding from "./CryptoFunding";
 import DepositHistory from "@/components/deposit-history";
+import { KYCDialog } from "@/components/KYCDialog";
 
-const DepositFunds = () => {
+interface DepositFundsProps {
+  onClose?: () => void;
+}
+
+const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
   const [selectedMethod, setSelectedMethod] = useState("card");
   const [showCardFunding, setShowCardFunding] = useState(false);
+  const [showKYCDialog, setShowKYCDialog] = useState(false);
   const mutedClass = useMutedTextClass();
   const depositHistoryRef = useRef<HTMLDivElement>(null);
 
@@ -77,17 +83,22 @@ const DepositFunds = () => {
                   <path d="M20 8H4V6h16m0 12H4v-6h16m0-8H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
                 </svg>
               </div>
-              {selectedMethod === "card" && (
-                <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 bg-accent rounded-full flex-shrink-0">
-                  <svg
-                    className="w-3 h-3 md:w-4 md:h-4 text-white"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                  </svg>
-                </div>
-              )}
+              <div className="flex flex-col items-end gap-2">
+                {selectedMethod === "card" && (
+                  <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 bg-accent rounded-full flex-shrink-0">
+                    <svg
+                      className="w-3 h-3 md:w-4 md:h-4 text-white"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                    </svg>
+                  </div>
+                )}
+                <span className="inline-block px-2.5 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full">
+                  KYC Required
+                </span>
+              </div>
             </div>
             <h4 className="text-base md:text-lg font-semibold text-foreground mb-1">
               Credit/Debit Card
@@ -150,7 +161,13 @@ const DepositFunds = () => {
       {selectedMethod && (
         <div className="flex gap-3 pt-4">
           <button
-            onClick={() => setShowCardFunding(true)}
+            onClick={() => {
+              if (selectedMethod === "card") {
+                setShowKYCDialog(true);
+              } else {
+                setShowCardFunding(true);
+              }
+            }}
             className="w-full md:w-auto inline-flex items-center justify-center md:justify-start gap-2 px-6 py-2 bg-accent text-primary-foreground font-semibold rounded-lg hover:bg-accent/90 transition-colors"
           >
             Next
@@ -163,6 +180,13 @@ const DepositFunds = () => {
       <div ref={depositHistoryRef}>
         <DepositHistory />
       </div>
+
+      {/* KYC Dialog */}
+      <KYCDialog
+        open={showKYCDialog}
+        onOpenChange={setShowKYCDialog}
+        onClose={onClose}
+      />
     </div>
   );
 };
