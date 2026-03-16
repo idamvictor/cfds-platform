@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { CheckCircle2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,9 +35,12 @@ type CardFundingFormData = z.infer<typeof cardFundingSchema>;
 
 interface CardFundingProps {
   onChangeMethod: () => void;
+  onClose?: () => void;
 }
 
-const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
+const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod, onClose }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [currentStep, setCurrentStep] = useState(1);
   const mutedClass = useMutedTextClass();
   const mutedPlaceholderClass = useMutedPlaceholderClass();
@@ -369,7 +373,7 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
             <button
               type="submit"
               disabled={!isValid || isPending}
-              className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-accent text-primary-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isPending ? "Processing..." : "Submit Payment"}
               <span>→</span>
@@ -435,12 +439,16 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
             <button
               type="button"
               onClick={() => {
-                setCurrentStep(1);
-                reset();
+                if (location.pathname === "/main/dashboard") {
+                  onClose?.();
+                } else {
+                  navigate("/main/dashboard");
+                  onClose?.();
+                }
               }}
-              className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 md:px-8 py-2 bg-accent text-primary-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors"
+              className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 md:px-8 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors"
             >
-              Okay
+              Return to Dashboard
             </button>
           </div>
         </div>
@@ -460,7 +468,7 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod }) => {
             type="button"
             onClick={() => setCurrentStep(currentStep + 1)}
             disabled={!amount || !!errors.amount}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-accent text-primary-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next
             <span>→</span>

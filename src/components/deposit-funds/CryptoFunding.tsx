@@ -584,7 +584,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
                   setDepositAmount("");
                   depositMutation.reset();
                 }}
-                className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 md:px-8 py-2 bg-accent text-primary-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors"
+                className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 md:px-8 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors"
               >
                 {depositMutation.isSuccess ? "Deposit Another" : "Try Again"}
               </button>
@@ -618,7 +618,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
             type="button"
             onClick={handleNextStep}
             disabled={currentStep === 2 && (!depositAmount || !selectedWallet)}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-accent text-primary-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Next
             <span>→</span>

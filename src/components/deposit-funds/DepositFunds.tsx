@@ -4,9 +4,11 @@ import CardFunding from "./CardFunding";
 import CryptoFunding from "./CryptoFunding";
 import DepositHistory from "@/components/deposit-history";
 
-interface DepositFundsProps {}
+interface DepositFundsProps {
+  onClose?: () => void;
+}
 
-const DepositFunds: React.FC<DepositFundsProps> = () => {
+const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
   const [selectedMethod, setSelectedMethod] = useState("card");
   const [showCardFunding, setShowCardFunding] = useState(false);
   const mutedClass = useMutedTextClass();
@@ -17,7 +19,10 @@ const DepositFunds: React.FC<DepositFundsProps> = () => {
       <div className="px-4 md:px-6 lg:px-10">
         {" "}
         {selectedMethod === "card" ? (
-          <CardFunding onChangeMethod={() => setShowCardFunding(false)} />
+          <CardFunding
+            onChangeMethod={() => setShowCardFunding(false)}
+            onClose={onClose}
+          />
         ) : (
           <CryptoFunding onChangeMethod={() => setShowCardFunding(false)} />
         )}
@@ -158,7 +163,7 @@ const DepositFunds: React.FC<DepositFundsProps> = () => {
             onClick={() => {
               setShowCardFunding(true);
             }}
-            className="w-full md:w-auto inline-flex items-center justify-center md:justify-start gap-2 px-6 py-2 bg-accent text-primary-foreground font-semibold rounded-lg hover:bg-accent/90 transition-colors"
+            className="w-full md:w-auto inline-flex items-center justify-center md:justify-start gap-2 px-6 py-2 bg-accent text-background font-semibold rounded-lg hover:bg-accent/90 transition-colors"
           >
             Next
             <span>→</span>
