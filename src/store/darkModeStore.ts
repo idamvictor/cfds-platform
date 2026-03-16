@@ -11,16 +11,7 @@ const useDarkModeStore = create<DarkModeState>()(
     (set) => ({
       isDarkMode: true,
       toggleDarkMode: () =>
-        set((state) => {
-          const newDarkMode = !state.isDarkMode;
-          // Optionally update body class for global styling if needed
-          if (newDarkMode) {
-            document.documentElement.classList.add("dark");
-          } else {
-            document.documentElement.classList.remove("dark");
-          }
-          return { isDarkMode: newDarkMode };
-        }),
+        set((state) => ({ isDarkMode: !state.isDarkMode })),
     }),
     {
       name: "dark-mode-storage", // unique name for localStorage key

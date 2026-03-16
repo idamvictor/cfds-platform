@@ -5,6 +5,7 @@ import useUserStore from "@/store/userStore";
 import {AccountDisabled} from "@/components/site/AccountDisabled.tsx";
 import {SitePending} from "@/components/site/SitePending.tsx";
 import useSiteSettingsStore from "@/store/siteSettingStore.ts";
+import useDarkModeStore from "@/store/darkModeStore";
 
 export function BaseLayout({ children }: { children: React.ReactNode }) {
     const location = useLocation();
@@ -16,6 +17,7 @@ export function BaseLayout({ children }: { children: React.ReactNode }) {
     const dataFetchedRef = useRef(false);
 
     const settings = useSiteSettingsStore((state) => state.settings);
+    const isDarkMode = useDarkModeStore((state) => state.isDarkMode);
 
 
     const authRoutes = ["/register/country-residence","/signup","/", "/login", "/auto-login", "/register", "/forgot-password"];
@@ -92,5 +94,11 @@ export function BaseLayout({ children }: { children: React.ReactNode }) {
     }
 
 
-    return <>{children}</>;
+    const isMT4Light = location.pathname.includes("/mt4-light");
+
+    return (
+        <div className={isMT4Light ? (isDarkMode ? "dark h-full" : "h-full") : "dark h-full"}>
+            {children}
+        </div>
+    );
 }
