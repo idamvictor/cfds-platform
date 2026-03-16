@@ -3,16 +3,12 @@ import { useMutedTextClass } from "@/hooks/useMutedTextClass";
 import CardFunding from "./CardFunding";
 import CryptoFunding from "./CryptoFunding";
 import DepositHistory from "@/components/deposit-history";
-import { KYCDialog } from "@/components/KYCDialog";
 
-interface DepositFundsProps {
-  onClose?: () => void;
-}
+interface DepositFundsProps {}
 
-const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
+const DepositFunds: React.FC<DepositFundsProps> = () => {
   const [selectedMethod, setSelectedMethod] = useState("card");
   const [showCardFunding, setShowCardFunding] = useState(false);
-  const [showKYCDialog, setShowKYCDialog] = useState(false);
   const mutedClass = useMutedTextClass();
   const depositHistoryRef = useRef<HTMLDivElement>(null);
 
@@ -95,9 +91,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
                     </svg>
                   </div>
                 )}
-                <span className="inline-block px-2.5 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full">
-                  KYC Required
-                </span>
+                {/* KYC Required badge removed */}
               </div>
             </div>
             <h4 className="text-base md:text-lg font-semibold text-foreground mb-1">
@@ -162,11 +156,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
         <div className="flex gap-3 pt-4">
           <button
             onClick={() => {
-              if (selectedMethod === "card") {
-                setShowKYCDialog(true);
-              } else {
-                setShowCardFunding(true);
-              }
+              setShowCardFunding(true);
             }}
             className="w-full md:w-auto inline-flex items-center justify-center md:justify-start gap-2 px-6 py-2 bg-accent text-primary-foreground font-semibold rounded-lg hover:bg-accent/90 transition-colors"
           >
@@ -181,12 +171,6 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
         <DepositHistory />
       </div>
 
-      {/* KYC Dialog */}
-      <KYCDialog
-        open={showKYCDialog}
-        onOpenChange={setShowKYCDialog}
-        onClose={onClose}
-      />
     </div>
   );
 };

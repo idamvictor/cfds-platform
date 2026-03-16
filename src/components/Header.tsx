@@ -135,7 +135,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
               </h1>
             </DialogTitle>
           </DialogHeader>
-          <DepositFunds onClose={() => setIsDepositModalOpen(false)} />
+          <DepositFunds />
         </DialogContent>
       </Dialog>
 

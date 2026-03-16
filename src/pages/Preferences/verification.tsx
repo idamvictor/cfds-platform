@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Cloud, X, Loader } from "lucide-react";
+import { CheckCircle2, Image, X, Loader, Camera, Upload, IdCard, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import Webcam from "react-webcam";
 
@@ -204,31 +204,10 @@ export default function KYCVerifyPage() {
                     }`}
                   >
                     <div className="flex items-center justify-between mb-3">
-                      <svg
-                        className="w-8 h-8 text-accent"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4z" />
-                        <path
-                          fillRule="evenodd"
-                          d="M3 10a1 1 0 011-1h12a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                      <IdCard className="w-8 h-8 text-accent" />
                       {selectedIdType === idType.id ? (
                         <div className="w-5 h-5 bg-accent rounded-full flex items-center justify-center">
-                          <svg
-                            className="w-3 h-3 text-primary-foreground"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
+                          <Check className="w-3 h-3 text-primary-foreground" />
                         </div>
                       ) : (
                         <div className="w-5 h-5 border-2 border-border rounded-full"></div>
@@ -301,12 +280,12 @@ export default function KYCVerifyPage() {
                     </div>
                   ) : (
                     <>
-                      <Cloud className="w-10 h-10 text-accent mx-auto mb-3" />
+                      <Image className="w-10 h-10 text-accent mx-auto mb-3" />
                       <p className="text-sm font-semibold text-foreground mb-1">
                         Drag and drop your ID here (front)
                       </p>
                       <p className="text-xs text-muted-foreground mb-3">
-                        Supported formats: JPG, PNG, PDF. Maximum file size is
+                        Supported formats: JPG, PNG. Maximum file size is
                         5MB.
                       </p>
                       <div className="flex gap-2 justify-center">
@@ -314,30 +293,14 @@ export default function KYCVerifyPage() {
                           onClick={() => handleBrowseClick(true)}
                           className="bg-muted hover:bg-muted/80 text-foreground text-xs py-1.5 px-3 rounded"
                         >
-                          <svg
-                            className="w-3 h-3 mr-1"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
-                          </svg>
+                          <Upload className="w-3 h-3 mr-1" />
                           Browse files
                         </Button>
                         <Button
                           onClick={() => setShowWebcamFront(true)}
                           className="bg-transparent border border-foreground hover:bg-foreground/10 text-foreground text-xs py-1.5 px-3 rounded"
                         >
-                          <svg
-                            className="w-3 h-3 mr-1"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
+                          <Camera className="w-3 h-3 mr-1" />
                           Take a photo
                         </Button>
                       </div>
@@ -378,12 +341,12 @@ export default function KYCVerifyPage() {
                     </div>
                   ) : (
                     <>
-                      <Cloud className="w-10 h-10 text-accent mx-auto mb-3" />
+                      <Image className="w-10 h-10 text-accent mx-auto mb-3" />
                       <p className="text-sm font-semibold text-foreground mb-1">
                         Drag and drop your ID here (Back)
                       </p>
                       <p className="text-xs text-muted-foreground mb-3">
-                        Supported formats: JPG, PNG, PDF. Maximum file size is
+                        Supported formats: JPG, PNG. Maximum file size is
                         5MB.
                       </p>
                       <div className="flex gap-2 justify-center">
@@ -391,30 +354,14 @@ export default function KYCVerifyPage() {
                           onClick={() => handleBrowseClick(false)}
                           className="bg-muted hover:bg-muted/80 text-foreground text-xs py-1.5 px-3 rounded"
                         >
-                          <svg
-                            className="w-3 h-3 mr-1"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
-                          </svg>
+                          <Upload className="w-3 h-3 mr-1" />
                           Browse files
                         </Button>
                         <Button
                           onClick={() => setShowWebcamBack(true)}
                           className="bg-transparent border border-foreground hover:bg-foreground/10 text-foreground text-xs py-1.5 px-3 rounded"
                         >
-                          <svg
-                            className="w-3 h-3 mr-1"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
+                          <Camera className="w-3 h-3 mr-1" />
                           Take a photo
                         </Button>
                       </div>
