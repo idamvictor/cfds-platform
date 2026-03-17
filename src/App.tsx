@@ -55,6 +55,9 @@ const SavingsPage = lazy(() => import("./pages/Preferences/savings-page"));
 const CryptoWalletDeposit = lazy(
   () => import("./pages/deposit/CryptoWalletDeposit"),
 );
+const DepositHistoryPage = lazy(
+  () => import("./pages/Preferences/deposit-history-page"),
+);
 
 const queryClient = new QueryClient();
 
@@ -162,6 +165,10 @@ const App = () => {
                     <Route
                       path="/main/withdrawal"
                       element={<WithdrawalForm />}
+                    />
+                    <Route
+                      path="/main/deposit-history"
+                      element={<DepositHistoryPage />}
                     />
                     <Route
                       path="/main/verification"

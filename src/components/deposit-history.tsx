@@ -70,7 +70,7 @@ const DepositHistory: React.FC = () => {
   }, []);
 
   return (
-    <div className="mt-12">
+    <div className="">
       <h2 className="text-lg font-medium mb-6">Deposit History</h2>
 
       {isLoading ? (

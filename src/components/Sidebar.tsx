@@ -12,6 +12,7 @@ import {
   Settings,
   Store,
   BarChart,
+  History,
 } from "lucide-react";
 // import AutoTraderModal from "@/components/trading/trading-interface-components/auto-trader-modal.tsx";
 import useSiteSettingsStore from "@/store/siteSettingStore.ts";
@@ -57,6 +58,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
     { title: "Dashboard", icon: LayoutDashboard, path: "/main/dashboard" },
     { title: "Personal Information", icon: User, path: "/main/personal" },
     { title: "Withdrawal", icon: ArrowUpDown, path: "/main/withdrawal" },
+    { title: "Deposit History", icon: History, path: "/main/deposit-history" },
     { title: "Verification", icon: FileCheck, path: "/main/verification" },
     { title: "Accounts", icon: Folders, path: "/main/accounts" },
     // { title: "Live Chat", icon: MessageSquare, path: "/main/chat" },

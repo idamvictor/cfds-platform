@@ -1,8 +1,8 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useMutedTextClass } from "@/hooks/useMutedTextClass";
 import CardFunding from "./CardFunding";
 import CryptoFunding from "./CryptoFunding";
-import DepositHistory from "@/components/deposit-history";
 
 interface DepositFundsProps {
   onClose?: () => void;
@@ -12,7 +12,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
   const [selectedMethod, setSelectedMethod] = useState("card");
   const [showCardFunding, setShowCardFunding] = useState(false);
   const mutedClass = useMutedTextClass();
-  const depositHistoryRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   if (showCardFunding) {
     return (
@@ -42,9 +42,10 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
           click here:{" "}
           <span
             className="text-accent cursor-pointer"
-            onClick={() =>
-              depositHistoryRef.current?.scrollIntoView({ behavior: "smooth" })
-            }
+            onClick={() => {
+              if (onClose) onClose();
+              navigate("/main/deposit-history");
+            }}
           >
             Transaction History
           </span>
@@ -171,10 +172,6 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
         </div>
       )}
 
-      {/* Deposit History */}
-      <div ref={depositHistoryRef}>
-        <DepositHistory />
-      </div>
 
     </div>
   );
