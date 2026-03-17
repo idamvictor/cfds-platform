@@ -105,11 +105,11 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
   };
 
   return (
-    <div className="space-y-4 md:space-y-6 text-foreground min-h-[550px]">
+    <div className="space-y-2 md:space-y-3 text-foreground">
       {/* Header and Progress Tracker */}
-      <div className="space-y-4 md:space-y-6">
+      <div className="space-y-2 md:space-y-3">
         {/* Progress Steps */}
-        <div className="flex items-center justify-between max-w-2xl overflow-x-auto">
+        <div className="flex items-center justify-between max-w-2xl overflow-x-auto pb-1">
           {[
             { number: 1, label: "Network" },
             { number: 2, label: "Address" },
@@ -157,26 +157,26 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
 
       {/* Step 1: Select Network */}
       {currentStep === 1 && (
-        <div className="space-y-4 md:space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+        <div className="space-y-2 md:space-y-3">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-4">
             {/* Crypto Selection Cards */}
-            <div className="lg:col-span-2 space-y-3 md:space-y-4">
+            <div className="lg:col-span-2 space-y-2 md:space-y-3">
               {/* Wallet Cards Grid */}
-              <div className="grid grid-cols-2 gap-3 md:gap-4">
+              <div className="grid grid-cols-2 gap-2 md:gap-3">
                 {wallets.map((wallet) => (
                   <div
                     key={wallet.id}
                     onClick={() => setSelectedWallet(wallet.id)}
-                    className={`p-3 md:p-4 rounded-lg border-2 cursor-pointer transition-all relative ${
+                    className={`p-2 md:p-3 rounded-lg border cursor-pointer transition-all relative ${
                       selectedWallet === wallet.id
                         ? "border-blue-500 bg-blue-50 dark:border-blue-500 dark:bg-blue-900/40"
                         : "border-border bg-card dark:bg-slate-800 hover:border-border/80"
                     }`}
                   >
-                    <div className="flex items-center gap-2 md:gap-3">
+                    <div className="flex items-center gap-1.5 md:gap-2">
                       {/* Icon */}
                       <div className="flex-shrink-0">
-                        <div className="text-2xl md:text-3xl">
+                        <div className="text-xl md:text-2xl">
                           {wallet.crypto === "BTC"
                             ? "₿"
                             : wallet.crypto === "ETH"
@@ -212,56 +212,53 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
                 ))}
               </div>
 
-              {/* Choosing the right asset */}
-              <div
-                className={`p-3 md:p-4 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/20 space-y-2 md:space-y-3`}
-              >
-                <div className="flex items-start gap-2 md:gap-3">
-                  <Info className="w-4 h-4 md:w-5 md:h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-semibold text-xs md:text-sm text-blue-900 dark:text-blue-200">
-                      Choosing the right asset
-                    </h4>
-                    <p
-                      className={`text-xs md:text-sm leading-relaxed mt-1 ${mutedClass}`}
-                    >
-                      Ensure you select the correct asset you intend to send.
-                      Sending an unsupported or incorrect asset to your deposit
-                      address may result in permanent loss of funds.
-                    </p>
+              {/* Choosing the right asset and Security */}
+              <div className="grid grid-cols-2 gap-2 md:gap-3">
+                <div
+                  className={`p-2 md:p-3 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/20 space-y-1 md:space-y-2`}
+                >
+                  <div className="flex items-start gap-1.5 md:gap-2">
+                    <Info className="w-3.5 h-3.5 md:w-4 md:h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-[10px] md:text-xs text-blue-900 dark:text-blue-200">
+                        Choosing the right asset
+                      </h4>
+                      <p
+                        className={`text-[10px] md:text-xs leading-tight mt-0.5 ${mutedClass}`}
+                      >
+                        Ensure you select the correct asset to avoid loss of funds.
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Security Guarantee */}
-              <div
-                className={`p-3 md:p-4 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/20 space-y-2 md:space-y-3`}
-              >
-                <div className="flex items-start gap-2 md:gap-3">
-                  <Info className="w-4 h-4 md:w-5 md:h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-semibold text-xs md:text-sm text-blue-900 dark:text-blue-200">
-                      Security Guarantee
-                    </h4>
-                    <p
-                      className={`text-xs md:text-sm leading-relaxed mt-1 ${mutedClass}`}
-                    >
-                      Your payment information is encrypted and never stored on
-                      our servers directly. We comply with PCI-DSS standards to
-                      ensure your data remains 100% secure.
-                    </p>
+                <div
+                  className={`p-2 md:p-3 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/20 space-y-1 md:space-y-2`}
+                >
+                  <div className="flex items-start gap-1.5 md:gap-2">
+                    <Info className="w-3.5 h-3.5 md:w-4 md:h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-[10px] md:text-xs text-blue-900 dark:text-blue-200">
+                        Security Guarantee
+                      </h4>
+                      <p
+                        className={`text-[10px] md:text-xs leading-tight mt-0.5 ${mutedClass}`}
+                      >
+                        Your payment data is encrypted and secure.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* HOW IT WORKS Section */}
-            <div className="space-y-3 md:space-y-4 hidden lg:block">
-              <h3 className="text-xs font-semibold text-foreground uppercase tracking-wider">
+            <div className="space-y-2 md:space-y-3 hidden lg:block">
+              <h3 className="text-[10px] font-semibold text-foreground uppercase tracking-wider">
                 How it works
               </h3>
 
-              <div className="space-y-3 md:space-y-4">
+              <div className="space-y-2 md:space-y-3">
                 {[
                   {
                     title: "Select Network",
@@ -281,15 +278,15 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
                 ].map((step, index) => {
                   const IconComponent = step.icon;
                   return (
-                    <div key={index} className="flex gap-2 md:gap-3">
-                      <div className="flex-shrink-0 mt-1">
-                        <IconComponent className="w-4 h-4 md:w-5 md:h-5 text-foreground" />
+                    <div key={index} className="flex gap-1.5 md:gap-2">
+                      <div className="flex-shrink-0 mt-0.5">
+                        <IconComponent className="w-3.5 h-3.5 md:w-4 md:h-4 text-foreground" />
                       </div>
                       <div className="flex-1">
-                        <p className="text-xs md:text-sm font-semibold text-foreground">
+                        <p className="text-[10px] md:text-xs font-semibold text-foreground">
                           {step.title}
                         </p>
-                        <p className={`text-xs ${mutedClass} mt-0.5`}>
+                        <p className={`text-[10px] ${mutedClass} mt-0.5 leading-tight`}>
                           {step.description}
                         </p>
                       </div>
@@ -304,32 +301,32 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
 
       {/* Step 2: Select Network and Get Deposit Address */}
       {currentStep === 2 && selectedWallet && (
-        <div className="space-y-4 md:space-y-6">
+        <div className="space-y-2 md:space-y-3">
           {/* Description */}
-          <p className={`text-xs md:text-sm ${mutedClass}`}>
+          <p className={`text-[10px] md:text-xs ${mutedClass}`}>
             Confirm your deposit method and get your deposit address.
           </p>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-4">
             {/* Left Side: Selected Wallet and Networks */}
-            <div className="space-y-3 md:space-y-4">
+            <div className="space-y-2 md:space-y-3">
               {/* Selected Wallet */}
-              <div className="space-y-2">
-                <label className="text-xs md:text-sm font-semibold text-foreground">
+              <div className="space-y-1">
+                <label className="text-[10px] md:text-xs font-semibold text-foreground">
                   Deposit Method
                 </label>
-                <div className="flex items-center gap-2 md:gap-3 p-2 md:p-3 rounded-lg border border-border bg-card dark:bg-slate-800">
-                  <div className="w-7 h-7 md:w-8 md:h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-xs md:text-sm flex-shrink-0">
+                <div className="flex items-center gap-1.5 md:gap-2 p-1.5 md:p-2 rounded-lg border border-border bg-card dark:bg-slate-800">
+                  <div className="w-6 h-6 md:w-7 md:h-7 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-[10px] md:text-xs flex-shrink-0">
                     {wallets.find((w) => w.id === selectedWallet)?.crypto ===
                     "BTC"
                       ? "₿"
                       : "◇"}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs md:text-sm font-semibold text-foreground truncate">
+                    <p className="text-[10px] md:text-xs font-semibold text-foreground truncate">
                       {wallets.find((w) => w.id === selectedWallet)?.crypto}
                     </p>
-                    <p className={`text-xs ${mutedClass} truncate`}>
+                    <p className={`text-[10px] ${mutedClass} truncate`}>
                       {
                         wallets.find((w) => w.id === selectedWallet)
                           ?.crypto_network
@@ -337,7 +334,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
                     </p>
                   </div>
                   <span
-                    className={`text-xs font-semibold px-2 py-1 rounded ${
+                    className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
                       wallets.find((w) => w.id === selectedWallet)?.type ===
                       "wallet"
                         ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
@@ -354,17 +351,17 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
 
               {/* Available Networks */}
               {cryptoNetworks.length > 0 && (
-                <div className="space-y-2">
-                  <label className="text-xs md:text-sm font-semibold text-foreground">
+                <div className="space-y-1">
+                  <label className="text-[10px] md:text-xs font-semibold text-foreground">
                     Available Networks
                   </label>
-                  <div className="grid grid-cols-2 gap-2 md:gap-3">
+                  <div className="grid grid-cols-2 gap-1.5 md:gap-2">
                     {cryptoNetworks.map((network) => (
                       <div
                         key={network}
-                        className="flex items-center justify-center p-2 md:p-3 rounded-lg border border-border bg-card dark:bg-slate-800"
+                        className="flex items-center justify-center p-1.5 md:p-2 rounded-lg border border-border bg-card dark:bg-slate-800"
                       >
-                        <p className="text-xs md:text-sm text-foreground text-center">
+                        <p className="text-[10px] md:text-xs text-foreground text-center">
                           {network}
                         </p>
                       </div>
@@ -374,8 +371,8 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
               )}
 
               {/* Deposit Amount */}
-              <div className="space-y-2">
-                <label className="text-xs md:text-sm font-semibold text-foreground">
+              <div className="space-y-1">
+                <label className="text-[10px] md:text-xs font-semibold text-foreground">
                   Deposit Amount
                 </label>
                 <div className="flex items-center gap-2">
@@ -384,41 +381,27 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
                     value={depositAmount}
                     onChange={(e) => setDepositAmount(e.target.value)}
                     placeholder="Enter amount"
-                    className="flex-1 px-3 py-2 rounded-lg border border-border bg-card dark:bg-slate-800 text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent text-xs md:text-sm"
+                    className="flex-1 px-2.5 py-1.5 rounded-lg border border-border bg-card dark:bg-slate-800 text-foreground placeholder-muted-foreground focus:outline-none focus:ring-1 focus:ring-accent text-[10px] md:text-xs"
                   />
-                  <span className="w-20 px-2 py-2 text-xs md:text-sm font-semibold text-foreground bg-card dark:bg-slate-800 rounded-lg border border-border text-center">
+                  <span className="w-16 px-1.5 py-1.5 text-[10px] md:text-xs font-semibold text-foreground bg-card dark:bg-slate-800 rounded-lg border border-border text-center">
                     {wallets.find((w) => w.id === selectedWallet)?.crypto ||
                       "BTC"}
                   </span>
                 </div>
-                {depositAmount && (
-                  <p className={`text-xs ${mutedClass}`}>
-                    You will deposit {depositAmount}{" "}
-                    {wallets.find((w) => w.id === selectedWallet)?.crypto}
-                  </p>
-                )}
               </div>
 
               {/* Safety Warning */}
-              <div className="p-3 md:p-4 rounded-lg border border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-950/20 space-y-2 md:space-y-3">
-                <div className="flex items-start gap-2 md:gap-3">
-                  <AlertCircle className="w-4 h-4 md:w-5 md:h-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
+              <div className="p-2 md:p-3 rounded-lg border border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-950/20 space-y-1 md:space-y-1.5">
+                <div className="flex items-start gap-1.5 md:gap-2">
+                  <AlertCircle className="w-3.5 h-3.5 md:w-4 md:h-4 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-semibold text-xs md:text-sm text-yellow-900 dark:text-yellow-200">
+                    <h4 className="font-semibold text-[10px] md:text-xs text-yellow-900 dark:text-yellow-200">
                       Safety Warning
                     </h4>
                     <p
-                      className={`text-xs md:text-sm leading-relaxed mt-1 text-yellow-800 dark:text-yellow-300`}
+                      className={`text-[10px] md:text-xs leading-tight mt-0.5 text-yellow-800 dark:text-yellow-300`}
                     >
-                      Ensure you are sending{" "}
-                      {wallets.find((w) => w.id === selectedWallet)?.crypto}{" "}
-                      only to this address via the{" "}
-                      {
-                        wallets.find((w) => w.id === selectedWallet)
-                          ?.crypto_network
-                      }{" "}
-                      network. Sending any other asset or using a different
-                      network may result in permanent loss of funds.
+                      Ensure you reach via the correct network. Sending other assets or using a different network may result in loss of funds.
                     </p>
                   </div>
                 </div>
@@ -426,33 +409,33 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
             </div>
 
             {/* Right Side: QR Code and Deposit Address */}
-            <div className="space-y-3 md:space-y-4">
+            <div className="space-y-2 md:space-y-3">
               {/* QR Code Section */}
-              <div className="space-y-2">
-                <label className="text-xs md:text-sm font-semibold text-foreground">
+              <div className="space-y-1">
+                <label className="text-[10px] md:text-xs font-semibold text-foreground">
                   {selectedWalletData?.address && depositAmount
                     ? "Scan QR code to deposit"
                     : "Deposit Information"}
                 </label>
-                <div className="flex items-center justify-center p-4 md:p-8 rounded-lg transition-colors bg-white border border-gray-100 dark:bg-slate-900/50 dark:border-slate-800">
+                <div className="flex items-center justify-center p-2.5 md:p-4 rounded-lg transition-colors bg-white border border-gray-100 dark:bg-slate-900/50 dark:border-slate-800">
                   {selectedWalletData?.address && depositAmount ? (
                     <div className="text-black dark:text-slate-200">
                       <QRCodeSVG
                         value={qrCodeValue}
-                        size={256}
+                        size={160}
                         level="H"
                         includeMargin={false}
-                        className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48"
+                        className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32"
                         fgColor="currentColor"
                         bgColor="transparent"
                       />
                     </div>
                   ) : (
-                    <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 bg-slate-200/50 dark:bg-slate-800/50 rounded-lg flex items-center justify-center text-center p-4">
-                      <span className={`text-xs md:text-sm ${mutedClass}`}>
+                    <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 bg-slate-200/50 dark:bg-slate-800/50 rounded-lg flex items-center justify-center text-center p-3">
+                      <span className={`text-[10px] md:text-[11px] ${mutedClass}`}>
                         {!selectedWalletData?.address 
-                          ? "No address available" 
-                          : "Please enter an amount to generate the QR code"}
+                          ? "No address" 
+                          : "Enter amount for QR"}
                       </span>
                     </div>
                   )}
@@ -460,10 +443,10 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
               </div>
 
               {/* Deposit Address */}
-              <div className="flex items-center gap-2">
-                <div className="flex-1 p-2 md:p-3 rounded-lg border border-border bg-card dark:bg-slate-800 overflow-hidden">
+              <div className="flex items-center gap-1.5">
+                <div className="flex-1 p-1.5 md:p-2 rounded-lg border border-border bg-card dark:bg-slate-800 overflow-hidden">
                   <span
-                    className={`text-xs md:text-sm break-all ${mutedClass}`}
+                    className={`text-[10px] md:text-[11px] break-all ${mutedClass}`}
                   >
                     {selectedWalletData?.address || "No address"}
                   </span>
@@ -472,7 +455,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
                 {/* Copy Button */}
                 <button
                   onClick={handleCopyAddress}
-                  className={`flex-shrink-0 inline-flex items-center justify-center gap-1 px-2 md:px-3 py-2 font-semibold text-xs md:text-sm rounded-lg transition-colors ${
+                  className={`flex-shrink-0 inline-flex items-center justify-center gap-1 px-2 md:px-2.5 py-1.5 font-semibold text-[10px] md:text-xs rounded-lg transition-colors ${
                     copied
                       ? "bg-green-500 text-white hover:bg-green-600"
                       : "bg-green-500 text-white hover:bg-green-600"
@@ -480,37 +463,37 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
                 >
                   {copied ? (
                     <>
-                      <Check className="w-3 h-3 md:w-4 md:h-4" />
-                      <span className="hidden sm:inline">Copied</span>
+                      <Check className="w-2.5 h-2.5 md:w-3 md:h-3" />
+                      <span>Copied</span>
                     </>
                   ) : (
                     <>
-                      <Copy className="w-3 h-3 md:w-4 md:h-4" />
-                      <span className="hidden sm:inline">Copy</span>
+                      <Copy className="w-2.5 h-2.5 md:w-3 md:h-3" />
+                      <span>Copy</span>
                     </>
                   )}
                 </button>
               </div>
 
               {/* Expected Arrival and Minimum Deposit */}
-              <div className="grid grid-cols-2 gap-2 md:gap-8 pt-2 md:pt-4">
+              <div className="flex justify-between pt-1 md:pt-2">
                 <div>
                   <p
-                    className={`text-xs font-semibold uppercase ${mutedClass} mb-1 md:mb-2`}
+                    className={`text-[8px] md:text-[10px] font-semibold uppercase ${mutedClass} mb-0.5`}
                   >
                     Expected Arrival
                   </p>
-                  <p className="text-sm md:text-lg font-bold text-foreground">
-                    ~10-60 Minutes
+                  <p className="text-[10px] md:text-xs font-bold text-foreground">
+                    ~10-60 Min
                   </p>
                 </div>
-                <div>
+                <div className="text-right">
                   <p
-                    className={`text-xs font-semibold uppercase ${mutedClass} mb-1 md:mb-2`}
+                    className={`text-[8px] md:text-[10px] font-semibold uppercase ${mutedClass} mb-0.5`}
                   >
-                    Minimum Deposit
+                    Min Deposit
                   </p>
-                  <p className="text-sm md:text-lg font-bold text-foreground">
+                  <p className="text-[10px] md:text-xs font-bold text-foreground">
                     0.0001 BTC
                   </p>
                 </div>
@@ -630,12 +613,12 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
       )}
 
       {/* Navigation Buttons */}
-      <div className="flex gap-2 md:gap-3 pt-2 md:pt-4">
-        {currentStep > 1 && (
+      <div className="flex gap-2 md:gap-3 pt-1 md:pt-2">
+        {currentStep === 2 && (
           <button
             type="button"
             onClick={() => setCurrentStep(currentStep - 1)}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-muted text-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-muted/80 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 md:px-4 py-1.5 bg-muted text-foreground font-semibold text-xs md:text-sm rounded-lg hover:bg-muted/80 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
           >
             ← Previous
           </button>
@@ -644,7 +627,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
           <button
             type="button"
             onClick={onChangeMethod}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-muted text-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-muted/80 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 md:px-4 py-1.5 bg-muted text-foreground font-semibold text-xs md:text-sm rounded-lg hover:bg-muted/80 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
           >
             ← Previous
           </button>
@@ -654,7 +637,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
             type="button"
             onClick={handleNextStep}
             disabled={currentStep === 2 && (!depositAmount || !selectedWallet)}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 md:px-4 py-1.5 bg-accent text-background font-semibold text-xs md:text-sm rounded-lg hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Next
             <span>→</span>
