@@ -12,6 +12,7 @@ import { useMutedTextClass } from "@/hooks/useMutedTextClass";
 import { useStepNumberColor } from "@/hooks/useStepNumberColor";
 import useDataStore from "@/store/dataStore";
 import { useDepositMutation } from "@/services/deposit/deposit-queries";
+import { QRCodeSVG } from "qrcode.react";
 
 interface CryptoFundingProps {
   onChangeMethod: () => void;
@@ -50,6 +51,33 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
       setTimeout(() => setCopied(false), 2000);
     }
   };
+  
+  const qrCodeValue = useMemo(() => {
+    if (!selectedWalletData?.address) return "";
+    
+    const address = selectedWalletData.address;
+    const amount = depositAmount;
+    const crypto = selectedWalletData.crypto.toLowerCase();
+
+    if (!amount) return address;
+
+    // Standard URI schemes for common cryptocurrencies
+    switch (crypto) {
+      case "btc":
+      case "bitcoin":
+        return `bitcoin:${address}?amount=${amount}`;
+      case "eth":
+      case "ethereum":
+        // ETH value is usually in wei in some specs, but many wallets accept decimal ETH
+        return `ethereum:${address}?value=${amount}`;
+      case "usdt":
+        // USDT doesn't have a single standard URI, often just the address is used
+        // or a specific network scheme. Sticking to address if it's not ETH/BTC
+        return address;
+      default:
+        return address;
+    }
+  }, [selectedWalletData, depositAmount]);
 
   const handleSubmitDeposit = async () => {
     if (!depositAmount || !selectedWallet) return;
@@ -402,21 +430,29 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
               {/* QR Code Section */}
               <div className="space-y-2">
                 <label className="text-xs md:text-sm font-semibold text-foreground">
-                  {selectedWalletData?.barcode
+                  {selectedWalletData?.address && depositAmount
                     ? "Scan QR code to deposit"
                     : "Deposit Information"}
                 </label>
-                <div className="flex items-center justify-center p-4 md:p-8 rounded-lg bg-black dark:bg-black">
-                  {selectedWalletData?.barcode ? (
-                    <img
-                      src={selectedWalletData.barcode}
-                      alt="QR Code"
-                      className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 object-contain rounded-lg"
-                    />
+                <div className="flex items-center justify-center p-4 md:p-8 rounded-lg transition-colors bg-white border border-gray-100 dark:bg-slate-900/50 dark:border-slate-800">
+                  {selectedWalletData?.address && depositAmount ? (
+                    <div className="text-black dark:text-slate-200">
+                      <QRCodeSVG
+                        value={qrCodeValue}
+                        size={256}
+                        level="H"
+                        includeMargin={false}
+                        className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48"
+                        fgColor="currentColor"
+                        bgColor="transparent"
+                      />
+                    </div>
                   ) : (
-                    <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 bg-gray-300 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                    <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 bg-slate-200/50 dark:bg-slate-800/50 rounded-lg flex items-center justify-center text-center p-4">
                       <span className={`text-xs md:text-sm ${mutedClass}`}>
-                        No QR code available
+                        {!selectedWalletData?.address 
+                          ? "No address available" 
+                          : "Please enter an amount to generate the QR code"}
                       </span>
                     </div>
                   )}
