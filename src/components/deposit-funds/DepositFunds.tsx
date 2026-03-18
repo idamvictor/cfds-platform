@@ -11,17 +11,23 @@ interface DepositFundsProps {
 }
 
 const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
+  // selectedMethod keeps track of whether the user wants to use card or crypto for funding
   const [selectedMethod, setSelectedMethod] = useState("card");
+  // showCardFunding determines if we should show the detailed funding form (CardFunding or CryptoFunding)
   const [showCardFunding, setShowCardFunding] = useState(false);
+  
   const url = window.location.href.toLowerCase();
+  // stepsCount varies based on the domain to cater to different checkout flows
   const stepsCount = (url.includes("fincapitalmarkets.org") || url.includes("equitymarketspro.com")) ? 4 : 3;
   const mutedClass = useMutedTextClass();
   const navigate = useNavigate();
   const { user } = useUserStore();
 
+  // Crypto funding is restricted to users whose verification status is 'approved'
   const isVerified = user?.verification_status?.toLowerCase() === "approved";
   const isCryptoDisabled = !isVerified;
 
+  // If showCardFunding is true, render the specific funding component based on selectedMethod
   if (showCardFunding) {
     return (
       <div className="px-4 md:px-6 lg:px-10">
@@ -125,7 +131,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
             </p>
           </div>
 
-          {/* Crypto Payment Option */}
+          {/* Crypto Payment Option - Disabled if user is not KYC verified */}
           <div
             onClick={() => !isCryptoDisabled && setSelectedMethod("crypto")}
             className={`rounded-lg md:rounded-2xl border-2 p-4 md:p-6 transition-all relative ${
