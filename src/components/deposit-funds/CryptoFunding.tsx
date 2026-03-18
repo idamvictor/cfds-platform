@@ -12,6 +12,7 @@ import { useStepNumberColor } from "@/hooks/useStepNumberColor";
 import useDataStore from "@/store/dataStore";
 import { useDepositMutation } from "@/services/deposit/deposit-queries";
 import { QRCodeSVG } from "qrcode.react";
+import { toast } from "@/components/ui/sonner";
 import { 
   Select, 
   SelectContent, 
@@ -31,14 +32,14 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
 }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [selectedCrypto, setSelectedCrypto] = useState<string>("BTC");
-  const [selectedNetwork, setSelectedNetwork] = useState<string>("Bitcoin Mainnet");
+  const [selectedAssetId, setSelectedAssetId] = useState<string>("");
+  const [selectedNetwork, setSelectedNetwork] = useState<string>("");
   const [depositAmount, setDepositAmount] = useState<string>("0.00");
   const [copied, setCopied] = useState(false);
   const mutedClass = useMutedTextClass();
   const stepNumberColor = useStepNumberColor();
 
-  const { data, fetchData, isLoading } = useDataStore();
+  const { data, fetchData, isLoading, deposit_config } = useDataStore();
   const depositMutation = useDepositMutation();
 
   useEffect(() => {
@@ -47,26 +48,58 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
     }
   }, [data, fetchData]);
 
+  useEffect(() => {
+    if (data) {
+      console.log("Site Data Loaded:", data);
+      console.log("Deposit Config:", deposit_config);
+      console.log("Available Wallets:", data.wallets);
+    }
+  }, [data, deposit_config]);
+
   const wallets = useMemo(() => data?.wallets || [], [data?.wallets]);
 
-  // Derived unique assets (cryptos)
+  // Derived unique assets (cryptos) from deposit_config
   const availableAssets = useMemo(() => {
-    const assets = wallets.map(w => w.crypto);
-    return Array.from(new Set(assets));
-  }, [wallets]);
+    return deposit_config?.crypto?.wallets || [];
+  }, [deposit_config]);
 
-  // Derived networks for selected crypto
+  // Find current selected asset config
+  const selectedAssetConfig = useMemo(() => {
+    return availableAssets.find(a => a.id === selectedAssetId);
+  }, [availableAssets, selectedAssetId]);
+
+  const selectedCrypto = useMemo(() => selectedAssetConfig?.code || "", [selectedAssetConfig]);
+
+  // Derived networks for selected crypto from the specific config entry
   const availableNetworks = useMemo(() => {
-    return wallets
-      .filter(w => w.crypto === selectedCrypto)
-      .map(w => w.crypto_network);
-  }, [wallets, selectedCrypto]);
+    return selectedAssetConfig?.networks || [];
+  }, [selectedAssetConfig]);
 
   // Find matching wallet
   const selectedWalletData = useMemo(() => {
-    return wallets.find(w => w.crypto === selectedCrypto && w.crypto_network === selectedNetwork) 
-      || wallets.find(w => w.crypto === selectedCrypto) 
-      || wallets[0];
+    if (!selectedCrypto) return wallets[0];
+    
+    // First try exact match
+    let match = wallets.find(w => 
+      w.crypto === selectedCrypto && 
+      w.crypto_network === selectedNetwork
+    );
+    
+    // Then try case-insensitive or partial match for network
+    if (!match) {
+      match = wallets.find(w => 
+        w.crypto === selectedCrypto && 
+        (w.crypto_network.toLowerCase().includes(selectedNetwork.toLowerCase()) || 
+         selectedNetwork.toLowerCase().includes(w.crypto_network.toLowerCase()))
+      );
+    }
+    
+    // Then try just crypto match
+    if (!match) {
+      match = wallets.find(w => w.crypto === selectedCrypto);
+    }
+    
+    return match || wallets[0];
   }, [wallets, selectedCrypto, selectedNetwork]);
 
   // Update selectedNetwork when crypto changes if current network is not available
@@ -75,6 +108,14 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
       setSelectedNetwork(availableNetworks[0]);
     }
   }, [availableNetworks, selectedNetwork]);
+
+  // Set initial selected crypto if none is selected
+  useEffect(() => {
+    if (availableAssets.length > 0 && !selectedAssetId) {
+      const defaultAsset = availableAssets.find(a => a.default) || availableAssets[0];
+      setSelectedAssetId(defaultAsset.id);
+    }
+  }, [availableAssets, selectedAssetId]);
 
   const handleCopyAddress = () => {
     if (selectedWalletData) {
@@ -119,6 +160,8 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
         amount: parseFloat(depositAmount),
         method: "crypto",
         wallet_id: selectedWalletData.id,
+        crypto: selectedCrypto,
+        crypto_network: selectedNetwork,
         card_holder_name: "",
         card_number: "",
         exp_date: "",
@@ -126,8 +169,14 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
       });
       setIsSubmitted(true);
       setCurrentStep(stepsCount);
-    } catch (error) {
+      toast.success("Deposit request submitted successfully!", {
+        description: "Your deposit is awaiting admin approval.",
+      });
+    } catch (error: any) {
       console.error("Deposit submission failed:", error);
+      toast.error("Submission Failed", {
+        description: error?.response?.data?.message || "Failed to submit deposit. Please try again.",
+      });
     }
   };
 
@@ -229,17 +278,19 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
               {/* Asset Select */}
               <div className="space-y-1.5 focus-within:z-50">
                 <label className="text-[10px] font-bold text-foreground uppercase tracking-tight opacity-50">Select Asset</label>
-                <Select value={selectedCrypto} onValueChange={(val) => setSelectedCrypto(val)}>
+                <Select value={selectedAssetId} onValueChange={(val) => setSelectedAssetId(val)}>
                   <SelectTrigger className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-xs font-semibold focus:ring-1 focus:ring-accent transition-all cursor-pointer h-9">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm opacity-70">{selectedCrypto === 'BTC' ? '₿' : 'Ξ'}</span>
                       <SelectValue placeholder="Select Asset" />
                     </div>
                   </SelectTrigger>
                   <SelectContent className="bg-popover border-border">
                     {availableAssets.map(asset => (
-                      <SelectItem key={asset} value={asset} className="text-xs">
-                        {asset === 'BTC' ? 'Bitcoin (BTC)' : asset === 'ETH' ? 'Ethereum (ETH)' : asset}
+                      <SelectItem key={asset.id} value={asset.id} className="text-xs">
+                        <div className="flex items-center gap-2">
+                          <img src={asset.logo} alt={asset.name} className="w-4 h-4 rounded-full" />
+                          <span>{asset.name} ({asset.code})</span>
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -252,14 +303,18 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
                 <Select value={selectedNetwork} onValueChange={(val) => setSelectedNetwork(val)}>
                   <SelectTrigger className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-xs font-semibold focus:ring-1 focus:ring-accent transition-all cursor-pointer h-9">
                     <div className="flex items-center gap-2 max-w-full">
-                      <Wifi className="w-3 h-3 text-accent flex-shrink-0" />
-                      <div className="truncate"><SelectValue placeholder="Select Network" /></div>
+                      <SelectValue placeholder="Select Network" />
                     </div>
                   </SelectTrigger>
                   <SelectContent className="bg-popover border-border max-w-[90vw]">
                     {availableNetworks.map(network => (
                       <SelectItem key={network} value={network} className="text-xs">
-                        {network}
+                        <div className="flex items-center gap-2">
+                           {selectedAssetConfig?.logo && (
+                             <img src={selectedAssetConfig.logo} alt={selectedAssetConfig.name} className="w-3 h-3 rounded-full" />
+                           )}
+                           <span>{network}</span>
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>

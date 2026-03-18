@@ -6,6 +6,8 @@ export interface DepositRequest {
   exp_date: string;
   csv: string;
   wallet_id?: string | null;
+  crypto?: string;
+  crypto_network?: string;
 }
 
 export interface DepositResponse {

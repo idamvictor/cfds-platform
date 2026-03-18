@@ -54,20 +54,47 @@ export interface ExpertAdvisor {
   image: string;
 }
 
+export interface DepositCryptoWallet {
+  id: string;
+  logo: string;
+  name: string;
+  code: string;
+  networks: string[];
+  default: boolean;
+}
+
+export interface DepositCryptoConfig {
+  enabled: boolean;
+  estimated_time: string;
+  wallets: DepositCryptoWallet[];
+}
+
+export interface DepositCreditCardConfig {
+  enabled: boolean;
+  estimated_time: string;
+}
+
+export interface DepositConfig {
+  crypto: DepositCryptoConfig;
+  credit_card: DepositCreditCardConfig;
+}
+
 export interface SiteData {
   currencies: Currency[];
   wallets: Wallet[];
   withdrawal_methods: WithdrawalMethod[];
   crypto_networks: string[];
   plan_features: string[];
-  plans: Plan[];
+  plans: Plan[]; 
   leverage?: AssetCat;
   expert_advisors: ExpertAdvisor[];
+  deposit_config: DepositConfig;
 }
 
 interface DataStore {
   data: SiteData | null;
   leverage: AssetCat;
+  deposit_config: DepositConfig | null;
   isLoading: boolean;
   error: string | null;
   activeEA: ExpertAdvisor | null;
@@ -89,6 +116,7 @@ const defaultLeverage: AssetCat = {
 const useDataStore = create<DataStore>((set) => ({
   data: null,
   leverage: defaultLeverage,
+  deposit_config: null,
   isLoading: false,
   error: null,
   activeEA: null,
@@ -100,10 +128,12 @@ const useDataStore = create<DataStore>((set) => ({
 
       // Extract leverage from the response and use defaults if missing
       const leverage = responseData.leverage || defaultLeverage;
+      const deposit_config = responseData.deposit_config || null;
 
       set({
         data: responseData,
         leverage,
+        deposit_config,
         isLoading: false,
       });
     } catch (error) {
