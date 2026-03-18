@@ -12,6 +12,13 @@ import { useStepNumberColor } from "@/hooks/useStepNumberColor";
 import useDataStore from "@/store/dataStore";
 import { useDepositMutation } from "@/services/deposit/deposit-queries";
 import { QRCodeSVG } from "qrcode.react";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 
 interface CryptoFundingProps {
   onChangeMethod: () => void;
@@ -31,8 +38,14 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
   const mutedClass = useMutedTextClass();
   const stepNumberColor = useStepNumberColor();
 
-  const { data } = useDataStore();
+  const { data, fetchData, isLoading } = useDataStore();
   const depositMutation = useDepositMutation();
+
+  useEffect(() => {
+    if (!data) {
+      fetchData();
+    }
+  }, [data, fetchData]);
 
   const wallets = useMemo(() => data?.wallets || [], [data?.wallets]);
 
@@ -205,50 +218,52 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
             </p>
           </div>
 
+          {isLoading && !data && (
+            <div className="flex justify-center py-8">
+              <RotateCw className="w-6 h-6 animate-spin text-accent" />
+            </div>
+          )}
+
           <div className="bg-card border border-border rounded-xl p-4 space-y-4 shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Asset Select */}
-              <div className="space-y-1.5">
+              <div className="space-y-1.5 focus-within:z-50">
                 <label className="text-[10px] font-bold text-foreground uppercase tracking-tight opacity-50">Select Asset</label>
-                <div className="relative group">
-                  <select 
-                    value={selectedCrypto}
-                    onChange={(e) => setSelectedCrypto(e.target.value)}
-                    className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-xs font-semibold appearance-none focus:outline-none focus:ring-1 focus:ring-accent transition-all cursor-pointer pl-8"
-                  >
+                <Select value={selectedCrypto} onValueChange={(val) => setSelectedCrypto(val)}>
+                  <SelectTrigger className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-xs font-semibold focus:ring-1 focus:ring-accent transition-all cursor-pointer h-9">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm opacity-70">{selectedCrypto === 'BTC' ? '₿' : 'Ξ'}</span>
+                      <SelectValue placeholder="Select Asset" />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover border-border">
                     {availableAssets.map(asset => (
-                      <option key={asset} value={asset}>{asset === 'BTC' ? 'Bitcoin (BTC)' : asset === 'ETH' ? 'Ethereum (ETH)' : asset}</option>
+                      <SelectItem key={asset} value={asset} className="text-xs">
+                        {asset === 'BTC' ? 'Bitcoin (BTC)' : asset === 'ETH' ? 'Ethereum (ETH)' : asset}
+                      </SelectItem>
                     ))}
-                  </select>
-                  <div className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <span className="text-sm opacity-70">{selectedCrypto === 'BTC' ? '₿' : 'Ξ'}</span>
-                  </div>
-                  <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
-                    <RotateCw className="w-3 h-3" />
-                  </div>
-                </div>
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Network Select */}
-              <div className="space-y-1.5">
+              <div className="space-y-1.5 focus-within:z-50">
                 <label className="text-[10px] font-bold text-foreground uppercase tracking-tight opacity-50">Network</label>
-                <div className="relative group">
-                  <select 
-                    value={selectedNetwork}
-                    onChange={(e) => setSelectedNetwork(e.target.value)}
-                    className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-xs font-semibold appearance-none focus:outline-none focus:ring-1 focus:ring-accent transition-all cursor-pointer pl-8"
-                  >
+                <Select value={selectedNetwork} onValueChange={(val) => setSelectedNetwork(val)}>
+                  <SelectTrigger className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-xs font-semibold focus:ring-1 focus:ring-accent transition-all cursor-pointer h-9">
+                    <div className="flex items-center gap-2 max-w-full">
+                      <Wifi className="w-3 h-3 text-accent flex-shrink-0" />
+                      <div className="truncate"><SelectValue placeholder="Select Network" /></div>
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover border-border max-w-[90vw]">
                     {availableNetworks.map(network => (
-                      <option key={network} value={network}>{network}</option>
+                      <SelectItem key={network} value={network} className="text-xs">
+                        {network}
+                      </SelectItem>
                     ))}
-                  </select>
-                  <div className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <Wifi className="w-3 h-3 text-accent" />
-                  </div>
-                  <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
-                    <RotateCw className="w-3 h-3" />
-                  </div>
-                </div>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
@@ -292,13 +307,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
               </div>
             </div>
 
-            {/* Generate Button */}
-            <button
-               onClick={handleNextStep}
-               className="w-full bg-accent text-background py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-accent/90 transition-all shadow-md active:scale-95"
-            >
-               Generate Deposit Address
-            </button>
+
           </div>
 
           {/* Important Notice */}
@@ -357,32 +366,49 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
                       </div>
                       <div>
                          <p className="text-[8px] font-black opacity-30 tracking-wider uppercase">ESTIMATED TIME</p>
-                         <p className="font-bold text-xs">10-30 Min</p>
-                      </div>
-                   </div>
-                </div>
-             </div>
+                         <p className="font-bold text-xs">
+                             {selectedWalletData.type === 'link' ? 'External' : '10-30 Min'}
+                          </p>
+                       </div>
+                    </div>
+                 </div>
+              </div>
 
-             {/* Address Bar */}
-             <div className="bg-muted/20 border-t border-border p-4 flex flex-col sm:flex-row gap-3">
-                <div className="flex-1 flex items-center gap-3 bg-card border border-border/50 p-3 rounded-lg min-w-0">
-                   <Copy className="w-4 h-4 text-accent flex-shrink-0" />
-                   <div className="min-w-0">
-                      <p className="text-[7px] font-black opacity-40 uppercase tracking-widest">Unique Address</p>
-                      <p className="text-[10px] md:text-xs font-bold text-foreground truncate">{selectedWalletData.address}</p>
-                   </div>
-                </div>
-                <button 
-                  onClick={handleCopyAddress}
-                  className="bg-accent text-background px-5 py-2.5 rounded-lg font-bold text-xs flex items-center justify-center gap-2 hover:bg-accent/90 transition-all active:scale-95"
-                >
-                  <Copy className="w-3.5 h-3.5" />
-                  {copied ? "Copied!" : "Copy"}
-                </button>
-             </div>
-          </div>
-
-          
+              {/* Address/Link Bar */}
+              <div className="bg-muted/20 border-t border-border p-4 flex flex-col sm:flex-row gap-3">
+                 <div className="flex-1 flex items-center gap-3 bg-card border border-border/50 p-3 rounded-lg min-w-0">
+                    {selectedWalletData.type === 'link' ? (
+                      <Wifi className="w-4 h-4 text-accent flex-shrink-0" />
+                    ) : (
+                      <Copy className="w-4 h-4 text-accent flex-shrink-0" />
+                    )}
+                    <div className="min-w-0">
+                       <p className="text-[7px] font-black opacity-40 uppercase tracking-widest">
+                         {selectedWalletData.type === 'link' ? 'Payment Instruction' : 'Unique Address'}
+                       </p>
+                       <p className="text-[10px] md:text-xs font-bold text-foreground truncate">
+                         {selectedWalletData.type === 'link' ? selectedWalletData.crypto_network : selectedWalletData.address}
+                       </p>
+                    </div>
+                 </div>
+                 <button 
+                   onClick={() => {
+                     if (selectedWalletData.type === 'link') {
+                       window.open(selectedWalletData.address, '_blank');
+                     } else {
+                       handleCopyAddress();
+                     }
+                   }}
+                   className="bg-accent text-background px-5 py-2.5 rounded-lg font-bold text-xs flex items-center justify-center gap-2 hover:bg-accent/90 transition-all active:scale-95"
+                 >
+                   {selectedWalletData.type === 'link' ? (
+                     <><span>External Link</span><span>↗</span></>
+                   ) : (
+                     <><Copy className="w-3.5 h-3.5" />{copied ? "Copied!" : "Copy"}</>
+                   )}
+                 </button>
+              </div>
+           </div>
         </div>
       )}
 
@@ -603,7 +629,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
           <button
             type="button"
             onClick={handleNextStep}
-            disabled={currentStep === 2 && (!depositAmount || !selectedWalletData)}
+            disabled={(!depositAmount || parseFloat(depositAmount) <= 0) || (currentStep === 2 && !selectedWalletData)}
             className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 md:px-4 py-1.5 bg-accent text-background font-semibold text-xs md:text-sm rounded-lg hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {stepsCount === 3 && currentStep === 2 ? (depositMutation.isPending ? "Processing..." : "Confirm & Deposit") : "Next"}
