@@ -112,11 +112,11 @@ const CardFunding: React.FC<CardFundingProps> = ({
   };
 
   return (
-    <div className="space-y-3 md:space-y-6 text-foreground min-h-[550px] w-full overflow-x-hidden">
+    <div className="space-y-2 md:space-y-4 text-foreground min-h-[450px] w-full overflow-x-hidden">
       {/* Header and Progress Tracker */}
       <div className="space-y-2 md:space-y-6">
         {/* Progress Steps */}
-        <div className="flex items-center justify-between gap-1 md:gap-4 w-full">
+        <div className="flex items-center justify-between gap-1 md:gap-3 w-full">
           {(stepsCount === 3 
             ? [
                 { number: 1, label: "Fund Account" },
@@ -133,7 +133,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
             <div key={step.number} className="flex items-center flex-1 min-w-0">
               {/* Step Circle */}
               <div
-                className={`flex items-center justify-center w-5 h-5 md:w-8 md:h-8 rounded-full font-semibold text-[10px] md:text-sm transition-colors flex-shrink-0 ${
+                className={`flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-full font-semibold text-[10px] md:text-xs transition-colors flex-shrink-0 ${
                   step.number < currentStep
                     ? "bg-accent text-primary-foreground"
                     : step.number === currentStep
@@ -142,7 +142,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
                 }`}
               >
                 {step.number < currentStep ? (
-                  <CheckCircle2 className="w-3 h-3 md:w-4 md:h-4" />
+                  <CheckCircle2 className="w-3 h-3 md:w-3.5 md:h-3.5" />
                 ) : (
                   step.number
                 )}
@@ -150,7 +150,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
 
               {/* Step Label - Hidden on mobile */}
               <span
-                className={`hidden md:inline ml-2 text-xs md:text-sm font-medium whitespace-nowrap ${
+                className={`hidden md:inline ml-1.5 text-[10px] md:text-xs font-medium whitespace-nowrap ${
                   step.number <= currentStep ? "text-foreground" : mutedClass
                 }`}
               >
@@ -160,7 +160,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
               {/* Divider */}
               {index < allSteps.length - 1 && (
                 <div
-                  className={`flex-1 h-px mx-1 md:mx-3 min-w-[8px] ${
+                  className={`flex-1 h-px mx-1 md:mx-2 min-w-[4px] ${
                     step.number < currentStep ? "bg-accent" : "bg-border"
                   }`}
                 />
@@ -194,7 +194,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
       {/* Step 1: Amount Selection */}
       {currentStep === 1 && (
         <div className="space-y-4 md:space-y-6">
-          <p className={`text-xs md:text-sm ${mutedClass} leading-relaxed`}>
+          <p className={`text-[10px] md:text-xs ${mutedClass} leading-tight`}>
             When topping up your account balance with credit card, the minimum
             amount is $250.00 and the maximum amount is $100000.00 a day. If you
             need to increase your limit, please{" "}
@@ -231,18 +231,18 @@ const CardFunding: React.FC<CardFundingProps> = ({
 
             {/* Amount Input */}
             <div className="space-y-2">
-              <label className="text-sm md:text-base font-bold text-foreground">
+              <label className="text-xs md:text-sm font-bold text-foreground">
                 Amount to Add
               </label>
               <div className="flex items-center gap-2">
-                <span className="text-foreground font-semibold text-sm md:text-base">
+                <span className="text-foreground font-semibold text-xs md:text-sm">
                   $
                 </span>
                 <input
                   type="text"
                   {...register("amount")}
                   placeholder="Enter Amount"
-                  className={`flex-1 px-3 md:px-4 py-2 rounded-lg border-2 text-xs md:text-sm ${
+                  className={`flex-1 px-3 py-1.5 rounded-lg border-2 text-[10px] md:text-xs ${
                     errors.amount ? "border-red-500" : "border-input"
                   } bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
                 />
@@ -294,12 +294,10 @@ const CardFunding: React.FC<CardFundingProps> = ({
         >
           {/* Security Notice */}
           <p
-            className={`text-xs md:text-sm ${mutedClass} leading-relaxed bg-blue-50 dark:bg-blue-950/20 p-3 md:p-4 rounded-lg border border-blue-200 dark:border-blue-800`}
+            className={`text-[10px] md:text-xs ${mutedClass} leading-tight bg-blue-50 dark:bg-blue-950/20 p-2.5 md:p-3 rounded-lg border border-blue-200 dark:border-blue-800`}
           >
             Citation invest uses secure, encrypted technology to store and
-            handle your credit card information. Rest assured, the confidential
-            data you enter here is safe. Where possible, we've pre-populated the
-            entry fields on this page with your previously stored information.
+            handle your credit card information. Data entered here is safe.
           </p>
 
           {/* Error Alert */}
@@ -564,7 +562,8 @@ const CardFunding: React.FC<CardFundingProps> = ({
                   </p>
                   <p className="text-xs md:text-sm leading-relaxed">
                     Once payment is approved and verified, the account will be
-                    funded.
+                    funded. You will receive an email shortly with instructions on
+                    the next steps.
                   </p>
                 </div>
               </div>
