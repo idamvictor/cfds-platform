@@ -36,12 +36,18 @@ type CardFundingFormData = z.infer<typeof cardFundingSchema>;
 interface CardFundingProps {
   onChangeMethod: () => void;
   onClose?: () => void;
+  stepsCount?: 3 | 4;
 }
 
-const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod, onClose }) => {
+const CardFunding: React.FC<CardFundingProps> = ({ 
+  onChangeMethod, 
+  onClose,
+  stepsCount = 4
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [currentStep, setCurrentStep] = useState(1);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const mutedClass = useMutedTextClass();
   const mutedPlaceholderClass = useMutedPlaceholderClass();
   const stepNumberColor = useStepNumberColor();
@@ -74,7 +80,7 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod, onClose }) =>
     }
   };
 
-  const onSubmit = (data: CardFundingFormData) => {
+  const handleFinalSubmit = (data: CardFundingFormData) => {
     mutate(
       {
         amount: Number(data.amount),
@@ -89,7 +95,7 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod, onClose }) =>
           toast.success("Payment submitted successfully!", {
             description: "Your deposit is awaiting admin approval.",
           });
-          setCurrentStep(3);
+          setIsSubmitted(true);
           reset();
         },
         onError: (error) => {
@@ -111,11 +117,19 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod, onClose }) =>
       <div className="space-y-2 md:space-y-6">
         {/* Progress Steps */}
         <div className="flex items-center justify-between gap-1 md:gap-4 w-full">
-          {[
-            { number: 1, label: "Fund Account" },
-            { number: 2, label: "Payment Details" },
-            { number: 3, label: "Successful" },
-          ].map((step, index, allSteps) => (
+          {(stepsCount === 3 
+            ? [
+                { number: 1, label: "Fund Account" },
+                { number: 2, label: "Payment Details" },
+                { number: 3, label: "Completed" },
+              ]
+            : [
+                { number: 1, label: "Fund Account" },
+                { number: 2, label: "Payment Details" },
+                { number: 3, label: "Payment Review" },
+                { number: 4, label: "Completed" },
+              ]
+          ).map((step, index, allSteps) => (
             <div key={step.number} className="flex items-center flex-1 min-w-0">
               {/* Step Circle */}
               <div
@@ -159,11 +173,19 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod, onClose }) =>
         <div className="md:hidden text-center">
           <p className="text-xs font-semibold text-foreground">
             {
-              [
-                { number: 1, label: "Fund Account" },
-                { number: 2, label: "Payment Details" },
-                { number: 3, label: "Successful" },
-              ].find((s) => s.number === currentStep)?.label
+              (stepsCount === 3 
+                ? [
+                    { number: 1, label: "Fund Account" },
+                    { number: 2, label: "Payment Details" },
+                    { number: 3, label: "Completed" },
+                  ]
+                : [
+                    { number: 1, label: "Fund Account" },
+                    { number: 2, label: "Payment Details" },
+                    { number: 3, label: "Payment Review" },
+                    { number: 4, label: "Completed" },
+                  ]
+              ).find((s) => s.number === currentStep)?.label
             }
           </p>
         </div>
@@ -260,7 +282,14 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod, onClose }) =>
       {/* Step 2: Payment Details */}
       {currentStep === 2 && (
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit((data) => {
+            if (stepsCount === 3) {
+              handleFinalSubmit(data);
+              setCurrentStep(3);
+            } else {
+              setCurrentStep(3);
+            }
+          })}
           className="space-y-4 md:space-y-6 w-full"
         >
           {/* Security Notice */}
@@ -375,82 +404,189 @@ const CardFunding: React.FC<CardFundingProps> = ({ onChangeMethod, onClose }) =>
               disabled={!isValid || isPending}
               className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isPending ? "Processing..." : "Submit Payment"}
+              {stepsCount === 3 ? (isPending ? "Processing..." : "Confirm & Pay") : "Review Payment"}
               <span>→</span>
             </button>
           </div>
         </form>
       )}
 
-      {/* Step 3: Processing */}
+      {/* Step 3: Payment Review & Success */}
       {currentStep === 3 && (
-        <div className="space-y-4 md:space-y-6 text-center py-6 md:py-8">
-          {/* Loading Spinner */}
-          <div className="flex justify-center">
-            <div className="animate-spin">
-              <svg
-                className="w-8 h-8 md:w-12 md:h-12 text-accent"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
+        <div className="space-y-4 md:space-y-6 w-full">
+          {!isSubmitted ? (
+            <>
+              {/* Review Summary Card */}
+              <div className="bg-card border-2 border-border/50 rounded-xl overflow-hidden">
+                <div className="p-4 md:p-6 space-y-4">
+                  <h3 className="text-base md:text-lg font-bold text-foreground flex items-center gap-2">
+                    <span>📋</span> Payment Summary
+                  </h3>
+
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
+                      <span className={`text-xs md:text-sm ${mutedClass}`}>
+                        Deposit Amount
+                      </span>
+                      <span className="text-sm md:text-base font-bold text-accent">
+                        ${Number(watch("amount")).toLocaleString()}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
+                      <span className={`text-xs md:text-sm ${mutedClass}`}>
+                        Payment Method
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs md:text-sm">💳</span>
+                        <span className="text-xs md:text-sm font-medium">
+                          Card Payment
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
+                      <span className={`text-xs md:text-sm ${mutedClass}`}>
+                        Card Holder
+                      </span>
+                      <span className="text-xs md:text-sm font-medium">
+                        {watch("nameOnCard")}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-center py-2">
+                      <span className={`text-xs md:text-sm ${mutedClass}`}>
+                        Card Number
+                      </span>
+                      <span className="text-xs md:text-sm font-medium">
+                        **** **** **** {watch("cardNumber").slice(-4)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Total Section */}
+                <div className="bg-muted/30 p-4 md:p-6 border-t border-border/50">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm md:text-base font-bold text-foreground">
+                      Total Charge
+                    </span>
+                    <span className="text-lg md:text-xl font-black text-foreground">
+                      ${Number(watch("amount")).toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Alert Box */}
+              <p
+                className={`text-[10px] md:text-xs ${mutedClass} italic text-center px-4`}
               >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
+                By clicking "Confirm & Pay", you authorize the transaction of
+                the amount stated above.
+              </p>
+
+              {/* Form Actions */}
+              <div className="flex gap-2 md:gap-3 pt-2 md:pt-4 w-full">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (stepsCount === 3) {
+                      setCurrentStep(2);
+                      setIsSubmitted(false);
+                      // In 3-step mode, moving back means resetting submitted state
+                    } else {
+                      setCurrentStep(2);
+                    }
+                  }}
+                  className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-muted text-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-muted/80 transition-colors disabled:opacity-50"
+                  disabled={isPending}
+                >
+                  ← Back
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleFinalSubmit(watch())}
+                  disabled={isPending}
+                  className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isPending ? "Processing..." : "Confirm & Pay"}
+                  <span>→</span>
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="space-y-4 md:space-y-6 text-center py-6 md:py-8">
+              {/* Status Content */}
+              <div className="flex justify-center">
+                {isPending ? (
+                  <div className="animate-spin">
+                    <svg
+                      className="w-8 h-8 md:w-12 md:h-12 text-accent"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                  </div>
+                ) : (
+                  <div className="w-12 h-12 md:w-16 md:h-16 bg-accent/10 rounded-full flex items-center justify-center">
+                    <CheckCircle2 className="w-8 h-8 md:w-10 md:h-10 text-accent animate-bounce" />
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-3 md:space-y-4">
+                <h2 className="text-xl md:text-2xl font-bold text-foreground">
+                  Payment Processing
+                </h2>
+                <div className={`space-y-2 md:space-y-3 ${mutedClass}`}>
+                  <p className="text-xs md:text-sm leading-relaxed">
+                    Your payment is under review
+                  </p>
+                  <p className="text-xs md:text-sm leading-relaxed">
+                    as part of compliance and regulation, the account department
+                    <br />
+                    may call the client to complete verification.
+                  </p>
+                  <p className="text-xs md:text-sm leading-relaxed">
+                    Once payment is approved and verified, the account will be
+                    funded.
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-2 md:pt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (location.pathname === "/main/dashboard") {
+                      onClose?.();
+                    } else {
+                      navigate("/main/dashboard");
+                      onClose?.();
+                    }
+                  }}
+                  className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 md:px-8 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors"
+                >
+                  Return to Dashboard
+                </button>
+              </div>
             </div>
-          </div>
-
-          {/* Payment Processing Heading */}
-          <div className="space-y-3 md:space-y-4">
-            <h2 className="text-xl md:text-2xl font-bold text-foreground">
-              Payment Processing
-            </h2>
-
-            {/* Status Messages */}
-            <div className={`space-y-2 md:space-y-3 ${mutedClass}`}>
-              <p className="text-xs md:text-sm leading-relaxed">
-                Your payment is under review
-              </p>
-              <p className="text-xs md:text-sm leading-relaxed">
-                as part of compliance and regulation, the account department
-                <br />
-                may call the client to complete verification.
-              </p>
-              <p className="text-xs md:text-sm leading-relaxed">
-                Once payment is approved and verified, the account will be
-                funded.
-              </p>
-            </div>
-          </div>
-
-          {/* Okay Button */}
-          <div className="pt-2 md:pt-4">
-            <button
-              type="button"
-              onClick={() => {
-                if (location.pathname === "/main/dashboard") {
-                  onClose?.();
-                } else {
-                  navigate("/main/dashboard");
-                  onClose?.();
-                }
-              }}
-              className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 md:px-8 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors"
-            >
-              Return to Dashboard
-            </button>
-          </div>
+          )}
         </div>
       )}
 

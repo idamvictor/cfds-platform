@@ -16,10 +16,15 @@ import { QRCodeSVG } from "qrcode.react";
 
 interface CryptoFundingProps {
   onChangeMethod: () => void;
+  stepsCount?: 3 | 4;
 }
 
-const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
+const CryptoFunding: React.FC<CryptoFundingProps> = ({ 
+  onChangeMethod,
+  stepsCount = 4
+}) => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [selectedWallet, setSelectedWallet] = useState<string | null>(null);
   const [depositAmount, setDepositAmount] = useState<string>("");
   const [copied, setCopied] = useState(false);
@@ -92,16 +97,28 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
         exp_date: "",
         csv: "",
       });
+      setIsSubmitted(true);
     } catch (error) {
       console.error("Deposit submission failed:", error);
     }
   };
 
   const handleNextStep = () => {
-    if (currentStep === 2) {
+    if (stepsCount === 3 && currentStep === 2) {
       handleSubmitDeposit();
     }
-    setCurrentStep(currentStep + 1);
+    if (currentStep < 3) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const handlePreviousStep = () => {
+    if (currentStep > 1) {
+      if (stepsCount === 3 && currentStep === 3) {
+        setIsSubmitted(false);
+      }
+      setCurrentStep(currentStep - 1);
+    }
   };
 
   return (
@@ -110,11 +127,19 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
       <div className="space-y-2 md:space-y-3">
         {/* Progress Steps */}
         <div className="flex items-center justify-between max-w-2xl overflow-x-auto pb-1">
-          {[
-            { number: 1, label: "Network" },
-            { number: 2, label: "Address" },
-            { number: 3, label: "Confirm" },
-          ].map((step, index, allSteps) => (
+          {(stepsCount === 3
+            ? [
+                { number: 1, label: "Network" },
+                { number: 2, label: "Address" },
+                { number: 3, label: "Completed" },
+              ]
+            : [
+                { number: 1, label: "Network" },
+                { number: 2, label: "Address" },
+                { number: 3, label: "Payment Review" },
+                { number: 4, label: "Completed" },
+              ]
+          ).map((step, index, allSteps) => (
             <div key={step.number} className="flex items-center flex-1">
               {/* Step Circle */}
               <div
@@ -503,112 +528,191 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
         </div>
       )}
 
-      {/* Step 3: Processing */}
+      {/* Step 3: Payment Review & Processing */}
       {currentStep === 3 && (
-        <div className="space-y-4 md:space-y-6 text-center py-6 md:py-8">
-          {/* Loading Spinner */}
-          {depositMutation.isPending && (
-            <div className="flex justify-center">
-              <div className="animate-spin">
-                <svg
-                  className="w-8 h-8 md:w-12 md:h-12 text-accent"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
+        <div className="space-y-4 md:space-y-6 w-full">
+          {!isSubmitted ? (
+            <>
+              {/* Review Summary Card */}
+              <div className="bg-card border-2 border-border/50 rounded-xl overflow-hidden">
+                <div className="p-4 md:p-6 space-y-4">
+                  <h3 className="text-base md:text-lg font-bold text-foreground flex items-center gap-2">
+                    <span>📋</span> Deposit Summary
+                  </h3>
+
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
+                      <span className={`text-xs md:text-sm ${mutedClass}`}>
+                        Amount to Deposit
+                      </span>
+                      <span className="text-sm md:text-base font-bold text-accent">
+                        {depositAmount}{" "}
+                        {selectedWalletData?.crypto || "BTC"}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
+                      <span className={`text-xs md:text-sm ${mutedClass}`}>
+                        Network
+                      </span>
+                      <span className="text-xs md:text-sm font-medium">
+                        {selectedWalletData?.crypto_network}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-center py-2">
+                      <span className={`text-xs md:text-sm ${mutedClass}`}>
+                        To Address
+                      </span>
+                      <span className="text-[10px] md:text-xs font-medium break-all text-right max-w-[200px]">
+                        {selectedWalletData?.address}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Info Box */}
+                <div className="bg-muted/30 p-4 md:p-6 border-t border-border/50">
+                  <div className="flex items-start gap-2">
+                    <Info className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
+                    <p className={`text-[10px] md:text-xs ${mutedClass}`}>
+                      Please ensure you have sent the exact amount to the
+                      address above before confirming. The transaction will be
+                      reviewed by our team.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Form Actions */}
+              <div className="flex gap-2 md:gap-3 pt-2 md:pt-4 w-full">
+                <button
+                  type="button"
+                  onClick={handlePreviousStep}
+                  className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-muted text-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-muted/80 transition-colors disabled:opacity-50"
+                  disabled={depositMutation.isPending}
                 >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
+                  ← Back
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSubmitDeposit}
+                  disabled={depositMutation.isPending}
+                  className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {depositMutation.isPending
+                    ? "Processing..."
+                    : "Confirm & Notify Admin"}
+                  <span>→</span>
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="space-y-4 md:space-y-6 text-center py-6 md:py-8">
+              {/* Loading Spinner */}
+              {depositMutation.isPending && (
+                <div className="flex justify-center">
+                  <div className="animate-spin">
+                    <svg
+                      className="w-8 h-8 md:w-12 md:h-12 text-accent"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
+              )}
+
+              {/* Payment Processing Heading */}
+              <div className="space-y-3 md:space-y-4">
+                <h2 className="text-xl md:text-2xl font-bold text-foreground">
+                  {depositMutation.isPending
+                    ? "Payment Processing"
+                    : depositMutation.isSuccess
+                      ? "Waiting for Confirmation"
+                      : "Deposit Failed"}
+                </h2>
+
+                {/* Status Messages */}
+                <div className={`space-y-2 md:space-y-3 ${mutedClass}`}>
+                  {depositMutation.isSuccess &&
+                    selectedWalletData &&
+                    depositAmount && (
+                      <p className="text-xs md:text-sm leading-relaxed">
+                        Your deposit of{" "}
+                        <span className="text-foreground font-semibold">
+                          {depositAmount} {selectedWalletData.crypto}
+                        </span>{" "}
+                        is being processed on the{" "}
+                        <span className="text-foreground font-semibold">
+                          {selectedWalletData.crypto_network}
+                        </span>{" "}
+                        network. Funds will appear in your account after
+                        confirmations.
+                      </p>
+                    )}
+
+                  {depositMutation.isPending && (
+                    <>
+                      <p className="text-base md:text-lg font-semibold text-foreground">
+                        Sending {depositAmount} {selectedWalletData?.crypto}
+                      </p>
+                      <p className="text-xs md:text-sm leading-relaxed">
+                        Your crypto deposit is being processed
+                      </p>
+                      <p className="text-xs md:text-sm leading-relaxed">
+                        once the required blockchain confirmations are complete,
+                        <br />
+                        your funds will appear in your trading account.
+                      </p>
+                    </>
+                  )}
+
+                  {depositMutation.isError && (
+                    <p className="text-xs md:text-sm leading-relaxed text-red-600 dark:text-red-400">
+                      {depositMutation.error instanceof Error
+                        ? depositMutation.error.message
+                        : "Failed to submit deposit. Please try again."}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-2 md:pt-4">
+                {!depositMutation.isPending && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCurrentStep(1);
+                      setDepositAmount("");
+                      setIsSubmitted(false);
+                      depositMutation.reset();
+                    }}
+                    className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 md:px-8 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors"
+                  >
+                    {depositMutation.isSuccess
+                      ? "Deposit Another"
+                      : "Try Again"}
+                  </button>
+                )}
               </div>
             </div>
           )}
-
-          {/* Payment Processing Heading */}
-          <div className="space-y-3 md:space-y-4">
-            <h2 className="text-xl md:text-2xl font-bold text-foreground">
-              {depositMutation.isPending
-                ? "Payment Processing"
-                : depositMutation.isSuccess
-                  ? "Waiting for Confirmation"
-                  : "Deposit Failed"}
-            </h2>
-
-            {/* Status Messages */}
-            <div className={`space-y-2 md:space-y-3 ${mutedClass}`}>
-              {depositMutation.isSuccess &&
-                selectedWalletData &&
-                depositAmount && (
-                  <p className="text-xs md:text-sm leading-relaxed">
-                    Your deposit of{" "}
-                    <span className="text-foreground font-semibold">
-                      {depositAmount} {selectedWalletData.crypto}
-                    </span>{" "}
-                    is being processed on the{" "}
-                    <span className="text-foreground font-semibold">
-                      {selectedWalletData.crypto_network}
-                    </span>{" "}
-                    network. Funds will appear in your account after
-                    confirmations.
-                  </p>
-                )}
-
-              {depositMutation.isPending && (
-                <>
-                  <p className="text-base md:text-lg font-semibold text-foreground">
-                    Sending {depositAmount} {selectedWalletData?.crypto}
-                  </p>
-                  <p className="text-xs md:text-sm leading-relaxed">
-                    Your crypto deposit is being processed
-                  </p>
-                  <p className="text-xs md:text-sm leading-relaxed">
-                    once the required blockchain confirmations are complete,
-                    <br />
-                    your funds will appear in your trading account.
-                  </p>
-                  <p className="text-xs md:text-sm leading-relaxed">
-                    This process typically takes 10-60 minutes depending on
-                    network congestion.
-                  </p>
-                </>
-              )}
-
-              {depositMutation.isError && (
-                <p className="text-xs md:text-sm leading-relaxed text-red-600 dark:text-red-400">
-                  {depositMutation.error instanceof Error
-                    ? depositMutation.error.message
-                    : "Failed to submit deposit. Please try again."}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="pt-2 md:pt-4">
-            {!depositMutation.isPending && (
-              <button
-                type="button"
-                onClick={() => {
-                  setCurrentStep(1);
-                  setDepositAmount("");
-                  depositMutation.reset();
-                }}
-                className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 md:px-8 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors"
-              >
-                {depositMutation.isSuccess ? "Deposit Another" : "Try Again"}
-              </button>
-            )}
-          </div>
         </div>
       )}
 
@@ -617,7 +721,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
         {currentStep === 2 && (
           <button
             type="button"
-            onClick={() => setCurrentStep(currentStep - 1)}
+            onClick={handlePreviousStep}
             className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 md:px-4 py-1.5 bg-muted text-foreground font-semibold text-xs md:text-sm rounded-lg hover:bg-muted/80 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
           >
             ← Previous
@@ -639,7 +743,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({ onChangeMethod }) => {
             disabled={currentStep === 2 && (!depositAmount || !selectedWallet)}
             className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 md:px-4 py-1.5 bg-accent text-background font-semibold text-xs md:text-sm rounded-lg hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            Next
+            {stepsCount === 3 && currentStep === 2 ? (depositMutation.isPending ? "Processing..." : "Confirm & Deposit") : "Next"}
             <span>→</span>
           </button>
         )}
