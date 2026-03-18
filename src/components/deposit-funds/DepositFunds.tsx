@@ -13,7 +13,8 @@ interface DepositFundsProps {
 const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
   const [selectedMethod, setSelectedMethod] = useState("card");
   const [showCardFunding, setShowCardFunding] = useState(false);
-  const [stepsCount, setStepsCount] = useState<3 | 4>(4);
+  const url = window.location.href.toLowerCase();
+  const stepsCount = (url.includes("fincapitalmarkets.org") || url.includes("equitymarketspro.com")) ? 4 : 3;
   const mutedClass = useMutedTextClass();
   const navigate = useNavigate();
   const { user } = useUserStore();
@@ -43,35 +44,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
 
   return (
     <div className="space-y-6 text-foreground px-4 md:px-6 lg:px-10">
-      {/* Flow Configuration Toggle */}
-      <div className="bg-muted/30 p-4 rounded-xl border border-border flex items-center justify-between gap-4">
-        <div className="space-y-1">
-          <h4 className="text-sm font-bold text-foreground">Checkout Flow Configuration</h4>
-          <p className={`text-xs ${mutedClass}`}>Select the number of steps for the funding process.</p>
-        </div>
-        <div className="flex bg-card border border-border p-1 rounded-lg">
-          <button
-            onClick={() => setStepsCount(3)}
-            className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${
-              stepsCount === 3
-                ? "bg-accent text-background shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            3 Steps
-          </button>
-          <button
-            onClick={() => setStepsCount(4)}
-            className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${
-              stepsCount === 4
-                ? "bg-accent text-background shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            4 Steps
-          </button>
-        </div>
-      </div>
+
       {/* Info Text */}
       <div className="space-y-4">
         <p className={`text-xs md:text-sm ${mutedClass} leading-relaxed`}>
