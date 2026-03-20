@@ -5,7 +5,7 @@ import CardFunding from "./CardFunding";
 import CryptoFunding from "./CryptoFunding";
 import useUserStore from "@/store/userStore";
 import useDataStore from "@/store/dataStore";
-import { Lock } from "lucide-react";
+import { Lock, Bitcoin, CreditCard } from "lucide-react";
 
 interface DepositFundsProps {
   onClose?: () => void;
@@ -68,11 +68,9 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
       {/* Info Text */}
       <div className="space-y-4">
         <p className={`text-xs md:text-sm ${mutedClass} leading-relaxed`}>
-          You can speed up the checkout process by ensuring ahead of time that
-          you have adequate funds in your account to cover all planned
-          purchases. On this page, you can top-up your account funds using any
-          accepted payment method. To view your previous top-up transactions,
-          click here:{" "}
+          Add funds to your account to start trading instantly. You can deposit
+          using Fiat or crypto payment methods below. For a record of your
+          previous deposits, view your{" "}
           <span
             className="text-accent cursor-pointer"
             onClick={() => {
@@ -81,14 +79,14 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
             }}
           >
             Transaction History
-          </span>
+          </span>.
         </p>
 
         <p className={`text-xs md:text-sm ${mutedClass} leading-relaxed`}>
-          When topping up your balance, please note: Per our fraud control
-          guidelines, some transactions (especially those involving third-party
-          payments) may require additional verification. In some cases, we'll
-          need phone verification for
+          <strong>Note: Anti-Fraud Verification</strong> <br />
+          For your security, some deposits may require additional verification.
+          In certain cases, our team may request phone or identity confirmation
+          before funds are credited.
         </p>
       </div>
 
@@ -111,13 +109,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-lg flex-shrink-0">
-                  <svg
-                    className="w-5 h-5 md:w-6 md:h-6 text-blue-600"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M20 8H4V6h16m0 12H4v-6h16m0-8H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
-                  </svg>
+                  <CreditCard className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
                 </div>
                 <div className="flex flex-col items-end gap-2">
                   {selectedMethod === "card" && (
@@ -139,10 +131,10 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
               </h4>
               <div className="flex items-center gap-1 text-accent text-xs md:text-sm mb-2">
                 <span>⚡</span>
-                <span>{deposit_config?.credit_card?.estimated_time || "Instant"} processing</span>
+                <span>{deposit_config?.credit_card?.estimated_time || "Instant"}</span>
               </div>
               <p className={`text-xs md:text-sm ${mutedClass}`}>
-                Visa, Mastercard, Amex, Discover
+                Supported: Visa, Mastercard, Amex, Discover
               </p>
             </div>
           )}
@@ -161,15 +153,9 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
             >
               <div className="flex items-start justify-between mb-4">
                 <div className={`flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-lg flex-shrink-0 ${
-                  isCryptoDisabled ? "bg-gray-200" : "bg-gray-100"
+                  isCryptoDisabled ? "bg-gray-200" : "bg-orange-100"
                 }`}>
-                  <svg
-                    className={`w-5 h-5 md:w-6 md:h-6 ${isCryptoDisabled ? "text-gray-400" : "text-gray-700"}`}
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6z" />
-                  </svg>
+                  <Bitcoin className={`w-5 h-5 md:w-6 md:h-6 ${isCryptoDisabled ? "text-gray-400" : "text-orange-500"}`} />
                 </div>
                 
                 <div className="flex flex-col items-end gap-2 text-right">
@@ -205,13 +191,13 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
                   <span>Verification pending</span>
                 ) : (
                   <>
-                    <span>⏱</span>
+                    <span>⚡</span>
                     <span>{deposit_config?.crypto?.estimated_time || "Instant"}</span>
                   </>
                 )}
               </div>
               <p className={`text-xs md:text-sm ${mutedClass}`}>
-                BTC, ETH, USDT, and more
+                Supported: BTC, ETH, USDT, and other major assets 
               </p>
             </div>
           )}

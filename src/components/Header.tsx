@@ -131,7 +131,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
             <DialogTitle>
               {" "}
               <h1 className="text-2xl font-bold text-foreground">
-                DEPOSIT FUNDS
+                FUNDS DEPOSIT
               </h1>
             </DialogTitle>
           </DialogHeader>

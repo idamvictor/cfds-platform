@@ -195,12 +195,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
       {currentStep === 1 && (
         <div className="space-y-4 md:space-y-6">
           <p className={`text-[10px] md:text-xs ${mutedClass} leading-tight`}>
-            When topping up your account balance with credit card, the minimum
-            amount is $250.00 and the maximum amount is $100000.00 a day. If you
-            need to increase your limit, please{" "}
-            <span className="text-accent cursor-pointer">
-              contact our Support team
-            </span>
+            We use secure, encrypted technology to process and store your card information. All data entered here is protected and handled in compliance with PCI DSS requirements and international security standards.
           </p>
 
           <div className="w-full space-y-4">
@@ -395,14 +390,14 @@ const CardFunding: React.FC<CardFundingProps> = ({
               className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-muted text-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-muted/80 transition-colors disabled:opacity-50"
               disabled={isPending}
             >
-              ← Previous
+              ← Back
             </button>
             <button
               type="submit"
               disabled={!isValid || isPending}
               className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {stepsCount === 3 ? (isPending ? "Processing..." : "Confirm & Pay") : "Review Payment"}
+              {stepsCount === 3 ? (isPending ? "Processing..." : "Continue") : "Review Payment"}
               <span>→</span>
             </button>
           </div>
@@ -556,14 +551,10 @@ const CardFunding: React.FC<CardFundingProps> = ({
                     Your payment is under review
                   </p>
                   <p className="text-xs md:text-sm leading-relaxed">
-                    as part of compliance and regulation, the account department
-                    <br />
-                    may call the client to complete verification.
+                    As part of compliance with financial regulations, our Accounts Department may contact you to complete verification.
                   </p>
                   <p className="text-xs md:text-sm leading-relaxed">
-                    Once payment is approved and verified, the account will be
-                    funded. You will receive an email shortly with instructions on
-                    the next steps.
+                    Once your payment is approved and verified, the funds will be credited to your account. You will also receive an email with instructions on the next steps.
                   </p>
                 </div>
               </div>
@@ -597,7 +588,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
             onClick={onChangeMethod}
             className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-muted text-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-muted/80 transition-colors"
           >
-            ← Previous
+            ← Back
           </button>
           <button
             type="button"
@@ -605,7 +596,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
             disabled={!amount || !!errors.amount}
             className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Next
+            Continue
             <span>→</span>
           </button>
         </div>
