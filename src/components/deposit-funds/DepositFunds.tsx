@@ -23,13 +23,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
   const mutedClass = useMutedTextClass();
   const navigate = useNavigate();
   const { user } = useUserStore();
-  const { deposit_config, fetchData, data } = useDataStore();
-
-  useEffect(() => {
-    if (!data) {
-      fetchData();
-    }
-  }, [data, fetchData]);
+  const { deposit_config } = useDataStore();
 
   const cryptoEnabled = deposit_config?.crypto?.enabled !== false; // Default to true if not specified
   const cardEnabled = deposit_config?.credit_card?.enabled !== false;
