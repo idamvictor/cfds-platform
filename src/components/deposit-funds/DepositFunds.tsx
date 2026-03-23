@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useMutedTextClass } from "@/hooks/useMutedTextClass";
 import CardFunding from "./CardFunding";
 import CryptoFunding from "./CryptoFunding";
-import useUserStore from "@/store/userStore";
 import useDataStore from "@/store/dataStore";
 import { Bitcoin, CreditCard } from "lucide-react";
 
@@ -22,7 +21,6 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
   const stepsCount = (url.includes("fincapitalmarkets.org") || url.includes("equitymarketspro.com")) ? 4 : 3;
   const mutedClass = useMutedTextClass();
   const navigate = useNavigate();
-  const { user } = useUserStore();
   const { deposit_config } = useDataStore();
 
   const cryptoEnabled = deposit_config?.crypto?.enabled !== false; // Default to true if not specified
@@ -37,9 +35,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
     }
   }, [cardEnabled, cryptoEnabled, selectedMethod]);
 
-  // Crypto funding is restricted to users whose verification status is 'approved'
-  const isVerified = user?.verification_status?.toLowerCase() === "approved";
-  const isCryptoDisabled = !isVerified;
+
 
   // If showCardFunding is true, render the specific funding component based on selectedMethod
   if (showCardFunding) {
@@ -68,7 +64,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
       {/* Info Text */}
       <div className="space-y-4">
         <p className={`text-xs md:text-sm ${mutedClass} leading-relaxed`}>
-          Add funds to your account to start trading instantly. You can deposit
+          Add funds to your account to start trading insF tantly. You can deposit
           using Fiat or crypto payment methods below. For a record of your
           previous deposits, view your{" "}
           <span
@@ -138,27 +134,23 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
             </div>
           )}
 
-          {/* Crypto Payment Option - Disabled if user is not KYC verified or backend disabled */}
+          {/* Crypto Payment Option */}
           {cryptoEnabled && (
             <div
-              onClick={() => !isCryptoDisabled && setSelectedMethod("crypto")}
-              className={`rounded-lg md:rounded-2xl border-2 p-4 md:p-6 transition-all relative ${
-                isCryptoDisabled 
-                  ? "border-border bg-muted/30 cursor-not-allowed grayscale-[0.5]" 
-                  : selectedMethod === "crypto"
-                    ? "border-accent bg-accent/5 shadow-md cursor-pointer"
-                    : "border-border hover:border-border/80 hover:shadow-sm cursor-pointer"
+              onClick={() => setSelectedMethod("crypto")}
+              className={`rounded-lg md:rounded-2xl border-2 p-4 md:p-6 cursor-pointer transition-all ${
+                selectedMethod === "crypto"
+                  ? "border-accent bg-accent/5 shadow-md"
+                  : "border-border hover:border-border/80 hover:shadow-sm"
               }`}
             >
               <div className="flex items-start justify-between mb-4">
-                <div className={`flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-lg flex-shrink-0 ${
-                  isCryptoDisabled ? "bg-gray-200" : "bg-orange-100"
-                }`}>
-                  <Bitcoin className={`w-5 h-5 md:w-6 md:h-6 ${isCryptoDisabled ? "text-gray-400" : "text-orange-500"}`} />
+                <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-orange-100 rounded-lg flex-shrink-0">
+                  <Bitcoin className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />
                 </div>
-                
+
                 <div className="flex flex-col items-end gap-2 text-right">
-                  {selectedMethod === "crypto" && !isCryptoDisabled && (
+                  {selectedMethod === "crypto" && (
                     <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 bg-accent rounded-full flex-shrink-0">
                       <svg
                         className="w-3 h-3 md:w-4 md:h-4 text-white"
@@ -169,29 +161,17 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
                       </svg>
                     </div>
                   )}
-                  
-                  
                 </div>
               </div>
-              <h4 className={`text-base md:text-lg font-semibold mb-1 ${
-                isCryptoDisabled ? "text-muted-foreground" : "text-foreground"
-              }`}>
+              <h4 className="text-base md:text-lg font-semibold text-foreground mb-1">
                 Cryptocurrency
               </h4>
-              <div className={`flex items-center gap-1 text-xs md:text-sm mb-2 ${
-                isCryptoDisabled ? "text-muted-foreground" : "text-accent"
-              }`}>
-                {isCryptoDisabled ? (
-                  <span>Verification pending</span>
-                ) : (
-                  <>
-                    <span>⚡</span>
-                    <span>{deposit_config?.crypto?.estimated_time || "Instant"}</span>
-                  </>
-                )}
+              <div className="flex items-center gap-1 text-accent text-xs md:text-sm mb-2">
+                <span>⚡</span>
+                <span>{deposit_config?.crypto?.estimated_time || "Instant"}</span>
               </div>
               <p className={`text-xs md:text-sm ${mutedClass}`}>
-                Supported: BTC, ETH, USDT, and other major assets 
+                Supported: BTC, ETH, USDT, and other major assets
               </p>
             </div>
           )}
