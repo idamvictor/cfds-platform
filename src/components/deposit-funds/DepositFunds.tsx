@@ -55,7 +55,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
       {/* Info Text */}
       <div className="space-y-4">
         <p className={`text-xs md:text-sm ${mutedClass} leading-relaxed`}>
-          Add funds to your account to start trading insF tantly. You can deposit
+          Add funds to your account to start trading instantly. You can deposit
           using Fiat or crypto payment methods below. For a record of your
           previous deposits, view your{" "}
           <span
