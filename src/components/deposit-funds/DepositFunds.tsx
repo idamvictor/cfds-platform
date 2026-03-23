@@ -5,7 +5,7 @@ import CardFunding from "./CardFunding";
 import CryptoFunding from "./CryptoFunding";
 import useUserStore from "@/store/userStore";
 import useDataStore from "@/store/dataStore";
-import { Lock, Bitcoin, CreditCard } from "lucide-react";
+import { Bitcoin, CreditCard } from "lucide-react";
 
 interface DepositFundsProps {
   onClose?: () => void;
@@ -123,7 +123,6 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
                       </svg>
                     </div>
                   )}
-                  {/* KYC Required badge removed */}
                 </div>
               </div>
               <h4 className="text-base md:text-lg font-semibold text-foreground mb-1">
@@ -171,12 +170,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
                     </div>
                   )}
                   
-                  {isCryptoDisabled && (
-                    <div className="flex items-center gap-1 px-2 py-0.5 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-full text-[10px] md:text-xs font-medium">
-                      <Lock className="w-2.5 h-2.5" />
-                      <span>KYC Required</span>
-                    </div>
-                  )}
+                  
                 </div>
               </div>
               <h4 className={`text-base md:text-lg font-semibold mb-1 ${
