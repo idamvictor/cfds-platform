@@ -379,7 +379,16 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
         </div>
       )}
          {/* Step 2: Complete Your Deposit */}
-      {currentStep === 2 && selectedWalletData && (
+      {currentStep === 2 && (
+        !selectedWalletData ? (
+          <div className="flex flex-col items-center justify-center py-10 space-y-3 text-center">
+            <AlertCircle className="w-8 h-8 text-yellow-500" />
+            <p className="text-sm font-semibold text-foreground">No wallet address available</p>
+            <p className={`text-xs ${mutedClass}`}>
+              No deposit wallet has been configured for the selected asset/network. Please go back and try a different selection, or contact support.
+            </p>
+          </div>
+        ) : (
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
           <div className="space-y-0.5">
             <h2 className="text-xl font-bold text-foreground">Complete Your Deposit</h2>
@@ -465,6 +474,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
               </div>
            </div>
         </div>
+        )
       )}
 
       {/* Step 3: Payment Review */}
