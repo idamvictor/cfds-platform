@@ -379,7 +379,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
         </div>
       )}
          {/* Step 2: Complete Your Deposit */}
-      {currentStep === 2 && (
+      {currentStep === 2 && selectedWalletData && (
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
           <div className="space-y-0.5">
             <h2 className="text-xl font-bold text-foreground">Complete Your Deposit</h2>
@@ -388,94 +388,82 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
             </p>
           </div>
 
-          {!selectedWalletData ? (
-            <div className="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-900/50 rounded-xl p-5 flex gap-3 items-start">
-              <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
-              <div className="space-y-1">
-                <p className="text-sm font-semibold text-yellow-700 dark:text-yellow-400">No wallet address configured</p>
-                <p className={`text-xs ${mutedClass}`}>
-                  No deposit wallet has been set up for <strong>{selectedCrypto}</strong> on the <strong>{selectedNetwork}</strong> network.
-                  Please go back and choose a different asset or network, or contact support.
-                </p>
+          <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-md">
+             <div className="p-5 md:p-6 flex flex-col md:flex-row gap-6 items-center">
+                {/* QR Code Stylized */}
+                <div className="relative p-3 bg-white rounded-xl shadow-sm border border-border/50">
+                   <QRCodeSVG
+                      value={qrCodeValue}
+                      size={120}
+                      level="H"
+                      className="w-24 h-24 md:w-32 md:h-32"
+                      fgColor="black"
+                      bgColor="white"
+                    />
+                    
+                </div>
+
+                {/* Amount Info */}
+                <div className="flex-1 space-y-3 text-center md:text-left w-full">
+                   <div className="space-y-0.5">
+                      <p className={`text-[9px] font-black uppercase tracking-widest opacity-40`}>Amount to Deposit</p>
+                      <h3 className="text-2xl md:text-3xl font-black text-foreground">{depositAmount} {selectedCrypto}</h3>
+                      <p className="text-sm font-medium opacity-60">≈ ${ (parseFloat(depositAmount || '0') * 65000).toLocaleString() } USD</p>
+                   </div>
+
+                   <div className="grid grid-cols-2 gap-4 pt-3 border-t border-border/30">
+                      <div>
+                         <p className="text-[8px] font-black opacity-30 tracking-wider uppercase">NETWORK</p>
+                         <p className="text-xs font-bold flex items-center justify-center md:justify-start gap-1.5">
+                           <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                           {selectedCrypto}
+                         </p>
+                      </div>
+                      <div>
+                         <p className="text-[8px] font-black opacity-30 tracking-wider uppercase">ESTIMATED TIME</p>
+                         <p className="font-bold text-xs">
+                             {selectedWalletData.type === 'link' ? 'External' : '10-30 Min'}
+                          </p>
+                       </div>
+                    </div>
+                 </div>
               </div>
-            </div>
-          ) : (
-            <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-md">
-               <div className="p-5 md:p-6 flex flex-col md:flex-row gap-6 items-center">
-                  {/* QR Code Stylized */}
-                  <div className="relative p-3 bg-white rounded-xl shadow-sm border border-border/50">
-                     <QRCodeSVG
-                        value={qrCodeValue}
-                        size={120}
-                        level="H"
-                        className="w-24 h-24 md:w-32 md:h-32"
-                        fgColor="black"
-                        bgColor="white"
-                      />
-                  </div>
 
-                  {/* Amount Info */}
-                  <div className="flex-1 space-y-3 text-center md:text-left w-full">
-                     <div className="space-y-0.5">
-                        <p className={`text-[9px] font-black uppercase tracking-widest opacity-40`}>Amount to Deposit</p>
-                        <h3 className="text-2xl md:text-3xl font-black text-foreground">{depositAmount} {selectedCrypto}</h3>
-                        <p className="text-sm font-medium opacity-60">≈ ${ (parseFloat(depositAmount || '0') * 65000).toLocaleString() } USD</p>
-                     </div>
-
-                     <div className="grid grid-cols-2 gap-4 pt-3 border-t border-border/30">
-                        <div>
-                           <p className="text-[8px] font-black opacity-30 tracking-wider uppercase">NETWORK</p>
-                           <p className="text-xs font-bold flex items-center justify-center md:justify-start gap-1.5">
-                             <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
-                             {selectedCrypto}
-                           </p>
-                        </div>
-                        <div>
-                           <p className="text-[8px] font-black opacity-30 tracking-wider uppercase">ESTIMATED TIME</p>
-                           <p className="font-bold text-xs">
-                               {selectedWalletData.type === 'link' ? 'External' : '10-30 Min'}
-                            </p>
-                         </div>
-                      </div>
-                   </div>
-                </div>
-
-                {/* Address/Link Bar */}
-                <div className="bg-muted/20 border-t border-border p-4 flex flex-col sm:flex-row gap-3">
-                   <div className="flex-1 flex items-center gap-3 bg-card border border-border/50 p-3 rounded-lg min-w-0">
-                      {selectedWalletData.type === 'link' ? (
-                        <Wifi className="w-4 h-4 text-accent flex-shrink-0" />
-                      ) : (
-                        <Copy className="w-4 h-4 text-accent flex-shrink-0" />
-                      )}
-                      <div className="min-w-0">
-                         <p className="text-[7px] font-black opacity-40 uppercase tracking-widest">
-                           {selectedWalletData.type === 'link' ? 'Payment Instruction' : 'Unique Address'}
-                         </p>
-                         <p className="text-[10px] md:text-xs font-bold text-foreground truncate">
-                           {selectedWalletData.type === 'link' ? selectedWalletData.crypto_network : selectedWalletData.address}
-                         </p>
-                      </div>
-                   </div>
-                   <button 
-                     onClick={() => {
-                       if (selectedWalletData.type === 'link') {
-                         window.open(selectedWalletData.address, '_blank');
-                       } else {
-                         handleCopyAddress();
-                       }
-                     }}
-                     className="bg-accent text-background px-5 py-2.5 rounded-lg font-bold text-xs flex items-center justify-center gap-2 hover:bg-accent/90 transition-all active:scale-95"
-                   >
-                     {selectedWalletData.type === 'link' ? (
-                       <><span>External Link</span><span>↗</span></>
-                     ) : (
-                       <><Copy className="w-3.5 h-3.5" />{copied ? "Copied!" : "Copy"}</>
-                     )}
-                   </button>
-                </div>
-             </div>
-          )}
+              {/* Address/Link Bar */}
+              <div className="bg-muted/20 border-t border-border p-4 flex flex-col sm:flex-row gap-3">
+                 <div className="flex-1 flex items-center gap-3 bg-card border border-border/50 p-3 rounded-lg min-w-0">
+                    {selectedWalletData.type === 'link' ? (
+                      <Wifi className="w-4 h-4 text-accent flex-shrink-0" />
+                    ) : (
+                      <Copy className="w-4 h-4 text-accent flex-shrink-0" />
+                    )}
+                    <div className="min-w-0">
+                       <p className="text-[7px] font-black opacity-40 uppercase tracking-widest">
+                         {selectedWalletData.type === 'link' ? 'Payment Instruction' : 'Unique Address'}
+                       </p>
+                       <p className="text-[10px] md:text-xs font-bold text-foreground truncate">
+                         {selectedWalletData.type === 'link' ? selectedWalletData.crypto_network : selectedWalletData.address}
+                       </p>
+                    </div>
+                 </div>
+                 <button 
+                   onClick={() => {
+                     if (selectedWalletData.type === 'link') {
+                       window.open(selectedWalletData.address, '_blank');
+                     } else {
+                       handleCopyAddress();
+                     }
+                   }}
+                   className="bg-accent text-background px-5 py-2.5 rounded-lg font-bold text-xs flex items-center justify-center gap-2 hover:bg-accent/90 transition-all active:scale-95"
+                 >
+                   {selectedWalletData.type === 'link' ? (
+                     <><span>External Link</span><span>↗</span></>
+                   ) : (
+                     <><Copy className="w-3.5 h-3.5" />{copied ? "Copied!" : "Copy"}</>
+                   )}
+                 </button>
+              </div>
+           </div>
         </div>
       )}
 
