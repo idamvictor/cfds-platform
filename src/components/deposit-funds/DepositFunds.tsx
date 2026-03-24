@@ -5,6 +5,7 @@ import CardFunding from "./CardFunding";
 import CryptoFunding from "./CryptoFunding";
 import useDataStore from "@/store/dataStore";
 import { Bitcoin, CreditCard } from "lucide-react";
+import useUserStore from "@/store/userStore";
 
 interface DepositFundsProps {
   onClose?: () => void;
@@ -21,8 +22,10 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
   const stepsCount = (url.includes("fincapitalmarkets.org") || url.includes("equitymarketspro.com")) ? 4 : 3;
   const mutedClass = useMutedTextClass();
   const navigate = useNavigate();
+  const { user } = useUserStore();
+  const isVerified = user?.verification_status === "approved" || user?.verification_status === "verified";
   const { deposit_config } = useDataStore();
-
+  
   const cryptoEnabled = deposit_config?.crypto?.enabled !== false; // Default to true if not specified
   const cardEnabled = deposit_config?.credit_card?.enabled !== false;
 
@@ -85,111 +88,107 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
           {/* Card Payment Option */}
-          <div
-            onClick={() => cardEnabled && setSelectedMethod("card")}
-            className={`rounded-lg md:rounded-2xl border-2 p-4 md:p-6 transition-all ${
-              !cardEnabled 
-                ? "opacity-50 grayscale cursor-not-allowed border-border/50" 
-                : "cursor-pointer"
-            } ${
-              selectedMethod === "card"
-                ? "border-accent bg-accent/5 shadow-md"
-                : cardEnabled ? "border-border hover:border-border/80 hover:shadow-sm" : "border-border/30"
-            }`}
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-lg flex-shrink-0">
-                <CreditCard className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
+          {cardEnabled && (
+            <div
+              onClick={() => setSelectedMethod("card")}
+              className={`rounded-lg md:rounded-2xl border-2 p-4 md:p-6 transition-all cursor-pointer ${
+                selectedMethod === "card"
+                  ? "border-accent bg-accent/5 shadow-md"
+                  : "border-border hover:border-border/80 hover:shadow-sm"
+              }`}
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-lg flex-shrink-0">
+                  <CreditCard className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
+                </div>
+                <div className="flex flex-col items-end gap-2">
+                  {selectedMethod === "card" && (
+                    <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 bg-accent rounded-full flex-shrink-0">
+                      <svg
+                        className="w-3 h-3 md:w-4 md:h-4 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                      </svg>
+                    </div>
+                  )}
+                  {!isVerified && (
+                    <span className="bg-red-500/10 text-red-500 text-[10px] md:text-[11px] px-2 py-0.5 rounded-full font-bold whitespace-nowrap border border-red-500/20 uppercase tracking-tighter">
+                      KYC Required
+                    </span>
+                  )}
+                </div>
               </div>
-              <div className="flex flex-col items-end gap-2">
-                {selectedMethod === "card" && (
-                  <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 bg-accent rounded-full flex-shrink-0">
-                    <svg
-                      className="w-3 h-3 md:w-4 md:h-4 text-white"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                    </svg>
-                  </div>
-                )}
+              <h4 className="text-base md:text-lg font-semibold text-foreground mb-1">
+                Credit/Debit Card
+              </h4>
+              <div className="flex items-center gap-1 text-accent text-xs md:text-sm mb-2">
+                <span>⚡</span>
+                <span>{deposit_config?.credit_card?.estimated_time || "Instant"}</span>
               </div>
+              <p className={`text-xs md:text-sm ${mutedClass}`}>
+                Supported: Visa, Mastercard, Amex, Discover
+              </p>
             </div>
-            <h4 className="text-base md:text-lg font-semibold text-foreground mb-1">
-              Credit/Debit Card
-            </h4>
-            <div className="flex items-center gap-1 text-accent text-xs md:text-sm mb-2">
-              <span>⚡</span>
-              <span>{deposit_config?.credit_card?.estimated_time || "Instant"}</span>
-            </div>
-            <p className={`text-xs md:text-sm ${mutedClass}`}>
-              Supported: Visa, Mastercard, Amex, Discover
-            </p>
-          </div>
+          )}
 
           {/* Crypto Payment Option */}
-          <div
-            onClick={() => cryptoEnabled && setSelectedMethod("crypto")}
-            className={`rounded-lg md:rounded-2xl border-2 p-4 md:p-6 transition-all ${
-              !cryptoEnabled 
-                ? "opacity-50 grayscale cursor-not-allowed border-border/50" 
-                : "cursor-pointer"
-            } ${
-              selectedMethod === "crypto"
-                ? "border-accent bg-accent/5 shadow-md"
-                : cryptoEnabled ? "border-border hover:border-border/80 hover:shadow-sm" : "border-border/30"
-            }`}
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-orange-100 rounded-lg flex-shrink-0">
-                <Bitcoin className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />
-              </div>
+          {cryptoEnabled && (
+            <div
+              onClick={() => setSelectedMethod("crypto")}
+              className={`rounded-lg md:rounded-2xl border-2 p-4 md:p-6 transition-all cursor-pointer ${
+                selectedMethod === "crypto"
+                  ? "border-accent bg-accent/5 shadow-md"
+                  : "border-border hover:border-border/80 hover:shadow-sm"
+              }`}
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-orange-100 rounded-lg flex-shrink-0">
+                  <Bitcoin className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />
+                </div>
 
-              <div className="flex flex-col items-end gap-2 text-right">
-                {selectedMethod === "crypto" && (
-                  <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 bg-accent rounded-full flex-shrink-0">
-                    <svg
-                      className="w-3 h-3 md:w-4 md:h-4 text-white"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                    </svg>
-                  </div>
-                )}
+                <div className="flex flex-col items-end gap-2 text-right">
+                  {selectedMethod === "crypto" && (
+                    <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 bg-accent rounded-full flex-shrink-0">
+                      <svg
+                        className="w-3 h-3 md:w-4 md:h-4 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
               </div>
+              <h4 className="text-base md:text-lg font-semibold text-foreground mb-1">
+                Cryptocurrency
+              </h4>
+              <div className="flex items-center gap-1 text-accent text-xs md:text-sm mb-2">
+                <span>⚡</span>
+                <span>{deposit_config?.crypto?.estimated_time || "Instant"}</span>
+              </div>
+              <p className={`text-xs md:text-sm ${mutedClass}`}>
+                Supported: BTC, ETH, USDT, and other major assets
+              </p>
             </div>
-            <h4 className="text-base md:text-lg font-semibold text-foreground mb-1">
-              Cryptocurrency
-            </h4>
-            <div className="flex items-center gap-1 text-accent text-xs md:text-sm mb-2">
-              <span>⚡</span>
-              <span>{deposit_config?.crypto?.estimated_time || "Instant"}</span>
-            </div>
-            <p className={`text-xs md:text-sm ${mutedClass}`}>
-              Supported: BTC, ETH, USDT, and other major assets
-            </p>
-          </div>
+          )}
         </div>
       </div>
 
       {/* Next Button */}
-      <div className="flex gap-3 pt-4">
-        <button
-          onClick={() => {
-            if (selectedMethod) setShowCardFunding(true);
-          }}
-          disabled={!selectedMethod || (selectedMethod === "card" && !cardEnabled) || (selectedMethod === "crypto" && !cryptoEnabled)}
-          className={`w-full md:w-auto inline-flex items-center justify-center md:justify-start gap-2 px-6 py-2 font-semibold rounded-lg transition-all ${
-            (selectedMethod && ((selectedMethod === "card" && cardEnabled) || (selectedMethod === "crypto" && cryptoEnabled)))
-              ? "bg-accent text-background hover:bg-accent/90 cursor-pointer"
-              : "bg-muted text-muted-foreground/50 cursor-not-allowed opacity-50"
-          }`}
-        >
-          Next
-          <span>→</span>
-        </button>
-      </div>
+      {selectedMethod && (
+        <div className="flex gap-3 pt-4">
+          <button
+            onClick={() => setShowCardFunding(true)}
+            className="w-full md:w-auto inline-flex items-center justify-center md:justify-start gap-2 px-6 py-2 font-semibold rounded-lg transition-all bg-accent text-background hover:bg-accent/90 cursor-pointer"
+          >
+            Next
+            <span>→</span>
+          </button>
+        </div>
+      )}
 
 
     </div>
