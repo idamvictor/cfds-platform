@@ -114,7 +114,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
                     </div>
                   )}
                   {!isVerified && (
-                    <span className="bg-red-500/10 text-red-500 text-[10px] md:text-[11px] px-2 py-0.5 rounded-full font-bold whitespace-nowrap border border-red-500/20 uppercase tracking-tighter">
+                    <span className="bg-amber-500/10 text-amber-500 text-[10px] md:text-[11px] px-2 py-0.5 rounded-full font-bold whitespace-nowrap border border-amber-500/20 uppercase tracking-tighter">
                       KYC Required
                     </span>
                   )}
