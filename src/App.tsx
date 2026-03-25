@@ -58,6 +58,7 @@ const CryptoWalletDeposit = lazy(
 const DepositHistoryPage = lazy(
   () => import("./pages/Preferences/deposit-history-page"),
 );
+const KYCPartners = lazy(() => import("./pages/Preferences/KYCPartners"));
 
 const queryClient = new QueryClient();
 
@@ -173,6 +174,10 @@ const App = () => {
                     <Route
                       path="/main/verification"
                       element={<Verification />}
+                    />
+                    <Route
+                      path="/main/kyc-partners"
+                      element={<KYCPartners />}
                     />
                     <Route path="/main/accounts" element={<AccountsPage />} />
                     <Route path="/main/chat" element={<LiveChat />} />
