@@ -29,7 +29,7 @@ const KYCPartners: React.FC = () => {
               href={partner.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative bg-card border border-border rounded-[2.5rem] p-10 flex-col items-center justify-center transition-all duration-500 hover:border-[#52e5ab]/40 hover:shadow-2xl hover:shadow-emerald-500/10 hover:-translate-y-2 cursor-pointer no-underline block"
+              className="group relative bg-card border border-border rounded-[2.5rem] p-10 flex flex-col items-center justify-center transition-all duration-500 hover:border-[#52e5ab]/40 hover:shadow-2xl hover:shadow-emerald-500/10 hover:-translate-y-2 cursor-pointer no-underline"
             >
               <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity">
                 <ExternalLink className="w-4 h-4 text-muted-foreground" />
