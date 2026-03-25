@@ -1,5 +1,5 @@
 import React from 'react';
-import { KYC_PARTNERS } from './verification';
+import { KYC_PARTNERS } from '@/constants/kyc-partners';
 import { Shield, Check, ExternalLink, Info } from 'lucide-react';
 
 const KYCPartners: React.FC = () => {
@@ -24,9 +24,12 @@ const KYCPartners: React.FC = () => {
         {/* Partners Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {KYC_PARTNERS.map((partner) => (
-            <div 
+            <a 
               key={partner.name}
-              className="group relative bg-card border border-border rounded-[2.5rem] p-10 flex flex-col items-center justify-center transition-all duration-500 hover:border-[#52e5ab]/40 hover:shadow-2xl hover:shadow-emerald-500/10 hover:-translate-y-2 cursor-pointer"
+              href={partner.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative bg-card border border-border rounded-[2.5rem] p-10 flex flex-col items-center justify-center transition-all duration-500 hover:border-[#52e5ab]/40 hover:shadow-2xl hover:shadow-emerald-500/10 hover:-translate-y-2 cursor-pointer no-underline block"
             >
               <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity">
                 <ExternalLink className="w-4 h-4 text-muted-foreground" />
@@ -49,7 +52,7 @@ const KYCPartners: React.FC = () => {
                 <Check className="w-2.5 h-2.5" />
                 Sync Active
               </div>
-            </div>
+            </a>
           ))}
         </div>
 
