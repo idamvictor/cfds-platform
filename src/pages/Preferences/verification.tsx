@@ -1,9 +1,9 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Image, X, Loader, Camera, Upload, IdCard, Check, Info, FileText, MapPin } from "lucide-react";
+import { CheckCircle2, Image, X, Loader, Camera, Upload, IdCard, Check, Info, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import Webcam from "react-webcam";
-import { KYC_PARTNERS } from "@/constants/kyc-partners";
+
 
 export default function KYCVerifyPage() {
   const [currentStep, setCurrentStep] = useState(0); // 0: ID, 1: Residence, 2: Selfie, 3: Awaiting
@@ -45,7 +45,7 @@ export default function KYCVerifyPage() {
 
   // File handling functions
   const handleFileSelect = (file: File, type: "front" | "back" | "residence" | "selfie") => {
-    if (file && (file.type.startsWith("image/") || file.type === "application/pdf")) {
+    if (file && file.type.startsWith("image/")) {
       if (type === "front") {
         setFrontFile(file);
       } else if (type === "back") {
@@ -139,8 +139,9 @@ export default function KYCVerifyPage() {
 
   const handleContinue = async () => {
     if (currentStep === 0) {
-      if (!frontFile || !backFile) {
-        alert("Please upload both front and back ID documents");
+      const isPassport = selectedIdType === "passport";
+      if (!frontFile || (!isPassport && !backFile)) {
+        alert(isPassport ? "Please upload your passport bio-data page" : "Please upload both front and back ID documents");
         return;
       }
       setCurrentStep(1);
@@ -174,7 +175,7 @@ export default function KYCVerifyPage() {
       console.log("Verification submitted", {
         idType: selectedIdType,
         frontFile,
-        backFile,
+        backFile: selectedIdType === "passport" ? null : backFile,
         residenceFile,
         selfieFile,
         address,
@@ -183,28 +184,28 @@ export default function KYCVerifyPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background py-12">
+    <main className="min-h-screen bg-background py-6 flex flex-col items-center justify-center">
       <div className="max-w-4xl mx-auto px-4">
         {currentStep === 3 ? (
           // Awaiting Verification View
-          <div className="flex flex-col items-center justify-center min-h-[500px] space-y-6 bg-card border border-border rounded-2xl p-12 shadow-sm">
+          <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4 bg-card border border-border rounded-2xl p-8 shadow-sm">
             <div className="relative w-24 h-24">
               <div className="absolute inset-0 bg-accent rounded-full opacity-10 animate-pulse"></div>
               <div className="absolute inset-0 flex items-center justify-center">
                 <Loader className="w-12 h-12 text-accent animate-spin" />
               </div>
             </div>
-            <div className="text-center space-y-3">
-              <h2 className="text-2xl font-bold text-foreground">
+            <div className="text-center space-y-2">
+              <h2 className="text-xl font-bold text-foreground">
                 Awaiting Verification
               </h2>
-              <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+              <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed">
                 Your documents are being reviewed. This typically takes
                 1-2 business days. We'll notify you via email once the
                 verification is complete.
               </p>
             </div>
-            <div className="w-full max-w-xs bg-muted/20 border border-border rounded-xl p-5 space-y-3">
+            <div className="w-full max-w-xs bg-muted/20 border border-border rounded-xl p-4 space-y-2.5">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-muted-foreground">ID Type:</span>
                 <span className="text-foreground font-semibold capitalize">
@@ -217,12 +218,14 @@ export default function KYCVerifyPage() {
                   {frontFile?.name}
                 </span>
               </div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-muted-foreground">ID Back:</span>
-                <span className="text-foreground font-semibold truncate max-w-[120px]">
-                  {backFile?.name}
-                </span>
-              </div>
+              {selectedIdType !== "passport" && (
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">ID Back:</span>
+                  <span className="text-foreground font-semibold truncate max-w-[120px]">
+                    {backFile?.name}
+                  </span>
+                </div>
+              )}
               <div className="flex items-center justify-between text-xs pt-2 border-t border-border">
                 <span className="text-muted-foreground">Proof of Address:</span>
                 <span className="text-foreground font-semibold truncate max-w-[120px]">
@@ -236,21 +239,20 @@ export default function KYCVerifyPage() {
                 </span>
               </div>
             </div>
-            <div className="w-full max-w-lg pt-8 border-t border-border mt-4">
-              <div className="text-center mb-8">
-                <h3 className="text-[11px] font-bold text-foreground uppercase tracking-widest mb-2">Integrated KYC Ecosystem</h3>
-                <p className="text-xs text-muted-foreground">Identity status synchronized with leading exchange partners</p>
+            <div className="w-full max-w-lg pt-4 border-t border-border mt-2 text-center space-y-3">
+              <div className="space-y-1">
+                <h3 className="text-[10px] font-bold text-foreground uppercase tracking-widest">Integrated KYC Ecosystem</h3>
+                <p className="text-[10px] text-muted-foreground max-w-sm mx-auto leading-relaxed opacity-80">
+                  Your identity verification status is synchronized with our global exchange and financial partners to provide a seamless cross-platform experience.
+                </p>
               </div>
-              <div className="grid grid-cols-5 gap-y-8 gap-x-2">
-                {KYC_PARTNERS.map((site) => (
-                  <div key={site.name} className="flex flex-col items-center gap-2 group transition-all">
-                    <div className="w-12 h-12 rounded-2xl bg-muted/5 border border-border/40 flex items-center justify-center p-2.5 transition-all group-hover:border-accent/30 group-hover:bg-accent/5 group-hover:scale-110 group-hover:-translate-y-1">
-                       <img src={site.logo} alt={site.name} className="w-full h-full object-contain grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300" />
-                    </div>
-                    <span className="text-[8px] font-bold text-muted-foreground/60 group-hover:text-foreground tracking-tight uppercase whitespace-nowrap">{site.name}</span>
-                  </div>
-                ))}
-              </div>
+              <Link 
+                to="/main/kyc-partners" 
+                className="inline-flex items-center gap-2 text-[10px] font-bold text-accent hover:text-accent/80 transition-colors uppercase tracking-wider"
+              >
+                View all KYC Partners
+                <Info className="w-3 h-3" />
+              </Link>
             </div>
 
             <Link to="/" className="pt-4">
@@ -261,17 +263,17 @@ export default function KYCVerifyPage() {
           </div>
         ) : currentStep === 2 ? (
           // Step 2: Selfie Verification View
-          <div className="space-y-8">
+          <div className="space-y-6">
             <div className="mb-2">
-              <h2 className="text-3xl font-bold text-foreground mb-3">Take a Selfie</h2>
-              <p className="text-base text-muted-foreground leading-relaxed max-w-2xl">
+              <h2 className="text-2xl font-bold text-foreground mb-2">Take a Selfie</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
                 Please take a clear selfie of yourself to confirm your identity. Ensure your face is well-lit and clearly visible.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="md:col-span-2 space-y-6">
-                <div className="bg-card border border-border rounded-2xl p-8 space-y-8 shadow-sm">
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="md:col-span-2 space-y-4">
+                <div className="bg-card border border-border rounded-2xl p-6 space-y-6 shadow-sm">
                   <input
                     ref={fileInputSelfieRef}
                     type="file"
@@ -280,10 +282,10 @@ export default function KYCVerifyPage() {
                     className="hidden"
                   />
                   <div
-                    className={`border-2 border-dashed rounded-2xl p-12 text-center transition-all cursor-pointer ${
+                    className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer ${
                       dragActiveSelfie
                         ? "border-accent bg-accent/5 scale-[1.01]"
-                        : "border-border hover:border-accent/40 hover:bg-accent/5"
+                        : "border-accent/20 hover:border-accent/40 hover:bg-accent/5"
                     }`}
                     onDragEnter={(e) => handleDrag(e, "selfie")}
                     onDragLeave={(e) => handleDrag(e, "selfie")}
@@ -384,7 +386,7 @@ export default function KYCVerifyPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-8 border-t border-border">
+            <div className="flex items-center justify-between pt-6 border-t border-border">
               <button 
                 onClick={() => setCurrentStep(1)}
                 className="text-muted-foreground font-bold text-sm hover:text-foreground transition-colors"
@@ -394,7 +396,7 @@ export default function KYCVerifyPage() {
               <Button
                 onClick={handleContinue}
                 disabled={!selfieFile}
-                className={`py-3 px-10 h-auto text-sm font-extrabold rounded-xl shadow-lg transition-all ${
+                className={`py-2.5 px-10 h-auto text-sm font-extrabold rounded-xl shadow-lg transition-all ${
                   selfieFile
                     ? "bg-emerald-600 hover:bg-emerald-700 text-slate-900 shadow-emerald-500/20 hover:scale-[1.02] active:scale-[0.98]"
                     : "bg-muted text-muted-foreground cursor-not-allowed opacity-60"
@@ -406,31 +408,31 @@ export default function KYCVerifyPage() {
           </div>
         ) : currentStep === 1 ? (
           // Proof of Residence View
-          <div className="space-y-8">
+          <div className="space-y-6">
             <div className="mb-2">
-              <h2 className="text-3xl font-bold text-foreground mb-3">Proof of Residence</h2>
-              <p className="text-base text-muted-foreground leading-relaxed max-w-2xl">
+              <h2 className="text-2xl font-bold text-foreground mb-2">Proof of Residence</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
                 To comply with global financial regulations, please provide a document that confirms your current residential address.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="md:col-span-2 space-y-6">
-                <div className="bg-card border border-border rounded-2xl p-8 space-y-8 shadow-sm">
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="md:col-span-2 space-y-4">
+                <div className="bg-card border border-border rounded-2xl p-6 space-y-6 shadow-sm">
                   <div>
                     <h3 className="text-lg font-bold text-foreground mb-6">Upload Document</h3>
                     <input
                       ref={fileInputResidenceRef}
                       type="file"
-                      accept="image/*,application/pdf"
+                      accept="image/*"
                       onChange={(e) => handleFileInputChange(e, "residence")}
                       className="hidden"
                     />
                     <div
-                      className={`border-2 border-dashed rounded-2xl p-12 text-center transition-all cursor-pointer ${
+                      className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer ${
                         dragActiveResidence
                           ? "border-accent bg-accent/5 scale-[1.01]"
-                          : "border-border hover:border-accent/40 hover:bg-accent/5"
+                          : "border-accent/20 hover:border-accent/40 hover:bg-accent/5"
                       }`}
                       onDragEnter={(e) => handleDrag(e, "residence")}
                       onDragLeave={(e) => handleDrag(e, "residence")}
@@ -440,20 +442,14 @@ export default function KYCVerifyPage() {
                     >
                       {residenceFile ? (
                         <div className="flex flex-col items-center space-y-4">
-                          {residenceFile.type.startsWith("image/") ? (
-                            <div className="relative p-2">
-                              <img
-                                src={URL.createObjectURL(residenceFile)}
-                                alt="Residence Proof"
-                                className="max-h-48 rounded-xl shadow-lg transition-transform group-hover:scale-[1.02]"
-                              />
-                              <div className="absolute inset-0 rounded-2xl border-2 border-dashed border-accent/40 pointer-events-none" />
-                            </div>
-                          ) : (
-                            <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center">
-                              <FileText className="w-10 h-10 text-accent" />
-                            </div>
-                          )}
+                          <div className="relative p-2">
+                            <img
+                              src={URL.createObjectURL(residenceFile)}
+                              alt="Residence Proof"
+                              className="max-h-48 rounded-xl shadow-lg transition-transform group-hover:scale-[1.02]"
+                            />
+                            <div className="absolute inset-0 rounded-2xl border-2 border-dashed border-accent/40 pointer-events-none" />
+                          </div>
                           <div className="text-center">
                             <p className="text-lg font-semibold text-foreground truncate max-w-[250px]">{residenceFile.name}</p>
                             <p className="text-sm text-muted-foreground mt-1">
@@ -479,7 +475,7 @@ export default function KYCVerifyPage() {
                           <div>
                             <p className="text-lg font-bold text-foreground">Click to upload or drag and drop</p>
                             <p className="text-sm text-muted-foreground mt-2">
-                              JPG, PNG or PDF (max. 10MB)
+                              JPG or PNG (max. 10MB)
                             </p>
                           </div>
                         </div>
@@ -557,7 +553,7 @@ export default function KYCVerifyPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-8 border-t border-border">
+            <div className="flex items-center justify-between pt-6 border-t border-border">
               <button 
                 onClick={() => setCurrentStep(0)}
                 className="text-muted-foreground font-bold text-sm hover:text-foreground transition-colors"
@@ -568,14 +564,14 @@ export default function KYCVerifyPage() {
                 <Button
                   onClick={() => setCurrentStep(0)}
                   variant="outline"
-                  className="bg-muted/10 border-border text-foreground hover:bg-muted py-3 px-8 h-auto text-sm font-bold rounded-xl"
+                  className="bg-muted/10 border-border text-foreground hover:bg-muted py-2.5 px-6 h-auto text-sm font-bold rounded-xl"
                 >
                   Back
                 </Button>
                 <Button
                   onClick={handleContinue}
                   disabled={!residenceFile || !address.trim()}
-                  className={`py-3 px-10 h-auto text-sm font-extrabold rounded-xl shadow-lg transition-all ${
+                  className={`py-2.5 px-10 h-auto text-sm font-extrabold rounded-xl shadow-lg transition-all ${
                     residenceFile && address.trim()
                       ? "bg-emerald-600 hover:bg-emerald-700 text-slate-900 shadow-emerald-500/20 hover:scale-[1.02] active:scale-[0.98]"
                       : "bg-muted text-muted-foreground cursor-not-allowed opacity-60"
@@ -589,47 +585,47 @@ export default function KYCVerifyPage() {
         ) : (
           // Step 0: ID Verification View
           <>
-            <div className="mb-8">
-              <h2 className="text-3xl font-bold text-foreground mb-3">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-foreground mb-2">
                 Verify your identity
               </h2>
-              <p className="text-base text-muted-foreground leading-relaxed max-w-2xl">
+              <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
                 To ensure the security of your account and comply with
                 regulations, please provide a valid government-issued ID.
               </p>
             </div>
 
-            <div className="mb-10">
-              <p className="text-sm font-bold text-foreground mb-6 uppercase tracking-wider opacity-60">
+            <div className="mb-8">
+              <p className="text-[10px] font-bold text-foreground mb-4 uppercase tracking-wider opacity-60">
                 Select identification type
               </p>
-              <div className="flex gap-4">
+              <div className="flex gap-3">
                 {idTypes.map((idType) => (
                   <button
                     key={idType.id}
                     onClick={() => setSelectedIdType(idType.id)}
-                    className={`flex-1 p-6 border-2 rounded-2xl transition-all text-left relative overflow-hidden group ${
+                    className={`flex-1 p-4 border-2 rounded-2xl transition-all text-left relative overflow-hidden group ${
                       selectedIdType === idType.id
                         ? "border-accent bg-accent/5"
                         : "border-border bg-card hover:border-accent/30"
                     }`}
                   >
-                    <div className="flex items-center justify-between mb-4">
-                      <div className={`p-2 rounded-xl transition-colors ${selectedIdType === idType.id ? 'bg-accent text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
-                        <IdCard className="w-6 h-6" />
+                    <div className="flex items-center justify-between mb-3">
+                      <div className={`p-1.5 rounded-lg transition-colors ${selectedIdType === idType.id ? 'bg-accent text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
+                        <IdCard className="w-5 h-5" />
                       </div>
                       {selectedIdType === idType.id ? (
-                        <div className="w-6 h-6 bg-accent rounded-full flex items-center justify-center shadow-md">
-                          <Check className="w-3.5 h-3.5 text-primary-foreground" />
+                        <div className="w-5 h-5 bg-accent rounded-full flex items-center justify-center shadow-md">
+                          <Check className="w-3 h-3 text-primary-foreground" />
                         </div>
                       ) : (
-                        <div className="w-6 h-6 border-2 border-border rounded-full transition-colors group-hover:border-accent/40"></div>
+                        <div className="w-5 h-5 border-2 border-border rounded-full transition-colors group-hover:border-accent/40"></div>
                       )}
                     </div>
-                    <p className="text-base font-bold text-foreground mb-1">
+                    <p className="text-sm font-bold text-foreground mb-0.5">
                       {idType.label}
                     </p>
-                    <p className="text-xs text-muted-foreground font-medium">
+                    <p className="text-[10px] text-muted-foreground font-medium">
                       {idType.description}
                     </p>
                   </button>
@@ -637,11 +633,11 @@ export default function KYCVerifyPage() {
               </div>
             </div>
 
-            <div className="mb-10">
-              <p className="text-sm font-bold text-foreground mb-6 uppercase tracking-wider opacity-60">
+            <div className="mb-6">
+              <p className="text-[10px] font-bold text-foreground mb-4 uppercase tracking-wider opacity-60">
                 Upload document
               </p>
-
+              
               <input
                 ref={fileInputFrontRef}
                 type="file"
@@ -657,17 +653,18 @@ export default function KYCVerifyPage() {
                 className="hidden"
               />
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className={`grid ${selectedIdType === "passport" ? "grid-cols-1 max-w-xl mx-auto" : "grid-cols-2"} gap-6`}>
                 <div
                   className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer relative overflow-hidden group ${
                     dragActiveFront
                       ? "border-accent bg-accent/5 scale-[1.02]"
-                      : "border-border hover:border-accent/40 hover:bg-accent/5"
+                      : "border-accent/20 hover:border-accent/40 hover:bg-accent/5"
                   }`}
                   onDragEnter={(e) => handleDrag(e, "front")}
                   onDragLeave={(e) => handleDrag(e, "front")}
                   onDragOver={(e) => handleDrag(e, "front")}
                   onDrop={(e) => handleDrop(e, "front")}
+                  onClick={() => handleBrowseClick("front")}
                 >
                   {frontFile ? (
                     <div className="space-y-4">
@@ -698,7 +695,7 @@ export default function KYCVerifyPage() {
                       </div>
                       <div>
                         <p className="text-base font-bold text-foreground mb-1">
-                          ID Front View
+                          {selectedIdType === "passport" ? "Passport Bio-data Page" : "ID Front View"}
                         </p>
                         <p className="text-xs text-muted-foreground mb-5 px-4">
                           Drag and drop or take a photo. Max Size 10MB.
@@ -706,14 +703,14 @@ export default function KYCVerifyPage() {
                       </div>
                       <div className="flex flex-row gap-2 px-4">
                         <Button
-                          onClick={() => handleBrowseClick("front")}
+                          onClick={(e) => { e.stopPropagation(); handleBrowseClick("front"); }}
                           className="flex-1 bg-accent text-slate-900 hover:bg-accent/90 border-none text-[11px] font-bold py-2.5 rounded-lg transition-all"
                         >
                           <Upload className="w-3.5 h-3.5 mr-1" />
                           Browse File
                         </Button>
                         <Button
-                          onClick={() => setShowWebcamFront(true)}
+                          onClick={(e) => { e.stopPropagation(); setShowWebcamFront(true); }}
                           variant="outline"
                           className="flex-1 border-border hover:bg-accent/5 text-foreground text-[11px] font-bold py-2.5 rounded-lg"
                         >
@@ -725,106 +722,109 @@ export default function KYCVerifyPage() {
                   )}
                 </div>
 
-                <div
-                  className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer relative overflow-hidden group ${
-                    dragActiveBack
-                      ? "border-accent bg-accent/5 scale-[1.02]"
-                      : "border-border hover:border-accent/40 hover:bg-accent/5"
-                  }`}
-                  onDragEnter={(e) => handleDrag(e, "back")}
-                  onDragLeave={(e) => handleDrag(e, "back")}
-                  onDragOver={(e) => handleDrag(e, "back")}
-                  onDrop={(e) => handleDrop(e, "back")}
-                >
-                  {backFile ? (
-                    <div className="space-y-4">
-                      <div className="flex justify-center relative">
-                        <div className="relative p-2">
-                          <img
-                            src={URL.createObjectURL(backFile)}
-                            alt="Back ID"
-                            className="max-h-40 rounded-xl shadow-lg transition-transform group-hover:scale-105"
-                          />
-                          <div className="absolute inset-0 rounded-2xl border-2 border-dashed border-accent/40 pointer-events-none" />
+                {selectedIdType !== "passport" && (
+                  <div
+                    className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer relative overflow-hidden group ${
+                      dragActiveBack
+                        ? "border-accent bg-accent/5 scale-[1.02]"
+                        : "border-accent/20 hover:border-accent/40 hover:bg-accent/5"
+                    }`}
+                    onDragEnter={(e) => handleDrag(e, "back")}
+                    onDragLeave={(e) => handleDrag(e, "back")}
+                    onDragOver={(e) => handleDrag(e, "back")}
+                    onDrop={(e) => handleDrop(e, "back")}
+                    onClick={() => handleBrowseClick("back")}
+                  >
+                    {backFile ? (
+                      <div className="space-y-4">
+                        <div className="flex justify-center relative">
+                          <div className="relative p-2">
+                            <img
+                              src={URL.createObjectURL(backFile)}
+                              alt="Back ID"
+                              className="max-h-40 rounded-xl shadow-lg transition-transform group-hover:scale-105"
+                            />
+                            <div className="absolute inset-0 rounded-2xl border-2 border-dashed border-accent/40 pointer-events-none" />
+                          </div>
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); setBackFile(null); }}
+                            className="absolute -top-2 -right-2 bg-destructive text-white p-1.5 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
                         </div>
-                        <button 
-                          onClick={(e) => { e.stopPropagation(); setBackFile(null); }}
-                          className="absolute -top-2 -right-2 bg-destructive text-white p-1.5 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                      <p className="text-sm text-foreground font-bold truncate px-4">
-                        {backFile.name}
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="space-y-4 py-4">
-                      <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mx-auto transition-transform group-hover:translate-y-[-4px]">
-                        <Image className="w-6 h-6 text-accent" />
-                      </div>
-                      <div>
-                        <p className="text-base font-bold text-foreground mb-1">
-                          ID Back View
-                        </p>
-                        <p className="text-xs text-muted-foreground mb-5 px-4">
-                          Drag and drop or take a photo. Max Size 10MB.
+                        <p className="text-sm text-foreground font-bold truncate px-4">
+                          {backFile.name}
                         </p>
                       </div>
-                      <div className="flex flex-row gap-2 px-4">
-                        <Button
-                          onClick={() => handleBrowseClick("back")}
-                          className="flex-1 bg-accent text-slate-900 hover:bg-accent/90 border-none text-[11px] font-bold py-2.5 rounded-lg transition-all"
-                        >
-                          <Upload className="w-3.5 h-3.5 mr-1" />
-                          Browse File
-                        </Button>
-                        <Button
-                          onClick={() => setShowWebcamBack(true)}
-                          variant="outline"
-                          className="flex-1 border-border hover:bg-accent/5 text-foreground text-[11px] font-bold py-2.5 rounded-lg"
-                        >
-                          <Camera className="w-3.5 h-3.5 mr-1" />
-                          Snap Photo
-                        </Button>
+                    ) : (
+                      <div className="space-y-4 py-4">
+                        <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mx-auto transition-transform group-hover:translate-y-[-4px]">
+                          <Image className="w-6 h-6 text-accent" />
+                        </div>
+                        <div>
+                          <p className="text-base font-bold text-foreground mb-1">
+                            ID Back View
+                          </p>
+                          <p className="text-xs text-muted-foreground mb-5 px-4">
+                            Drag and drop or take a photo. Max Size 10MB.
+                          </p>
+                        </div>
+                        <div className="flex flex-row gap-2 px-4">
+                          <Button
+                            onClick={(e) => { e.stopPropagation(); handleBrowseClick("back"); }}
+                            className="flex-1 bg-accent text-slate-900 hover:bg-accent/90 border-none text-[11px] font-bold py-2.5 rounded-lg transition-all"
+                          >
+                            <Upload className="w-3.5 h-3.5 mr-1" />
+                            Browse File
+                          </Button>
+                          <Button
+                            onClick={(e) => { e.stopPropagation(); setShowWebcamBack(true); }}
+                            variant="outline"
+                            className="flex-1 border-border hover:bg-accent/5 text-foreground text-[11px] font-bold py-2.5 rounded-lg"
+                          >
+                            <Camera className="w-3.5 h-3.5 mr-1" />
+                            Snap Photo
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 
 
 
-            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-6 mb-10 flex gap-5 items-center">
-              <div className="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center flex-shrink-0">
-                <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 mb-6 flex gap-4 items-center">
+              <div className="w-10 h-10 bg-emerald-500/10 rounded-full flex items-center justify-center flex-shrink-0">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
               </div>
               <div className="flex-1">
-                <p className="text-base font-bold text-emerald-600">
+                <p className="text-xs font-bold text-emerald-600">
                   Your data is protected
                 </p>
-                <p className="text-sm text-emerald-600/80 font-medium">
+                <p className="text-[10px] text-emerald-600/80 font-medium">
                   We use institutional-grade encryption to secure your documents. All processing is strictly compliant with global privacy standards.
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center justify-center pt-8 border-t border-border">
+            <div className="flex items-center justify-center pt-6 border-t border-border">
               <div className="flex gap-4">
                 <Link to="/">
                   <Button
                     variant="outline"
-                    className="bg-transparent border-border text-foreground hover:bg-muted py-3 px-8 h-auto text-sm font-bold rounded-xl"
+                    className="bg-transparent border-border text-foreground hover:bg-muted py-2.5 px-8 h-auto text-sm font-bold rounded-xl"
                   >
-                    Back
+                    Cancel
                   </Button>
                 </Link>
                 <Button
                   onClick={handleContinue}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-slate-900 py-3 px-10 h-auto text-sm font-extrabold rounded-xl shadow-lg shadow-emerald-500/20"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-slate-900 py-2.5 px-10 h-auto text-sm font-extrabold rounded-xl shadow-lg shadow-emerald-500/20 transition-all hover:scale-[1.02]"
                 >
-                  Continue
+                  Continue to Residence
                 </Button>
               </div>
             </div>
