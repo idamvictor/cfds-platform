@@ -6,6 +6,7 @@ import {
   Copy,
   RotateCw,
   AlertCircle,
+  ArrowRightLeft,
 } from "lucide-react";
 import { useMutedTextClass } from "@/hooks/useMutedTextClass";
 import { useStepNumberColor } from "@/hooks/useStepNumberColor";
@@ -13,6 +14,7 @@ import useDataStore from "@/store/dataStore";
 import { useDepositMutation } from "@/services/deposit/deposit-queries";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "@/components/ui/sonner";
+import useAssetStore from "@/store/assetStore";
 import { 
   Select, 
   SelectContent, 
@@ -35,12 +37,22 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
   const [selectedAssetId, setSelectedAssetId] = useState<string>("");
   const [selectedNetwork, setSelectedNetwork] = useState<string>("");
   const [depositAmount, setDepositAmount] = useState<string>("0.00");
+  const [isUsdMode, setIsUsdMode] = useState(false);
   const [copied, setCopied] = useState(false);
   const mutedClass = useMutedTextClass();
   const stepNumberColor = useStepNumberColor();
 
   const { data, fetchData, isLoading, deposit_config } = useDataStore();
+  const { fetchAssets, assets } = useAssetStore();
   const depositMutation = useDepositMutation();
+
+  useEffect(() => {
+    fetchAssets();
+    const interval = setInterval(() => {
+      fetchAssets();
+    }, 60000); // Refresh every 1 minute
+    return () => clearInterval(interval);
+  }, [fetchAssets]);
 
   useEffect(() => {
     if (!data) {
@@ -102,6 +114,55 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
     return match || wallets[0];
   }, [wallets, selectedCrypto, selectedNetwork]);
 
+  // Dynamic price calculation from assetStore
+  const currentAssetPrice = useMemo(() => {
+    if (!selectedCrypto || assets.length === 0) return 0;
+    
+    // Attempt to find matching asset in assetStore
+    const asset = assets.find(a => 
+      a.type === "crypto" && 
+      (a.symbol.toLowerCase().includes(selectedCrypto.toLowerCase()) || 
+       a.sy.toLowerCase().includes(selectedCrypto.toLowerCase()) || 
+       a.name.toLowerCase().includes(selectedCrypto.toLowerCase()))
+    );
+    
+    if (asset) return parseFloat(asset.rate);
+    
+    // Fallback for common stablecoins if not in store
+    if (["USDT", "USDC", "BUSD", "DAI"].includes(selectedCrypto.toUpperCase())) {
+      return 1.0;
+    }
+    
+    return 0;
+  }, [assets, selectedCrypto]);
+
+  const usdEquivalent = useMemo(() => {
+    const amount = parseFloat(depositAmount || "0");
+    return isUsdMode ? amount : amount * currentAssetPrice;
+  }, [depositAmount, isUsdMode, currentAssetPrice]);
+
+  const cryptoAmount = useMemo(() => {
+    const amount = parseFloat(depositAmount || "0");
+    if (isUsdMode) {
+      return currentAssetPrice > 0 ? (amount / currentAssetPrice).toFixed(8) : "0.00";
+    }
+    return depositAmount;
+  }, [depositAmount, isUsdMode, currentAssetPrice]);
+
+  const handleToggleMode = () => {
+    const val = parseFloat(depositAmount || "0");
+    if (isUsdMode) {
+      // Swapping from USD to Crypto
+      if (currentAssetPrice > 0) {
+        setDepositAmount((val / currentAssetPrice).toFixed(8));
+      }
+    } else {
+      // Swapping from Crypto to USD
+      setDepositAmount((val * currentAssetPrice).toFixed(2));
+    }
+    setIsUsdMode(!isUsdMode);
+  };
+
   // Update selectedNetwork when crypto changes if current network is not available
   useEffect(() => {
     if (availableNetworks.length > 0 && !availableNetworks.includes(selectedNetwork)) {
@@ -129,10 +190,10 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
     if (!selectedWalletData?.address) return "";
     
     const address = selectedWalletData.address;
-    const amount = depositAmount;
+    const amount = cryptoAmount;
     const crypto = selectedWalletData.crypto.toLowerCase();
 
-    if (!amount) return address;
+    if (!amount || parseFloat(amount) <= 0) return address;
 
     // Standard URI schemes for common cryptocurrencies
     switch (crypto) {
@@ -141,23 +202,20 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
         return `bitcoin:${address}?amount=${amount}`;
       case "eth":
       case "ethereum":
-        // ETH value is usually in wei in some specs, but many wallets accept decimal ETH
         return `ethereum:${address}?value=${amount}`;
       case "usdt":
-        // USDT doesn't have a single standard URI, often just the address is used
-        // or a specific network scheme. Sticking to address if it's not ETH/BTC
         return address;
       default:
         return address;
     }
-  }, [selectedWalletData, depositAmount]);
+  }, [selectedWalletData, cryptoAmount]);
 
   const handleSubmitDeposit = async () => {
     if (!depositAmount || !selectedWalletData) return;
 
     try {
       await depositMutation.mutateAsync({
-        amount: parseFloat(depositAmount),
+        amount: usdEquivalent, // Send the dollar equivalent
         method: "crypto",
         wallet_id: selectedWalletData.id,
         crypto: selectedCrypto,
@@ -325,7 +383,18 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
             {/* Amount Input */}
             <div className="space-y-3">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-foreground uppercase tracking-tight opacity-50">Deposit Amount</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] font-bold text-foreground uppercase tracking-tight opacity-50">
+                    Deposit Amount ({isUsdMode ? "USD" : selectedCrypto})
+                  </label>
+                  <button 
+                    onClick={handleToggleMode}
+                    className="flex items-center gap-1.5 text-[10px] font-bold text-accent hover:opacity-80 transition-opacity"
+                  >
+                    <ArrowRightLeft className="w-3 h-3" />
+                    Switch to {isUsdMode ? selectedCrypto : "USD"}
+                  </button>
+                </div>
                 <div className="relative group">
                   <input 
                     type="number"
@@ -335,7 +404,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
                     placeholder="0.00"
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <span className="text-sm font-bold opacity-30 tracking-widest">{selectedCrypto}</span>
+                    <span className="text-sm font-bold opacity-30 tracking-widest">{isUsdMode ? "USD" : selectedCrypto}</span>
                   </div>
                 </div>
               </div>
@@ -343,9 +412,15 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
               <div className="flex items-center justify-between text-[10px] px-1 opacity-60">
                  <div className="flex items-center gap-1">
                    <RotateCw className="w-2.5 h-2.5 animate-spin-slow" />
-                   <span>≈ <span className="font-bold text-foreground">${ (parseFloat(depositAmount || '0') * 65000).toLocaleString() } USD</span></span>
+                   <span>
+                     ≈ <span className="font-bold text-foreground">
+                       {isUsdMode 
+                         ? `${cryptoAmount} ${selectedCrypto}` 
+                         : `$${usdEquivalent.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`}
+                     </span>
+                   </span>
                  </div>
-                 <div>1 {selectedCrypto} ≈ $64,281.40</div>
+                 <div>1 {selectedCrypto} ≈ ${currentAssetPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
               </div>
 
               {/* Quick Amounts */}
@@ -353,7 +428,14 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
                 {["250", "500", "1000", "5000"].map((val) => (
                   <button
                     key={val}
-                    onClick={() => setDepositAmount( (parseInt(val) / 64000).toFixed(4) )}
+                    onClick={() => {
+                      const dollarAmount = parseInt(val);
+                      if (isUsdMode) {
+                        setDepositAmount(dollarAmount.toString());
+                      } else if (currentAssetPrice > 0) {
+                        setDepositAmount((dollarAmount / currentAssetPrice).toFixed(6));
+                      }
+                    }}
                     className="py-1.5 rounded-lg border border-border bg-card hover:bg-accent hover:text-background font-bold text-[10px] transition-all shadow-sm active:scale-95"
                   >
                     +${val}
@@ -413,12 +495,12 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
                 </div>
 
                 {/* Amount Info */}
-                <div className="flex-1 space-y-3 text-center md:text-left w-full">
-                   <div className="space-y-0.5">
-                      <p className={`text-[9px] font-black uppercase tracking-widest opacity-40`}>Amount to Deposit</p>
-                      <h3 className="text-2xl md:text-3xl font-black text-foreground">{depositAmount} {selectedCrypto}</h3>
-                      <p className="text-sm font-medium opacity-60">≈ ${ (parseFloat(depositAmount || '0') * 65000).toLocaleString() } USD</p>
-                   </div>
+                 <div className="flex-1 space-y-3 text-center md:text-left w-full">
+                    <div className="space-y-0.5">
+                       <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Amount to Deposit</p>
+                       <h3 className="text-2xl md:text-3xl font-black text-foreground">{cryptoAmount} {selectedCrypto}</h3>
+                       <p className="text-sm font-medium opacity-60">≈ ${ usdEquivalent.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) } USD</p>
+                    </div>
 
                    <div className="grid grid-cols-2 gap-4 pt-3 border-t border-border/30">
                       <div>
@@ -488,15 +570,14 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
               </h3>
 
               <div className="space-y-3">
-                <div className="flex justify-between items-center py-2 border-b border-border/50">
-                  <span className={`text-xs md:text-sm ${mutedClass}`}>
-                    Amount to Deposit
-                  </span>
-                  <span className="text-sm md:text-base font-bold text-accent">
-                    {depositAmount}{" "}
-                    {selectedWalletData?.crypto || "BTC"}
-                  </span>
-                </div>
+                 <div className="flex justify-between items-center py-2 border-b border-border/50">
+                   <span className={`text-xs md:text-sm ${mutedClass}`}>
+                     Amount to Deposit (USD)
+                   </span>
+                   <span className="text-sm md:text-base font-bold text-accent">
+                     ${ usdEquivalent.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }
+                   </span>
+                 </div>
 
                 <div className="flex justify-between items-center py-2 border-b border-border/50">
                   <span className={`text-xs md:text-sm ${mutedClass}`}>
@@ -522,7 +603,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
             <div className="bg-muted/30 p-4 md:p-6 border-t border-border/50">
               <div className="flex items-start gap-2">
                 <Info className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
-                <p className={`text-[10px] md:text-xs ${mutedClass}`}>
+                <p className="text-xs md:text-sm font-medium leading-relaxed">
                   Please ensure you have sent the exact amount to the
                   address above before confirming. The transaction will be
                   reviewed by our team.
@@ -619,7 +700,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
               {depositMutation.isPending && (
                 <>
                   <p className="text-base md:text-lg font-semibold text-foreground">
-                    Sending {depositAmount} {selectedWalletData?.crypto}
+                    Sending {cryptoAmount} {selectedWalletData?.crypto}
                   </p>
                   <p className="text-xs md:text-sm leading-relaxed">
                     Your crypto deposit is being processed
