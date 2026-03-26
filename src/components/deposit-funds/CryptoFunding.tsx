@@ -771,7 +771,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
             ← Previous
           </button>
         )}
-        {currentStep < stepsCount && (
+        {currentStep < stepsCount && currentStep < 3 && (
           <button
             type="button"
             onClick={handleNextStep}
