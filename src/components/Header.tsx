@@ -9,6 +9,8 @@ import useUserStore from "@/store/userStore";
 import { useCurrency } from "@/hooks/useCurrency";
 import useSiteSettingsStore from "@/store/siteSettingStore";
 import AccountPlansModal from "./AccountPlanModal";
+import DepositPromptModal from "./DepositPromptModal";
+
 
 interface HeaderProps {
   toggleSidebar: () => void;
@@ -143,6 +145,14 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
       <AccountPlansModal
         open={isPlansModalOpen}
         onOpenChange={setIsPlansModalOpen}
+      />
+
+      <DepositPromptModal 
+        onDeposit={() =>
+          useDepositModal
+            ? setIsDepositModalOpen(true)
+            : navigate("/main/deposit")
+        } 
       />
     </header>
   );
