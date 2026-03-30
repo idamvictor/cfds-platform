@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { CheckCircle2 } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -111,46 +111,53 @@ const CardFunding: React.FC<CardFundingProps> = ({
     );
   };
 
+  const steps = useMemo(() => {
+    return stepsCount === 3 
+      ? [
+          { number: 1, label: "Fund Account" },
+          { number: 2, label: "Payment Details" },
+          { number: 3, label: "Completed" },
+        ]
+      : [
+          { number: 1, label: "Fund Account" },
+          { number: 2, label: "Payment Details" },
+          { number: 3, label: "Payment Review" },
+          { number: 4, label: "Completed" },
+        ];
+  }, [stepsCount]);
+
+  const currentLabel = useMemo(() => {
+    return steps.find((s) => s.number === currentStep)?.label || "";
+  }, [steps, currentStep]);
+
   return (
-    <div className="space-y-2 md:space-y-4 text-foreground min-h-[450px] w-full overflow-x-hidden">
+    <div className="space-y-4 md:space-y-6 text-foreground min-h-[450px] w-full overflow-x-hidden">
       {/* Header and Progress Tracker */}
-      <div className="space-y-2 md:space-y-6">
+      <div className="space-y-4">
         {/* Progress Steps */}
-        <div className="flex items-center justify-between gap-1 md:gap-3 w-full">
-          {(stepsCount === 3 
-            ? [
-                { number: 1, label: "Fund Account" },
-                { number: 2, label: "Payment Details" },
-                { number: 3, label: "Completed" },
-              ]
-            : [
-                { number: 1, label: "Fund Account" },
-                { number: 2, label: "Payment Details" },
-                { number: 3, label: "Payment Review" },
-                { number: 4, label: "Completed" },
-              ]
-          ).map((step, index, allSteps) => (
-            <div key={step.number} className="flex items-center flex-1 min-w-0">
+        <div className="flex items-center justify-between max-w-2xl px-2">
+          {steps.map((step, index) => (
+            <div key={step.number} className="flex items-center flex-1">
               {/* Step Circle */}
               <div
-                className={`flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-full font-semibold text-[10px] md:text-xs transition-colors flex-shrink-0 ${
+                className={`flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-full font-bold text-[11px] md:text-sm transition-all duration-300 flex-shrink-0 ${
                   step.number < currentStep
-                    ? "bg-accent text-primary-foreground"
+                    ? "bg-accent text-primary-foreground shadow-sm"
                     : step.number === currentStep
-                      ? "bg-primary text-primary-foreground border-2 border-accent"
+                      ? "bg-primary text-primary-foreground border-2 border-accent ring-2 ring-primary/20"
                       : `bg-muted ${stepNumberColor}`
                 }`}
               >
                 {step.number < currentStep ? (
-                  <CheckCircle2 className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                  <CheckCircle2 className="w-4 h-4" />
                 ) : (
                   step.number
                 )}
               </div>
 
-              {/* Step Label - Hidden on mobile */}
+              {/* Step Label - Show only on desktop, hidden on mobile */}
               <span
-                className={`hidden md:inline ml-1.5 text-[10px] md:text-xs font-medium whitespace-nowrap ${
+                className={`hidden md:inline-block ml-2 text-xs font-bold whitespace-nowrap ${
                   step.number <= currentStep ? "text-foreground" : mutedClass
                 }`}
               >
@@ -158,9 +165,9 @@ const CardFunding: React.FC<CardFundingProps> = ({
               </span>
 
               {/* Divider */}
-              {index < allSteps.length - 1 && (
+              {index < steps.length - 1 && (
                 <div
-                  className={`flex-1 h-px mx-1 md:mx-2 min-w-[4px] ${
+                  className={`flex-1 h-px mx-3 md:mx-4 ${
                     step.number < currentStep ? "bg-accent" : "bg-border"
                   }`}
                 />
@@ -169,25 +176,12 @@ const CardFunding: React.FC<CardFundingProps> = ({
           ))}
         </div>
 
-        {/* Current Step Title - Mobile Only */}
-        <div className="md:hidden text-center">
-          <p className="text-xs font-semibold text-foreground">
-            {
-              (stepsCount === 3 
-                ? [
-                    { number: 1, label: "Fund Account" },
-                    { number: 2, label: "Payment Details" },
-                    { number: 3, label: "Completed" },
-                  ]
-                : [
-                    { number: 1, label: "Fund Account" },
-                    { number: 2, label: "Payment Details" },
-                    { number: 3, label: "Payment Review" },
-                    { number: 4, label: "Completed" },
-                  ]
-              ).find((s) => s.number === currentStep)?.label
-            }
-          </p>
+        {/* Current Step Title - Mobile Only (Below the bar) */}
+        <div className="md:hidden pt-1">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-black font-mono bg-accent/10 text-accent px-1.5 py-0.5 rounded tracking-tighter uppercase">Step 0{currentStep}</span>
+            <h2 className="text-sm font-black text-foreground uppercase tracking-tight">{currentLabel}</h2>
+          </div>
         </div>
       </div>
 
@@ -198,13 +192,13 @@ const CardFunding: React.FC<CardFundingProps> = ({
             We use secure, encrypted technology to process and store your card information. All data entered here is protected and handled in compliance with PCI DSS requirements and international security standards.
           </p>
 
-          <div className="w-full space-y-4">
+          <div className="w-full space-y-5">
             {/* Quick Amount Selection */}
-            <div className="space-y-2">
-              <p className={`text-xs font-semibold ${mutedClass} uppercase`}>
+            <div className="space-y-3">
+              <p className={`text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5`}>
                 Quick Select
               </p>
-              <div className="flex gap-2 md:gap-3 flex-wrap">
+              <div className="flex gap-2 flex-wrap">
                 {["250", "1000", "5000"].map((value) => (
                   <button
                     key={value}
@@ -212,10 +206,10 @@ const CardFunding: React.FC<CardFundingProps> = ({
                     onClick={() => {
                       setValue("amount", value, { shouldValidate: true });
                     }}
-                    className={`px-3 md:px-4 py-2 rounded-lg border-2 text-xs md:text-sm font-semibold transition-colors ${
+                    className={`px-4 py-2.5 md:py-2 rounded-xl border-2 text-xs md:text-sm font-bold transition-all active:scale-95 ${
                       amount === value
-                        ? "border-accent bg-accent text-primary-foreground"
-                        : `border-input text-foreground hover:border-accent hover:bg-accent/10`
+                        ? "border-accent bg-accent text-background shadow-sm"
+                        : `border-border bg-card text-foreground hover:border-accent hover:bg-accent/5`
                     }`}
                   >
                     ${Number(value).toLocaleString()}
@@ -226,24 +220,24 @@ const CardFunding: React.FC<CardFundingProps> = ({
 
             {/* Amount Input */}
             <div className="space-y-2">
-              <label className="text-xs md:text-sm font-bold text-foreground">
-                Amount to Add
+              <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5">
+                Amount (USD)
               </label>
-              <div className="flex items-center gap-2">
-                <span className="text-foreground font-semibold text-xs md:text-sm">
-                  $
-                </span>
+              <div className="relative group">
                 <input
                   type="text"
                   {...register("amount")}
-                  placeholder="Enter Amount"
-                  className={`flex-1 px-3 py-1.5 rounded-lg border-2 text-[10px] md:text-xs ${
-                    errors.amount ? "border-red-500" : "border-input"
-                  } bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
+                  placeholder="0.00"
+                  className={`w-full bg-muted/10 border-2 rounded-xl px-10 py-3.5 md:py-4 text-xl md:text-2xl font-black text-center focus:outline-none focus:border-accent transition-all tracking-tight ${
+                    errors.amount ? "border-red-500" : "border-border/50"
+                  }`}
                 />
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <span className="text-xl font-black opacity-30">$</span>
+                </div>
               </div>
               {errors.amount && (
-                <p className="text-red-500 text-xs md:text-sm">
+                <p className="text-red-500 text-[10px] md:text-xs font-bold mt-1">
                   {errors.amount.message}
                 </p>
               )}
@@ -305,75 +299,78 @@ const CardFunding: React.FC<CardFundingProps> = ({
               </p>
             </div>
           )}
-
-          {/* Card Details Section */}
-          <div className="w-full space-y-3 md:space-y-4">
-            <h3 className="text-base md:text-lg font-semibold text-foreground">
+          <div className="w-full space-y-4 md:space-y-5">
+            <h3 className="text-base md:text-lg font-bold text-foreground">
               Card Details
             </h3>
 
-            <div>
-              <input
-                type="text"
-                placeholder="Name on Card"
-                {...register("nameOnCard")}
-                className={`w-full px-3 md:px-4 py-2 rounded-lg border-2 text-xs md:text-sm ${
-                  errors.nameOnCard ? "border-red-500" : "border-input"
-                } bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
-              />
-              {errors.nameOnCard && (
-                <p className="text-red-500 text-xs md:text-sm mt-1">
-                  {errors.nameOnCard.message}
-                </p>
-              )}
-            </div>
-
-            <div className="space-y-2 md:space-y-3">
-              <div>
+            <div className="space-y-3 md:space-y-4">
+              <div className="space-y-1">
+                <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5">Cardholder Name</label>
                 <input
                   type="text"
-                  placeholder="Card Number"
+                  placeholder="John Doe"
+                  {...register("nameOnCard")}
+                  className={`w-full px-4 py-3 md:py-2.5 rounded-xl border-2 text-sm ${
+                    errors.nameOnCard ? "border-red-500" : "border-border/50"
+                  } bg-muted/10 text-foreground focus:outline-none focus:border-accent transition-all`}
+                />
+                {errors.nameOnCard && (
+                  <p className="text-red-500 text-[10px] md:text-xs font-medium mt-1">
+                    {errors.nameOnCard.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5">Card Number</label>
+                <input
+                  type="text"
+                  placeholder="0000 0000 0000 0000"
                   {...register("cardNumber")}
-                  className={`w-full px-3 md:px-4 py-2 rounded-lg border-2 text-xs md:text-sm ${
-                    errors.cardNumber ? "border-red-500" : "border-input"
-                  } bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
+                  className={`w-full px-4 py-3 md:py-2.5 rounded-xl border-2 text-sm ${
+                    errors.cardNumber ? "border-red-500" : "border-border/50"
+                  } bg-muted/10 text-foreground focus:outline-none focus:border-accent transition-all`}
                 />
                 {errors.cardNumber && (
-                  <p className="text-red-500 text-xs md:text-sm mt-1">
+                  <p className="text-red-500 text-[10px] md:text-xs font-medium mt-1">
                     {errors.cardNumber.message}
                   </p>
                 )}
               </div>
-              <div className="grid grid-cols-2 gap-2 md:gap-3">
-                <div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5">Expiry Date</label>
                   <input
                     type="text"
                     placeholder="MM/YY"
                     maxLength={5}
                     {...register("expiryDate")}
                     onChange={handleExpiryDateChange}
-                    className={`w-full px-3 md:px-4 py-2 rounded-lg border-2 text-xs md:text-sm ${
-                      errors.expiryDate ? "border-red-500" : "border-input"
-                    } bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
+                    className={`w-full px-4 py-3 md:py-2.5 rounded-xl border-2 text-sm ${
+                      errors.expiryDate ? "border-red-500" : "border-border/50"
+                    } bg-muted/10 text-foreground focus:outline-none focus:border-accent transition-all`}
                     inputMode="numeric"
                   />
                   {errors.expiryDate && (
-                    <p className="text-red-500 text-xs md:text-sm mt-1">
+                    <p className="text-red-500 text-[10px] md:text-xs font-medium mt-1">
                       {errors.expiryDate.message}
                     </p>
                   )}
                 </div>
-                <div>
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5">CVV</label>
                   <input
                     type="text"
-                    placeholder="CVV"
+                    placeholder="123"
                     {...register("cvv")}
-                    className={`w-full px-3 md:px-4 py-2 rounded-lg border-2 text-xs md:text-sm ${
-                      errors.cvv ? "border-red-500" : "border-input"
-                    } bg-white dark:bg-slate-950 text-foreground ${mutedPlaceholderClass} focus:outline-none focus:ring-2 focus:ring-accent`}
+                    className={`w-full px-4 py-3 md:py-2.5 rounded-xl border-2 text-sm ${
+                      errors.cvv ? "border-red-500" : "border-border/50"
+                    } bg-muted/10 text-foreground focus:outline-none focus:border-accent transition-all`}
                   />
                   {errors.cvv && (
-                    <p className="text-red-500 text-xs md:text-sm mt-1">
+                    <p className="text-red-500 text-[10px] md:text-xs font-medium mt-1">
                       {errors.cvv.message}
                     </p>
                   )}
@@ -381,13 +378,12 @@ const CardFunding: React.FC<CardFundingProps> = ({
               </div>
             </div>
           </div>
-
           {/* Form Actions */}
-          <div className="flex gap-2 md:gap-3 pt-2 md:pt-4 w-full">
+          <div className="flex gap-2 md:gap-3 py-2 w-full">
             <button
               type="button"
               onClick={() => setCurrentStep(currentStep - 1)}
-              className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-muted text-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-muted/80 transition-colors disabled:opacity-50"
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 md:py-2.5 bg-muted text-foreground font-bold text-xs md:text-sm rounded-xl hover:bg-muted/80 transition-all active:scale-[0.98] disabled:opacity-50"
               disabled={isPending}
             >
               ← Back
@@ -395,10 +391,10 @@ const CardFunding: React.FC<CardFundingProps> = ({
             <button
               type="submit"
               disabled={!isValid || isPending}
-              className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-[2] inline-flex items-center justify-center gap-2 px-4 py-3 md:py-2.5 bg-accent text-background font-bold text-xs md:text-sm rounded-xl hover:bg-accent/90 transition-all active:scale-[0.98] disabled:opacity-50 shadow-md"
             >
               {stepsCount === 3 ? (isPending ? "Processing..." : "Continue") : "Review Payment"}
-              <span>→</span>
+              <span className="text-sm">→</span>
             </button>
           </div>
         </form>
@@ -410,15 +406,15 @@ const CardFunding: React.FC<CardFundingProps> = ({
           {!isSubmitted ? (
             <>
               {/* Review Summary Card */}
-              <div className="bg-card border-2 border-border/50 rounded-xl overflow-hidden">
-                <div className="p-4 md:p-6 space-y-4">
+              <div className="bg-card border-2 border-border/50 rounded-2xl overflow-hidden shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-500">
+                <div className="p-5 md:p-6 space-y-5">
                   <h3 className="text-base md:text-lg font-bold text-foreground flex items-center gap-2">
-                    <span>📋</span> Payment Summary
+                    <span className="text-xl">📋</span> Payment Summary
                   </h3>
 
                   <div className="space-y-3">
-                    <div className="flex justify-between items-center py-2 border-b border-border/50">
-                      <span className={`text-xs md:text-sm ${mutedClass}`}>
+                    <div className="flex justify-between items-center py-2.5 border-b border-border/50">
+                      <span className={`text-xs md:text-sm font-medium ${mutedClass}`}>
                         Deposit Amount
                       </span>
                       <span className="text-sm md:text-base font-bold text-accent">
@@ -426,61 +422,59 @@ const CardFunding: React.FC<CardFundingProps> = ({
                       </span>
                     </div>
 
-                    <div className="flex justify-between items-center py-2 border-b border-border/50">
-                      <span className={`text-xs md:text-sm ${mutedClass}`}>
+                    <div className="flex justify-between items-center py-2.5 border-b border-border/50">
+                      <span className={`text-xs md:text-sm font-medium ${mutedClass}`}>
                         Payment Method
                       </span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs md:text-sm">💳</span>
-                        <span className="text-xs md:text-sm font-medium">
+                      <div className="flex items-center gap-1.5 bg-muted/50 px-2 py-0.5 rounded">
+                        <span className="text-xs">💳</span>
+                        <span className="text-[11px] md:text-xs font-bold uppercase tracking-tight">
                           Card Payment
                         </span>
                       </div>
                     </div>
 
-                    <div className="flex justify-between items-center py-2 border-b border-border/50">
-                      <span className={`text-xs md:text-sm ${mutedClass}`}>
-                        Card Holder
+                    <div className="flex justify-between items-center py-2.5 border-b border-border/50">
+                      <span className={`text-xs md:text-sm font-medium ${mutedClass}`}>
+                        Cardholder
                       </span>
-                      <span className="text-xs md:text-sm font-medium">
+                      <span className="text-xs md:text-sm font-bold text-foreground truncate max-w-[150px]">
                         {watch("nameOnCard")}
                       </span>
                     </div>
 
-                    <div className="flex justify-between items-center py-2">
-                      <span className={`text-xs md:text-sm ${mutedClass}`}>
+                    <div className="flex justify-between items-center py-2.5">
+                      <span className={`text-xs md:text-sm font-medium ${mutedClass}`}>
                         Card Number
                       </span>
-                      <span className="text-xs md:text-sm font-medium">
-                        **** **** **** {watch("cardNumber").slice(-4)}
+                      <span className="text-xs md:text-sm font-mono font-bold text-foreground/80">
+                        **** {watch("cardNumber").slice(-4)}
                       </span>
                     </div>
                   </div>
                 </div>
 
                 {/* Total Section */}
-                <div className="bg-muted/30 p-4 md:p-6 border-t border-border/50">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm md:text-base font-bold text-foreground">
-                      Total Charge
-                    </span>
-                    <span className="text-lg md:text-xl font-black text-foreground">
-                      ${Number(watch("amount")).toLocaleString()}
-                    </span>
-                  </div>
+                <div className="p-5 md:p-6 border-t border-border/50 flex justify-between items-center bg-accent/5">
+                  <span className="text-sm md:text-base font-bold text-foreground">
+                    Total Charge
+                  </span>
+                  <span className="text-xl md:text-2xl font-black text-foreground">
+                    ${Number(watch("amount")).toLocaleString()}
+                  </span>
                 </div>
               </div>
 
               {/* Alert Box */}
-              <p
-                className={`text-[10px] md:text-xs ${mutedClass} italic text-center px-4`}
-              >
-                By clicking "Confirm & Pay", you authorize the transaction of
-                the amount stated above.
-              </p>
+              <div className="px-4 py-2 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                <p className={`text-[10px] md:text-xs ${mutedClass} italic text-center font-medium`}>
+                  By clicking "Confirm & Pay", you authorize the transaction of
+                  the amount stated above.
+                </p>
+              </div>
 
               {/* Form Actions */}
-              <div className="flex gap-2 md:gap-3 pt-2 md:pt-4 w-full">
+              <div className="flex gap-2 md:gap-3 py-2 w-full">
                 <button
                   type="button"
                   onClick={() => {
@@ -492,7 +486,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
                       setCurrentStep(2);
                     }
                   }}
-                  className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-muted text-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-muted/80 transition-colors disabled:opacity-50"
+                  className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 md:py-2.5 bg-muted text-foreground font-bold text-xs md:text-sm rounded-xl hover:bg-muted/80 transition-all active:scale-[0.98] disabled:opacity-50"
                   disabled={isPending}
                 >
                   ← Back
@@ -501,10 +495,10 @@ const CardFunding: React.FC<CardFundingProps> = ({
                   type="button"
                   onClick={() => handleFinalSubmit(watch())}
                   disabled={isPending}
-                  className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-[2] inline-flex items-center justify-center gap-2 px-4 py-3 md:py-2.5 bg-accent text-background font-bold text-xs md:text-sm rounded-xl hover:bg-accent/90 transition-all active:scale-[0.98] disabled:opacity-50 shadow-md"
                 >
                   {isPending ? "Processing..." : "Confirm & Pay"}
-                  <span>→</span>
+                  <span className="text-sm">→</span>
                 </button>
               </div>
             </>
@@ -582,11 +576,11 @@ const CardFunding: React.FC<CardFundingProps> = ({
 
       {/* Navigation Buttons - Step 1 Only */}
       {currentStep === 1 && (
-        <div className="flex gap-2 md:gap-3 pt-2 md:pt-4 w-full">
+        <div className="flex gap-2 md:gap-3 py-2 w-full">
           <button
             type="button"
             onClick={onChangeMethod}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-muted text-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-muted/80 transition-colors"
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 md:py-2.5 bg-muted text-foreground font-bold text-xs md:text-sm rounded-xl hover:bg-muted/80 transition-all active:scale-[0.98]"
           >
             ← Back
           </button>
@@ -594,10 +588,10 @@ const CardFunding: React.FC<CardFundingProps> = ({
             type="button"
             onClick={() => setCurrentStep(currentStep + 1)}
             disabled={!amount || !!errors.amount}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-[2] inline-flex items-center justify-center gap-2 px-4 py-3 md:py-2.5 bg-accent text-background font-bold text-xs md:text-sm rounded-xl hover:bg-accent/90 transition-all active:scale-[0.98] disabled:opacity-50 shadow-sm"
           >
             Continue
-            <span>→</span>
+            <span className="text-sm">→</span>
           </button>
         </div>
       )}

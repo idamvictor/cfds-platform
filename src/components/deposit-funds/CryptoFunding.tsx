@@ -256,33 +256,40 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
     }
   };
 
+  const steps = useMemo(() => {
+    return stepsCount === 3 
+      ? [
+          { number: 1, label: "Asset & Network" },
+          { number: 2, label: "Payment Details" },
+          { number: 3, label: "Completed" },
+        ]
+      : [
+          { number: 1, label: "Asset & Network" },
+          { number: 2, label: "Payment Details" },
+          { number: 3, label: "Payment Review" },
+          { number: 4, label: "Completed" },
+        ];
+  }, [stepsCount]);
+
+  const currentLabel = useMemo(() => {
+    return steps.find((s) => s.number === currentStep)?.label || "";
+  }, [steps, currentStep]);
+
   return (
-    <div className="space-y-2 md:space-y-3 text-foreground">
+    <div className="space-y-4 md:space-y-6 text-foreground">
       {/* Header and Progress Tracker */}
-      <div className="space-y-2 md:space-y-3">
+      <div className="space-y-4">
         {/* Progress Steps */}
-        <div className="flex items-center justify-between max-w-2xl overflow-x-auto pb-1">
-          {(stepsCount === 3
-            ? [
-                { number: 1, label: "Network" },
-                { number: 2, label: "Address" },
-                { number: 3, label: "Completed" },
-              ]
-            : [
-                { number: 1, label: "Network" },
-                { number: 2, label: "Address" },
-                { number: 3, label: "Payment Review" },
-                { number: 4, label: "Completed" },
-              ]
-          ).map((step, index, allSteps) => (
+        <div className="flex items-center justify-between max-w-2xl px-2">
+          {steps.map((step, index) => (
             <div key={step.number} className="flex items-center flex-1">
               {/* Step Circle */}
               <div
-                className={`flex items-center justify-center w-6 h-6 md:w-8 md:h-8 rounded-full font-semibold text-xs md:text-sm transition-colors flex-shrink-0 ${
+                className={`flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-full font-bold text-[11px] md:text-sm transition-all duration-300 flex-shrink-0 ${
                   step.number < currentStep
-                    ? "bg-accent text-primary-foreground"
+                    ? "bg-accent text-primary-foreground shadow-sm"
                     : step.number === currentStep
-                      ? "bg-primary text-primary-foreground border-2 border-accent"
+                      ? "bg-primary text-primary-foreground border-2 border-accent ring-2 ring-primary/20"
                       : `bg-muted ${stepNumberColor}`
                 }`}
               >
@@ -293,9 +300,9 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
                 )}
               </div>
 
-              {/* Step Label */}
+              {/* Step Label - Show only on desktop, hidden on mobile */}
               <span
-                className={`ml-1 md:ml-2 text-xs md:text-sm font-medium whitespace-nowrap ${
+                className={`hidden md:inline-block ml-2 text-xs font-bold whitespace-nowrap ${
                   step.number <= currentStep ? "text-foreground" : mutedClass
                 }`}
               >
@@ -303,15 +310,23 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
               </span>
 
               {/* Divider */}
-              {index < allSteps.length - 1 && (
+              {index < steps.length - 1 && (
                 <div
-                  className={`flex-1 h-px mx-4 ${
+                  className={`flex-1 h-px mx-3 md:mx-4 ${
                     step.number < currentStep ? "bg-accent" : "bg-border"
                   }`}
                 />
               )}
             </div>
           ))}
+        </div>
+
+        {/* Current Step Title - Mobile Only (Below the bar) */}
+        <div className="md:hidden pt-1">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-black font-mono bg-accent/10 text-accent px-1.5 py-0.5 rounded tracking-tighter uppercase">Step 0{currentStep}</span>
+            <h2 className="text-sm font-black text-foreground uppercase tracking-tight">{currentLabel}</h2>
+          </div>
         </div>
       </div>
 
@@ -331,20 +346,20 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
             </div>
           )}
 
-          <div className="bg-card border border-border rounded-xl p-4 space-y-4 shadow-sm">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-card border border-border rounded-xl p-3 md:p-4 space-y-4 shadow-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               {/* Asset Select */}
-              <div className="space-y-1.5 focus-within:z-50">
-                <label className="text-[10px] font-bold text-foreground uppercase tracking-tight opacity-50">Select Asset</label>
+              <div className="space-y-1 focus-within:z-50">
+                <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5">Select Asset</label>
                 <Select value={selectedAssetId} onValueChange={(val) => setSelectedAssetId(val)}>
-                  <SelectTrigger className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-xs font-semibold focus:ring-1 focus:ring-accent transition-all cursor-pointer h-9">
+                  <SelectTrigger className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-xs md:text-sm font-semibold focus:ring-1 focus:ring-accent transition-all cursor-pointer h-10 md:h-9">
                     <div className="flex items-center gap-2">
                       <SelectValue placeholder="Select Asset" />
                     </div>
                   </SelectTrigger>
                   <SelectContent className="bg-popover border-border">
                     {availableAssets.map(asset => (
-                      <SelectItem key={asset.id} value={asset.id} className="text-xs">
+                      <SelectItem key={asset.id} value={asset.id} className="text-xs md:text-sm">
                         <div className="flex items-center gap-2">
                           <img src={asset.logo} alt={asset.name} className="w-4 h-4 rounded-full" />
                           <span>{asset.name} ({asset.code})</span>
@@ -356,20 +371,20 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
               </div>
 
               {/* Network Select */}
-              <div className="space-y-1.5 focus-within:z-50">
-                <label className="text-[10px] font-bold text-foreground uppercase tracking-tight opacity-50">Network</label>
+              <div className="space-y-1 focus-within:z-50">
+                <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5">Network</label>
                 <Select value={selectedNetwork} onValueChange={(val) => setSelectedNetwork(val)}>
-                  <SelectTrigger className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-xs font-semibold focus:ring-1 focus:ring-accent transition-all cursor-pointer h-9">
+                  <SelectTrigger className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-xs md:text-sm font-semibold focus:ring-1 focus:ring-accent transition-all cursor-pointer h-10 md:h-9">
                     <div className="flex items-center gap-2 max-w-full">
                       <SelectValue placeholder="Select Network" />
                     </div>
                   </SelectTrigger>
                   <SelectContent className="bg-popover border-border max-w-[90vw]">
                     {availableNetworks.map(network => (
-                      <SelectItem key={network} value={network} className="text-xs">
+                      <SelectItem key={network} value={network} className="text-xs md:text-sm">
                         <div className="flex items-center gap-2">
                            {selectedAssetConfig?.logo && (
-                             <img src={selectedAssetConfig.logo} alt={selectedAssetConfig.name} className="w-3 h-3 rounded-full" />
+                             <img src={selectedAssetConfig.logo} alt={selectedAssetConfig.name} className="w-3.5 h-3.5 rounded-full" />
                            )}
                            <span>{network}</span>
                         </div>
@@ -382,17 +397,17 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
 
             {/* Amount Input */}
             <div className="space-y-3">
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="text-[10px] font-bold text-foreground uppercase tracking-tight opacity-50">
-                    Deposit Amount ({isUsdMode ? "USD" : selectedCrypto})
+              <div className="space-y-1.5 focus-within:z-40">
+                <div className="flex items-center justify-between ml-0.5">
+                  <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60">
+                    Amount ({isUsdMode ? "USD" : selectedCrypto})
                   </label>
                   <button 
                     onClick={handleToggleMode}
-                    className="flex items-center gap-1.5 text-[10px] font-bold text-accent hover:opacity-80 transition-opacity"
+                    className="flex items-center gap-1 text-[11px] font-bold text-accent hover:opacity-80 transition-opacity bg-accent/5 px-2 py-0.5 rounded"
                   >
-                    <ArrowRightLeft className="w-3 h-3" />
-                    Switch to {isUsdMode ? selectedCrypto : "USD"}
+                    <ArrowRightLeft className="w-2.5 h-2.5" />
+                    {isUsdMode ? selectedCrypto : "USD"}
                   </button>
                 </div>
                 <div className="relative group">
@@ -400,23 +415,23 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
                     type="number"
                     value={depositAmount}
                     onChange={(e) => setDepositAmount(e.target.value)}
-                    className="w-full bg-muted/10 border-2 border-border/50 rounded-xl px-4 py-4 text-2xl font-black text-center focus:outline-none focus:border-accent transition-all tracking-tight"
+                    className="w-full bg-muted/10 border-2 border-border/50 rounded-xl px-4 py-3 md:py-4 text-xl md:text-2xl font-black text-center focus:outline-none focus:border-accent transition-all tracking-tight h-14 md:h-16"
                     placeholder="0.00"
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <span className="text-sm font-bold opacity-30 tracking-widest">{isUsdMode ? "USD" : selectedCrypto}</span>
+                    <span className="text-xs md:text-sm font-bold opacity-30 tracking-widest">{isUsdMode ? "USD" : selectedCrypto}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-[10px] px-1 opacity-60">
+              <div className="flex items-center justify-between text-[10px] md:text-xs px-1 opacity-60 font-medium">
                  <div className="flex items-center gap-1">
                    <RotateCw className="w-2.5 h-2.5 animate-spin-slow" />
                    <span>
                      ≈ <span className="font-bold text-foreground">
                        {isUsdMode 
                          ? `${cryptoAmount} ${selectedCrypto}` 
-                         : `$${usdEquivalent.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`}
+                         : `$${usdEquivalent.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                      </span>
                    </span>
                  </div>
@@ -436,15 +451,13 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
                         setDepositAmount((dollarAmount / currentAssetPrice).toFixed(6));
                       }
                     }}
-                    className="py-1.5 rounded-lg border border-border bg-card hover:bg-accent hover:text-background font-bold text-[10px] transition-all shadow-sm active:scale-95"
+                    className="py-2.5 md:py-1.5 rounded-lg border border-border bg-card hover:bg-accent hover:text-background font-bold text-[10px] md:text-xs transition-all shadow-sm active:scale-95"
                   >
                     +${val}
                   </button>
                 ))}
               </div>
             </div>
-
-
           </div>
 
           {/* Important Notice */}
@@ -452,12 +465,10 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
              <div className="w-8 h-8 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
                 <AlertCircle className="w-4 h-4 text-yellow-600" />
              </div>
-             <p className={`text-[10px] ${mutedClass} leading-tight self-center`}>
-                Only send {selectedCrypto} via the {selectedNetwork} network to avoid loss of funds. Min: 0.0001 {selectedCrypto}.
+             <p className={`text-[11px] md:text-xs font-medium ${mutedClass} leading-tight self-center`}>
+                Only send <span className="font-bold text-foreground">{selectedCrypto}</span> via the <span className="font-bold text-foreground">{selectedNetwork}</span> network to avoid loss of funds. Min: 0.0001 {selectedCrypto}.
              </p>
           </div>
-
-          
         </div>
       )}
          {/* Step 2: Complete Your Deposit */}
@@ -480,40 +491,40 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
           </div>
 
           <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-md">
-             <div className="p-5 md:p-6 flex flex-col md:flex-row gap-6 items-center">
+             <div className="p-4 md:p-6 flex flex-col md:flex-row gap-5 md:gap-6 items-center">
                 {/* QR Code Stylized */}
-                <div className="relative p-3 bg-white rounded-xl shadow-sm border border-border/50">
+                <div className="p-3 bg-white rounded-xl shadow-sm border border-border/50 flex flex-col items-center gap-2">
                    <QRCodeSVG
                       value={qrCodeValue}
                       size={120}
                       level="H"
-                      className="w-24 h-24 md:w-32 md:h-32"
+                      className="w-32 h-32 md:w-32 md:h-32"
                       fgColor="black"
                       bgColor="white"
                     />
-                    
+                    <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest hidden md:block">Scan to Pay</span>
                 </div>
 
                 {/* Amount Info */}
                  <div className="flex-1 space-y-3 text-center md:text-left w-full">
                     <div className="space-y-0.5">
-                       <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Amount to Deposit</p>
+                       <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Amount to Deposit</p>
                        <h3 className="text-2xl md:text-3xl font-black text-foreground">{cryptoAmount} {selectedCrypto}</h3>
-                       <p className="text-sm font-medium opacity-60">≈ ${ usdEquivalent.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) } USD</p>
+                       <p className="text-xs md:text-sm font-medium opacity-60">≈ ${ usdEquivalent.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }</p>
                     </div>
 
-                   <div className="grid grid-cols-2 gap-4 pt-3 border-t border-border/30">
+                    <div className="grid grid-cols-2 gap-3 pt-3 border-t border-border/30">
                       <div>
-                         <p className="text-[8px] font-black opacity-30 tracking-wider uppercase">NETWORK</p>
+                         <p className="text-[9px] font-black opacity-30 tracking-wider uppercase">NETWORK</p>
                          <p className="text-xs font-bold flex items-center justify-center md:justify-start gap-1.5">
-                           <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
-                           {selectedCrypto}
+                           <span className="w-2 h-2 rounded-full bg-orange-500" />
+                           {selectedNetwork}
                          </p>
                       </div>
                       <div>
-                         <p className="text-[8px] font-black opacity-30 tracking-wider uppercase">ESTIMATED TIME</p>
+                         <p className="text-[9px] font-black opacity-30 tracking-wider uppercase">ESTIMATED TIME</p>
                          <p className="font-bold text-xs">
-                             {selectedWalletData.type === 'link' ? 'External' : '10-30 Min'}
+                             {selectedWalletData.type === 'link' ? 'Redirect' : '10-30 Min'}
                           </p>
                        </div>
                     </div>
@@ -521,18 +532,18 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
               </div>
 
               {/* Address/Link Bar */}
-              <div className="bg-muted/20 border-t border-border p-4 flex flex-col sm:flex-row gap-3">
-                 <div className="flex-1 flex items-center gap-3 bg-card border border-border/50 p-3 rounded-lg min-w-0">
+              <div className="bg-muted/30 border-t border-border p-4 flex flex-col gap-3">
+                 <div className="flex-1 flex items-center gap-3 bg-card border border-border/50 p-2.5 md:p-3 rounded-lg min-w-0">
                     {selectedWalletData.type === 'link' ? (
                       <Wifi className="w-4 h-4 text-accent flex-shrink-0" />
                     ) : (
-                      <Copy className="w-4 h-4 text-accent flex-shrink-0" />
+                      <Copy className="w-4 h-4 text-accent flex-shrink-0 uppercase" />
                     )}
                     <div className="min-w-0">
-                       <p className="text-[7px] font-black opacity-40 uppercase tracking-widest">
-                         {selectedWalletData.type === 'link' ? 'Payment Instruction' : 'Unique Address'}
+                       <p className="text-[8px] font-black opacity-50 uppercase tracking-widest leading-none mb-1">
+                         {selectedWalletData.type === 'link' ? 'Payment Instruction' : 'Deposit Address'}
                        </p>
-                       <p className="text-[10px] md:text-xs font-bold text-foreground truncate">
+                       <p className="text-[11px] md:text-xs font-bold text-foreground truncate select-all">
                          {selectedWalletData.type === 'link' ? selectedWalletData.crypto_network : selectedWalletData.address}
                        </p>
                     </div>
@@ -545,12 +556,12 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
                        handleCopyAddress();
                      }
                    }}
-                   className="bg-accent text-background px-5 py-2.5 rounded-lg font-bold text-xs flex items-center justify-center gap-2 hover:bg-accent/90 transition-all active:scale-95"
+                   className="w-full bg-accent text-background px-5 py-3 md:py-2.5 rounded-lg font-bold text-xs flex items-center justify-center gap-2 hover:bg-accent/90 transition-all active:scale-95 shadow-sm"
                  >
                    {selectedWalletData.type === 'link' ? (
-                     <><span>External Link</span><span>↗</span></>
+                     <><span>Continue Externally</span><span>↗</span></>
                    ) : (
-                     <><Copy className="w-3.5 h-3.5" />{copied ? "Copied!" : "Copy"}</>
+                     <><Copy className="w-4 h-4" />{copied ? "Address Copied!" : "Copy Address"}</>
                    )}
                  </button>
               </div>
@@ -561,38 +572,47 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
 
       {/* Step 3: Payment Review */}
       {currentStep === 3 && !isSubmitted && (
-        <div className="space-y-4 md:space-y-6 w-full">
+        <div className="space-y-4 md:space-y-6 w-full animate-in fade-in slide-in-from-bottom-2 duration-500">
           {/* Review Summary Card */}
-          <div className="bg-card border-2 border-border/50 rounded-xl overflow-hidden">
+          <div className="bg-card border-2 border-border/50 rounded-xl overflow-hidden shadow-sm">
             <div className="p-4 md:p-6 space-y-4">
               <h3 className="text-base md:text-lg font-bold text-foreground flex items-center gap-2">
-                <span>📋</span> Deposit Summary
+                <span className="text-xl">📋</span> Deposit Summary
               </h3>
 
-              <div className="space-y-3">
-                 <div className="flex justify-between items-center py-2 border-b border-border/50">
-                   <span className={`text-xs md:text-sm ${mutedClass}`}>
-                     Amount to Deposit (USD)
+              <div className="space-y-2 md:space-y-3">
+                 <div className="flex justify-between items-center py-2.5 border-b border-border/50">
+                   <span className={`text-xs md:text-sm font-medium ${mutedClass}`}>
+                     Estimated Value
                    </span>
                    <span className="text-sm md:text-base font-bold text-accent">
                      ${ usdEquivalent.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }
                    </span>
                  </div>
 
-                <div className="flex justify-between items-center py-2 border-b border-border/50">
-                  <span className={`text-xs md:text-sm ${mutedClass}`}>
+                 <div className="flex justify-between items-center py-2.5 border-b border-border/50">
+                   <span className={`text-xs md:text-sm font-medium ${mutedClass}`}>
+                     Amount to Send
+                   </span>
+                   <span className="text-sm md:text-base font-bold text-foreground">
+                     {cryptoAmount} {selectedCrypto}
+                   </span>
+                 </div>
+
+                <div className="flex justify-between items-start py-2.5 border-b border-border/50">
+                  <span className={`text-xs md:text-sm font-medium ${mutedClass} mt-0.5`}>
                     Network
                   </span>
-                  <span className="text-xs md:text-sm font-medium">
-                    {selectedWalletData?.crypto_network}
+                  <span className="text-xs md:text-sm font-bold bg-accent/10 text-accent px-2 py-0.5 rounded uppercase">
+                    {selectedNetwork}
                   </span>
                 </div>
 
-                <div className="flex justify-between items-center py-2">
-                  <span className={`text-xs md:text-sm ${mutedClass}`}>
-                    To Address
+                <div className="flex flex-col gap-1 py-1">
+                  <span className={`text-[10px] md:text-xs font-bold uppercase opacity-40`}>
+                    Recipient Address
                   </span>
-                  <span className="text-[10px] md:text-xs font-medium break-all text-right max-w-[200px]">
+                  <span className="text-[10px] md:text-xs font-mono font-medium break-all bg-muted/30 p-2 rounded border border-border/50 text-foreground/80">
                     {selectedWalletData?.address}
                   </span>
                 </div>
@@ -600,24 +620,24 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
             </div>
 
             {/* Info Box */}
-            <div className="bg-muted/30 p-4 md:p-6 border-t border-border/50">
-              <div className="flex items-start gap-2">
+            <div className="bg-muted/30 p-4 md:p-5 border-t border-border/50">
+              <div className="flex items-start gap-3">
                 <Info className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
-                <p className="text-xs md:text-sm font-medium leading-relaxed">
-                  Please ensure you have sent the exact amount to the
+                <p className="text-[11px] md:text-sm font-medium leading-relaxed opacity-80 italic">
+                  Ensure you have sent the exact amount to the
                   address above before confirming. The transaction will be
-                  reviewed by our team.
+                  manually verified by our security team.
                 </p>
               </div>
             </div>
           </div>
 
           {/* Form Actions */}
-          <div className="flex gap-2 md:gap-3 pt-2 md:pt-4 w-full">
+          <div className="flex gap-2 md:gap-3 py-2 w-full">
             <button
               type="button"
               onClick={handlePreviousStep}
-              className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-muted text-foreground font-semibold text-sm md:text-base rounded-lg hover:bg-muted/80 transition-colors disabled:opacity-50"
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 md:py-2.5 bg-muted text-foreground font-bold text-xs md:text-sm rounded-xl hover:bg-muted/80 transition-all active:scale-[0.98] disabled:opacity-50"
               disabled={depositMutation.isPending}
             >
               ← Back
@@ -626,12 +646,12 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
               type="button"
               onClick={handleSubmitDeposit}
               disabled={depositMutation.isPending}
-              className="flex-1 inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-[2] inline-flex items-center justify-center gap-2 px-4 py-3 md:py-2.5 bg-accent text-background font-bold text-xs md:text-sm rounded-xl hover:bg-accent/90 transition-all active:scale-[0.98] disabled:opacity-50 shadow-md"
             >
               {depositMutation.isPending
                 ? "Processing..."
                 : "Confirm & Notify Admin"}
-              <span>→</span>
+              <span className="text-sm">→</span>
             </button>
           </div>
         </div>
@@ -752,12 +772,12 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
       )}
 
       {/* Navigation Buttons */}
-      <div className="flex gap-2 md:gap-3 pt-1 md:pt-2">
+      <div className="flex gap-2 md:gap-3 pt-4">
         {currentStep === 2 && (
           <button
             type="button"
             onClick={handlePreviousStep}
-            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 md:px-4 py-1.5 bg-muted text-foreground font-semibold text-xs md:text-sm rounded-lg hover:bg-muted/80 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 md:px-4 py-3 md:py-2 bg-muted text-foreground font-bold text-xs md:text-sm rounded-xl hover:bg-muted/80 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all active:scale-[0.98]"
           >
             ← Previous
           </button>
@@ -766,7 +786,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
           <button
             type="button"
             onClick={onChangeMethod}
-            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 md:px-4 py-1.5 bg-muted text-foreground font-semibold text-xs md:text-sm rounded-lg hover:bg-muted/80 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 md:px-4 py-3 md:py-2 bg-muted text-foreground font-bold text-xs md:text-sm rounded-xl hover:bg-muted/80 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all active:scale-[0.98]"
           >
             ← Previous
           </button>
@@ -776,10 +796,10 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
             type="button"
             onClick={handleNextStep}
             disabled={(!depositAmount || parseFloat(depositAmount) <= 0) || (currentStep === 2 && !selectedWalletData)}
-            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 md:px-4 py-1.5 bg-accent text-background font-semibold text-xs md:text-sm rounded-lg hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex-[2] inline-flex items-center justify-center gap-1.5 px-3 md:px-4 py-3 md:py-2 bg-accent text-background font-bold text-xs md:text-sm rounded-xl hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.98] shadow-sm"
           >
             {stepsCount === 3 && currentStep === 2 ? (depositMutation.isPending ? "Processing..." : "Confirm & Deposit") : "Next"}
-            <span>→</span>
+            <span className="text-sm">→</span>
           </button>
         )}
       </div>

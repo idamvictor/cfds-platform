@@ -34,7 +34,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
   // If showCardFunding is true, render the specific funding component based on selectedMethod
   if (showCardFunding) {
     return (
-      <div className="px-4 md:px-6 lg:px-10">
+      <div className="px-0">
         {" "}
         {selectedMethod === "card" ? (
           <CardFunding
@@ -53,7 +53,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
   }
 
   return (
-    <div className="space-y-6 text-foreground px-4 md:px-6 lg:px-10">
+    <div className="space-y-6 text-foreground px-0">
 
       {/* Info Text */}
       <div className="space-y-4">
