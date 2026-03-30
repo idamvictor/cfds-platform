@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2, Image, X, Loader, Camera, Upload, IdCard, Check, Info, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import Webcam from "react-webcam";
+import { KYC_PARTNERS } from "@/constants/kyc-partners";
 
 
 export default function KYCVerifyPage() {
@@ -185,7 +186,7 @@ export default function KYCVerifyPage() {
 
   return (
     <main className="min-h-screen bg-background py-6 flex flex-col items-center justify-center">
-      <div className="max-w-4xl mx-auto px-4">
+      <div className={`${currentStep === 3 ? 'max-w-5xl' : 'max-w-4xl'} w-full mx-auto px-4 transition-all duration-500`}>
         {currentStep === 3 ? (
           // Awaiting Verification View
           <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4 bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-sm">
@@ -199,7 +200,7 @@ export default function KYCVerifyPage() {
               <h2 className="text-xl font-bold text-foreground">
                 Awaiting Verification
               </h2>
-              <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed">
+              <p className="text-xs max-w-sm mx-auto leading-relaxed">
                 Your documents are being reviewed. This typically takes
                 1-2 business days. We'll notify you via email once the
                 verification is complete.
@@ -239,20 +240,40 @@ export default function KYCVerifyPage() {
                 </span>
               </div>
             </div>
-            <div className="w-full max-w-lg pt-4 border-t border-border mt-2 text-center space-y-3">
+            <div className="w-full pt-8 border-t border-border mt-4 text-center space-y-6">
               <div className="space-y-1">
-                <h3 className="text-[10px] font-bold text-foreground uppercase tracking-widest">Integrated KYC Ecosystem</h3>
-                <p className="text-[10px] text-muted-foreground max-w-sm mx-auto leading-relaxed opacity-80">
+                <h3 className="text-[11px] font-bold text-foreground uppercase tracking-widest">Integrated KYC Ecosystem</h3>
+                <p className="text-[10px]  max-w-sm mx-auto leading-relaxed opacity-80">
                   Your identity verification status is synchronized with our global exchange and financial partners to provide a seamless cross-platform experience.
                 </p>
               </div>
-              <Link 
-                to="/main/kyc-partners" 
-                className="inline-flex items-center gap-2 text-[10px] font-bold text-accent hover:text-accent/80 transition-colors uppercase tracking-wider"
-              >
-                View all KYC Partners
-                <Info className="w-3 h-3" />
-              </Link>
+
+              <div className="flex flex-nowrap md:grid md:grid-cols-10 gap-4 sm:gap-5 py-4 overflow-x-auto md:overflow-x-visible no-scrollbar justify-start md:justify-items-center">
+                {KYC_PARTNERS.map((partner) => (
+                  <div key={partner.name} className="flex flex-col items-center gap-2 group cursor-default flex-shrink-0 w-[80px] sm:w-auto">
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-muted/20 border border-border/50 flex items-center justify-center p-2.5 sm:p-3 group-hover:border-accent/40 group-hover:bg-accent/5 transition-all duration-300">
+                      <img 
+                        src={partner.logo} 
+                        alt={partner.name} 
+                        className="max-w-full max-h-full object-contain filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" 
+                      />
+                    </div>
+                    <span className="text-[9px] font-bold text-muted-foreground/60 group-hover:text-foreground transition-colors uppercase tracking-tight text-center">
+                      {partner.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="pt-2">
+                <Link 
+                  to="/main/kyc-partners" 
+                  className="inline-flex items-center gap-2 text-[10px] font-bold text-accent hover:text-accent/80 transition-colors uppercase tracking-wider"
+                >
+                  Explore Partner Network
+                  <Info className="w-3 h-3" />
+                </Link>
+              </div>
             </div>
 
             <Link to="/" className="pt-4">
