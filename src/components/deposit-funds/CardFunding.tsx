@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useMutedTextClass } from "@/hooks/useMutedTextClass";
-import { useMutedPlaceholderClass } from "@/hooks/useMutedPlaceholderClass";
 import { useStepNumberColor } from "@/hooks/useStepNumberColor";
 import { useDepositMutation } from "@/services/deposit/deposit-queries";
 
@@ -49,7 +48,6 @@ const CardFunding: React.FC<CardFundingProps> = ({
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const mutedClass = useMutedTextClass();
-  const mutedPlaceholderClass = useMutedPlaceholderClass();
   const stepNumberColor = useStepNumberColor();
   const { mutate, isPending, error } = useDepositMutation();
 

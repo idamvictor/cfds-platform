@@ -188,7 +188,7 @@ export default function KYCVerifyPage() {
       <div className="max-w-4xl mx-auto px-4">
         {currentStep === 3 ? (
           // Awaiting Verification View
-          <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4 bg-card border border-border rounded-2xl p-8 shadow-sm">
+          <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4 bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-sm">
             <div className="relative w-24 h-24">
               <div className="absolute inset-0 bg-accent rounded-full opacity-10 animate-pulse"></div>
               <div className="absolute inset-0 flex items-center justify-center">
@@ -273,7 +273,7 @@ export default function KYCVerifyPage() {
 
             <div className="grid md:grid-cols-3 gap-6">
               <div className="md:col-span-2 space-y-4">
-                <div className="bg-card border border-border rounded-2xl p-6 space-y-6 shadow-sm">
+                  <div className="bg-card border border-border rounded-2xl p-4 sm:p-6 space-y-6 shadow-sm">
                   <input
                     ref={fileInputSelfieRef}
                     type="file"
@@ -282,7 +282,7 @@ export default function KYCVerifyPage() {
                     className="hidden"
                   />
                   <div
-                    className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer ${
+                    className={`border-2 border-dashed rounded-2xl p-6 sm:p-8 text-center transition-all cursor-pointer ${
                       dragActiveSelfie
                         ? "border-accent bg-accent/5 scale-[1.01]"
                         : "border-accent/20 hover:border-accent/40 hover:bg-accent/5"
@@ -299,37 +299,37 @@ export default function KYCVerifyPage() {
                           <img
                             src={URL.createObjectURL(selfieFile)}
                             alt="Selfie"
-                            className="w-48 h-48 rounded-full object-cover border-4 border-accent/20 shadow-xl"
+                            className="w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover border-4 border-accent/20 shadow-xl"
                           />
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               setSelfieFile(null);
                             }}
-                            className="absolute -top-2 -right-2 bg-destructive text-white p-2 rounded-full shadow-lg"
+                            className="absolute -top-1 -right-1 bg-destructive text-white p-1.5 rounded-full shadow-lg"
                           >
                             <X className="w-4 h-4" />
                           </button>
                         </div>
-                        <div>
-                          <p className="text-lg font-semibold text-foreground">{selfieFile.name}</p>
+                        <div className="max-w-[200px] sm:max-w-none">
+                          <p className="text-base sm:text-lg font-semibold text-foreground truncate">{selfieFile.name}</p>
                         </div>
                       </div>
                     ) : (
-                      <div className="space-y-6">
-                        <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto">
-                          <Camera className="w-10 h-10 text-accent" />
+                      <div className="space-y-4 sm:space-y-6">
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto">
+                          <Camera className="w-8 h-8 sm:w-10 sm:h-10 text-accent" />
                         </div>
                         <div className="space-y-2">
-                          <p className="text-xl font-bold text-foreground">Upload or Snap a Photo</p>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-lg sm:text-xl font-bold text-foreground">Upload or Snap a Photo</p>
+                          <p className="text-xs sm:text-sm text-muted-foreground">
                             Drag and drop your photo or use the buttons below
                           </p>
                         </div>
-                        <div className="flex gap-4 justify-center">
+                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                            <Button
                             onClick={(e) => { e.stopPropagation(); handleBrowseClick("selfie"); }}
-                            className="bg-accent text-slate-900 hover:bg-accent/90 rounded-xl px-6"
+                            className="bg-accent text-slate-900 hover:bg-accent/90 rounded-xl px-6 w-full sm:w-auto"
                           >
                             <Upload className="w-4 h-4 mr-2" />
                             Upload Photo
@@ -337,7 +337,7 @@ export default function KYCVerifyPage() {
                           <Button
                             onClick={(e) => { e.stopPropagation(); setShowWebcamSelfie(true); }}
                             variant="outline"
-                            className="rounded-xl px-6 border-border"
+                            className="rounded-xl px-6 border-border w-full sm:w-auto"
                           >
                             <Camera className="w-4 h-4 mr-2" />
                             Use Camera
@@ -386,17 +386,17 @@ export default function KYCVerifyPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-6 border-t border-border">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-border">
               <button 
                 onClick={() => setCurrentStep(1)}
-                className="text-muted-foreground font-bold text-sm hover:text-foreground transition-colors"
+                className="text-muted-foreground font-bold text-sm hover:text-foreground transition-colors order-2 sm:order-1"
               >
                 Back to Residence
               </button>
               <Button
                 onClick={handleContinue}
                 disabled={!selfieFile}
-                className={`py-2.5 px-10 h-auto text-sm font-extrabold rounded-xl shadow-lg transition-all ${
+                className={`w-full sm:w-auto py-2.5 px-10 h-auto text-sm font-extrabold rounded-xl shadow-lg transition-all order-1 sm:order-2 ${
                   selfieFile
                     ? "bg-emerald-600 hover:bg-emerald-700 text-slate-900 shadow-emerald-500/20 hover:scale-[1.02] active:scale-[0.98]"
                     : "bg-muted text-muted-foreground cursor-not-allowed opacity-60"
@@ -418,7 +418,7 @@ export default function KYCVerifyPage() {
 
             <div className="grid md:grid-cols-3 gap-6">
               <div className="md:col-span-2 space-y-4">
-                <div className="bg-card border border-border rounded-2xl p-6 space-y-6 shadow-sm">
+                <div className="bg-card border border-border rounded-2xl p-4 sm:p-6 space-y-6 shadow-sm">
                   <div>
                     <h3 className="text-lg font-bold text-foreground mb-6">Upload Document</h3>
                     <input
@@ -429,7 +429,7 @@ export default function KYCVerifyPage() {
                       className="hidden"
                     />
                     <div
-                      className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer ${
+                      className={`border-2 border-dashed rounded-2xl p-6 sm:p-8 text-center transition-all cursor-pointer ${
                         dragActiveResidence
                           ? "border-accent bg-accent/5 scale-[1.01]"
                           : "border-accent/20 hover:border-accent/40 hover:bg-accent/5"
@@ -451,8 +451,8 @@ export default function KYCVerifyPage() {
                             <div className="absolute inset-0 rounded-2xl border-2 border-dashed border-accent/40 pointer-events-none" />
                           </div>
                           <div className="text-center">
-                            <p className="text-lg font-semibold text-foreground truncate max-w-[250px]">{residenceFile.name}</p>
-                            <p className="text-sm text-muted-foreground mt-1">
+                            <p className="text-base sm:text-lg font-semibold text-foreground truncate max-w-[200px] sm:max-w-[250px]">{residenceFile.name}</p>
+                            <p className="text-xs text-muted-foreground mt-1">
                               {(residenceFile.size / 1024 / 1024).toFixed(2)} MB
                             </p>
                           </div>
@@ -468,13 +468,13 @@ export default function KYCVerifyPage() {
                           </button>
                         </div>
                       ) : (
-                        <div className="space-y-5">
-                          <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto">
-                            <Upload className="w-8 h-8 text-accent" />
+                        <div className="space-y-4 sm:space-y-5">
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto">
+                            <Upload className="w-6 h-6 sm:w-8 sm:h-8 text-accent" />
                           </div>
                           <div>
-                            <p className="text-lg font-bold text-foreground">Click to upload or drag and drop</p>
-                            <p className="text-sm text-muted-foreground mt-2">
+                            <p className="text-base sm:text-lg font-bold text-foreground">Click to upload or drag and drop</p>
+                            <p className="text-xs sm:text-sm text-muted-foreground mt-2">
                               JPG or PNG (max. 10MB)
                             </p>
                           </div>
@@ -494,12 +494,10 @@ export default function KYCVerifyPage() {
                         placeholder="Street name and number"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
-                        className="w-full bg-background border border-border rounded-xl py-4 pl-12 pr-4 text-base font-medium focus:outline-none focus:ring-4 focus:ring-accent/10 focus:border-accent transition-all placeholder:text-muted-foreground/30"
+                        className="w-full bg-background border border-border rounded-xl py-3.5 sm:py-4 pl-12 pr-4 text-sm sm:text-base font-medium focus:outline-none focus:ring-4 focus:ring-accent/10 focus:border-accent transition-all placeholder:text-muted-foreground/30"
                       />
                     </div>
                   </div>
-
-
                 </div>
               </div>
 
@@ -553,25 +551,25 @@ export default function KYCVerifyPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-6 border-t border-border">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-border">
               <button 
                 onClick={() => setCurrentStep(0)}
-                className="text-muted-foreground font-bold text-sm hover:text-foreground transition-colors"
+                className="text-muted-foreground font-bold text-sm hover:text-foreground transition-colors order-2 sm:order-1"
               >
                 Back to ID
               </button>
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto order-1 sm:order-2">
                 <Button
                   onClick={() => setCurrentStep(0)}
                   variant="outline"
-                  className="bg-muted/10 border-border text-foreground hover:bg-muted py-2.5 px-6 h-auto text-sm font-bold rounded-xl"
+                  className="bg-muted/10 border-border text-foreground hover:bg-muted py-2.5 px-6 h-auto text-sm font-bold rounded-xl w-full sm:w-auto"
                 >
                   Back
                 </Button>
                 <Button
                   onClick={handleContinue}
                   disabled={!residenceFile || !address.trim()}
-                  className={`py-2.5 px-10 h-auto text-sm font-extrabold rounded-xl shadow-lg transition-all ${
+                  className={`py-2.5 px-10 h-auto text-sm font-extrabold rounded-xl shadow-lg transition-all w-full sm:w-auto ${
                     residenceFile && address.trim()
                       ? "bg-emerald-600 hover:bg-emerald-700 text-slate-900 shadow-emerald-500/20 hover:scale-[1.02] active:scale-[0.98]"
                       : "bg-muted text-muted-foreground cursor-not-allowed opacity-60"
@@ -599,12 +597,12 @@ export default function KYCVerifyPage() {
               <p className="text-[10px] font-bold text-foreground mb-4 uppercase tracking-wider opacity-60">
                 Select identification type
               </p>
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 {idTypes.map((idType) => (
                   <button
                     key={idType.id}
                     onClick={() => setSelectedIdType(idType.id)}
-                    className={`flex-1 p-4 border-2 rounded-2xl transition-all text-left relative overflow-hidden group ${
+                    className={`flex-1 p-3.5 sm:p-4 border-2 rounded-2xl transition-all text-left relative overflow-hidden group ${
                       selectedIdType === idType.id
                         ? "border-accent bg-accent/5"
                         : "border-border bg-card hover:border-accent/30"
@@ -653,9 +651,9 @@ export default function KYCVerifyPage() {
                 className="hidden"
               />
 
-              <div className={`grid ${selectedIdType === "passport" ? "grid-cols-1 max-w-xl mx-auto" : "grid-cols-2"} gap-6`}>
+              <div className={`grid ${selectedIdType === "passport" ? "grid-cols-1 max-w-xl mx-auto" : "grid-cols-1 sm:grid-cols-2"} gap-4 sm:gap-6`}>
                 <div
-                  className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer relative overflow-hidden group ${
+                  className={`border-2 border-dashed rounded-2xl p-6 sm:p-8 text-center transition-all cursor-pointer relative overflow-hidden group ${
                     dragActiveFront
                       ? "border-accent bg-accent/5 scale-[1.02]"
                       : "border-accent/20 hover:border-accent/40 hover:bg-accent/5"
@@ -673,13 +671,13 @@ export default function KYCVerifyPage() {
                           <img
                             src={URL.createObjectURL(frontFile)}
                             alt="Front ID"
-                            className="max-h-40 rounded-xl shadow-lg transition-transform group-hover:scale-105"
+                            className="max-h-32 sm:max-h-40 rounded-xl shadow-lg transition-transform group-hover:scale-105"
                           />
                           <div className="absolute inset-0 rounded-2xl border-2 border-dashed border-accent/40 pointer-events-none" />
                         </div>
                         <button 
                           onClick={(e) => { e.stopPropagation(); setFrontFile(null); }}
-                          className="absolute -top-2 -right-2 bg-destructive text-white p-1.5 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="absolute -top-2 -right-2 bg-destructive text-white p-1.5 rounded-full shadow-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
                         >
                           <X className="w-4 h-4" />
                         </button>
@@ -689,22 +687,22 @@ export default function KYCVerifyPage() {
                       </p>
                     </div>
                   ) : (
-                    <div className="space-y-4 py-4">
-                      <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mx-auto transition-transform group-hover:translate-y-[-4px]">
-                        <Image className="w-6 h-6 text-accent" />
+                    <div className="space-y-4 py-2 sm:py-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-accent/10 rounded-xl flex items-center justify-center mx-auto transition-transform group-hover:translate-y-[-4px]">
+                        <Image className="w-5 h-5 sm:w-6 sm:h-6 text-accent" />
                       </div>
                       <div>
-                        <p className="text-base font-bold text-foreground mb-1">
+                        <p className="text-sm sm:text-base font-bold text-foreground mb-1">
                           {selectedIdType === "passport" ? "Passport Bio-data Page" : "ID Front View"}
                         </p>
-                        <p className="text-xs text-muted-foreground mb-5 px-4">
+                        <p className="text-[10px] sm:text-xs text-muted-foreground mb-4 sm:mb-5 px-4">
                           Drag and drop or take a photo. Max Size 10MB.
                         </p>
                       </div>
-                      <div className="flex flex-row gap-2 px-4">
+                      <div className="flex flex-col sm:flex-row gap-2 px-2 sm:px-4">
                         <Button
                           onClick={(e) => { e.stopPropagation(); handleBrowseClick("front"); }}
-                          className="flex-1 bg-accent text-slate-900 hover:bg-accent/90 border-none text-[11px] font-bold py-2.5 rounded-lg transition-all"
+                          className="flex-1 bg-accent text-slate-900 hover:bg-accent/90 border-none text-[11px] font-bold py-2.5 rounded-lg transition-all w-full"
                         >
                           <Upload className="w-3.5 h-3.5 mr-1" />
                           Browse File
@@ -712,7 +710,7 @@ export default function KYCVerifyPage() {
                         <Button
                           onClick={(e) => { e.stopPropagation(); setShowWebcamFront(true); }}
                           variant="outline"
-                          className="flex-1 border-border hover:bg-accent/5 text-foreground text-[11px] font-bold py-2.5 rounded-lg"
+                          className="flex-1 border-border hover:bg-accent/5 text-foreground text-[11px] font-bold py-2.5 rounded-lg w-full"
                         >
                           <Camera className="w-3.5 h-3.5 mr-1" />
                           Snap Photo
@@ -724,7 +722,7 @@ export default function KYCVerifyPage() {
 
                 {selectedIdType !== "passport" && (
                   <div
-                    className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer relative overflow-hidden group ${
+                    className={`border-2 border-dashed rounded-2xl p-6 sm:p-8 text-center transition-all cursor-pointer relative overflow-hidden group ${
                       dragActiveBack
                         ? "border-accent bg-accent/5 scale-[1.02]"
                         : "border-accent/20 hover:border-accent/40 hover:bg-accent/5"
@@ -742,13 +740,13 @@ export default function KYCVerifyPage() {
                             <img
                               src={URL.createObjectURL(backFile)}
                               alt="Back ID"
-                              className="max-h-40 rounded-xl shadow-lg transition-transform group-hover:scale-105"
+                              className="max-h-32 sm:max-h-40 rounded-xl shadow-lg transition-transform group-hover:scale-105"
                             />
                             <div className="absolute inset-0 rounded-2xl border-2 border-dashed border-accent/40 pointer-events-none" />
                           </div>
                           <button 
                             onClick={(e) => { e.stopPropagation(); setBackFile(null); }}
-                            className="absolute -top-2 -right-2 bg-destructive text-white p-1.5 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="absolute -top-2 -right-2 bg-destructive text-white p-1.5 rounded-full shadow-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
                           >
                             <X className="w-4 h-4" />
                           </button>
@@ -758,22 +756,22 @@ export default function KYCVerifyPage() {
                         </p>
                       </div>
                     ) : (
-                      <div className="space-y-4 py-4">
-                        <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mx-auto transition-transform group-hover:translate-y-[-4px]">
-                          <Image className="w-6 h-6 text-accent" />
+                      <div className="space-y-4 py-2 sm:py-4">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-accent/10 rounded-xl flex items-center justify-center mx-auto transition-transform group-hover:translate-y-[-4px]">
+                          <Image className="w-5 h-5 sm:w-6 sm:h-6 text-accent" />
                         </div>
                         <div>
-                          <p className="text-base font-bold text-foreground mb-1">
+                          <p className="text-sm sm:text-base font-bold text-foreground mb-1">
                             ID Back View
                           </p>
-                          <p className="text-xs text-muted-foreground mb-5 px-4">
+                          <p className="text-[10px] sm:text-xs text-muted-foreground mb-4 sm:mb-5 px-4">
                             Drag and drop or take a photo. Max Size 10MB.
                           </p>
                         </div>
-                        <div className="flex flex-row gap-2 px-4">
+                        <div className="flex flex-col sm:flex-row gap-2 px-2 sm:px-4">
                           <Button
                             onClick={(e) => { e.stopPropagation(); handleBrowseClick("back"); }}
-                            className="flex-1 bg-accent text-slate-900 hover:bg-accent/90 border-none text-[11px] font-bold py-2.5 rounded-lg transition-all"
+                            className="flex-1 bg-accent text-slate-900 hover:bg-accent/90 border-none text-[11px] font-bold py-2.5 rounded-lg transition-all w-full"
                           >
                             <Upload className="w-3.5 h-3.5 mr-1" />
                             Browse File
@@ -781,7 +779,7 @@ export default function KYCVerifyPage() {
                           <Button
                             onClick={(e) => { e.stopPropagation(); setShowWebcamBack(true); }}
                             variant="outline"
-                            className="flex-1 border-border hover:bg-accent/5 text-foreground text-[11px] font-bold py-2.5 rounded-lg"
+                            className="flex-1 border-border hover:bg-accent/5 text-foreground text-[11px] font-bold py-2.5 rounded-lg w-full"
                           >
                             <Camera className="w-3.5 h-3.5 mr-1" />
                             Snap Photo
@@ -810,19 +808,19 @@ export default function KYCVerifyPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-center pt-6 border-t border-border">
-              <div className="flex gap-4">
-                <Link to="/">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 border-t border-border">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
+                <Link to="/" className="w-full sm:w-auto">
                   <Button
                     variant="outline"
-                    className="bg-transparent border-border text-foreground hover:bg-muted py-2.5 px-8 h-auto text-sm font-bold rounded-xl"
+                    className="bg-transparent border-border text-foreground hover:bg-muted py-2.5 px-8 h-auto text-sm font-bold rounded-xl w-full"
                   >
                     Cancel
                   </Button>
                 </Link>
                 <Button
                   onClick={handleContinue}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-slate-900 py-2.5 px-10 h-auto text-sm font-extrabold rounded-xl shadow-lg shadow-emerald-500/20 transition-all hover:scale-[1.02]"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-slate-900 py-2.5 px-10 h-auto text-sm font-extrabold rounded-xl shadow-lg shadow-emerald-500/20 transition-all hover:scale-[1.02] w-full sm:w-auto"
                 >
                   Continue to Residence
                 </Button>
@@ -833,7 +831,7 @@ export default function KYCVerifyPage() {
 
         {showWebcamFront && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-background rounded-2xl max-w-lg w-full p-8 space-y-6 shadow-2xl border border-border">
+            <div className="bg-background rounded-2xl max-w-lg w-full p-5 sm:p-8 space-y-6 shadow-2xl border border-border">
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-bold text-foreground">
                   Capture ID Front
@@ -874,7 +872,7 @@ export default function KYCVerifyPage() {
 
         {showWebcamBack && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-background rounded-2xl max-w-lg w-full p-8 space-y-6 shadow-2xl border border-border">
+            <div className="bg-background rounded-2xl max-w-lg w-full p-5 sm:p-8 space-y-6 shadow-2xl border border-border">
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-bold text-foreground">
                    Capture ID Back
@@ -915,7 +913,7 @@ export default function KYCVerifyPage() {
 
         {showWebcamSelfie && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-background rounded-2xl max-w-lg w-full p-8 space-y-6 shadow-2xl border border-border">
+            <div className="bg-background rounded-2xl max-w-lg w-full p-5 sm:p-8 space-y-6 shadow-2xl border border-border">
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-bold text-foreground">
                    Take Selfie
