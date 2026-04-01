@@ -650,7 +650,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
             >
               {depositMutation.isPending
                 ? "Processing..."
-                : "Confirm & Notify Admin"}
+                : "Confirm"}
               <span className="text-sm">→</span>
             </button>
           </div>

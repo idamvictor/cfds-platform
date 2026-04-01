@@ -30,16 +30,18 @@ const DepositPromptModal: React.FC<DepositPromptModalProps> = ({ onDeposit }) =>
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-[400px] !border-none !bg-transparent !shadow-none p-0 overflow-visible transition-none [&>button]:hidden">
+      <DialogContent 
+        className="sm:max-w-[400px] !border-none !bg-transparent !shadow-none p-0 overflow-visible transition-none [&>button]:hidden"
+      >
         <AnimatePresence>
           {isOpen && (
             <motion.div
               initial={{ opacity: 0, scale: 0.8, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.8, y: 20 }}
-              className="mt-12 bg-[#1c1c24] border border-trading-accent/30 rounded-3xl p-8 relative overflow-hidden"
+               className="mt-12 bg-[#1c1c24]/90 border border-white/10 rounded-3xl p-8 relative overflow-hidden"
               style={{
-                boxShadow: "0 0 50px -12px var(--trading-accent)",
+                boxShadow: "0 0 80px -20px var(--trading-accent), inset 0 0 0 1px rgba(255,255,255,0.05)",
               }}
             >
               {/* Decorative elements */}
