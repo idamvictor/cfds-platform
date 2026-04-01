@@ -2,7 +2,6 @@ import type React from "react";
 import {
   BarChart3,
   // Play,
-  // TrendingUp,
   // Star,
   // History,
   LineChart,

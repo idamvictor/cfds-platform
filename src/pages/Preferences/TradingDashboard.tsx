@@ -91,12 +91,7 @@ export default function Dashboard() {
                   <span className="text-white font-medium">{formatCurrency(balance)}</span>
                 </div>
 
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Leverage</span>
-                  <span className="text-green-500 font-medium">
-                    1:{user?.account_type?.leverage || "1"}
-                  </span>
-                </div>
+                
 
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground">{user?.custom_wallet}</span>
@@ -140,7 +135,7 @@ export default function Dashboard() {
               />
 
               <StatCard
-                title="Total PNL"
+                title="Profit and Loss"
                 value={formatCurrency(tradesSummary.total_pnl)}
                 icon={<Coins className="h-10 w-10 text-accent" />}
                 footnote="* using current exchange rate"

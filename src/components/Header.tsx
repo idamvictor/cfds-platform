@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Logo from "./Logo";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
-import { Menu, Wallet, BarChart } from "lucide-react";
+import { Menu, Wallet, ChartCandlestick, Bell } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import DepositFunds from "./deposit-funds/DepositFunds";
 import useUserStore from "@/store/userStore";
@@ -44,11 +44,21 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
       </div>
       <div className="flex items-center gap-3">
         <Button
+          variant="ghost"
+          size="icon"
+          className="relative text-gray-400 hover:text-white"
+          title="Notifications"
+        >
+          <Bell className="h-5 w-5" />
+          <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-card" />
+        </Button>
+
+        <Button
           onClick={() => window.open("/trading", "_blank")}
           className="bg-gray-600 hover:bg-gray-700 text-white flex items-center gap-2 p-2 lg:px-4"
           title="Trade Room"
         >
-          <BarChart className="h-4 w-4" />
+          <ChartCandlestick className="h-6 w-6" />
           <span className="hidden lg:inline">Trade Room</span>
         </Button>
 
