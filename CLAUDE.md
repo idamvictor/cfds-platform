@@ -1,77 +1,83 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Required Skills
 
-## Development Commands
+**MUST invoke these skills before writing or modifying React components:**
 
-- `npm run dev` - Start development server with Vite
-- `npm run build` - Build for production (runs TypeScript compiler first, then Vite build)
-- `npm run lint` - Run ESLint to check code quality
-- `npm run preview` - Preview production build locally
+1. **`vercel-react-best-practices`** — Use when writing, reviewing, or refactoring any React component. Ensures optimal performance patterns (memoization, render efficiency, state management).
+2. **`vercel-composition-patterns`** — Use when building reusable components, refactoring prop-heavy components, or designing component APIs. Ensures scalable composition patterns.
 
-## Architecture Overview
+> If a task involves React components, invoke the relevant skill FIRST before generating code.
 
-This is a React + TypeScript CFD (Contract for Difference) trading platform built with:
+---
 
-- **Frontend Framework**: React 19 with TypeScript
-- **Build Tool**: Vite
-- **State Management**: Zustand with persistence middleware
-- **UI Components**: Radix UI primitives with shadcn/ui components
-- **Styling**: Tailwind CSS v4 with CSS variables
-- **Real-time Data**: WebSocket connections, Pusher, and Laravel Echo
-- **HTTP Client**: Axios with custom instance configuration
-- **Routing**: React Router DOM v7
-- **Charts**: Recharts for data visualization, TradingView widgets for trading charts
-- **Forms**: React Hook Form with Zod validation
+## Commands
 
-## Key Store Architecture
+- `npm run dev` — Start dev server (Vite)
+- `npm run build` — TypeScript check + Vite production build
+- `npm run lint` — ESLint
+- `npm run preview` — Preview production build
 
-The application uses Zustand stores for state management with persistence:
+## Stack
 
-- `assetStore.ts` - Manages trading assets, active pairs, WebSocket updates, leverage calculations
-- `siteSettingsStore.ts` - Site configuration, branding, feature flags (MT4 mode, marketplace, verification requirements)
-- `userStore.ts` - User authentication and profile data
-- `tradeStore.ts` - Trading positions and order management
-- `dataStore.ts` - Market data and asset categories
-- Additional stores: currency, marketplace, savings, sound, watchlist, overlay, online status
+- **React 19** + TypeScript + Vite
+- **Zustand** (state) — stores in `src/store/`
+- **Radix UI** + shadcn/ui (components) — `src/components/ui/`
+- **Tailwind CSS v4** with CSS variables
+- **React Router DOM v7** — routing
+- **React Hook Form** + Zod — form validation
+- **TanStack React Query** — server state
+- **Axios** — HTTP client
+- **WebSocket + Pusher + Laravel Echo** — real-time data
+- **Recharts + TradingView** — charts
+- **Framer Motion** — animations
+- Path alias: `@/` → `src/`
 
-## Component Structure
+## Project Structure
 
-- `components/ui/` - Reusable shadcn/ui components
-- `components/trading/` - Trading interface components and panels
-- `components/mt4/` - MetaTrader 4 interface components
-- `layouts/` - Page layout components (MainLayout, MT4Layout, DepositLayout)
-- `pages/` - Route components organized by feature area
-- `hooks/` - Custom React hooks for WebSocket, mobile detection, currency handling
+```
+src/
+├── components/ui/       # shadcn/ui primitives
+├── components/trading/  # Trading interface
+├── components/mt4/      # MT4 interface
+├── layouts/             # MainLayout, MT4Layout, DepositLayout
+├── pages/               # Route pages by feature
+├── hooks/               # Custom hooks (WebSocket, mobile, currency)
+├── store/               # Zustand stores
+├── services/            # API services
+├── config/              # App configuration
+├── types/               # TypeScript types
+└── lib/                 # Utilities
+```
 
-## Real-time Features
+## Key Stores
 
-The platform implements real-time updates through:
-- WebSocket connections for asset price updates
-- Pusher integration for notifications and chat
-- Laravel Echo for server-sent events
-- Asset price updates are handled via `useAssetWebsocket` hook and `assetStore.updateAssetFromWebsocket`
+- `assetStore` — Assets, active pairs, WebSocket price updates, leverage
+- `siteSettingsStore` — Branding, feature flags, MT4 mode, maintenance
+- `userStore` — Auth and profile
+- `tradeStore` — Positions and orders
+- `dataStore` — Market data and categories
 
-## Trading Platform Features
+## Testing Guidelines
 
-- Multi-asset trading (forex, crypto, stocks, indices, commodities, metals)
-- Real-time price feeds and charts
-- Position management and order history
-- Leverage calculation based on asset category and user account type
-- Market watch functionality with customizable pairs
-- Automated trading and algorithm trader components
+This project currently has no tests. When adding tests:
 
-## Key Configuration Files
+- Use **Vitest** + **React Testing Library** (aligned with Vite)
+- Place test files next to the component: `Component.test.tsx`
+- **Test behavior, not implementation** — test what the user sees and does, not internal state
+- For stores: test actions and derived state, not internal structure
+- For hooks: use `renderHook` from React Testing Library
+- Mock WebSocket/API calls at the service layer, never mock Zustand stores directly
+- Minimum for new features: test the happy path + one error state
+- Run tests with `npm test` (add script: `"test": "vitest"`)
 
-- `components.json` - shadcn/ui configuration with New York style
-- `tsconfig.*.json` - TypeScript configurations for app and Node.js
-- `vite.config.ts` - Vite build configuration
-- Path aliases: `@/` maps to `src/`
+## UI Guidelines
 
-## Development Notes
-
-- The platform supports both regular trading interface and MT4-style interface
-- Site settings control branding, feature availability, and maintenance modes
-- User verification requirements are configurable per site
-- Marketplace feature can be enabled/disabled via site settings
-- Sound effects are integrated throughout the UI with a dedicated sound store
+- **Use existing shadcn/ui components** from `components/ui/` — don't create custom primitives that duplicate them
+- **Mobile-first**: all new UI must be responsive. Use Tailwind breakpoints (`sm:`, `md:`, `lg:`)
+- **Dark mode**: respect the theme system (`next-themes`). Use CSS variables and Tailwind's dark mode utilities — never hardcode colors
+- **Consistency**: use `cn()` from `lib/utils` for conditional classes. Use `cva` for variant-based styling
+- **Animations**: use Framer Motion for transitions. Keep animations subtle (200-300ms)
+- **Loading states**: always handle loading/error/empty states in data-driven components
+- **Accessibility**: use Radix UI primitives for interactive elements (dialogs, dropdowns, tooltips). Ensure keyboard navigation and ARIA labels
+- **Icons**: use Lucide React (`lucide-react`) — don't mix icon libraries
