@@ -1,4 +1,4 @@
-import DepositHistory from "@/components/deposit-history";
+import TransactionHistory from "@/components/transaction-history";
 import DepositPage from "@/pages/DepositPage.tsx";
 import { useState } from "react";
 
@@ -12,7 +12,7 @@ const DepositLayout = () => {
   return (
     <div className="px-6">
       <DepositPage onDepositSuccess={handleDepositSuccess} />
-      <DepositHistory key={refreshTrigger} />
+      <TransactionHistory key={refreshTrigger} />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import DepositHistory from "@/components/deposit-history";
+import TransactionHistory from "@/components/transaction-history";
 
 const CryptoDeposit = () => {
   return (
@@ -24,7 +24,7 @@ const CryptoDeposit = () => {
         </div>
       </div>
 
-      <DepositHistory />
+      <TransactionHistory />
     </div>
   );
 };

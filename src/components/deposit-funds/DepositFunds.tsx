@@ -65,7 +65,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
             className="text-accent cursor-pointer"
             onClick={() => {
               if (onClose) onClose();
-              navigate("/main/deposit-history");
+              navigate("/main/transaction-history");
             }}
           >
             Transaction History

@@ -1,4 +1,4 @@
-import TransactionHistory from "@/components/deposit-history";
+import TransactionHistory from "@/components/transaction-history";
 import useUserStore from "@/store/userStore";
 
 export default function Test() {
