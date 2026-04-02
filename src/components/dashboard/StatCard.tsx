@@ -25,7 +25,7 @@ export function StatCard({
                 </div>
                 <div className="flex-1">
                     <h3 className="text-sm font-medium text-muted-foreground">{title}</h3>
-                    <div className={cn("text-xl font-bold mt-0.5", valueClassName)}>
+                    <div className={cn("text-lg font-bold mt-0.5", valueClassName)}>
                         {value}
                     </div>
                     {footnote && (

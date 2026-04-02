@@ -53,13 +53,13 @@ export default function ForgotPasswordPage() {
     try {
       const response = await axiosInstance.post(
         "/auth/forgot-password",
-        values
+        values,
       );
       console.log("Forgot password response:", response.data);
 
       toast.success(
         response.data.message ||
-          "Password reset instructions sent to your email"
+          "Password reset instructions sent to your email",
       );
       navigate("/");
     } catch (error) {
@@ -68,7 +68,7 @@ export default function ForgotPasswordPage() {
       if (error instanceof AxiosError) {
         toast.error(
           error.response?.data?.message ||
-            "Failed to process password reset request"
+            "Failed to process password reset request",
         );
       } else {
         toast.error("An unexpected error occurred. Please try again.");
@@ -79,106 +79,168 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <div className="w-full bg-[#0C1E32] text-white/80 py-4 px-4 text-center text-sm">
+    <div className="min-h-screen bg-[#181A20] text-white flex flex-col">
+      <div className="w-full border-b border-white/10 bg-[#1E2329] px-4 py-3 text-center text-sm text-white/70">
         Trading CFDs carries a high level of risk to your capital, and you
         should only trade with money you can afford to lose.
       </div>
 
-      {/* Navigation */}
-      <div className="w-full border-t-gray-400 border-t bg-[#0C1E32] px-4 md:px-8 py-3 md:py-3 flex justify-between items-center">
-        <Logo />
-        <Link to="/" className="text-white hover:text-white/80">
-          <X className="h-5 w-5" />
-        </Link>
+      <div className="w-full px-4 py-5 md:px-8 md:py-6">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between">
+          <div className="hidden md:block">
+            <Logo />
+          </div>
+          <Link
+            to="/"
+            className="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-white/70 transition hover:bg-white/5 hover:text-white"
+          >
+            <X className="h-5 w-5" />
+          </Link>
+        </div>
       </div>
 
-      {/* Main content */}
-      <div className="flex-1 bg-white flex flex-col items-center  px-4 md:px-4 py-8">
-        <div className="w-full max-w-xl bg-white rounded-3xl p-8">
-          <div className="flex mb-6">
-            <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center  justify-center">
-              {/* Lock icon */}
-              <svg
-                width="40"
-                height="40"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-gray-400"
-              >
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
+      <div className="flex-1 px-4 pb-8 md:px-8 md:pb-12">
+        <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-10 md:grid-cols-2">
+          <div className="order-2 w-full max-w-md mx-auto md:order-1 md:flex-1">
+            <div className="mb-6 flex items-center justify-center gap-3 md:mb-8">
+              <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-[#F0B90B] text-[#181A20] shadow-[0_0_24px_rgba(240,185,11,0.35)]">
+                <Logo />
+              </div>
+              <div className="text-sm text-white/65">
+                <span className="font-semibold text-white">Trade Nation</span>
+              </div>
+            </div>
+
+            <h1 className="max-w-md text-center text-2xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-3xl md:text-4xl">
+              Lost your <span className="text-[#F0B90B]">password?</span>
+            </h1>
+
+            <p className="mt-4 max-w-md text-center text-base leading-7 text-white/65 md:text-lg">
+              No stress, it happens to the best of us! Just drop in the email
+              you signed up with, and we'll shoot you a reset link to get you
+              back in action.
+            </p>
+
+            <div className="flex justify-center">
+              <div className="relative mx-auto my-10 flex h-[240px] w-[240px] items-center justify-center md:mx-0 md:my-14 md:h-[280px] md:w-[280px]">
+                <div className="absolute inset-x-10 bottom-8 h-24 rounded-sm border-2 border-[#F0B90B]/90 bg-transparent" />
+                <div className="absolute bottom-20 left-1/2 h-24 w-24 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,_rgba(240,185,11,0.95)_0%,_rgba(240,185,11,0.72)_45%,_rgba(240,185,11,0.05)_72%,_transparent_100%)] blur-[1px]" />
+                <div className="absolute bottom-[6.15rem] left-1/2 z-10 flex h-20 w-20 -translate-x-1/2 items-center justify-center rounded-full bg-[#F0B90B] shadow-[0_0_36px_rgba(240,185,11,0.35)]">
+                  <svg
+                    width="42"
+                    height="42"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#181A20"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                </div>
+                <div className="absolute left-[3.65rem] top-[3.5rem] h-14 w-14 rotate-[-30deg] rounded-full border-2 border-[#F0B90B]" />
+                <div className="absolute right-[3.65rem] top-[4.75rem] h-5 w-5 rounded-full border-2 border-[#F0B90B] border-l-transparent border-b-transparent rotate-[32deg]" />
+                <div className="absolute right-[2.9rem] top-[7.55rem] h-5 w-5 rounded-full border-2 border-[#F0B90B] border-l-transparent border-b-transparent rotate-[32deg]" />
+                <div className="absolute top-[4.7rem] h-12 w-[110px] rotate-[-32deg] border-2 border-[#F0B90B] bg-transparent" />
+                <div className="absolute top-[4.25rem] h-14 w-8 rotate-[-32deg] bg-[linear-gradient(180deg,rgba(240,185,11,0.95),rgba(168,112,0,0.92))] shadow-[0_0_18px_rgba(240,185,11,0.4)]" />
+              </div>
+            </div>
+
+          </div>
+
+          <div className="order-1 w-full max-w-[400px] mx-auto md:order-2 md:max-w-[400px] md:flex-shrink-0">
+            <div className="rounded-[28px] border border-white/10 bg-[#181A20] px-6 py-7 shadow-[0_24px_80px_rgba(0,0,0,0.38)] sm:px-8 sm:py-9">
+              <div className="mb-4">
+                <div className="mb-3 inline-flex items-center gap-2 text-[#F0B90B]">
+                  <div className="grid grid-cols-2 gap-1">
+                    <span className="h-2 w-2 rotate-45 bg-current" />
+                    <span className="h-2 w-2 rotate-45 bg-current opacity-80" />
+                    <span className="h-2 w-2 rotate-45 bg-current opacity-80" />
+                    <span className="h-2 w-2 rotate-45 bg-current" />
+                  </div>
+                  <span className="text-sm font-semibold tracking-[0.12em]">
+                    TRADE NATION
+                  </span>
+                </div>
+                <h2 className="text-xl font-semibold tracking-[-0.03em] text-white md:text-2xl">
+                  Reset password
+                </h2>
+              </div>
+
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-3"
+                >
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            placeholder="name@example.com"
+                            {...field}
+                            className="h-8 rounded-lg border-white/15 bg-[#1E2329] px-4 text-white placeholder:text-white/35 focus-visible:ring-1 focus-visible:ring-[#F0B90B] focus-visible:ring-offset-0"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="flex items-center justify-between gap-3 pt-2">
+                    <Button
+                      type="button"
+                      onClick={() => navigate("/")}
+                      className="h-9 min-w-[96px] rounded-xl border border-white/10 bg-transparent px-4 text-white/70 transition hover:bg-white/[0.03] hover:text-white"
+                    >
+                      Back
+                    </Button>
+
+                    <Button
+                      type="submit"
+                      disabled={isLoading}
+                      className="h-9 min-w-[128px] rounded-xl bg-[#F0B90B] px-4 font-semibold text-[#181A20] transition hover:bg-[#f5c842] flex items-center justify-center"
+                    >
+                      {isLoading ? (
+                        <div className="flex items-center gap-2">
+                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                          Sending...
+                        </div>
+                      ) : (
+                        "Continue"
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+
+              <div className="my-7 flex items-center gap-4">
+                <div className="h-px flex-1 bg-white/10" />
+                <span className="text-sm font-medium text-white/45">info</span>
+                <div className="h-px flex-1 bg-white/10" />
+              </div>
+
+              <div className="space-y-2.5">
+                <div className="rounded-lg border border-white/10 bg-[#1E2329] px-4 py-3 text-sm leading-6 text-white/65">
+                  If you registered through SSO (Google, Apple, or LinkedIn),
+                  we are unable to modify your password. Please utilise the
+                  reset password feature on your chosen platform.
+                </div>
+              </div>
             </div>
           </div>
+        </div>
 
-          <h1 className="text-2xl font-bold text-gray-900 mb-4 text-center flex">
-            Lost your password?
-          </h1>
-          <p className="text-gray-600 mb-8  flex">
-            No stress, it happens to the best of us! Just drop in the email you
-            signed up with, and we'll shoot you a reset link to get you back in
-            action.
-          </p>
-
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="name@example.com"
-                        {...field}
-                        className="w-full bg-white border-gray-200 rounded-lg py-6 px-4"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="space-y-4 flex justify-between">
-                <Button
-                  type="button"
-                  onClick={() => navigate("/")}
-                  className="w-[20%] bg-slate-300 hover:bg-slate-300/50 text-background/70 rounded-full py-6 text-md font-semibold"
-                >
-                  Back
-                </Button>
-
-                <Button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-[30%] border-none bg-muted hover:bg-muted/90 text-white rounded-full py-6 text-md font-semibold"
-                >
-                  {isLoading ? (
-                    <div className="flex items-center gap-2">
-                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                      Sending...
-                    </div>
-                  ) : (
-                    "Continue"
-                  )}
-                </Button>
-              </div>
-            </form>
-          </Form>
-
-          <div className="mt-6 text-sm text-gray-600 bg-primary/10 p-4 rounded-lg">
-            <p>
-              If you registered through SSO (Google, Apple, or LinkedIn), we are
-              unable to modify your password. Please utilise the reset password
-              feature on your chosen platform.
-            </p>
-          </div>
+        <div className="mx-auto mt-8 hidden w-full max-w-6xl items-center justify-center gap-7 text-sm text-white/40 md:flex">
+          <span>English</span>
+          <span>Cookies</span>
+          <span>Terms</span>
+          <span>Privacy</span>
         </div>
       </div>
     </div>

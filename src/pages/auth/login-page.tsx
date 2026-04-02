@@ -33,8 +33,10 @@ export default function LoginPage() {
   }
 
   if (loginType === "ic") {
-    return <ICMarketLoginLight />;
+    // return <ICMarketLoginLight />;
+    return <LoginTradeNation />;
   }
 
-  return <ICMarketLogin />;
+  // return <ICMarketLogin />;
+  return <LoginTradeNation />;
 }
