@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Logo from "./Logo";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
-import { Bell, Wallet, ChartCandlestick, Menu } from "lucide-react";
+import { Wallet, ChartCandlestick, Menu } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import DepositFunds from "./deposit-funds/DepositFunds";
 import useUserStore from "@/store/userStore";
