@@ -352,7 +352,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
               <div className="space-y-1 focus-within:z-50">
                 <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5">Select Asset</label>
                 <Select value={selectedAssetId} onValueChange={(val) => setSelectedAssetId(val)}>
-                  <SelectTrigger className="w-full bg-neutral-50 border border-border rounded-lg px-3 py-2 text-xs md:text-sm font-semibold text-black focus:ring-1 focus:ring-accent transition-all cursor-pointer h-10 md:h-9">
+                  <SelectTrigger className="w-full bg-neutral-50 border border-border rounded-lg px-3 py-2 text-xs md:text-sm font-semibold text-white focus:ring-1 focus:ring-accent transition-all cursor-pointer h-10 md:h-9">
                     <div className="flex items-center gap-2">
                       <SelectValue placeholder="Select Asset" />
                     </div>
@@ -374,7 +374,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
               <div className="space-y-1 focus-within:z-50">
                 <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5">Network</label>
                 <Select value={selectedNetwork} onValueChange={(val) => setSelectedNetwork(val)}>
-                  <SelectTrigger className="w-full bg-neutral-50 border border-border rounded-lg px-3 py-2 text-xs md:text-sm font-semibold text-black focus:ring-1 focus:ring-accent transition-all cursor-pointer h-10 md:h-9">
+                  <SelectTrigger className="w-full bg-neutral-50 border border-border rounded-lg px-3 py-2 text-xs md:text-sm font-semibold text-white focus:ring-1 focus:ring-accent transition-all cursor-pointer h-10 md:h-9">
                     <div className="flex items-center gap-2 max-w-full">
                       <SelectValue placeholder="Select Network" />
                     </div>
