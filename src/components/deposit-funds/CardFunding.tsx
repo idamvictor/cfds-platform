@@ -228,12 +228,12 @@ const CardFunding: React.FC<CardFundingProps> = ({
                   type="text"
                   {...register("amount")}
                   placeholder="0.00"
-                   className={`w-full bg-muted border-2 rounded-xl pl-9 pr-4 py-3.5 md:py-4 text-xl md:text-2xl font-black text-left focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all tracking-tight shadow-sm placeholder:opacity-30 ${
+                   className={`w-full bg-neutral-50 border-2 rounded-xl pl-9 pr-4 py-3.5 md:py-4 text-xl md:text-2xl font-black text-left text-black focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all tracking-tight shadow-sm placeholder:text-black/20 ${
                     errors.amount ? "border-red-500" : "border-border"
                   }`}
                 />
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                  <span className="text-xl font-black opacity-30">$</span>
+                  <span className="text-xl text-white opacity-40">$</span>
                 </div>
               </div>
               {errors.amount && (
@@ -313,7 +313,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
                   {...register("nameOnCard")}
                    className={`w-full px-4 py-3 md:py-2.5 rounded-xl border-2 ${
                     errors.nameOnCard ? "border-red-500" : "border-border"
-                  } bg-muted text-foreground focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all shadow-sm placeholder:opacity-50`}
+                  } bg-neutral-50 text-black focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all shadow-sm placeholder:text-black/20`}
                 />
                 {errors.nameOnCard && (
                   <p className="text-red-500 text-[10px] md:text-xs font-medium mt-1">
@@ -330,7 +330,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
                   {...register("cardNumber")}
                    className={`w-full px-4 py-3 md:py-2.5 rounded-xl border-2 ${
                     errors.cardNumber ? "border-red-500" : "border-border"
-                  } bg-muted text-foreground focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all shadow-sm placeholder:opacity-50`}
+                  } bg-neutral-50 text-black focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all shadow-sm placeholder:text-black/20`}
                 />
                 {errors.cardNumber && (
                   <p className="text-red-500 text-[10px] md:text-xs font-medium mt-1">
@@ -350,7 +350,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
                     onChange={handleExpiryDateChange}
                      className={`w-full px-4 py-3 md:py-2.5 rounded-xl border-2 ${
                       errors.expiryDate ? "border-red-500" : "border-border"
-                    } bg-muted text-foreground focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all shadow-sm placeholder:opacity-50`}
+                    } bg-neutral-50 text-black focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all shadow-sm placeholder:text-black/20`}
                     inputMode="numeric"
                   />
                   {errors.expiryDate && (
@@ -367,7 +367,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
                     {...register("cvv")}
                      className={`w-full px-4 py-3 md:py-2.5 rounded-xl border-2 ${
                       errors.cvv ? "border-red-500" : "border-border"
-                    } bg-muted text-foreground focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all shadow-sm placeholder:opacity-50`}
+                    } bg-neutral-50 text-black focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all shadow-sm placeholder:text-black/20`}
                   />
                   {errors.cvv && (
                     <p className="text-red-500 text-[10px] md:text-xs font-medium mt-1">

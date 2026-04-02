@@ -78,10 +78,10 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
           {cardEnabled && (
             <div
               onClick={() => setSelectedMethod("card")}
-              className={`rounded-lg md:rounded-2xl border-2 p-4 md:p-6 transition-all cursor-pointer ${
+              className={`rounded-lg md:rounded-2xl border-2 p-4 md:p-6 transition-all duration-300 cursor-pointer group ${
                 selectedMethod === "card"
-                  ? "border-accent border-dashed bg-accent/10 shadow-md scale-[1.02]"
-                  : "border-accent/20 hover:border-accent/50 hover:bg-accent/5 hover:shadow-sm"
+                  ? "border-accent border-dashed bg-accent/10 shadow-xl scale-[1.03] z-10"
+                  : "border-accent/30 bg-card/40 hover:border-accent/50 hover:bg-accent/5 hover:shadow-lg hover:-translate-y-1"
               }`}
             >
               <div className="flex items-start justify-between mb-4">
@@ -128,10 +128,10 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
           {cryptoEnabled && (
             <div
               onClick={() => setSelectedMethod("crypto")}
-              className={`rounded-lg md:rounded-2xl border-2 p-4 md:p-6 transition-all cursor-pointer ${
+              className={`rounded-lg md:rounded-2xl border-2 p-4 md:p-6 transition-all duration-300 cursor-pointer group ${
                 selectedMethod === "crypto"
-                  ? "border-accent border-dashed bg-accent/10 shadow-md scale-[1.02]"
-                  : "border-accent/20 hover:border-accent/50 hover:bg-accent/5 hover:shadow-sm"
+                  ? "border-accent border-dashed bg-accent/10 shadow-xl scale-[1.03] z-10"
+                  : "border-accent/30 bg-card/40 hover:border-accent/50 hover:bg-accent/5 hover:shadow-lg hover:-translate-y-1"
               }`}
             >
               <div className="flex items-start justify-between mb-4">

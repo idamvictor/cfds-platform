@@ -352,7 +352,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
               <div className="space-y-1 focus-within:z-50">
                 <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5">Select Asset</label>
                 <Select value={selectedAssetId} onValueChange={(val) => setSelectedAssetId(val)}>
-                  <SelectTrigger className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-xs md:text-sm font-semibold focus:ring-1 focus:ring-accent transition-all cursor-pointer h-10 md:h-9">
+                  <SelectTrigger className="w-full bg-neutral-50 border border-border rounded-lg px-3 py-2 text-xs md:text-sm font-semibold text-black focus:ring-1 focus:ring-accent transition-all cursor-pointer h-10 md:h-9">
                     <div className="flex items-center gap-2">
                       <SelectValue placeholder="Select Asset" />
                     </div>
@@ -374,7 +374,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
               <div className="space-y-1 focus-within:z-50">
                 <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5">Network</label>
                 <Select value={selectedNetwork} onValueChange={(val) => setSelectedNetwork(val)}>
-                  <SelectTrigger className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-xs md:text-sm font-semibold focus:ring-1 focus:ring-accent transition-all cursor-pointer h-10 md:h-9">
+                  <SelectTrigger className="w-full bg-neutral-50 border border-border rounded-lg px-3 py-2 text-xs md:text-sm font-semibold text-black focus:ring-1 focus:ring-accent transition-all cursor-pointer h-10 md:h-9">
                     <div className="flex items-center gap-2 max-w-full">
                       <SelectValue placeholder="Select Network" />
                     </div>
@@ -415,7 +415,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
                     type="number"
                     value={depositAmount}
                     onChange={(e) => setDepositAmount(e.target.value)}
-                    className="w-full bg-muted border-2 border-border rounded-xl pl-4 pr-16 py-3 md:py-4 text-xl md:text-2xl font-black text-left focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all tracking-tight h-14 md:h-16 shadow-sm"
+                    className="w-full bg-neutral-50 border-2 border-border rounded-xl pl-4 pr-16 py-3 md:py-4 text-xl md:text-2xl font-black text-left text-black focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all tracking-tight h-14 md:h-16 shadow-sm placeholder:text-black/20"
                     placeholder="0.00"
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
