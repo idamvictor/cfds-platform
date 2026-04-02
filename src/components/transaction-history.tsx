@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { Info } from "lucide-react";
+import { Info, History, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -224,10 +224,28 @@ const TransactionHistory: React.FC = () => {
         </div>
       ) : (
         <Tabs defaultValue="all" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6 bg-card border border-border/40 p-1">
-            <TabsTrigger value="all" className="data-[state=active]:bg-primary data-[state=active]:text-white">All</TabsTrigger>
-            <TabsTrigger value="deposit" className="data-[state=active]:bg-primary data-[state=active]:text-white">Deposits</TabsTrigger>
-            <TabsTrigger value="withdrawal" className="data-[state=active]:bg-primary data-[state=active]:text-white">Withdrawals</TabsTrigger>
+          <TabsList className="flex w-full md:w-auto bg-card/40 border border-border/40 h-auto p-1 mb-8 rounded-xl gap-1 overflow-hidden shadow-inner">
+            <TabsTrigger
+              value="all"
+              className="flex-1 md:px-8 py-2.5 rounded-lg font-medium text-muted-foreground bg-transparent data-[state=active]:!bg-black/40 data-[state=active]:text-primary data-[state=active]:border data-[state=active]:border-border/30 transition-all flex items-center justify-center gap-2 group border-transparent shadow-none"
+            >
+              <History className="h-4 w-4 text-muted-foreground group-data-[state=active]:text-primary" />
+              <span className="text-sm">All <span className="hidden sm:inline">History</span></span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="deposit"
+              className="flex-1 md:px-8 py-2.5 rounded-lg font-medium text-muted-foreground bg-transparent data-[state=active]:!bg-black/40 data-[state=active]:text-foreground data-[state=active]:border data-[state=active]:border-border/30 transition-all flex items-center justify-center gap-2 group border-transparent shadow-none"
+            >
+              <ArrowDownCircle className="h-4 w-4 text-muted-foreground group-data-[state=active]:text-green-500" />
+              <span className="text-sm">Deposits</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="withdrawal"
+              className="flex-1 md:px-8 py-2.5 rounded-lg font-medium text-muted-foreground bg-transparent data-[state=active]:!bg-black/40 data-[state=active]:text-foreground data-[state=active]:border data-[state=active]:border-border/30 transition-all flex items-center justify-center gap-2 group border-transparent shadow-none"
+            >
+              <ArrowUpCircle className="h-4 w-4 text-muted-foreground group-data-[state=active]:text-red-500" />
+              <span className="text-sm">Withdrawals</span>
+            </TabsTrigger>
           </TabsList>
           
           <TabsContent value="all" className="mt-0 focus-visible:ring-0">

@@ -118,12 +118,119 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
                     </div>
                 ) : (
                     <>
-                        <div className="p-1 px-4 overflow-x-auto">
+                        {/* Mobile View - Cards */}
+                        <div className="flex flex-col gap-4 p-4 md:hidden">
+                            {visiblePlans.map((plan) => {
+                                const isRecommended = plan.title === "Pro";
+                                const isCurrentPlan =
+                                    user?.account_type?.id === plan.id ||
+                                    plan.title === currentPlanTitle;
+                                const priceLabel = formatPlanPrice(plan.price);
+                                const isSubscribing = subscribingPlanId === plan.id;
+
+                                return (
+                                    <div
+                                        key={`mobile-${plan.id}`}
+                                        className={cn(
+                                            "rounded-xl border border-border overflow-hidden relative bg-card transition-all",
+                                            isCurrentPlan 
+                                                ? "ring-2 ring-primary border-primary/50 shadow-md" 
+                                                : "shadow-sm hover:border-primary/30"
+                                        )}
+                                    >
+                                        {isRecommended && (
+                                            <div className="absolute top-0 right-0 bg-green-500 text-white text-[10px] px-3 py-1 rounded-bl-lg font-bold uppercase tracking-wider z-10">
+                                                Recommended
+                                            </div>
+                                        )}
+                                        
+                                        {/* Plan Header */}
+                                        <div 
+                                            className="p-4 py-3 text-white" 
+                                            style={{ backgroundColor: plan.color || "gray" }}
+                                        >
+                                            <div className="flex items-center gap-2 mb-0.5">
+                                                {plan.icon && (
+                                                    <img src={plan.icon} alt="" className="w-5 h-5 object-contain" />
+                                                )}
+                                                <h3 className="font-bold text-lg">{plan.title}</h3>
+                                            </div>
+                                            {priceLabel && (
+                                                <div className="text-xl font-bold">
+                                                    {priceLabel}
+                                                    <span className="text-[10px] font-normal text-white/80 ml-1 uppercase tracking-tight">
+                                                        Access
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Features List */}
+                                        <div className="p-4 pt-2 space-y-3">
+                                            <div className="h-px bg-border/50 mb-3" />
+                                            {planFeatures.map((feature, featureIndex) => {
+                                                const value = featureIndex < plan.features.length 
+                                                    ? plan.features[featureIndex] 
+                                                    : '';
+                                                
+                                                let displayValue;
+                                                // Handle min_deposit (first row)
+                                                if (featureIndex === 0 && !isNaN(Number(value.replace(/[€$,]/g, '')))) {
+                                                    displayValue = formatCurrency(Number(value.replace(/[€$,]/g, '')));
+                                                }
+                                                // Handle checkmark entries
+                                                else if (value === "Enabled" || value === "Yes") {
+                                                    displayValue = <Check className="h-4 w-4 text-green-500" />;
+                                                }
+                                                // Default case
+                                                else {
+                                                    displayValue = <span className="text-foreground font-medium">{value}</span>;
+                                                }
+
+                                                return (
+                                                    <div key={`mobile-${plan.id}-${feature}`} className="flex justify-between items-center text-xs">
+                                                        <span className="text-muted-foreground">{feature}</span>
+                                                        <div className="text-right">{displayValue}</div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+
+                                        {/* Footer Action */}
+                                        <div className="p-4 pt-0">
+                                            {isCurrentPlan ? (
+                                                <Button variant="secondary" className="w-full h-9 text-xs" disabled>
+                                                    Current Plan
+                                                </Button>
+                                            ) : (
+                                                <Button 
+                                                    className="w-full h-9 text-xs"
+                                                    onClick={() => openSubscribeConfirm(plan.id, plan.title, priceLabel)}
+                                                    disabled={!!subscribingPlanId}
+                                                >
+                                                    {isSubscribing ? (
+                                                        <>
+                                                            <Loader2 className="h-3 w-3 mr-2 animate-spin" />
+                                                            Subscribing...
+                                                        </>
+                                                    ) : (
+                                                        "Upgrade Plan"
+                                                    )}
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Desktop View - Table */}
+                        <div className="hidden md:block p-1 px-4 pt-4 pb-4 overflow-x-auto">
                             <div className="min-w-[800px]">
-                                <div className="grid grid-cols-5 gap-px bg-muted/30 rounded-lg overflow-hidden shadow-sm">
+                                <div className="grid grid-cols-5 gap-px bg-muted/30 rounded-lg shadow-sm">
                                     {/* Headers */}
-                                    <div className="col-span-1 bg-background p-4 font-medium"></div>
-                                    {visiblePlans.map((plan) => {
+                                    <div className="col-span-1 bg-background p-4 font-medium rounded-tl-lg"></div>
+                                    {visiblePlans.map((plan, planIndex) => {
                                         const isRecommended = plan.title === "Pro";
                                         const priceLabel = formatPlanPrice(plan.price);
 
@@ -137,7 +244,8 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
                                                 key={`header-${plan.id}`}
                                                 className={cn(
                                                     "col-span-1 text-center py-1.5 px-1 text-white font-semibold relative cursor-pointer",
-                                                    user?.account_type?.id === plan.id ? "ring-2 ring-primary" : ""
+                                                    user?.account_type?.id === plan.id ? "ring-2 ring-primary" : "",
+                                                    planIndex === visiblePlans.length - 1 ? "rounded-tr-lg" : ""
                                                 )}
                                                 style={headerStyle}
                                             >
@@ -157,13 +265,8 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
                                                     </div>
                                                 )}
                                                 {isRecommended && (
-                                                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-xs py-0.5 px-2 rounded-full">
-                                                        Recommended
-                                                    </div>
-                                                )}
-                                                {plan.title === currentPlanTitle && (
-                                                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-primary text-white text-xs py-0.5 px-2 rounded-full">
-                                                        Current
+                                                    <div className="absolute -top-3.5 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-[10px] font-bold py-0.5 px-2 rounded-full shadow-md z-20 whitespace-nowrap">
+                                                        RECOMMENDED
                                                     </div>
                                                 )}
                                             </div>
@@ -219,10 +322,10 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
                                     ))}
 
                                     {/* Subscribe Action Row */}
-                                    <div className="col-span-1 py-1.5 px-2 font-medium bg-background text-[10px] uppercase tracking-wider">
+                                    <div className="col-span-1 py-1.5 px-2 font-medium bg-background text-[10px] uppercase tracking-wider rounded-bl-lg">
                                         Action
                                     </div>
-                                    {visiblePlans.map((plan) => {
+                                    {visiblePlans.map((plan, planIndex) => {
                                         const isCurrentPlan =
                                             user?.account_type?.id === plan.id ||
                                             plan.title === currentPlanTitle;
@@ -235,9 +338,16 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
                                                 key={`subscribe-${plan.id}`}
                                                 className={cn(
                                                     "col-span-1 py-1 px-2 bg-background",
-                                                    isCurrentPlan ? "bg-primary/5" : ""
+                                                    isCurrentPlan ? "bg-primary/5" : "",
+                                                    planIndex === visiblePlans.length - 1 ? "rounded-br-lg" : "",
+                                                    "relative"
                                                 )}
                                             >
+                                                {plan.title === currentPlanTitle && (
+                                                    <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-primary text-white text-[10px] font-bold py-0.5 px-2 rounded-full shadow-md z-20 whitespace-nowrap">
+                                                        CURRENT PLAN
+                                                    </div>
+                                                )}
                                                 {isCurrentPlan ? (
                                                     <Button
                                                         variant="outline"
@@ -274,6 +384,7 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
                                 </div>
                             </div>
                         </div>
+
                     </>
                 )}
             </DialogContent>
