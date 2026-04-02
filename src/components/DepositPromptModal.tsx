@@ -65,7 +65,7 @@ const DepositPromptModal: React.FC<DepositPromptModalProps> = ({ onDeposit }) =>
                   <img 
                     src="/assets/deposit-prompt.png" 
                     alt="Deposit illustration" 
-                    className="w-40 h-40 object-contain drop-shadow-2xl"
+                    className="w-50 h-50 object-contain drop-shadow-2xl"
                   />
                   <motion.div
                     animate={{ y: [0, -5, 0] }}

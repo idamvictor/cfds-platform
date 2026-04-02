@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useMutedTextClass } from "@/hooks/useMutedTextClass";
 import CardFunding from "./CardFunding";
 import CryptoFunding from "./CryptoFunding";
@@ -21,7 +20,6 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
   // stepsCount varies based on the domain to cater to different checkout flows
   const stepsCount = (url.includes("fincapitalmarkets.org") || url.includes("equitymarketspro.com")) ? 4 : 3;
   const mutedClass = useMutedTextClass();
-  const navigate = useNavigate();
   const { user } = useUserStore();
   const isVerified = user?.verification_status === "approved" || user?.verification_status === "verified";
   const { deposit_config } = useDataStore();
@@ -59,17 +57,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
       <div className="space-y-4">
         <p className={`text-xs md:text-sm ${mutedClass} leading-relaxed`}>
           Add funds to your account to start trading instantly. You can deposit
-          using Fiat or crypto payment methods below. For a record of your
-          previous deposits, view your{" "}
-          <span
-            className="text-accent cursor-pointer"
-            onClick={() => {
-              if (onClose) onClose();
-              navigate("/main/transaction-history");
-            }}
-          >
-            Transaction History
-          </span>.
+          using Fiat or crypto payment methods below
         </p>
 
         <p className={`text-xs md:text-sm ${mutedClass} leading-relaxed`}>
@@ -93,8 +81,8 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
               onClick={() => setSelectedMethod("card")}
               className={`rounded-lg md:rounded-2xl border-2 p-4 md:p-6 transition-all cursor-pointer ${
                 selectedMethod === "card"
-                  ? "border-accent bg-accent/5 shadow-md"
-                  : "border-border hover:border-border/80 hover:shadow-sm"
+                  ? "border-accent border-dashed bg-accent/10 shadow-md scale-[1.02]"
+                  : "border-accent/20 hover:border-accent/50 hover:bg-accent/5 hover:shadow-sm"
               }`}
             >
               <div className="flex items-start justify-between mb-4">
@@ -139,8 +127,8 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
               onClick={() => setSelectedMethod("crypto")}
               className={`rounded-lg md:rounded-2xl border-2 p-4 md:p-6 transition-all cursor-pointer ${
                 selectedMethod === "crypto"
-                  ? "border-accent bg-accent/5 shadow-md"
-                  : "border-border hover:border-border/80 hover:shadow-sm"
+                  ? "border-accent border-dashed bg-accent/10 shadow-md scale-[1.02]"
+                  : "border-accent/20 hover:border-accent/50 hover:bg-accent/5 hover:shadow-sm"
               }`}
             >
               <div className="flex items-start justify-between mb-4">

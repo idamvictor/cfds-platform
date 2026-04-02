@@ -415,7 +415,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
                     type="number"
                     value={depositAmount}
                     onChange={(e) => setDepositAmount(e.target.value)}
-                    className="w-full bg-muted/10 border-2 border-border/50 rounded-xl px-4 py-3 md:py-4 text-xl md:text-2xl font-black text-center focus:outline-none focus:border-accent transition-all tracking-tight h-14 md:h-16"
+                    className="w-full bg-muted border-2 border-border rounded-xl pl-4 pr-16 py-3 md:py-4 text-xl md:text-2xl font-black text-left focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all tracking-tight h-14 md:h-16 shadow-sm"
                     placeholder="0.00"
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
