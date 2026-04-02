@@ -174,7 +174,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
                   Credit/Debit Card
                 </h4>
                 <div className="mb-2 mt-2 flex items-center gap-1 text-xs text-[#8bc5ff] md:text-sm">
-                  <span>+</span>
+                  <span>⚡u</span>
                   <span>
                     {deposit_config?.credit_card?.estimated_time || "Instant"}
                   </span>
@@ -218,7 +218,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
                   Cryptocurrency
                 </h4>
                 <div className="mb-2 mt-2 flex items-center gap-1 text-xs text-[#8bc5ff] md:text-sm">
-                  <span>+</span>
+                  <span>⚡</span>
                   <span>
                     {deposit_config?.crypto?.estimated_time || "Instant"}
                   </span>
