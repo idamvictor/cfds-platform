@@ -161,7 +161,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
                 Cryptocurrency
               </h4>
               <div className="flex items-center gap-1 text-accent text-xs md:text-sm mb-2">
-                <span>⚡</span>
+                <span>🕑</span>
                 <span>{deposit_config?.crypto?.estimated_time || "Instant"}</span>
               </div>
               <p className={`text-xs md:text-sm ${mutedClass}`}>

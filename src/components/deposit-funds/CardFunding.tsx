@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useMutedTextClass } from "@/hooks/useMutedTextClass";
 import { useStepNumberColor } from "@/hooks/useStepNumberColor";
 import { useDepositMutation } from "@/services/deposit/deposit-queries";
+import useSiteSettingsStore from "@/store/siteSettingStore";
 
 // Validation Schema
 const cardFundingSchema = z.object({
@@ -49,6 +50,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const mutedClass = useMutedTextClass();
   const stepNumberColor = useStepNumberColor();
+  const { settings } = useSiteSettingsStore();
   const { mutate, isPending, error } = useDepositMutation();
 
   const {
@@ -283,7 +285,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
           <p
             className={`text-[10px] md:text-xs ${mutedClass} leading-tight bg-blue-50 dark:bg-blue-950/20 p-2.5 md:p-3 rounded-lg border border-blue-200 dark:border-blue-800`}
           >
-            Citation invest uses secure, encrypted technology to store and
+            {settings?.name || "The platform"} uses secure, encrypted technology to store and
             handle your credit card information. Data entered here is safe.
           </p>
 
