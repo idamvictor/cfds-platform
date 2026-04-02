@@ -88,7 +88,7 @@ const DepositPromptModal: React.FC<DepositPromptModalProps> = ({ onDeposit }) =>
                 <div className="flex flex-col w-full gap-3">
                   <Button 
                     onClick={handleDeposit}
-                    className="w-full h-12 rounded-2xl text-base font-semibold transition-all hover:scale-[1.02] active:scale-95 bg-trading-accent hover:bg-trading-accent/90 text-trading-dark shadow-[0_4px_14px_0_var(--trading-accent)]"
+                    className="w-full h-12 rounded-2xl text-base text-white font-semibold transition-all hover:scale-[1.02] active:scale-95 bg-trading-accent hover:bg-trading-accent/90 shadow-[0_4px_14px_0_var(--trading-accent)]"
                   >
                     <Wallet className="mr-2 h-5 w-5" />
                     Deposit Now

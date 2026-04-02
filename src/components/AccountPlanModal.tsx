@@ -101,16 +101,16 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-5xl p-0 overflow-hidden bg-background border-border max-h-[90vh] overflow-y-auto">
-                <DialogHeader className="p-6 pb-2">
-                    <DialogTitle className="text-2xl font-bold text-center">
+                <DialogHeader className="p-3 pb-1">
+                    <DialogTitle className="text-lg font-bold text-center">
                         Account Plans
                     </DialogTitle>
                 </DialogHeader>
 
                 {isLoading ? (
-                    <div className="flex items-center justify-center p-8">
-                        <Loader2 className="h-6 w-6 animate-spin mr-2" />
-                        <p>Loading plans...</p>
+                    <div className="flex items-center justify-center p-4">
+                        <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                        <p className="text-sm">Loading plans...</p>
                     </div>
                 ) : visiblePlans.length === 0 ? (
                     <div className="text-center p-6">
@@ -118,7 +118,7 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
                     </div>
                 ) : (
                     <>
-                        <div className="p-4 overflow-x-auto">
+                        <div className="p-1 px-4 overflow-x-auto">
                             <div className="min-w-[800px]">
                                 <div className="grid grid-cols-5 gap-px bg-muted/30 rounded-lg overflow-hidden shadow-sm">
                                     {/* Headers */}
@@ -136,17 +136,17 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
                                             <div
                                                 key={`header-${plan.id}`}
                                                 className={cn(
-                                                    "col-span-1 text-center p-3 text-white font-semibold relative cursor-pointer",
+                                                    "col-span-1 text-center py-1.5 px-1 text-white font-semibold relative cursor-pointer",
                                                     user?.account_type?.id === plan.id ? "ring-2 ring-primary" : ""
                                                 )}
                                                 style={headerStyle}
                                             >
-                                                <div className="flex items-center justify-center gap-1">
+                                                <div className="flex items-center justify-center gap-1 text-sm">
                                                     {plan.icon && (
                                                         <img
                                                             src={plan.icon}
                                                             alt={`${plan.title} icon`}
-                                                            className="w-5 h-5 object-contain mr-1"
+                                                            className="w-4 h-4 object-contain mr-1"
                                                         />
                                                     )}
                                                     {plan.title}
@@ -174,7 +174,7 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
                                     {planFeatures.map((feature, index) => (
                                         <React.Fragment key={feature}>
                                             <div className={cn(
-                                                "col-span-1 p-4 font-medium",
+                                                "col-span-1 py-1.5 px-2 font-medium text-[10px] uppercase tracking-wider",
                                                 index % 2 === 0 ? "bg-muted/30" : "bg-background"
                                             )}>
                                                 {feature}
@@ -194,7 +194,7 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
                                                 }
                                                 // Handle checkmark entries
                                                 else if (value === "Enabled" || value === "Yes") {
-                                                    displayValue = <Check className="h-5 w-5 text-green-500" />;
+                                                    displayValue = <Check className="h-4 w-4 text-green-500 mx-auto" />;
                                                 }
                                                 // Default case
                                                 else {
@@ -205,7 +205,7 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
                                                     <div
                                                         key={`${feature}-${plan.id}`}
                                                         className={cn(
-                                                            "col-span-1 p-4 text-center",
+                                                            "col-span-1 py-1.5 px-2 text-center text-xs",
                                                             index % 2 === 0 ? "bg-muted/30" : "bg-background",
                                                             user?.account_type?.id === plan.id ? "bg-primary/10" : "",
                                                             plan.title === currentPlanTitle ? "bg-primary/5" : ""
@@ -219,7 +219,7 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
                                     ))}
 
                                     {/* Subscribe Action Row */}
-                                    <div className="col-span-1 p-4 font-medium bg-background">
+                                    <div className="col-span-1 py-1.5 px-2 font-medium bg-background text-[10px] uppercase tracking-wider">
                                         Action
                                     </div>
                                     {visiblePlans.map((plan) => {
@@ -234,21 +234,21 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
                                             <div
                                                 key={`subscribe-${plan.id}`}
                                                 className={cn(
-                                                    "col-span-1 p-4 bg-background",
+                                                    "col-span-1 py-1 px-2 bg-background",
                                                     isCurrentPlan ? "bg-primary/5" : ""
                                                 )}
                                             >
                                                 {isCurrentPlan ? (
                                                     <Button
                                                         variant="outline"
-                                                        className="w-full"
+                                                        className="w-full h-7 text-[10px] px-2"
                                                         disabled
                                                     >
                                                         Current Plan
                                                     </Button>
                                                 ) : (
                                                     <Button
-                                                        className="w-full"
+                                                        className="w-full h-7 text-[10px] px-2"
                                                         onClick={() =>
                                                             openSubscribeConfirm(
                                                                 plan.id,
@@ -260,11 +260,11 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
                                                     >
                                                         {isSubscribing ? (
                                                             <>
-                                                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                                                <Loader2 className="h-3 w-3 mr-1 animate-spin" />
                                                                 Subscribing...
                                                             </>
                                                         ) : (
-                                                            "Subscribe"
+                                                            "Upgrade"
                                                         )}
                                                     </Button>
                                                 )}
