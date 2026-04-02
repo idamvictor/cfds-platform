@@ -62,7 +62,7 @@ const DepositPromptModal: React.FC<DepositPromptModalProps> = ({ onDeposit }) =>
                   transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
                   className="relative"
                 >
-                  <img 
+                  <img
                     src="/assets/deposit-prompt.png" 
                     alt="Deposit illustration" 
                     className="w-50 h-50 object-contain drop-shadow-2xl"
@@ -81,7 +81,7 @@ const DepositPromptModal: React.FC<DepositPromptModalProps> = ({ onDeposit }) =>
                     Ready to trade?
                   </h2>
                   <p className="text-trading-muted text-sm max-w-[200px]">
-                    Top up your account now and start your trading journey today!
+                    Deposit funds now so that you can start <span className="text-trading-accent font-bold">profiting</span>!
                   </p>
                 </div>
 

@@ -3,7 +3,6 @@ import { useMutedTextClass } from "@/hooks/useMutedTextClass";
 import CardFunding from "./CardFunding";
 import CryptoFunding from "./CryptoFunding";
 import useDataStore from "@/store/dataStore";
-import { Bitcoin, CreditCard } from "lucide-react";
 import useUserStore from "@/store/userStore";
 
 interface DepositFundsProps {
@@ -86,8 +85,12 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
               }`}
             >
               <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-lg flex-shrink-0">
-                  <CreditCard className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
+                <div className="flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-blue-500/10 rounded-2xl flex-shrink-0 p-2 border border-blue-500/20 shadow-inner">
+                  <img 
+                    src="https://cdn-icons-png.flaticon.com/512/6963/6963703.png" 
+                    alt="Credit Card" 
+                    className="w-full h-full object-contain drop-shadow-md"
+                  />
                 </div>
                 <div className="flex flex-col items-end gap-2">
                   {selectedMethod === "card" && (
@@ -132,8 +135,12 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
               }`}
             >
               <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-orange-100 rounded-lg flex-shrink-0">
-                  <Bitcoin className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />
+                <div className="flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-orange-500/10 rounded-2xl flex-shrink-0 p-2 border border-orange-500/20 shadow-inner">
+                  <img 
+                    src="https://cdn-icons-png.flaticon.com/512/7048/7048906.png" 
+                    alt="Cryptocurrency" 
+                    className="w-full h-full object-contain drop-shadow-md"
+                  />
                 </div>
 
                 <div className="flex flex-col items-end gap-2 text-right">
