@@ -260,7 +260,7 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
                                                     {plan.title}
                                                 </div>
                                                 {priceLabel && (
-                                                    <div className="text-xs text-white/90 mt-1">
+                                                    <div className="text-base font-bold text-white mt-0.5 tracking-tight">
                                                         {priceLabel}
                                                     </div>
                                                 )}
@@ -293,7 +293,11 @@ export function AccountPlansModal({ open, onOpenChange }: AccountPlansModalProps
 
                                                 // Handle min_deposit (first row)
                                                 if (index === 0 && !isNaN(Number(value.replace(/[€$,]/g, '')))) {
-                                                    displayValue = formatCurrency(Number(value.replace(/[€$,]/g, '')));
+                                                    displayValue = (
+                                                        <span className="font-bold text-primary text-[13px]">
+                                                            {formatCurrency(Number(value.replace(/[€$,]/g, '')))}
+                                                        </span>
+                                                    );
                                                 }
                                                 // Handle checkmark entries
                                                 else if (value === "Enabled" || value === "Yes") {

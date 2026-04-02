@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Logo from "./Logo";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
-import { Menu, Wallet, ChartCandlestick, Bell } from "lucide-react";
+import { Bell, Wallet, ChartCandlestick, Menu } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import DepositFunds from "./deposit-funds/DepositFunds";
 import useUserStore from "@/store/userStore";
@@ -10,6 +10,7 @@ import { useCurrency } from "@/hooks/useCurrency";
 import useSiteSettingsStore from "@/store/siteSettingStore";
 import AccountPlansModal from "./AccountPlanModal";
 import DepositPromptModal from "./DepositPromptModal";
+import NotificationDropdown from "./NotificationDropdown";
 
 
 interface HeaderProps {
@@ -43,15 +44,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
         <Logo />
       </div>
       <div className="flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative text-gray-400 hover:text-white"
-          title="Notifications"
-        >
-          <Bell className="h-5 w-5" />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-card" />
-        </Button>
+        <NotificationDropdown />
 
         <Button
           onClick={() => window.open("/trading", "_blank")}
