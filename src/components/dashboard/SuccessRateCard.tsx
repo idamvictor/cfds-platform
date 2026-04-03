@@ -25,7 +25,7 @@ export function SuccessRateCard() {
   };
 
   return (
-    <Card className="row-span-2 h-full rounded-[22px] border-0 bg-transparent p-0 text-white shadow-none">
+    <Card className="row-span-2 h-full rounded-[22px]- border-0 bg-transparent p-0 text-white shadow-none">
       <CardHeader className="px-0 ">
         <CardTitle className="text-[15px] sm:text-[17px] font-semibold tracking-tight text-white">
           Success Rate
@@ -33,8 +33,8 @@ export function SuccessRateCard() {
       </CardHeader>
 
       <CardContent className="flex h-full flex-col px-0">
-        <div className="flex flex-1 flex-col items-center justify-center rounded-[20px] border border-white/6 bg-[#0d131d] px-6 py-8">
-          <div className="relative flex h-[230px]- w-full items-center justify-center">
+        <div className="flex flex-1 flex-col items-center justify-center rounded-xl border border-white/6 bg-[#0d131d]  px-6 pb-8">
+          <div className="relative flex h-[250px] w-full items-center justify-center">
             <PieChartComponent
               activeIndex={activeIndex}
               onPieEnter={handlePieEnter}
@@ -86,7 +86,7 @@ export function SuccessRateCard() {
           </div>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 overflow-hidden rounded-[20px] border border-white/6 bg-[#0d131d]">
+        <div className="mt-4 grid grid-cols-2 overflow-hidden rounded-xl border border-white/6 bg-[#0d131d]">
           <div className="border-b border-r border-white/6 px-4 py-5 text-center">
             <div className="text-2xl font-semibold text-[#16e28d]">
               {summary.total_wins}

@@ -105,9 +105,9 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="grid gap-4  xl:grid-cols-[1.2fr_0.9fr_0.9fr_0.9fr]">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-[1.2fr_0.9fr_0.9fr_0.9fr]">
             <div
-              className="rounded-[22px] border border-[#0f5d45] bg-[linear-gradient(135deg,rgba(9,22,21,0.96),rgba(13,29,23,0.92))] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_24px_70px_rgba(15,226,141,0.08)]"
+              className="rounded-xl border border-[#0f5d45] bg-[linear-gradient(135deg,rgba(9,22,21,0.96),rgba(13,29,23,0.92))] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_24px_70px_rgba(15,226,141,0.08)]"
               style={{
                 backgroundImage:
                   "radial-gradient(circle at top right, rgba(18, 226, 142, 0.12), transparent 28%), linear-gradient(135deg, rgba(9,22,21,0.96), rgba(13,29,23,0.92))",
@@ -191,7 +191,7 @@ export default function Dashboard() {
           {marketTickers.map((ticker) => (
             <div
               key={ticker.symbol}
-              className="rounded-2xl border border-white/6 bg-[#0d131d] px-3 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]"
+              className="rounded-xl border border-white/6 bg-[#0d131d] px-3 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]"
             >
               <div className="flex items-center justify-between gap-3">
                 <div>
@@ -238,7 +238,7 @@ export default function Dashboard() {
 
         <section className="rounded-[24px] border border-white/6 bg-[#0b111b] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] sm:p-6">
           <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <h2 className="text-2xl font-semibold tracking-tight text-white">
+            <h2 className="text-[15px] sm:text-[17px]  font-semibold tracking-tight text-white">
               Top Market Stories
             </h2>
             <a

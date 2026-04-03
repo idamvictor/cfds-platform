@@ -31,7 +31,7 @@ export function StatCard({
   iconTone = "green",
 }: StatCardProps) {
   return (
-    <Card className="h-full rounded-[22px] border-white/6 bg-[#0d131d] p-5 text-white shadow-none stat_card">
+    <Card className="h-full  border-white/6 bg-[#0d131d] p-5 text-white shadow-none stat_card">
       <div className="flex h-full flex-col ">
         <div className="mb-8- flex items-start justify-between gap-4">
           <div>
@@ -43,7 +43,7 @@ export function StatCard({
 
           <div
             className={cn(
-              "flex h-8 w-8 items-center justify-center rounded-xl border",
+              "flex h-8 w-8 items-center justify-center rounded-md border",
               iconToneClasses[iconTone],
             )}
           >

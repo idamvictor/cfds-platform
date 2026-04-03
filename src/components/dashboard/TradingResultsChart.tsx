@@ -102,7 +102,7 @@ export function TradingResultsChart() {
             <h2 className="text-[15px] sm:text-[17px] font-semibold tracking-tight text-white">
               Trading Results
             </h2>
-            <span className="inline-flex items-center gap-2 rounded-full bg-[#0f2c21] px-2.5 py-1 text-xs font-semibold text-[#16e28d]">
+            <span className="inline-flex items-center gap-2 rounded-full bg-[#0f2c21] px-2.5 py-0.5 text-[10px] font-semibold text-[#16e28d]">
               <span className="h-2 w-2 rounded-full bg-[#16e28d]" />
               LIVE
             </span>

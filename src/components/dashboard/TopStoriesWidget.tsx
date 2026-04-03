@@ -55,5 +55,5 @@ export function TopStoriesWidget() {
     };
   }, []);
 
-  return <div ref={containerRef} className="h-[420px] w-full" />;
+  return <div ref={containerRef} className="h-[420px] w-full " />;
 }
