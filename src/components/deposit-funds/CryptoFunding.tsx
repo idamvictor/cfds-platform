@@ -82,37 +82,45 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
 
   const selectedCrypto = useMemo(() => selectedAssetConfig?.code || "", [selectedAssetConfig]);
 
-  // Derived networks for selected crypto from the specific config entry
-  const availableNetworks = useMemo(() => {
-    return selectedAssetConfig?.networks || [];
+  const availableNetworks = useMemo<string[]>(() => {
+    return selectedAssetConfig?.networks?.map(n => n.name) || [];
   }, [selectedAssetConfig]);
 
   // Find matching wallet
   const selectedWalletData = useMemo(() => {
-    if (!selectedCrypto) return wallets[0];
-    
-    // First try exact match
-    let match = wallets.find(w => 
-      w.crypto === selectedCrypto && 
-      w.crypto_network === selectedNetwork
+    if (!selectedAssetConfig || !selectedNetwork) return null;
+
+    const networkConfig = selectedAssetConfig.networks?.find(
+      (n) => n.name === selectedNetwork
     );
-    
-    // Then try case-insensitive or partial match for network
-    if (!match) {
-      match = wallets.find(w => 
-        w.crypto === selectedCrypto && 
-        (w.crypto_network.toLowerCase().includes(selectedNetwork.toLowerCase()) || 
-         selectedNetwork.toLowerCase().includes(w.crypto_network.toLowerCase()))
-      );
+
+    let baseWallet = null;
+    if (networkConfig?.wallets && networkConfig.wallets.length > 0) {
+       baseWallet = networkConfig.wallets[0]; 
     }
-    
-    // Then try just crypto match
-    if (!match) {
-      match = wallets.find(w => w.crypto === selectedCrypto);
+
+    if (!baseWallet) {
+      // Fallback search
+      return wallets.find(w => w.crypto === selectedCrypto && w.crypto_network === selectedNetwork) || wallets[0];
     }
-    
-    return match || wallets[0];
-  }, [wallets, selectedCrypto, selectedNetwork]);
+
+    // Try to find the full wallet data in the root wallets list by ID
+    const fullWallet = wallets.find(w => w.id === baseWallet.id);
+
+    if (fullWallet) return fullWallet;
+
+    // Construct a minimal version if full metadata is not found
+    return {
+        id: baseWallet.id,
+        type: "wallet" as const,
+        crypto: selectedCrypto,
+        crypto_network: selectedNetwork,
+        address: baseWallet.address,
+        balance: "0",
+        barcode: baseWallet.qrcode,
+        status: "active"
+    };
+  }, [selectedAssetConfig, selectedNetwork, selectedCrypto, wallets]);
 
   // Dynamic price calculation from assetStore
   const currentAssetPrice = useMemo(() => {

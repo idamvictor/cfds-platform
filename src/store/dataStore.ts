@@ -54,13 +54,24 @@ export interface ExpertAdvisor {
   image: string;
 }
 
+export interface DepositCryptoNetworkWallet {
+  id: string;
+  address: string;
+  qrcode: string | null;
+}
+
+export interface DepositCryptoNetwork {
+  name: string;
+  wallets: DepositCryptoNetworkWallet[];
+}
+
 export interface DepositCryptoWallet {
   id: string;
   logo: string;
   name: string;
   code: string;
-  networks: string[];
-  default: boolean;
+  networks: DepositCryptoNetwork[];
+  default?: boolean;
 }
 
 export interface DepositCryptoConfig {
