@@ -83,7 +83,7 @@ export function PieChartComponent({
 
   return (
     <Card className="flex flex-col h-full w-full bg-transparent shadow-none border-0">
-      <ChartContainer config={chartConfig} className="mx-auto h-full w-full">
+      <ChartContainer config={chartConfig} className="mx-auto h-full w-full bg-red-400-">
         <PieChart>
           <defs>
             <linearGradient id="primaryGradient" x1="0" y1="1" x2="0" y2="0">
@@ -95,8 +95,8 @@ export function PieChartComponent({
             data={chartData}
             dataKey="value"
             nameKey="name"
-            innerRadius={40}
-            outerRadius={60}
+            innerRadius={60}
+            outerRadius={80}
             strokeWidth={5}
             paddingAngle={2}
             onMouseEnter={onPieEnter}

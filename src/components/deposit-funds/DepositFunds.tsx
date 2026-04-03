@@ -62,8 +62,8 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
         <div className="border-b border-white/10 bg-[radial-gradient(circle_at_70%_0%,rgba(255,255,255,0.16),transparent_22%),linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] px-4 py-4 sm:px-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-3xl">
-              <div className="mb-3 inline-flex items-center gap-3 rounded-full border border-white/10 bg-black/20 px-3 py-2">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[linear-gradient(180deg,#7ca2ff,#4d6bff)] text-lg font-semibold text-white">
+              <div className="mb-3 inline-flex items-center gap-3 rounded-full border border-white/10 bg-black/20 px-2 py-1.5">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[linear-gradient(180deg,#7ca2ff,#4d6bff)] text-sm font-semibold text-white">
                   D
                 </div>
                 <div className="text-sm text-white/60">
@@ -77,7 +77,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
               </div>
 
               <div
-                className={`max-w-2xl text-xs leading-relaxed md:text-sm ${mutedClass}`}
+                className={`max-w-2xl text-xs leading-relaxed md:text-xs ${mutedClass}`}
               >
                 Add funds to your account to start trading instantly. You can
                 deposit using Fiat or crypto payment methods below. For a record
@@ -95,7 +95,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
               </div>
 
               <div
-                className={`mt-4 max-w-2xl rounded-[18px] border border-white/10 bg-black/20 px-4 py-3 text-xs leading-relaxed md:text-sm ${mutedClass}`}
+                className={`mt-4 max-w-2xl rounded-[18px] border border-white/10 bg-black/20 px-3 py-2 text-xs leading-relaxed md:text-sm- ${mutedClass}`}
               >
                 <strong>Note: Anti-Fraud Verification</strong> <br />
                 For your security, some deposits may require additional
@@ -108,10 +108,10 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
               <div className="text-[10px] uppercase tracking-[0.22em] text-white/35">
                 Payment Flow
               </div>
-              <h3 className="mt-2 text-lg font-medium tracking-[-0.03em] text-white">
+              <h3 className="mt-1 text-md font-medium tracking-[-0.03em] text-white">
                 Payment Method
               </h3>
-              <p className="mt-2 text-sm leading-6 text-white/55">
+              <p className="mt-1 text-sm leading-6 text-white/55">
                 Choose your preferred funding route and continue to the secure
                 deposit step.
               </p>
