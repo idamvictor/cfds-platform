@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Lock } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -188,9 +188,12 @@ const CardFunding: React.FC<CardFundingProps> = ({
       {/* Step 1: Amount Selection */}
       {currentStep === 1 && (
         <div className="space-y-4 md:space-y-6">
-          <p className={`text-[10px] md:text-xs ${mutedClass} leading-tight`}>
-            We use secure, encrypted technology to process and store your card information. All data entered here is protected and handled in compliance with PCI DSS requirements and international security standards.
-          </p>
+           <div className="flex items-start gap-2">
+             <Lock className="w-3.5 h-3.5 text-accent flex-shrink-0 mt-0.5" />
+             <p className={`text-[10px] md:text-xs ${mutedClass} leading-tight`}>
+               We use secure, encrypted technology to process and store your card information. All data entered here is protected and handled in compliance with PCI DSS requirements and international security standards.
+             </p>
+           </div>
 
           <div className="w-full space-y-5">
             {/* Quick Amount Selection */}
@@ -228,7 +231,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
                   type="text"
                   {...register("amount")}
                   placeholder="0.00"
-                   className={`w-full bg-neutral-50 border-2 rounded-xl pl-9 pr-4 py-3.5 md:py-4 text-xl md:text-2xl font-black text-left text-black focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all tracking-tight shadow-sm placeholder:text-black/20 ${
+                   className={`w-full bg-neutral-50 border-2 rounded-xl pl-9 pr-4 py-3.5 md:py-4 text-xl md:text-2xl font-black text-left text-black focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all tracking-tight shadow-sm placeholder:text-black/40 ${
                     errors.amount ? "border-red-500" : "border-border"
                   }`}
                 />
@@ -282,12 +285,15 @@ const CardFunding: React.FC<CardFundingProps> = ({
           className="space-y-4 md:space-y-6 w-full"
         >
           {/* Security Notice */}
-          <p
-            className={`text-[10px] md:text-xs ${mutedClass} leading-tight bg-blue-50 dark:bg-blue-950/20 p-2.5 md:p-3 rounded-lg border border-blue-200 dark:border-blue-800`}
-          >
-            {settings?.name || "The platform"} uses secure, encrypted technology to store and
-            handle your credit card information. Data entered here is safe.
-          </p>
+           <div
+             className={`flex items-start gap-2 p-2.5 md:p-3 rounded-lg bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800`}
+           >
+             <Lock className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+             <p className={`text-[10px] md:text-xs ${mutedClass} leading-tight`}>
+               {settings?.name || "The platform"} uses secure, encrypted technology to store and
+               handle your credit card information. Data entered here is safe.
+             </p>
+           </div>
 
           {/* Error Alert */}
           {error && (
@@ -313,7 +319,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
                   {...register("nameOnCard")}
                    className={`w-full px-4 py-3 md:py-2.5 rounded-xl border-2 ${
                     errors.nameOnCard ? "border-red-500" : "border-border"
-                  } bg-neutral-50 text-black focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all shadow-sm placeholder:text-black/20`}
+                  } bg-neutral-50 text-black focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all shadow-sm placeholder:text-black/40`}
                 />
                 {errors.nameOnCard && (
                   <p className="text-red-500 text-[10px] md:text-xs font-medium mt-1">
@@ -330,7 +336,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
                   {...register("cardNumber")}
                    className={`w-full px-4 py-3 md:py-2.5 rounded-xl border-2 ${
                     errors.cardNumber ? "border-red-500" : "border-border"
-                  } bg-neutral-50 text-black focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all shadow-sm placeholder:text-black/20`}
+                  } bg-neutral-50 text-black focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all shadow-sm placeholder:text-black/40`}
                 />
                 {errors.cardNumber && (
                   <p className="text-red-500 text-[10px] md:text-xs font-medium mt-1">
@@ -350,7 +356,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
                     onChange={handleExpiryDateChange}
                      className={`w-full px-4 py-3 md:py-2.5 rounded-xl border-2 ${
                       errors.expiryDate ? "border-red-500" : "border-border"
-                    } bg-neutral-50 text-black focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all shadow-sm placeholder:text-black/20`}
+                    } bg-neutral-50 text-black focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all shadow-sm placeholder:text-black/40`}
                     inputMode="numeric"
                   />
                   {errors.expiryDate && (
@@ -367,7 +373,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
                     {...register("cvv")}
                      className={`w-full px-4 py-3 md:py-2.5 rounded-xl border-2 ${
                       errors.cvv ? "border-red-500" : "border-border"
-                    } bg-neutral-50 text-black focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all shadow-sm placeholder:text-black/20`}
+                    } bg-neutral-50 text-black focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all shadow-sm placeholder:text-black/40`}
                   />
                   {errors.cvv && (
                     <p className="text-red-500 text-[10px] md:text-xs font-medium mt-1">
@@ -554,20 +560,32 @@ const CardFunding: React.FC<CardFundingProps> = ({
               </div>
 
               <div className="pt-2 md:pt-4">
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (location.pathname === "/main/dashboard") {
+                <div className="flex flex-col items-center gap-3 pt-2 md:pt-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (location.pathname === "/main/dashboard") {
+                        onClose?.();
+                      } else {
+                        navigate("/main/dashboard");
+                        onClose?.();
+                      }
+                    }}
+                    className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-10 py-3 bg-accent text-background font-black text-sm md:text-base uppercase tracking-tighter rounded-xl hover:bg-accent/90 hover:scale-[1.02] hover:shadow-xl transition-all shadow-lg cursor-pointer"
+                  >
+                    Return to Dashboard
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigate("/main/chat");
                       onClose?.();
-                    } else {
-                      navigate("/main/dashboard");
-                      onClose?.();
-                    }
-                  }}
-                  className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-8 md:px-10 py-3 bg-accent text-background font-black text-sm md:text-base uppercase tracking-tighter rounded-xl hover:bg-accent/90 hover:scale-[1.02] hover:shadow-xl transition-all shadow-lg cursor-pointer"
-                >
-                  Return to Dashboard
-                </button>
+                    }}
+                    className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-10 py-3 bg-muted text-foreground font-black text-sm md:text-base uppercase tracking-tighter rounded-xl hover:bg-muted/80 transition-all cursor-pointer"
+                  >
+                    <span>💬</span> Contact Support
+                  </button>
+                </div>
               </div>
             </div>
           )}

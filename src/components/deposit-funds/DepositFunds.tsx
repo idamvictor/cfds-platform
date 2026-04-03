@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useMutedTextClass } from "@/hooks/useMutedTextClass";
+import { Lock } from "lucide-react";
 import CardFunding from "./CardFunding";
 import CryptoFunding from "./CryptoFunding";
 import useDataStore from "@/store/dataStore";
@@ -42,6 +43,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
         ) : (
           <CryptoFunding 
             onChangeMethod={() => setShowCardFunding(false)} 
+            onClose={onClose}
             stepsCount={stepsCount}
           />
         )}
@@ -59,12 +61,15 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
           using Fiat or crypto payment methods below
         </p>
 
-        <p className={`text-xs md:text-sm ${mutedClass} leading-relaxed`}>
-          <strong>Note: Anti-Fraud Verification</strong> <br />
-          For your security, some deposits may require additional verification.
-          In certain cases, our team may request phone or identity confirmation
-          before funds are credited.
-        </p>
+        <div className="flex items-start gap-2">
+          <Lock className="w-4 h-4 md:w-5 md:h-5 text-accent flex-shrink-0 mt-0.5" />
+          <p className={`text-xs md:text-sm ${mutedClass} leading-relaxed`}>
+            <strong>Note: Anti-Fraud Verification</strong> <br />
+            For your security, some deposits may require additional verification.
+            In certain cases, our team may request phone or identity confirmation
+            before funds are credited.
+          </p>
+        </div>
       </div>
 
       {/* Payment Method Section */}

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   CheckCircle2,
   Info,
@@ -7,6 +8,7 @@ import {
   RotateCw,
   AlertCircle,
   ArrowRightLeft,
+  Lock
 } from "lucide-react";
 import { useMutedTextClass } from "@/hooks/useMutedTextClass";
 import { useStepNumberColor } from "@/hooks/useStepNumberColor";
@@ -25,13 +27,16 @@ import {
 
 interface CryptoFundingProps {
   onChangeMethod: () => void;
+  onClose?: () => void;
   stepsCount?: 3 | 4;
 }
 
 const CryptoFunding: React.FC<CryptoFundingProps> = ({ 
   onChangeMethod,
+  onClose,
   stepsCount = 4
 }) => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [selectedAssetId, setSelectedAssetId] = useState<string>("");
@@ -343,9 +348,12 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
         <div className="space-y-4">
           <div className="space-y-0.5">
             <h2 className="text-xl font-bold text-foreground tracking-tight">Deposit Cryptocurrency</h2>
-            <p className={`text-xs ${mutedClass}`}>
-              Select asset and network to generate a secure deposit address.
-            </p>
+            <div className="flex items-center gap-1.5 px-0.5">
+              <Lock className="w-3 h-3 text-accent/70" />
+              <p className={`text-xs ${mutedClass}`}>
+                Select asset and network to generate a secure deposit address.
+              </p>
+            </div>
           </div>
 
           {isLoading && !data && (
@@ -423,7 +431,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
                     type="number"
                     value={depositAmount}
                     onChange={(e) => setDepositAmount(e.target.value)}
-                    className="w-full bg-neutral-50 border-2 border-border rounded-xl pl-4 pr-16 py-3 md:py-4 text-xl md:text-2xl font-black text-left text-black focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all tracking-tight h-14 md:h-16 shadow-sm placeholder:text-black/20"
+                    className="w-full bg-neutral-50 border-2 border-border rounded-xl pl-4 pr-16 py-3 md:py-4 text-xl md:text-2xl font-black text-left text-black focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all tracking-tight h-14 md:h-16 shadow-sm placeholder:text-black/40"
                     placeholder="0.00"
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -758,24 +766,46 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
           </div>
 
           {/* Action Buttons */}
-          <div className="pt-2 md:pt-4">
-            {!depositMutation.isPending && (
-              <button
-                type="button"
-                onClick={() => {
-                  setCurrentStep(1);
-                  setDepositAmount("0.00");
-                  setIsSubmitted(false);
-                  depositMutation.reset();
-                }}
-                className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-8 md:px-10 py-3 bg-accent text-background font-black text-sm md:text-base uppercase tracking-tighter rounded-xl hover:bg-accent/90 hover:scale-[1.02] hover:shadow-xl transition-all shadow-lg cursor-pointer"
-              >
-                {depositMutation.isSuccess
-                  ? "Deposit Another"
-                  : "Try Again"}
-              </button>
-            )}
-          </div>
+           <div className="pt-2 md:pt-4">
+             <div className="flex flex-col items-center gap-3">
+               {!depositMutation.isPending && (
+                 <button
+                   type="button"
+                   onClick={() => {
+                     setCurrentStep(1);
+                     setDepositAmount("0.00");
+                     setIsSubmitted(false);
+                     depositMutation.reset();
+                   }}
+                   className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-10 py-3 bg-accent text-background font-black text-sm md:text-base uppercase tracking-tighter rounded-xl hover:bg-accent/90 hover:scale-[1.02] hover:shadow-xl transition-all shadow-lg cursor-pointer"
+                 >
+                   {depositMutation.isSuccess
+                     ? "Deposit Another"
+                     : "Try Again"}
+                 </button>
+               )}
+               <button
+                 type="button"
+                 onClick={() => {
+                   navigate("/main/chat");
+                   onClose?.();
+                 }}
+                 className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-10 py-3 bg-muted text-foreground font-black text-sm md:text-base uppercase tracking-tighter rounded-xl hover:bg-muted/80 transition-all cursor-pointer"
+               >
+                 <span>💬</span> Contact Support
+               </button>
+               <button
+                 type="button"
+                 onClick={() => {
+                   navigate("/main/dashboard");
+                   onClose?.();
+                 }}
+                 className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-10 py-3 border border-border text-foreground font-black text-sm md:text-base uppercase tracking-tighter rounded-xl hover:bg-muted/30 transition-all cursor-pointer"
+               >
+                 Return to Dashboard
+               </button>
+             </div>
+           </div>
         </div>
       )}
 
