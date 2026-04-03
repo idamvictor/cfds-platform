@@ -350,7 +350,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
             <h2 className="text-xl font-bold text-foreground tracking-tight">Deposit Cryptocurrency</h2>
             <div className="flex items-center gap-1.5 px-0.5">
               <Lock className="w-3 h-3 text-accent/70" />
-              <p className={`text-xs ${mutedClass}`}>
+              <p className={`text-xs text-foreground/80`}>
                 Select asset and network to generate a secure deposit address.
               </p>
             </div>
@@ -366,7 +366,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               {/* Asset Select */}
               <div className="space-y-1 focus-within:z-50">
-                <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5">Select Asset</label>
+                <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-80 ml-0.5">Select Asset</label>
                 <Select value={selectedAssetId} onValueChange={(val) => setSelectedAssetId(val)}>
                   <SelectTrigger className="w-full bg-neutral-50 border border-border rounded-lg px-3 py-2 text-xs md:text-sm font-semibold text-white focus:ring-1 focus:ring-accent transition-all cursor-pointer h-10 md:h-9">
                     <div className="flex items-center gap-2">
@@ -388,7 +388,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
 
               {/* Network Select */}
               <div className="space-y-1 focus-within:z-50">
-                <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5">Network</label>
+                <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-80 ml-0.5">Network</label>
                 <Select value={selectedNetwork} onValueChange={(val) => setSelectedNetwork(val)}>
                   <SelectTrigger className="w-full bg-neutral-50 border border-border rounded-lg px-3 py-2 text-xs md:text-sm font-semibold text-white focus:ring-1 focus:ring-accent transition-all cursor-pointer h-10 md:h-9">
                     <div className="flex items-center gap-2 max-w-full">
@@ -415,7 +415,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
             <div className="space-y-3">
               <div className="space-y-1.5 focus-within:z-40">
                 <div className="flex items-center justify-between ml-0.5">
-                  <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60">
+                  <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-80">
                     Amount ({isUsdMode ? "USD" : selectedCrypto})
                   </label>
                   <button 
@@ -435,12 +435,12 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
                     placeholder="0.00"
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <span className="text-xs md:text-sm font-bold opacity-30 tracking-widest">{isUsdMode ? "USD" : selectedCrypto}</span>
+                    <span className="text-xs md:text-sm font-bold opacity-50 tracking-widest">{isUsdMode ? "USD" : selectedCrypto}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-[10px] md:text-xs px-1 opacity-60 font-medium">
+              <div className="flex items-center justify-between text-[10px] md:text-xs px-1 opacity-80 font-medium">
                  <div className="flex items-center gap-1">
                    <RotateCw className="w-2.5 h-2.5 animate-spin-slow" />
                    <span>
@@ -524,9 +524,9 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
                 {/* Amount Info */}
                  <div className="flex-1 space-y-3 text-center md:text-left w-full">
                     <div className="space-y-0.5">
-                       <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Amount to Deposit</p>
+                       <p className="text-[10px] font-black uppercase tracking-widest opacity-60">Amount to Deposit</p>
                        <h3 className="text-2xl md:text-3xl font-black text-foreground">{cryptoAmount} {selectedCrypto}</h3>
-                       <p className="text-xs md:text-sm font-medium opacity-60">≈ ${ usdEquivalent.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }</p>
+                       <p className="text-xs md:text-sm font-medium opacity-80">≈ ${ usdEquivalent.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }</p>
                     </div>
 
                     <div className="grid grid-cols-2 gap-3 pt-3 border-t border-border/30">
@@ -715,7 +715,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
             </h2>
 
             {/* Status Messages */}
-            <div className={`space-y-2 md:space-y-3 ${mutedClass}`}>
+            <div className={`space-y-2 md:space-y-3 text-foreground/80`}>
               {depositMutation.isSuccess &&
                 selectedWalletData &&
                 depositAmount && (

@@ -56,14 +56,14 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
 
       {/* Info Text */}
       <div className="space-y-4">
-        <p className={`text-xs md:text-sm ${mutedClass} leading-relaxed`}>
+        <p className={`text-xs md:text-sm text-foreground/80 leading-relaxed`}>
           Add funds to your account to start trading instantly. You can deposit
           using Fiat or crypto payment methods below
         </p>
 
         <div className="flex items-start gap-2">
           <Lock className="w-4 h-4 md:w-5 md:h-5 text-accent flex-shrink-0 mt-0.5" />
-          <p className={`text-xs md:text-sm ${mutedClass} leading-relaxed`}>
+          <p className={`text-xs md:text-sm text-foreground/80 leading-relaxed`}>
             <strong>Note: Anti-Fraud Verification</strong> <br />
             For your security, some deposits may require additional verification.
             In certain cases, our team may request phone or identity confirmation

@@ -190,15 +190,15 @@ const CardFunding: React.FC<CardFundingProps> = ({
         <div className="space-y-4 md:space-y-6">
            <div className="flex items-start gap-2">
              <Lock className="w-3.5 h-3.5 text-accent flex-shrink-0 mt-0.5" />
-             <p className={`text-[10px] md:text-xs ${mutedClass} leading-tight`}>
-               We use secure, encrypted technology to process and store your card information. All data entered here is protected and handled in compliance with PCI DSS requirements and international security standards.
-             </p>
+              <p className={`text-[10px] md:text-xs text-foreground/80 leading-tight`}>
+                We use secure, encrypted technology to process and store your card information. All data entered here is protected and handled in compliance with PCI DSS requirements and international security standards.
+              </p>
            </div>
 
           <div className="w-full space-y-5">
             {/* Quick Amount Selection */}
             <div className="space-y-3">
-              <p className={`text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5`}>
+              <p className={`text-[11px] font-bold text-foreground uppercase tracking-tight opacity-80 ml-0.5`}>
                 Quick Select
               </p>
               <div className="flex gap-2 flex-wrap">
@@ -223,7 +223,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
 
             {/* Amount Input */}
             <div className="space-y-2">
-              <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5">
+              <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-80 ml-0.5">
                 Amount (USD)
               </label>
               <div className="relative group">
@@ -289,10 +289,10 @@ const CardFunding: React.FC<CardFundingProps> = ({
              className={`flex items-start gap-2 p-2.5 md:p-3 rounded-lg bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800`}
            >
              <Lock className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-             <p className={`text-[10px] md:text-xs ${mutedClass} leading-tight`}>
-               {settings?.name || "The platform"} uses secure, encrypted technology to store and
-               handle your credit card information. Data entered here is safe.
-             </p>
+              <p className={`text-[10px] md:text-xs text-foreground/80 leading-tight`}>
+                {settings?.name || "The platform"} uses secure, encrypted technology to store and
+                handle your credit card information. Data entered here is safe.
+              </p>
            </div>
 
           {/* Error Alert */}
@@ -312,7 +312,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
 
             <div className="space-y-3 md:space-y-4">
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5">Cardholder Name</label>
+                <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-80 ml-0.5">Cardholder Name</label>
                 <input
                   type="text"
                   placeholder="John Doe"
@@ -329,7 +329,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
               </div>
 
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5">Card Number</label>
+                <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-80 ml-0.5">Card Number</label>
                 <input
                   type="text"
                   placeholder="0000 0000 0000 0000"
@@ -347,7 +347,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5">Expiry Date</label>
+                  <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-80 ml-0.5">Expiry Date</label>
                   <input
                     type="text"
                     placeholder="MM/YY"
@@ -366,7 +366,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
                   )}
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-60 ml-0.5">CVV</label>
+                  <label className="text-[11px] font-bold text-foreground uppercase tracking-tight opacity-80 ml-0.5">CVV</label>
                   <input
                     type="text"
                     placeholder="123"
@@ -473,7 +473,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
 
               {/* Alert Box */}
               <div className="px-4 py-2 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
-                <p className={`text-[10px] md:text-xs ${mutedClass} italic text-center font-medium`}>
+                <p className={`text-[10px] md:text-xs text-foreground/80 italic text-center font-medium`}>
                   By clicking "Confirm & Pay", you authorize the transaction of
                   the amount stated above.
                 </p>
@@ -546,7 +546,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
                 <h2 className="text-xl md:text-2xl font-bold text-foreground">
                   Payment Processing
                 </h2>
-                <div className={`space-y-2 md:space-y-3 ${mutedClass}`}>
+                <div className={`space-y-2 md:space-y-3 text-foreground/80`}>
                   <p className="text-xs md:text-sm leading-relaxed">
                     Your payment is under review
                   </p>
