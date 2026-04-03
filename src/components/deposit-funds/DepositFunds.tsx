@@ -85,12 +85,19 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
               }`}
             >
               <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-blue-500/10 rounded-2xl flex-shrink-0 p-2 border border-blue-500/20 shadow-inner">
-                  <img 
-                    src="https://cdn-icons-png.flaticon.com/512/6963/6963703.png" 
-                    alt="Credit Card" 
-                    className="w-full h-full object-contain drop-shadow-md"
-                  />
+                <div className="flex items-center gap-2">
+                  {!isVerified && (
+                    <span className="bg-amber-500/10 text-amber-500 text-[9px] md:text-[10px] px-2 py-1 rounded-lg font-black whitespace-nowrap border border-amber-500/20 uppercase tracking-tighter">
+                      KYC Required
+                    </span>
+                  )}
+                  <div className="flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-blue-500/10 rounded-2xl flex-shrink-0 p-2 border border-blue-500/20 shadow-inner">
+                    <img 
+                      src="https://cdn-icons-png.flaticon.com/512/6963/6963703.png" 
+                      alt="Credit Card" 
+                      className="w-full h-full object-contain drop-shadow-md"
+                    />
+                  </div>
                 </div>
                 <div className="flex flex-col items-end gap-2">
                   {selectedMethod === "card" && (
@@ -103,11 +110,6 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
                         <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
                       </svg>
                     </div>
-                  )}
-                  {!isVerified && (
-                    <span className="bg-amber-500/10 text-amber-500 text-[10px] md:text-[11px] px-2 py-0.5 rounded-full font-bold whitespace-nowrap border border-amber-500/20 uppercase tracking-tighter">
-                      KYC Required
-                    </span>
                   )}
                 </div>
               </div>
@@ -177,7 +179,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
         <div className="flex gap-3 pt-4">
           <button
             onClick={() => setShowCardFunding(true)}
-            className="w-full md:w-auto inline-flex items-center justify-center md:justify-start gap-2 px-6 py-2 font-semibold rounded-lg transition-all bg-accent text-background hover:bg-accent/90 cursor-pointer"
+            className="w-full md:w-auto inline-flex items-center justify-center md:justify-start gap-2 px-10 py-3.5 font-black uppercase tracking-tighter rounded-xl transition-all bg-accent text-background hover:bg-accent/90 hover:scale-[1.02] hover:shadow-xl shadow-lg cursor-pointer"
           >
             Next
             <span>→</span>

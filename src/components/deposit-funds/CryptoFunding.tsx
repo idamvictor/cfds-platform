@@ -459,7 +459,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
                         setDepositAmount((dollarAmount / currentAssetPrice).toFixed(6));
                       }
                     }}
-                    className="py-2.5 md:py-1.5 rounded-lg border border-border bg-card hover:bg-accent hover:text-background font-bold text-[10px] md:text-xs transition-all shadow-sm active:scale-95 cursor-pointer"
+                    className="py-3 md:py-2.5 rounded-xl border-2 border-border bg-card hover:bg-accent hover:border-accent hover:text-background font-black text-xs md:text-sm transition-all shadow-sm active:scale-95 cursor-pointer"
                   >
                     +${val}
                   </button>
@@ -556,16 +556,16 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
                        </p>
                     </div>
                  </div>
-                 <button 
-                   onClick={() => {
-                     if (selectedWalletData.type === 'link') {
-                       window.open(selectedWalletData.address, '_blank');
-                     } else {
-                       handleCopyAddress();
-                     }
-                   }}
-                   className="w-full bg-accent text-background px-5 py-3 md:py-2.5 rounded-lg font-bold text-xs flex items-center justify-center gap-2 hover:bg-accent/90 transition-all active:scale-95 shadow-sm cursor-pointer"
-                 >
+                  <button 
+                    onClick={() => {
+                      if (selectedWalletData.type === 'link') {
+                        window.open(selectedWalletData.address, '_blank');
+                      } else {
+                        handleCopyAddress();
+                      }
+                    }}
+                    className="w-full bg-accent text-background px-8 py-4 md:py-3 rounded-xl font-black text-sm uppercase tracking-tighter flex items-center justify-center gap-2 hover:bg-accent/90 hover:scale-[1.02] hover:shadow-xl transition-all active:scale-[0.98] shadow-lg cursor-pointer"
+                  >
                    {selectedWalletData.type === 'link' ? (
                      <><span>Continue Externally</span><span>↗</span></>
                    ) : (
@@ -645,7 +645,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
             <button
               type="button"
               onClick={handlePreviousStep}
-              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 md:py-2.5 bg-muted text-foreground font-bold text-xs md:text-sm rounded-xl hover:bg-muted/80 transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer"
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-4 md:py-3 bg-muted text-foreground font-black text-sm uppercase tracking-tighter rounded-xl hover:bg-muted/80 transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer"
               disabled={depositMutation.isPending}
             >
               ← Back
@@ -654,7 +654,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
               type="button"
               onClick={handleSubmitDeposit}
               disabled={depositMutation.isPending}
-              className="flex-[2] inline-flex items-center justify-center gap-2 px-4 py-3 md:py-2.5 bg-accent text-background font-bold text-xs md:text-sm rounded-xl hover:bg-accent/90 transition-all active:scale-[0.98] disabled:opacity-50 shadow-md cursor-pointer"
+              className="flex-[2] inline-flex items-center justify-center gap-2 px-6 py-4 md:py-3 bg-accent text-background font-black text-sm uppercase tracking-tighter rounded-xl hover:bg-accent/90 hover:scale-[1.02] hover:shadow-xl transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg cursor-pointer"
             >
               {depositMutation.isPending
                 ? "Processing..."
@@ -768,7 +768,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
                   setIsSubmitted(false);
                   depositMutation.reset();
                 }}
-                className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 md:px-8 py-2 bg-accent text-background font-semibold text-sm md:text-base rounded-lg hover:bg-accent/90 transition-colors cursor-pointer"
+                className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-8 md:px-10 py-3 bg-accent text-background font-black text-sm md:text-base uppercase tracking-tighter rounded-xl hover:bg-accent/90 hover:scale-[1.02] hover:shadow-xl transition-all shadow-lg cursor-pointer"
               >
                 {depositMutation.isSuccess
                   ? "Deposit Another"
@@ -785,7 +785,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
           <button
             type="button"
             onClick={handlePreviousStep}
-            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 md:px-4 py-3 md:py-2 bg-muted text-foreground font-bold text-xs md:text-sm rounded-xl hover:bg-muted/80 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all active:scale-[0.98] cursor-pointer"
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-4 md:py-3 bg-muted text-foreground font-black text-sm uppercase tracking-tighter rounded-xl hover:bg-muted/80 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all active:scale-[0.98] cursor-pointer"
           >
             ← Previous
           </button>
@@ -794,7 +794,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
           <button
             type="button"
             onClick={onChangeMethod}
-            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 md:px-4 py-3 md:py-2 bg-muted text-foreground font-bold text-xs md:text-sm rounded-xl hover:bg-muted/80 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all active:scale-[0.98] cursor-pointer"
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-4 md:py-3 bg-muted text-foreground font-black text-sm uppercase tracking-tighter rounded-xl hover:bg-muted/80 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all active:scale-[0.98] cursor-pointer"
           >
             ← Previous
           </button>
@@ -804,7 +804,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
             type="button"
             onClick={handleNextStep}
             disabled={(!depositAmount || parseFloat(depositAmount) <= 0) || (currentStep === 2 && !selectedWalletData)}
-            className="flex-[2] inline-flex items-center justify-center gap-1.5 px-3 md:px-4 py-3 md:py-2 bg-accent text-background font-bold text-xs md:text-sm rounded-xl hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.98] shadow-sm cursor-pointer"
+            className="flex-[2] inline-flex items-center justify-center gap-2 px-6 py-4 md:py-3 bg-accent text-background font-black text-sm uppercase tracking-tighter rounded-xl hover:bg-accent/90 hover:scale-[1.02] hover:shadow-xl transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed shadow-lg cursor-pointer"
           >
             {stepsCount === 3 && currentStep === 2 ? (depositMutation.isPending ? "Processing..." : "Confirm & Deposit") : "Next"}
             <span className="text-sm">→</span>
