@@ -21,7 +21,7 @@ export function TopStoriesWidget() {
     copyrightLink.target = "_blank";
 
     const spanElement = document.createElement("span");
-    spanElement.className = "blue-text";
+    spanElement.className = "text-gray-800";
     spanElement.textContent = "Track all markets on TradingView";
 
     copyrightLink.appendChild(spanElement);
@@ -55,5 +55,5 @@ export function TopStoriesWidget() {
     };
   }, []);
 
-  return <div ref={containerRef} className="h-[420px] w-full " />;
+  return <div ref={containerRef} className="top-stories-widget h-[420px] w-full" />;
 }

@@ -227,16 +227,16 @@ export default function Dashboard() {
         </div>
 
         <div className="mb-6 grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
-          <section className="rounded-[24px] border border-white/6 bg-[#0b111b] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] sm:p-6">
+          <section className="rounded-xl border border-white/6 bg-[#0b111b] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] sm:p-6">
             <TradingResultsChart />
           </section>
 
-          <section className="rounded-[24px] border border-white/6 bg-[#0b111b] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] sm:p-6">
+          <section className="rounded-xl border border-white/6 bg-[#0b111b] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] sm:p-6">
             <SuccessRateCard />
           </section>
         </div>
 
-        <section className="rounded-[24px] border border-white/6 bg-[#0b111b] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] sm:p-6">
+        <section className="rounded-xl border border-white/6 bg-[#0b111b] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] sm:p-6">
           <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="text-[15px] sm:text-[17px]  font-semibold tracking-tight text-white">
               Top Market Stories

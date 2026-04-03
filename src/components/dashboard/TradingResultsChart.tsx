@@ -136,7 +136,7 @@ export function TradingResultsChart() {
         </Tabs>
       </div>
 
-      <Card className="relative overflow-hidden rounded-[22px] border border-white/6 bg-[#0d131d] p-4 shadow-none">
+      <Card className="relative overflow-hidden rounded-xl border border-white/6 bg-[#0d131d] p-4 shadow-none">
         {!hasTradeData && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-6 text-center">
             <p className="text-lg font-semibold text-white/10">
