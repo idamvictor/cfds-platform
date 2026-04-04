@@ -1,22 +1,13 @@
 import axios from "axios";
 import useUserStore from "@/store/userStore";
+import { getApiBaseUrlFromWindowLocation } from "@/lib/api-base-url";
 
 // Get the base URL from the current domain
 const getBaseUrl = () => {
-    const origin = window.location.origin;
     const hostname = window.location.hostname;
 
     console.log("Determining API base URL for hostname:", hostname);
-    // Special handling for localhost environments
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-        return import.meta.env.VITE_API_URL;
-    } else if (hostname.includes('cfds-platform.vercel.app')){
-        return "https://demo.13i7.com/api/v1";
-    } else if (hostname.includes('staging')) {
-        return `${origin.replace('staging', 'secure')}/api/v1`;
-    } else {
-        return `${origin}/api/v1`;
-    }
+    return getApiBaseUrlFromWindowLocation();
 };
 
 const axiosInstance = axios.create({
