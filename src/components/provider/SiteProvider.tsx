@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import useSiteSettingsStore from "@/store/siteSettingStore";
 import { setApiBaseUrl } from "@/lib/axios";
+import { getApiBaseUrlFromWindowLocation } from "@/lib/api-base-url";
 
 import {SiteUnreachable} from "@/components/site/SiteUnreachable.tsx";
 import {SiteDisabled} from "@/components/site/SiteDisabled.tsx";
@@ -25,23 +26,7 @@ export function SiteProvider({ children }: SiteProviderProps) {
 
     useEffect(() => {
         if (typeof window !== "undefined") {
-            const origin = window.location.origin;
-            const hostname = window.location.hostname;
-            let apiUrl = "";
-            // Special handling for localhost environments
-            if (hostname === 'localhost' || hostname === '127.0.0.1') {
-                apiUrl = import.meta.env.VITE_API_URL || "https://demo.13i7.com/api/v1";
-            }
-            // Special handling for tradenation-cfd.com domains
-            else if (hostname.includes('cfds-platform.vercel.app')) {
-                apiUrl = 'https://demo.13i7.com/api/v1';
-            }
-            else if (hostname.includes('staging')) {
-                apiUrl = `${origin.replace('staging', 'secure')}/api/v1`;
-            }
-            else {
-                apiUrl = `${origin}/api/v1`;
-            }
+            const apiUrl = getApiBaseUrlFromWindowLocation();
             setBaseUrl(apiUrl);
             setApiBaseUrl(apiUrl);
         }
