@@ -8,21 +8,15 @@ import LoadingScreen from "./components/loading-screen";
 import WebSocketInitializer from "@/components/WebSocketInitializer.tsx";
 import useSiteSettingsStore from "@/store/siteSettingStore";
 import { OnlineStatusInitializer } from "@/components/OnlineStatusInitializer.tsx";
-import AdminChat from "@/pages/admin/AdminChat.tsx";
-import SignUpPage from "@/pages/auth/signup-page.tsx";
-import CountryResidencePage from "@/pages/auth/country-page.tsx";
 import { ChatNotificationListener } from "@/components/ChatNotificationListener.tsx";
-import MT4Layout from "./layouts/MT4Layout";
-import MainContent from "./components/mt4/main-content";
-import MarketplacePage from "@/pages/marketplace/marketplace-page.tsx";
 import TranslationErrorBoundary from "@/components/TranslationErrorBoundary.tsx";
-import { TradingPlatformLight } from "./components/mt4-light/trading-platform-light";
 import LiveTraderStatusWatcher from "@/components/LiveTraderStatusWatcher";
 
 const TradingRouter = lazy(() => import("./components/routing/TradingRouter"));
-
+const AdminChat = lazy(() => import("@/pages/admin/AdminChat.tsx"));
 const AutoLoginPage = lazy(() => import("./pages/auth/auto-login"));
-
+const SignUpPage = lazy(() => import("@/pages/auth/signup-page.tsx"));
+const CountryResidencePage = lazy(() => import("@/pages/auth/country-page.tsx"));
 const Test = lazy(() => import("./pages/test"));
 const RegisterPage = lazy(() => import("./pages/auth/register-page"));
 const LoginPage = lazy(() => import("./pages/auth/login-page"));
@@ -32,7 +26,10 @@ const ForgotPasswordPage = lazy(
 const ProtectedRoute = lazy(() => import("./components/ProtectedRoute"));
 
 const MainLayout = lazy(() => import("./layouts/MainLayout"));
+const MarketplacePage = lazy(() => import("@/pages/marketplace/marketplace-page.tsx"));
 const DepositLayout = lazy(() => import("./layouts/DepositLayout"));
+const MT4Layout = lazy(() => import("./layouts/MT4Layout"));
+const MainContent = lazy(() => import("./components/mt4/main-content"));
 const PersonalInformation = lazy(
   () => import("./pages/Preferences/PersonalInformation"),
 );
@@ -59,6 +56,11 @@ const DepositHistoryPage = lazy(
   () => import("./pages/Preferences/deposit-history-page"),
 );
 const KYCPartners = lazy(() => import("./pages/Preferences/KYCPartners"));
+const TradingPlatformLight = lazy(() =>
+  import("./components/mt4-light/trading-platform-light").then((module) => ({
+    default: module.TradingPlatformLight,
+  })),
+);
 
 const queryClient = new QueryClient();
 

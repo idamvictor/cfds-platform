@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import {
   ArrowRight,
   BadgeDollarSign,
@@ -7,8 +8,6 @@ import {
   Landmark,
   TrendingUp,
 } from "lucide-react";
-import { SuccessRateCard } from "@/components/dashboard/SuccessRateCard";
-import { TradingResultsChart } from "@/components/dashboard/TradingResultsChart";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { TopStoriesWidget } from "@/components/dashboard/TopStoriesWidget";
 import { useCurrency } from "@/hooks/useCurrency";
@@ -16,6 +15,17 @@ import useUserStore from "@/store/userStore";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import useSiteSettingsStore from "@/store/siteSettingStore.ts";
+
+const TradingResultsChart = lazy(() =>
+  import("@/components/dashboard/TradingResultsChart").then((module) => ({
+    default: module.TradingResultsChart,
+  })),
+);
+const SuccessRateCard = lazy(() =>
+  import("@/components/dashboard/SuccessRateCard").then((module) => ({
+    default: module.SuccessRateCard,
+  })),
+);
 
 const marketTickers = [
   { symbol: "EUR/USD", value: "1.1583", change: "+0.42%", positive: true },
@@ -55,6 +65,10 @@ export default function Dashboard() {
     minute: "2-digit",
     second: "2-digit",
   }).format(new Date());
+
+  const dashboardCardFallback = (
+    <div className="min-h-[320px] animate-pulse rounded-xl border border-white/6 bg-[#0d131d]" />
+  );
 
   return (
     <div className="min-h-screen text-[#485262] font_fam">
@@ -228,11 +242,15 @@ export default function Dashboard() {
 
         <div className="mb-6 grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
           <section className="rounded-xl border border-white/6 bg-[#0b111b] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] sm:p-6">
-            <TradingResultsChart />
+            <Suspense fallback={dashboardCardFallback}>
+              <TradingResultsChart />
+            </Suspense>
           </section>
 
           <section className="rounded-xl border border-white/6 bg-[#0b111b] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] sm:p-6">
-            <SuccessRateCard />
+            <Suspense fallback={dashboardCardFallback}>
+              <SuccessRateCard />
+            </Suspense>
           </section>
         </div>
 

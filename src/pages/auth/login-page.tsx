@@ -2,10 +2,10 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "@/store/userStore";
 import LoginBasic from "@/pages/auth/themes/LoginBasic.tsx";
-import ICMarketLogin from "@/pages/auth/themes/ICMarketLogin.tsx";
+// import ICMarketLogin from "@/pages/auth/themes/ICMarketLogin.tsx";
 import useSiteSettingsStore from "@/store/siteSettingStore.ts";
 import LoginTradeNation from "@/pages/auth/themes/LoginTradeNation.tsx";
-import ICMarketLoginLight from "@/pages/auth/themes/ICMarketLoginLight.tsx";
+// import ICMarketLoginLight from "@/pages/auth/themes/ICMarketLoginLight.tsx";
 
 
 export default function LoginPage() {
