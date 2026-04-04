@@ -25,19 +25,17 @@ export default function SignUpPage() {
 
 
   if (register_page === "basic") {
-    // return <RegisterBasic />;
+    return <RegisterBasic />;
   }
 
   if (register_page === "ic") {
-    // return <RegisterICMarket />;
+    return <RegisterICMarket />;
   }
 
   if (register_page === "td") {
-
-    // return <RegisterTradeNation />;
+    return <RegisterTradeNation />;
   }
 
   return <RegisterBasic />;
-    // return <RegisterTradeNation />;
-
+  
 }

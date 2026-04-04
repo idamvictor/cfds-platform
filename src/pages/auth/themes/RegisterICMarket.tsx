@@ -117,107 +117,179 @@ export default function RegisterICMarket() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0F1D] flex flex-col">
-      {/* Warning banner - Desktop version */}
+    <div className="min-h-screen bg-[#181A20] text-white flex flex-col">
       {settings?.register_page_header ? (
-        <div className="hidden md:block w-full bg-[#0C1E32] text-white/80 py-2 px-4 text-center text-sm">
+        <div className="w-full border-b border-white/10 bg-[#1E2329] px-4 py-3 text-center text-sm text-white/70">
           {settings?.register_page_header}
         </div>
       ) : null}
 
-      {/* Header */}
-      <div className="w-full px-4 md:px-8 py-4 md:py-6 flex justify-between items-center">
-        <div className="">
-          <Logo />
-        </div>
-        <div className="ml-auto">
-          <Button variant="ghost" className="text-white hover:bg-white/10">
-            <svg className="w-5 h-5 mr-2 md:hidden" viewBox="0 0 36 36">
-              <rect fill="#00247D" width="36" height="27" />
-              <path
-                d="M0,0 L36,27 M36,0 L0,27"
-                stroke="#fff"
-                strokeWidth="5.4"
-              />
-              <path
-                d="M0,0 L36,27 M36,0 L0,27"
-                stroke="#cf142b"
-                strokeWidth="3.6"
-              />
-              <path d="M18,0 V27 M0,13.5 H36" stroke="#fff" strokeWidth="9" />
-              <path
-                d="M18,0 V27 M0,13.5 H36"
-                stroke="#cf142b"
-                strokeWidth="5.4"
-              />
-            </svg>
-            <svg
-              className="w-5 h-5 mr-2 hidden md:block"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
+      <div className="w-full px-4 py-5 md:px-8 md:py-6">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between">
+          <div className="hidden md:block">
+            <Logo />
+          </div>
+          <div className="ml-auto">
+            <Button
+              variant="ghost"
+              className="h-auto rounded-full border border-white/10 bg-transparent px-3 py-2 text-white/70 hover:bg-white/5 hover:text-white"
             >
-              <circle cx="12" cy="12" r="10" />
-              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-            </svg>
-            EN
-            <svg
-              className="w-4 h-4 ml-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </Button>
+              <svg className="w-5 h-5 mr-2 md:hidden" viewBox="0 0 36 36">
+                <rect fill="#00247D" width="36" height="27" />
+                <path
+                  d="M0,0 L36,27 M36,0 L0,27"
+                  stroke="#fff"
+                  strokeWidth="5.4"
+                />
+                <path
+                  d="M0,0 L36,27 M36,0 L0,27"
+                  stroke="#cf142b"
+                  strokeWidth="3.6"
+                />
+                <path d="M18,0 V27 M0,13.5 H36" stroke="#fff" strokeWidth="9" />
+                <path
+                  d="M18,0 V27 M0,13.5 H36"
+                  stroke="#cf142b"
+                  strokeWidth="5.4"
+                />
+              </svg>
+              <svg
+                className="w-5 h-5 mr-2 hidden md:block"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+              </svg>
+              EN
+              <svg
+                className="w-4 h-4 ml-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </Button>
+          </div>
         </div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center px-4 md:px-8 mt-8 md:mt-0">
-        <div className="w-full max-w-6xl flex flex-col md:flex-row">
-          {/* Left side - Hero content */}
-          <div className="md:w-1/2 mb-8 md:mb-0">
-            <div className="text-center md:text-left pr-0 md:pr-8">
-              <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
-                Live Trading Account Application
-              </h1>
-              <div className="space-y-2 text-gray-300 text-sm md:text-base mb-6">
-                <p className="md:text-lg">
-                  - Fast account opening & instant funding
-                </p>
-                <p className="md:text-lg">
-                  - Forex CFD Provider covering 6 asset classes and 2000+
-                  products
-                </p>
+      <div className="flex-1 px-4 pb-8 md:px-8 md:pb-12">
+        <div className="mx-auto gap-10 grid grid-cols-1 md:grid-cols-2 w-full max-w-5xl">
+          <div className="order-2 md:order-1 w-full max-w-md mx-auto md:flex-1">
+            <div className="mb-6 flex justify-center items-center gap-3 md:mb-8">
+              <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-[#F0B90B] text-[#181A20] shadow-[0_0_24px_rgba(240,185,11,0.35)]">
+                <Logo />
               </div>
-              <div className="hidden md:block">
-                <p className="text-green-500 font-semibold text-lg mt-8">
-                  Start your trading journey today
-                </p>
-                <p className="text-gray-400 mt-2">
-                  Join thousands of traders who trust us worldwide
-                </p>
+              <div className="text-sm text-white/65">
+                <span className="font-semibold text-white">Trade Nation</span>
+                <span className="ml-1 hidden sm:inline">
+                  secure registration
+                </span>
+              </div>
+            </div>
+
+            <h1 className="max-w-md text-center text-2xl sm:text-3xl font-semibold leading-tight tracking-[-0.03em] text-white md:text-4xl">
+              <span className="text-[#F0B90B]">Sign up</span> to start your
+              trading journey
+            </h1>
+
+            <p className="text-center mt-4 max-w-md text-base leading-7 text-white/65 md:text-lg">
+              Already have an account?{" "}
+              <Link
+                to="/"
+                className="font-medium text-[#F0B90B] transition hover:text-[#ffd24d]"
+              >
+                Log In
+              </Link>
+            </p>
+
+            <div className="flex justify-center">
+              <div className="relative mx-auto my-10 flex h-[240px] w-[240px] items-center justify-center md:mx-0 md:my-14 md:h-[280px] md:w-[280px]">
+                <div className="absolute inset-x-10 bottom-8 h-24 rounded-sm border-2 border-[#F0B90B]/90 bg-transparent" />
+                <div className="absolute bottom-20 left-1/2 h-24 w-24 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,_rgba(240,185,11,0.95)_0%,_rgba(240,185,11,0.72)_45%,_rgba(240,185,11,0.05)_72%,_transparent_100%)] blur-[1px]" />
+                <div className="absolute bottom-[6.15rem] left-1/2 z-10 flex h-20 w-20 -translate-x-1/2 items-center justify-center rounded-full bg-[#F0B90B] text-5xl font-black text-[#181A20] shadow-[0_0_36px_rgba(240,185,11,0.35)]">
+                  $
+                </div>
+                <div className="absolute left-[3.65rem] top-[3.5rem] h-14 w-14 rotate-[-30deg] rounded-full border-2 border-[#F0B90B]" />
+                <div className="absolute right-[3.65rem] top-[4.75rem] h-5 w-5 rounded-full border-2 border-[#F0B90B] border-l-transparent border-b-transparent rotate-[32deg]" />
+                <div className="absolute right-[2.9rem] top-[7.55rem] h-5 w-5 rounded-full border-2 border-[#F0B90B] border-l-transparent border-b-transparent rotate-[32deg]" />
+                <div className="absolute top-[4.7rem] h-12 w-[110px] rotate-[-32deg] border-2 border-[#F0B90B] bg-transparent" />
+                <div className="absolute top-[4.25rem] h-14 w-8 rotate-[-32deg] bg-[linear-gradient(180deg,rgba(240,185,11,0.95),rgba(168,112,0,0.92))] shadow-[0_0_18px_rgba(240,185,11,0.4)]" />
+              </div>
+            </div>
+
+            <div className="space-y-7 text-sm text-white/80">
+              <div className="flex items-start gap-4">
+                <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.03]">
+                  <svg
+                    className="h-4 w-4 text-white"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                  >
+                    <path d="M8 21h8M12 17v4M7 4h10l1 4-2 2v3a4 4 0 0 1-8 0v-3L6 8l1-4Z" />
+                  </svg>
+                </div>
+                <div className="pt-1">
+                  Fast account opening and a smooth path into live trading.
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.03]">
+                  <svg
+                    className="h-4 w-4 text-white"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                  >
+                    <path d="M12 3l7 4v10l-7 4-7-4V7l7-4Z" />
+                    <path d="M9 12l2 2 4-4" />
+                  </svg>
+                </div>
+                <div className="pt-1">
+                  Email availability is checked first, then we carry your saved
+                  registration details forward.
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Right side - Form */}
-          <div className="md:w-1/2">
-            <div className="bg-[#0C1E32]/80 p-8 rounded-lg backdrop-blur-sm border border-gray-800">
-              <h2 className="text-2xl font-bold text-white mb-6 text-center">
-                Create Your Account
-              </h2>
+          {/* right side  */}
+          <div className="order-1 md:order-2 w-full md:max-w-[400px] lg:pt-10 max-w-[400px] mx-auto md:flex-shrink-0">
+            <div className="rounded-[28px] border border-white/10 bg-[#181A20] px-6 py-7 shadow-[0_24px_80px_rgba(0,0,0,0.38)] sm:px-8 sm:py-9">
+              <div className="mb-4">
+                <div className="mb-3 inline-flex items-center gap-2 text-[#F0B90B]">
+                  <div className="grid grid-cols-2 gap-1">
+                    <span className="h-2 w-2 rotate-45 bg-current" />
+                    <span className="h-2 w-2 rotate-45 bg-current opacity-80" />
+                    <span className="h-2 w-2 rotate-45 bg-current opacity-80" />
+                    <span className="h-2 w-2 rotate-45 bg-current" />
+                  </div>
+                  <span className="text-sm font-semibold tracking-[0.12em]">
+                    TRADE NATION
+                  </span>
+                </div>
+                <h2 className="text-xl md:text-2xl font-semibold tracking-[-0.03em] text-white">
+                  Create your account
+                </h2>
+              </div>
 
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-6"
+                  className="space-y-5"
                 >
                   <FormField
                     control={form.control}
@@ -228,7 +300,7 @@ export default function RegisterICMarket() {
                           <Input
                             placeholder="Email address*"
                             {...field}
-                            className="bg-transparent border-white/20 text-white placeholder:text-white/50 rounded-lg py-6"
+                            className="h-10 rounded-lg border-white/15 bg-[#1E2329] px-4 text-white placeholder:text-white/35 focus-visible:ring-1 focus-visible:ring-[#F0B90B] focus-visible:ring-offset-0"
                           />
                         </FormControl>
                         <FormMessage />
@@ -247,13 +319,13 @@ export default function RegisterICMarket() {
                               type={showPassword ? "text" : "password"}
                               placeholder="Password*"
                               {...field}
-                              className="bg-transparent border-white/20 text-white placeholder:text-white/50 rounded-lg pr-10 py-6"
+                              className="h-10 rounded-lg border-white/15 bg-[#1E2329] px-4 pr-11 text-white placeholder:text-white/35 focus-visible:ring-1 focus-visible:ring-[#F0B90B] focus-visible:ring-offset-0"
                             />
                           </FormControl>
                           <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/35 transition hover:text-white"
                             aria-label={
                               showPassword ? "Hide password" : "Show password"
                             }
@@ -272,7 +344,7 @@ export default function RegisterICMarket() {
 
                   <Button
                     type="submit"
-                    className="w-full bg-green-500 hover:bg-green-600 text-black font-semibold rounded-md py-6 transition-all flex items-center justify-center"
+                    className="mt-2 h-11 w-full rounded-xl bg-[#F0B90B] font-semibold text-[#181A20] transition hover:bg-[#f5c842] flex items-center justify-center"
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -282,7 +354,7 @@ export default function RegisterICMarket() {
                       </div>
                     ) : (
                       <>
-                        Create Your Account
+                        Create account
                         <svg
                           className="w-5 h-5 ml-2"
                           fill="none"
@@ -302,23 +374,23 @@ export default function RegisterICMarket() {
                 </form>
               </Form>
 
-              <div className="mt-6 text-center">
-                <p className="text-gray-400">Already have an account?</p>
+              <div className="mt-7 text-center text-sm text-white/60">
+                Already have an account?{" "}
                 <Link
                   to="/"
-                  className="text-green-500 font-medium hover:text-green-400 mt-1 inline-block"
+                  className="font-medium text-[#F0B90B] transition hover:text-[#ffd24d]"
                 >
-                  Sign in to your account
+                  Log In
                 </Link>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-gray-700">
-                <ul className="flex flex-wrap justify-center gap-4 text-xs text-gray-400">
+              <div className="mt-7 border-t border-white/10 pt-5">
+                <ul className="flex flex-wrap justify-center gap-4 text-xs text-white/45">
                   <li>
                     <a
                       target="_blank"
                       href={settings?.terms_url}
-                      className="hover:text-green-500"
+                      className="transition hover:text-[#F0B90B]"
                     >
                       Terms of Service
                     </a>
@@ -326,7 +398,7 @@ export default function RegisterICMarket() {
                   <li>
                     <a
                       href={settings?.privacy_url}
-                      className="hover:text-green-500"
+                      className="transition hover:text-[#F0B90B]"
                     >
                       Privacy Policy
                     </a>
@@ -334,7 +406,7 @@ export default function RegisterICMarket() {
                   <li>
                     <a
                       href={settings?.risk_url}
-                      className="hover:text-green-500"
+                      className="transition hover:text-[#F0B90B]"
                     >
                       Risk Disclosure
                     </a>
@@ -342,7 +414,7 @@ export default function RegisterICMarket() {
                   <li>
                     <a
                       href={settings?.help_url}
-                      className="hover:text-green-500"
+                      className="transition hover:text-[#F0B90B]"
                     >
                       Help Center
                     </a>
@@ -354,11 +426,10 @@ export default function RegisterICMarket() {
         </div>
       </div>
 
-      {/* Footer section - Only visible on desktop */}
       {settings?.register_page_footer ? (
-        <div className="mt-8 hidden md:block bg-[#0C1E32] py-4">
+        <div className="mt-8 hidden md:block bg-[#1E2329] py-4">
           <div className="max-w-6xl mx-auto px-4 md:px-8">
-            <div className="text-center text-xs text-gray-400">
+            <div className="text-center text-xs text-white/40">
               <p>{settings?.register_page_footer}</p>
             </div>
           </div>
