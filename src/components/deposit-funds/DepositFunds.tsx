@@ -91,11 +91,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  {!isVerified && (
-                    <span className="bg-amber-500/10 text-amber-500 text-[9px] md:text-[10px] px-2 py-1 rounded-lg font-black whitespace-nowrap border border-amber-500/20 uppercase tracking-tighter">
-                      KYC Required
-                    </span>
-                  )}
+                  
                   <div className="flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-blue-500/10 rounded-2xl flex-shrink-0 p-2 border border-blue-500/20 shadow-inner">
                     <img 
                       src="https://cdn-icons-png.flaticon.com/512/6963/6963703.png" 
@@ -103,6 +99,11 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
                       className="w-full h-full object-contain drop-shadow-md"
                     />
                   </div>
+                  {!isVerified && (
+                    <span className="bg-amber-500/10 text-amber-500 text-[9px] md:text-[10px] px-2 py-1 rounded-lg font-black whitespace-nowrap border border-amber-500/20 uppercase tracking-tighter">
+                      KYC Required
+                    </span>
+                  )}
                 </div>
                 <div className="flex flex-col items-end gap-2">
                   {selectedMethod === "card" && (
