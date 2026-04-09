@@ -6,6 +6,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Wallet, Sparkles } from "lucide-react";
+import axiosInstance from "@/lib/axios";
 
 interface DepositPromptModalProps {
   onDeposit: () => void;
@@ -15,12 +16,24 @@ const DepositPromptModal: React.FC<DepositPromptModalProps> = ({ onDeposit }) =>
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // Show after 2 seconds on every refresh
-    const timer = setTimeout(() => {
-      setIsOpen(true);
-    }, 2000);
+    const checkDeposits = async () => {
+      try {
+        const response = await axiosInstance.get("/user/deposits");
+        const deposits = response.data?.data?.data || [];
+        
+        // Only show if user has no deposits
+        if (deposits.length === 0) {
+          const timer = setTimeout(() => {
+            setIsOpen(true);
+          }, 2000);
+          return () => clearTimeout(timer);
+        }
+      } catch (error) {
+        console.error("Error checking deposits:", error);
+      }
+    };
 
-    return () => clearTimeout(timer);
+    checkDeposits();
   }, []);
 
   const handleDeposit = () => {
