@@ -16,11 +16,13 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Link } from "react-router-dom";
 import { countries, countryCodeMap } from "@/constants/countries.ts";
 
+// ── Validation (UNCHANGED) ─────────────────────────────────────────
 const formSchema = z
   .object({
     email: z.string().email({ message: "Please enter a valid email address" }),
@@ -43,14 +45,30 @@ interface EmailCheckResponse {
   };
 }
 
+// ── Password strength (purely visual) ──────────────────────────────
+function getPasswordStrength(password: string) {
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (password.length >= 12) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+  if (score <= 1) return { label: "Weak", color: "#ef4444", percent: 20 };
+  if (score <= 2) return { label: "Fair", color: "#FF9800", percent: 40 };
+  if (score <= 3) return { label: "Good", color: "#f0b90b", percent: 60 };
+  if (score <= 4) return { label: "Strong", color: "#00dfa2", percent: 80 };
+  return { label: "Very Strong", color: "#00dfa2", percent: 100 };
+}
+
 export default function RegisterTradeNation() {
+  // ── State (UNCHANGED) ──
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showWarning, setShowWarning] = useState(true);
   const navigate = useNavigate();
 
-  // Initialize form
+  // ── Form (UNCHANGED) ──
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -60,6 +78,9 @@ export default function RegisterTradeNation() {
     },
   });
 
+  const watchedPassword = form.watch("password");
+
+  // ── Handlers (UNCHANGED) ──
   const checkEmail = async (email: string): Promise<EmailCheckResponse> => {
     try {
       const response = await axiosInstance.post("/auth/check-email", { email });
@@ -84,7 +105,6 @@ export default function RegisterTradeNation() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
-      // First, check if email is available
       const emailCheckResult = await checkEmail(values.email);
 
       if (!emailCheckResult.success || !emailCheckResult.data?.available) {
@@ -93,12 +113,9 @@ export default function RegisterTradeNation() {
       }
 
       const detectedCountry = emailCheckResult.data.country || "US";
-
       const countryObj = findCountryByCode(detectedCountry);
-
       const country = countryObj?.value ?? "united_states";
 
-      // Save registration data to localStorage
       const registrationData = {
         email: values.email,
         password: values.password,
@@ -128,19 +145,22 @@ export default function RegisterTradeNation() {
     }
   }
 
+  const inputCls =
+    "h-12 rounded-[14px] border-[1.5px] border-white/[0.1] bg-gradient-to-br from-white/[0.06] to-white/[0.02] px-[18px] text-[0.95rem] text-[#eef2f7] placeholder:text-[#4a5468] transition-all hover:border-white/[0.18] focus-visible:border-[#00dfa2] focus-visible:shadow-[0_0_0_3px_rgba(0,223,162,0.1)] focus-visible:ring-0 focus-visible:ring-offset-0";
+
   return (
-    <div className="min-h-screen bg-[#181A20] text-white flex flex-col">
-      {/* Warning banner - Mobile version */}
+    <div className="flex min-h-screen flex-col bg-[#07080c] text-[#eef2f7]">
+      {/* Warning banner - Mobile (UNCHANGED toggle logic) */}
       <div className="md:hidden">
         {showWarning ? (
-          <div className="w-full border-b border-white/10 bg-[#1E2329] px-4 py-3 text-sm text-white/70 flex items-center justify-between gap-3">
+          <div className="flex w-full items-center justify-between gap-3 border-b border-white/[0.06] bg-[#0a0d15] px-4 py-3 text-sm text-[#8b97a8]">
             <span>
               Trading CFDs carries a high level of risk to your capital, and you
               should only trade with money you can afford to lose.
             </span>
             <button
               onClick={() => setShowWarning(false)}
-              className="shrink-0 rounded-full border border-white/10 p-1 text-white/70 transition hover:text-white"
+              className="shrink-0 rounded-full border border-white/[0.08] p-1 text-[#8b97a8] transition hover:text-[#eef2f7]"
             >
               <ChevronUp className="h-4 w-4" />
             </button>
@@ -148,288 +168,112 @@ export default function RegisterTradeNation() {
         ) : (
           <button
             onClick={() => setShowWarning(true)}
-            className="w-full border-b border-white/10 bg-[#1E2329] px-4 py-3 text-white/70 flex items-center justify-center"
+            className="flex w-full items-center justify-center border-b border-white/[0.06] bg-[#0a0d15] px-4 py-3 text-[#8b97a8]"
           >
-            <ChevronDown className="h-4 w-4 mr-2" />
+            <ChevronDown className="mr-2 h-4 w-4" />
             <span className="text-sm">Show risk warning</span>
           </button>
         )}
       </div>
 
-      {/* Warning banner - Desktop version */}
-      <div className="hidden md:block w-full border-b border-white/10 bg-[#1E2329] px-4 py-3 text-center text-sm text-white/70">
+      {/* Warning banner - Desktop */}
+      <div className="hidden w-full border-b border-white/[0.06] bg-[#0a0d15] px-4 py-3 text-center text-sm text-[#8b97a8] md:block">
         Trading CFDs carries a high level of risk to your capital, and you
         should only trade with money you can afford to lose.
       </div>
 
-      {/* Header */}
-      <div className="w-full px-4 py-5 md:px-8 md:py-6">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between">
-          <div className="hidden md:block">
-            <Logo />
-          </div>
-          <div className="ml-auto">
-            <Button
-              variant="ghost"
-              className="h-auto rounded-full border border-white/10 bg-transparent px-3 py-2 text-white/70 hover:bg-white/5 hover:text-white"
-            >
-              <svg className="w-5 h-5 mr-2 md:hidden" viewBox="0 0 36 36">
-                <rect fill="#00247D" width="36" height="27" />
-                <path
-                  d="M0,0 L36,27 M36,0 L0,27"
-                  stroke="#fff"
-                  strokeWidth="5.4"
-                />
-                <path
-                  d="M0,0 L36,27 M36,0 L0,27"
-                  stroke="#cf142b"
-                  strokeWidth="3.6"
-                />
-                <path d="M18,0 V27 M0,13.5 H36" stroke="#fff" strokeWidth="9" />
-                <path
-                  d="M18,0 V27 M0,13.5 H36"
-                  stroke="#cf142b"
-                  strokeWidth="5.4"
-                />
-              </svg>
-              <svg
-                className="w-5 h-5 mr-2 hidden md:block"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-              </svg>
-              EN
-              <svg
-                className="w-4 h-4 ml-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex-1 px-4 pb-8 md:px-8 md:pb-12">
-        <div className="mx-auto gap-10 grid grid-cols-1 md:grid-cols-2 w-full max-w-5xl">
-          {/* Left side - Text */}
-          <div className="order-2 md:order-1 w-full md:max-w-md mx-auto md:flex-1">
-            <div className="mb-6 flex items-center justify-center gap-3 md:mb-8">
-              <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-[#F0B90B] text-[#181A20] shadow-[0_0_24px_rgba(240,185,11,0.35)]">
-                <Logo />
-              </div>
-              <div className="text-sm text-white/65">
-                <span className="font-semibold text-white">Trade Nation</span>
-                <span className="ml-1 hidden sm:inline text">
-                  secure registration
-                </span>
-              </div>
+      {/* ── Main content ── */}
+      <div className="flex flex-1 items-center justify-center px-5 py-10 md:py-16">
+        <div className="grid w-full max-w-[880px] grid-cols-1 items-start gap-10 md:grid-cols-2">
+          {/* ══════ LEFT: Logo + Form Card ══════ */}
+          <div className="order-2 flex flex-col md:order-1">
+            <div className="mb-5">
+              <Logo />
             </div>
 
-            <h1 className="max-w-md text-2xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-3xl md:text-4xl text-center">
-              <span className="text-[#F0B90B]">Sign up</span> to power up your
-              trading
-            </h1>
+            {/* Glassmorphic form card */}
+            <div className="relative overflow-hidden rounded-3xl border-[1.5px] border-white/[0.08] bg-gradient-to-br from-white/[0.06] via-white/[0.02] to-[#00dfa2]/[0.02] p-7 shadow-[0_4px_24px_rgba(0,0,0,0.4),0_20px_60px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl sm:p-9">
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-3xl bg-gradient-to-b from-white/[0.03] to-transparent" />
 
-            <p className="text-center mt-4 max-w-md text-base leading-7 text-white/65 md:text-lg">
-              Already have an account?{" "}
-              <Link
-                to="/?type=basic"
-                className="font-medium text-[#F0B90B] transition hover:text-[#ffd24d]"
-              >
-                Log in here
-              </Link>
-            </p>
-
-            <div className="flex justify-center">
-              <div className="relative mx-auto my-10 flex h-[240px] w-[240px] items-center justify-center md:mx-0 md:my-14 md:h-[280px] md:w-[280px]">
-                <div className="absolute inset-x-10 bottom-8 h-24 rounded-sm border-2 border-[#F0B90B]/90 bg-transparent" />
-                <div className="absolute bottom-20 left-1/2 h-24 w-24 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,_rgba(240,185,11,0.95)_0%,_rgba(240,185,11,0.72)_45%,_rgba(240,185,11,0.05)_72%,_transparent_100%)] blur-[1px]" />
-                <div className="absolute bottom-[6.15rem] left-1/2 z-10 flex h-20 w-20 -translate-x-1/2 items-center justify-center rounded-full bg-[#F0B90B] text-5xl font-black text-[#181A20] shadow-[0_0_36px_rgba(240,185,11,0.35)]">
-                  $
-                </div>
-                <div className="absolute left-[3.65rem] top-[3.5rem] h-14 w-14 rotate-[-30deg] rounded-full border-2 border-[#F0B90B]" />
-                <div className="absolute right-[3.65rem] top-[4.75rem] h-5 w-5 rounded-full border-2 border-[#F0B90B] border-l-transparent border-b-transparent rotate-[32deg]" />
-                <div className="absolute right-[2.9rem] top-[7.55rem] h-5 w-5 rounded-full border-2 border-[#F0B90B] border-l-transparent border-b-transparent rotate-[32deg]" />
-                <div className="absolute top-[4.7rem] h-12 w-[110px] rotate-[-32deg] border-2 border-[#F0B90B] bg-transparent" />
-                <div className="absolute top-[4.25rem] h-14 w-8 rotate-[-32deg] bg-[linear-gradient(180deg,rgba(240,185,11,0.95),rgba(168,112,0,0.92))] shadow-[0_0_18px_rgba(240,185,11,0.4)]" />
-              </div>
-            </div>
-
-            <div className="space-y-7 text-sm text-white/80">
-              <div className="flex items-start gap-4">
-                <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.03]">
-                  <svg
-                    className="h-4 w-4 text-white"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                  >
-                    <path d="M8 21h8M12 17v4M7 4h10l1 4-2 2v3a4 4 0 0 1-8 0v-3L6 8l1-4Z" />
-                  </svg>
-                </div>
-                <div className="pt-1">Ready to trade with the G.O.A.T?</div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.03]">
-                  <svg
-                    className="h-4 w-4 text-white"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                  >
-                    <path d="M12 3l7 4v10l-7 4-7-4V7l7-4Z" />
-                    <path d="M9 12l2 2 4-4" />
-                  </svg>
-                </div>
-                <div className="pt-1">
-                  <span>Excellent </span>
-                  <span className="inline-flex items-center rounded bg-[#00B67A] px-2 py-1 text-xs font-semibold text-white">
-                    {[...Array(5)].map((_, i) => (
-                      <svg
-                        key={i}
-                        className="h-3.5 w-3.5 fill-current"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z" />
-                      </svg>
-                    ))}
-                  </span>
-                  <span className="ml-2">1,196 reviews on </span>
-                  <span className="font-medium text-[#00B67A]">Trustpilot</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right side - Form */}
-          <div className="order-1 md:order-2 w-full md:max-w-[400px] max-w-[400px] mx-auto md:flex-shrink-0">
-            <div className="rounded-[28px] border border-white/10 bg-[#181A20] px-6 py-7 shadow-[0_24px_80px_rgba(0,0,0,0.38)] sm:px-8 sm:py-9">
-              <div className="mb-8">
-                <div className="mb-3 inline-flex items-center gap-2 text-[#F0B90B]">
-                  <div className="grid grid-cols-2 gap-1">
-                    <span className="h-2.5 w-2.5 rotate-45 bg-current" />
-                    <span className="h-2.5 w-2.5 rotate-45 bg-current opacity-80" />
-                    <span className="h-2.5 w-2.5 rotate-45 bg-current opacity-80" />
-                    <span className="h-2.5 w-2.5 rotate-45 bg-current" />
-                  </div>
-                  <span className="text-lg font-semibold tracking-[0.12em]">
-                    TRADE NATION
-                  </span>
-                </div>
-                <h2 className="text-2xl font-semibold tracking-[-0.03em] text-white">
+              {/* Header */}
+              <div className="relative z-[2] mb-7 border-b border-white/[0.06] pb-5">
+                <h2 className="font-[Outfit,sans-serif] text-2xl font-bold text-[#eef2f7]">
                   Create your account
                 </h2>
+                <p className="mt-2 text-sm text-[#8b97a8]">
+                  Start your trading journey in minutes
+                </p>
               </div>
 
-              <div className="space-y-3">
-                <Button
-                  variant="outline"
-                  className="h-10 w-full justify-start rounded-xl border-white/15 bg-transparent px-4 text-white hover:bg-white/[0.03] hover:text-white"
-                  onClick={() => {
-                    /* Add Google registration logic */
-                  }}
+              {/* Social login buttons (presentational only) */}
+              <div className="relative z-[2] grid grid-cols-3 gap-2.5">
+                <button
+                  type="button"
+                  disabled
+                  className="flex h-11 cursor-not-allowed items-center justify-center rounded-[14px] border-[1.5px] border-white/[0.1] bg-gradient-to-br from-white/[0.06] to-white/[0.02] text-[#eef2f7] opacity-60"
+                  title="Sign up with Apple"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      fill="#4285F4"
-                      d="M23.745 12.27c0-.79-.07-1.54-.19-2.27h-11.3v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82Z"
-                    />
-                    <path
-                      fill="#34A853"
-                      d="M12.255 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96h-3.98v3.09c1.97 3.92 6.02 6.62 10.71 6.62Z"
-                    />
-                    <path
-                      fill="#FBBC05"
-                      d="M5.525 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62h-3.98a11.86 11.86 0 0 0 0 10.76l3.98-3.09Z"
-                    />
-                    <path
-                      fill="#EA4335"
-                      d="M12.255 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C18.205 1.19 15.495 0 12.255 0c-4.69 0-8.74 2.7-10.71 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96Z"
-                    />
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
                   </svg>
-                  <span className="ml-3">Sign up with Google</span>
-                </Button>
-
-                <Button
-                  variant="outline"
-                  className="h-10 w-full justify-start rounded-xl border-white/15 bg-transparent px-4 text-white hover:bg-white/[0.03] hover:text-white"
-                  onClick={() => {
-                    /* Add Apple registration logic */
-                  }}
+                </button>
+                <button
+                  type="button"
+                  disabled
+                  className="flex h-11 cursor-not-allowed items-center justify-center rounded-[14px] border-[1.5px] border-white/[0.1] bg-gradient-to-br from-white/[0.06] to-white/[0.02] opacity-60"
+                  title="Sign up with Google"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 24 24"
-                    fill="white"
-                  >
-                    <path d="M17.569 12.787c-.043-3.401 2.777-5.036 2.903-5.114-1.583-2.314-4.042-2.629-4.914-2.665-2.079-.216-4.079 1.242-5.139 1.242-1.077 0-2.714-1.215-4.468-1.181-2.277.034-4.389 1.345-5.562 3.398-2.396 4.158-.612 10.293 1.69 13.661 1.145 1.652 2.492 3.5 4.26 3.433 1.724-.069 2.371-1.103 4.452-1.103 2.063 0 2.662 1.103 4.452 1.066 1.845-.03 3.014-1.664 4.129-3.327 1.319-1.907 1.854-3.765 1.875-3.861-.041-.016-3.576-1.374-3.62-5.438v-.111l-.009.003Zm-3.334-9.983c.932-1.162 1.565-2.745 1.393-4.355-1.344.055-3.011.916-3.981 2.056-.859 1.002-1.623 2.645-1.423 4.193 1.51.115 3.061-.764 4.011-1.894Z" />
+                  <svg viewBox="0 0 24 24" width="20" height="20">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                   </svg>
-                  <span className="ml-3">Sign up with Apple</span>
-                </Button>
-
-                <Button
-                  variant="outline"
-                  className="h-10 w-full justify-start rounded-xl border-white/15 bg-transparent px-4 text-white hover:bg-white/[0.03] hover:text-white"
-                  onClick={() => {
-                    /* Add LinkedIn registration logic */
-                  }}
+                </button>
+                <button
+                  type="button"
+                  disabled
+                  className="flex h-11 cursor-not-allowed items-center justify-center rounded-[14px] border-[1.5px] border-white/[0.1] bg-gradient-to-br from-white/[0.06] to-white/[0.02] opacity-60"
+                  title="Sign up with Facebook"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 24 24"
-                    fill="#0A66C2"
-                  >
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                  <svg viewBox="0 0 24 24" width="20" height="20">
+                    <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                   </svg>
-                  <span className="ml-3">Sign up with LinkedIn</span>
-                </Button>
+                </button>
               </div>
 
-              <div className="my-7 flex items-center gap-4">
-                <div className="h-px flex-1 bg-white/10" />
-                <span className="text-sm font-medium text-white/45">or</span>
-                <div className="h-px flex-1 bg-white/10" />
+              {/* Divider */}
+              <div className="relative z-[2] my-5 flex items-center gap-3">
+                <div className="h-px flex-1 bg-white/[0.08]" />
+                <span className="text-xs font-medium uppercase tracking-wide text-[#4a5468]">
+                  or
+                </span>
+                <div className="h-px flex-1 bg-white/[0.08]" />
               </div>
 
+              {/* Form */}
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4"
+                  className="relative z-[2] space-y-4"
                 >
                   <FormField
                     control={form.control}
                     name="email"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="space-y-1.5">
+                        <FormLabel className="text-[0.8rem] font-semibold uppercase tracking-wide text-[#8b97a8]">
+                          Email
+                        </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Email address*"
+                            type="email"
+                            placeholder="name@example.com"
                             {...field}
-                            className="h-10 rounded-xl border-white/15 bg-[#1E2329] px-4 text-white placeholder:text-white/35 focus-visible:ring-1 focus-visible:ring-[#F0B90B] focus-visible:ring-offset-0"
+                            className={inputCls}
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-[11px] font-semibold text-[#ef4444]" />
                       </FormItem>
                     )}
                   />
@@ -438,32 +282,55 @@ export default function RegisterTradeNation() {
                     control={form.control}
                     name="password"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="space-y-1.5">
+                        <FormLabel className="text-[0.8rem] font-semibold uppercase tracking-wide text-[#8b97a8]">
+                          Password
+                        </FormLabel>
                         <div className="relative">
                           <FormControl>
                             <Input
                               type={showPassword ? "text" : "password"}
-                              placeholder="Password*"
+                              placeholder="Min. 8 characters"
                               {...field}
-                              className="h-10 rounded-xl border-white/15 bg-[#1E2329] px-4 pr-11 text-white placeholder:text-white/35 focus-visible:ring-1 focus-visible:ring-[#F0B90B] focus-visible:ring-offset-0"
+                              className={inputCls + " pr-12"}
                             />
                           </FormControl>
                           <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/35 transition hover:text-white"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#4a5468] transition-colors hover:text-[#00dfa2]"
                             aria-label={
                               showPassword ? "Hide password" : "Show password"
                             }
                           >
                             {showPassword ? (
-                              <EyeOff className="h-5 w-5" />
+                              <EyeOff className="h-[18px] w-[18px]" />
                             ) : (
-                              <Eye className="h-5 w-5" />
+                              <Eye className="h-[18px] w-[18px]" />
                             )}
                           </button>
                         </div>
-                        <FormMessage />
+                        {/* Password strength indicator */}
+                        {watchedPassword && (
+                          <div className="mt-1.5 space-y-1">
+                            <div className="h-1 w-full overflow-hidden rounded-full bg-white/[0.06]">
+                              <div
+                                className="h-full rounded-full transition-all duration-300"
+                                style={{
+                                  width: `${getPasswordStrength(watchedPassword).percent}%`,
+                                  backgroundColor: getPasswordStrength(watchedPassword).color,
+                                }}
+                              />
+                            </div>
+                            <p
+                              className="text-[10px] font-semibold"
+                              style={{ color: getPasswordStrength(watchedPassword).color }}
+                            >
+                              {getPasswordStrength(watchedPassword).label}
+                            </p>
+                          </div>
+                        )}
+                        <FormMessage className="text-[11px] font-semibold text-[#ef4444]" />
                       </FormItem>
                     )}
                   />
@@ -472,14 +339,17 @@ export default function RegisterTradeNation() {
                     control={form.control}
                     name="confirmPassword"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="space-y-1.5">
+                        <FormLabel className="text-[0.8rem] font-semibold uppercase tracking-wide text-[#8b97a8]">
+                          Confirm Password
+                        </FormLabel>
                         <div className="relative">
                           <FormControl>
                             <Input
                               type={showConfirmPassword ? "text" : "password"}
-                              placeholder="Confirm Password*"
+                              placeholder="Re-enter password"
                               {...field}
-                              className="h-10 rounded-xl border-white/15 bg-[#1E2329] px-4 pr-11 text-white placeholder:text-white/35 focus-visible:ring-1 focus-visible:ring-[#F0B90B] focus-visible:ring-offset-0"
+                              className={inputCls + " pr-12"}
                             />
                           </FormControl>
                           <button
@@ -487,7 +357,7 @@ export default function RegisterTradeNation() {
                             onClick={() =>
                               setShowConfirmPassword(!showConfirmPassword)
                             }
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/35 transition hover:text-white"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#4a5468] transition-colors hover:text-[#00dfa2]"
                             aria-label={
                               showConfirmPassword
                                 ? "Hide password"
@@ -495,68 +365,161 @@ export default function RegisterTradeNation() {
                             }
                           >
                             {showConfirmPassword ? (
-                              <EyeOff className="h-5 w-5" />
+                              <EyeOff className="h-[18px] w-[18px]" />
                             ) : (
-                              <Eye className="h-5 w-5" />
+                              <Eye className="h-[18px] w-[18px]" />
                             )}
                           </button>
                         </div>
-                        <FormMessage />
+                        <FormMessage className="text-[11px] font-semibold text-[#ef4444]" />
                       </FormItem>
                     )}
                   />
 
                   <Button
                     type="submit"
-                    className="mt-2 h-10 w-full rounded-xl bg-[#F0B90B] font-semibold text-[#181A20] transition hover:bg-[#f5c842] flex items-center justify-center"
+                    className="mt-2 h-12 w-full rounded-xl bg-gradient-to-br from-[#00ffc3] via-[#00dfa2] to-[#00b881] font-bold text-[0.95rem] text-black shadow-[0_4px_14px_rgba(0,223,162,0.3),inset_0_2px_0_rgba(255,255,255,0.25)] transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(0,223,162,0.4)] active:translate-y-0"
                     disabled={isLoading}
                   >
                     {isLoading ? (
-                      <div className="flex items-center gap-2">
-                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                        Checking email availability...
-                      </div>
+                      <span className="flex items-center gap-2">
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                        Checking email...
+                      </span>
                     ) : (
-                      <>
-                        Sign up now
-                        <svg
-                          className="w-5 h-5 ml-2"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17 8l4 4m0 0l-4 4m4-4H3"
-                          />
-                        </svg>
-                      </>
+                      "Sign up now"
                     )}
                   </Button>
                 </form>
               </Form>
 
-              <div className="mt-7 text-center text-sm text-white/60">
+              <p className="relative z-[2] mt-5 text-center text-[0.85rem] text-[#8b97a8]">
                 Already have an account?{" "}
                 <Link
                   to="/"
-                  className="font-medium text-[#F0B90B] transition hover:text-[#ffd24d]"
+                  className="font-semibold text-[#00dfa2] transition-colors hover:text-[#00ffc3]"
                 >
                   Log in here
                 </Link>
+              </p>
+            </div>
+          </div>
+
+          {/* ══════ RIGHT: Trust Panel ══════ */}
+          <div className="order-1 md:order-2">
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-br from-[#0c1629] to-[#080e1c] p-7 sm:p-8">
+              <div className="pointer-events-none absolute -right-1/2 -top-1/2 h-[400px] w-[400px] rounded-full bg-[radial-gradient(circle,rgba(0,223,162,0.08),transparent_70%)]" />
+
+              <div className="relative z-[1] flex flex-col gap-6">
+                <TrustItem
+                  icon={
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                  }
+                  title="Licensed and regulated"
+                  description="An authorized financial services provider with global coverage."
+                />
+                <TrustItem
+                  icon={
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                    </svg>
+                  }
+                  title="Trusted by millions of users"
+                  description="Join our global community of traders in 150+ countries."
+                />
+                <TrustItem
+                  icon={
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                      <path d="M22 6l-10 7L2 6" />
+                    </svg>
+                  }
+                  title="Always by your side"
+                  description="24/7 live support with a 30-second average response time."
+                />
+              </div>
+
+              <div className="my-6 h-px bg-gradient-to-r from-transparent via-white/[0.1] to-transparent" />
+
+              <div className="relative z-[1]">
+                <div className="mb-4 flex items-center gap-2.5">
+                  <span className="text-lg drop-shadow-[0_2px_6px_rgba(200,230,78,0.3)]">🎁</span>
+                  <span className="font-[Outfit,sans-serif] text-[0.88rem] font-bold leading-snug text-[#eef2f7]">
+                    Join and claim your{" "}
+                    <span className="font-extrabold text-[#c8e64e]">$5,000</span>{" "}
+                    welcome gift
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <BonusCard amount="200 USDT" description="First spot trading ≥ 20 USDT" />
+                  <BonusCard amount="200 USDT" description="First deposit ≥ 20 USDT" />
+                  <BonusCard amount="200 USDT" description="First futures trading ≥ 100 USDT" />
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="mx-auto mt-8 hidden w-full max-w-6xl items-center justify-center gap-7 text-sm text-white/40 md:flex">
+      {/* Footer */}
+      <footer className="border-t border-white/[0.06] px-5 py-5">
+        <div className="mx-auto flex max-w-[880px] items-center justify-center gap-7 text-sm text-[#4a5468]">
           <span>English</span>
           <span>Cookies</span>
           <span>Terms</span>
           <span>Privacy</span>
         </div>
+      </footer>
+    </div>
+  );
+}
+
+/* ── Presentational helpers ── */
+
+function TrustItem({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="flex gap-3.5">
+      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl border border-[#00dfa2]/25 bg-gradient-to-br from-[#00dfa2]/20 to-[#00dfa2]/5 text-[#00dfa2] shadow-[0_6px_16px_rgba(0,223,162,0.12)]">
+        {icon}
+      </div>
+      <div>
+        <h3 className="font-[Outfit,sans-serif] text-[0.95rem] font-bold text-white">
+          {title}
+        </h3>
+        <p className="text-[0.8rem] leading-relaxed text-[#a0aec0]">
+          {description}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function BonusCard({
+  amount,
+  description,
+}: {
+  amount: string;
+  description: string;
+}) {
+  return (
+    <div className="relative overflow-hidden rounded-xl border-[1.5px] border-white/[0.08] bg-gradient-to-br from-white/[0.06] to-white/[0.02] px-2 pb-3 pt-3.5 text-center transition-all hover:-translate-y-0.5 hover:border-[#c8e64e]/25 hover:bg-gradient-to-br hover:from-[#c8e64e]/[0.08] hover:to-[#c8e64e]/[0.02]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-2/5 rounded-t-xl bg-gradient-to-b from-white/[0.04] to-transparent" />
+      <div className="font-[Outfit,sans-serif] text-[0.95rem] font-extrabold tracking-tight text-white">
+        {amount}
+      </div>
+      <div className="mt-1 text-[0.65rem] font-medium leading-snug text-[#8b97a8]">
+        {description}
       </div>
     </div>
   );

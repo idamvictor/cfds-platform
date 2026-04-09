@@ -18,6 +18,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import {
@@ -28,6 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// ── Validation (UNCHANGED) ─────────────────────────────────────────
 const formSchema = z.object({
   first_name: z
     .string()
@@ -45,11 +47,28 @@ const formSchema = z.object({
     .min(8, { message: "Password must be at least 8 characters" }),
 });
 
+// ── Password strength (purely visual) ──────────────────────────────
+function getPasswordStrength(password: string) {
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (password.length >= 12) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+  if (score <= 1) return { label: "Weak", color: "#ef4444", percent: 20 };
+  if (score <= 2) return { label: "Fair", color: "#FF9800", percent: 40 };
+  if (score <= 3) return { label: "Good", color: "#f0b90b", percent: 60 };
+  if (score <= 4) return { label: "Strong", color: "#00dfa2", percent: 80 };
+  return { label: "Very Strong", color: "#00dfa2", percent: 100 };
+}
+
 export default function RegisterBasic() {
+  // ── State (UNCHANGED) ──
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  // ── localStorage check (UNCHANGED) ──
   useEffect(() => {
     const data = localStorage.getItem("registration_data");
     if (!data) {
@@ -58,6 +77,7 @@ export default function RegisterBasic() {
     }
   }, [navigate]);
 
+  // ── Parse stored data (UNCHANGED) ──
   const stored = (() => {
     try {
       return JSON.parse(localStorage.getItem("registration_data") ?? "{}");
@@ -66,6 +86,7 @@ export default function RegisterBasic() {
     }
   })();
 
+  // ── Form (UNCHANGED) ──
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -78,6 +99,9 @@ export default function RegisterBasic() {
     },
   });
 
+  const watchedPassword = form.watch("password");
+
+  // ── Submit handler (UNCHANGED) ──
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const raw = localStorage.getItem("registration_data");
     if (!raw) {
@@ -126,200 +150,66 @@ export default function RegisterBasic() {
     }
   }
 
+  // ── Input class constant ──
+  const inputCls =
+    "h-12 rounded-[14px] border-[1.5px] border-white/[0.1] bg-gradient-to-br from-white/[0.06] to-white/[0.02] px-[18px] text-[0.95rem] text-[#eef2f7] placeholder:text-[#4a5468] transition-all hover:border-white/[0.18] focus-visible:border-[#00dfa2] focus-visible:shadow-[0_0_0_3px_rgba(0,223,162,0.1)] focus-visible:ring-0 focus-visible:ring-offset-0";
+
   return (
-    <div className="min-h-screen bg-[#181A20] text-white flex flex-col">
-      <div className="w-full border-b border-white/10 bg-[#1E2329] px-4 py-3 text-center text-sm text-white/70">
-        Trading CFDs carries a high level of risk to your capital, and you
-        should only trade with money you can afford to lose.
-      </div>
-
-      <div className="w-full px-4 py-5 md:px-8 md:py-6">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between">
-          <div className="hidden md:block">
-            <Logo />
-          </div>
-          <div className="ml-auto">
-            <Button
-              variant="ghost"
-              className="h-auto rounded-full border border-white/10 bg-transparent px-3 py-2 text-white/70 hover:bg-white/5 hover:text-white"
-            >
-              <svg className="mr-2 h-5 w-5 md:hidden" viewBox="0 0 36 36">
-                <rect fill="#00247D" width="36" height="27" />
-                <path
-                  d="M0,0 L36,27 M36,0 L0,27"
-                  stroke="#fff"
-                  strokeWidth="5.4"
-                />
-                <path
-                  d="M0,0 L36,27 M36,0 L0,27"
-                  stroke="#cf142b"
-                  strokeWidth="3.6"
-                />
-                <path d="M18,0 V27 M0,13.5 H36" stroke="#fff" strokeWidth="9" />
-                <path
-                  d="M18,0 V27 M0,13.5 H36"
-                  stroke="#cf142b"
-                  strokeWidth="5.4"
-                />
-              </svg>
-              <svg
-                className="mr-2 hidden h-5 w-5 md:block"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-              </svg>
-              EN
-              <svg
-                className="ml-1 h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex-1 px-4 pb-8 md:px-8 md:pb-12">
-        <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-10 md:grid-cols-2">
-          <div className="order-2 mx-auto w-full max-w-md md:order-1 md:flex-1">
-            <div className="mb-6 flex items-center justify-center gap-3 md:mb-8">
-              <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-[#F0B90B] text-[#181A20] shadow-[0_0_24px_rgba(240,185,11,0.35)]">
-                <Logo />
-              </div>
-              <div className="text-sm text-white/65">
-                <span className="font-semibold text-white">Trade Nation</span>
-                <span className="ml-1 hidden sm:inline">
-                  complete registration
-                </span>
-              </div>
+    <div className="flex min-h-screen flex-col bg-[#07080c] text-[#eef2f7]">
+      {/* ── Main content ── */}
+      <div className="flex flex-1 items-center justify-center px-5 py-10 md:py-16">
+        <div className="grid w-full max-w-[880px] grid-cols-1 items-start gap-10 md:grid-cols-2">
+          {/* ══════ LEFT: Logo + Form Card ══════ */}
+          <div className="order-2 flex flex-col md:order-1">
+            {/* Logo above card */}
+            <div className="mb-5">
+              <Logo />
             </div>
 
-            <h1 className="max-w-md text-center text-2xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-3xl md:text-4xl">
-              <span className="text-[#F0B90B]">Create</span> your account here
-            </h1>
+            {/* Glassmorphic form card */}
+            <div className="relative overflow-hidden rounded-3xl border-[1.5px] border-white/[0.08] bg-gradient-to-br from-white/[0.06] via-white/[0.02] to-[#00dfa2]/[0.02] p-7 shadow-[0_4px_24px_rgba(0,0,0,0.4),0_20px_60px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl sm:p-9">
+              {/* Glass highlight overlay */}
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-3xl bg-gradient-to-b from-white/[0.03] to-transparent" />
 
-            <p className="mt-4 max-w-md text-center text-base leading-7 text-white/65 md:text-lg">
-              Already have an account?{" "}
-              <Link
-                to="/"
-                className="font-medium text-[#F0B90B] transition hover:text-[#ffd24d]"
-              >
-                Log In
-              </Link>
-            </p>
-
-            <div className="flex justify-center">
-              <div className="relative mx-auto my-10 flex h-[240px] w-[240px] items-center justify-center md:mx-0 md:mb-14 md:h-[280px] md:w-[280px]">
-                <div className="absolute inset-x-10 bottom-8 h-24 rounded-sm border-2 border-[#F0B90B]/90 bg-transparent" />
-                <div className="absolute bottom-20 left-1/2 h-24 w-24 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,_rgba(240,185,11,0.95)_0%,_rgba(240,185,11,0.72)_45%,_rgba(240,185,11,0.05)_72%,_transparent_100%)] blur-[1px]" />
-                <div className="absolute bottom-[6.15rem] left-1/2 z-10 flex h-20 w-20 -translate-x-1/2 items-center justify-center rounded-full bg-[#F0B90B] text-5xl font-black text-[#181A20] shadow-[0_0_36px_rgba(240,185,11,0.35)]">
-                  $
-                </div>
-                <div className="absolute left-[3.65rem] top-[3.5rem] h-14 w-14 rotate-[-30deg] rounded-full border-2 border-[#F0B90B]" />
-                <div className="absolute right-[3.65rem] top-[4.75rem] h-5 w-5 rotate-[32deg] rounded-full border-2 border-[#F0B90B] border-b-transparent border-l-transparent" />
-                <div className="absolute right-[2.9rem] top-[7.55rem] h-5 w-5 rotate-[32deg] rounded-full border-2 border-[#F0B90B] border-b-transparent border-l-transparent" />
-                <div className="absolute top-[4.7rem] h-12 w-[110px] rotate-[-32deg] border-2 border-[#F0B90B] bg-transparent" />
-                <div className="absolute top-[4.25rem] h-14 w-8 rotate-[-32deg] bg-[linear-gradient(180deg,rgba(240,185,11,0.95),rgba(168,112,0,0.92))] shadow-[0_0_18px_rgba(240,185,11,0.4)]" />
-              </div>
-            </div>
-
-            <div className="space-y-7 text-sm text-white/80">
-              <div className="flex items-start gap-4">
-                <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.03]">
-                  <svg
-                    className="h-4 w-4 text-white"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                  >
-                    <path d="M8 21h8M12 17v4M7 4h10l1 4-2 2v3a4 4 0 0 1-8 0v-3L6 8l1-4Z" />
-                  </svg>
-                </div>
-                <div className="pt-1">
-                  Finish your profile and get trading access in minutes.
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.03]">
-                  <svg
-                    className="h-4 w-4 text-white"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                  >
-                    <path d="M12 3l7 4v10l-7 4-7-4V7l7-4Z" />
-                    <path d="M9 12l2 2 4-4" />
-                  </svg>
-                </div>
-                <div className="pt-1">
-                  Your email and saved signup details are already carried into
-                  this final step.
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="order-1 mx-auto w-full max-w-[400px] md:order-2 md:max-w-[400px] md:flex-shrink-0">
-            <div className="rounded-[28px] border border-white/10 bg-[#181A20] px-6 py-7 shadow-[0_24px_80px_rgba(0,0,0,0.38)] sm:px-8 sm:py-9">
-              <div className="mb-4">
-                <div className="mb-3 inline-flex items-center gap-2 text-[#F0B90B]">
-                  <div className="grid grid-cols-2 gap-1">
-                    <span className="h-2 w-2 rotate-45 bg-current" />
-                    <span className="h-2 w-2 rotate-45 bg-current opacity-80" />
-                    <span className="h-2 w-2 rotate-45 bg-current opacity-80" />
-                    <span className="h-2 w-2 rotate-45 bg-current" />
-                  </div>
-                  <span className="text-sm font-semibold tracking-[0.12em]">
-                    TRADE NATION
-                  </span>
-                </div>
-                <h2 className="text-xl font-semibold tracking-[-0.03em] text-white md:text-2xl">
+              {/* Header */}
+              <div className="relative z-[2] mb-7 border-b border-white/[0.06] pb-5">
+                <h2 className="font-[Outfit,sans-serif] text-2xl font-bold text-[#eef2f7]">
                   Complete your profile
                 </h2>
                 {stored.email ? (
-                  <p className="mt-2 text-sm text-white/60">
+                  <p className="mt-2 text-sm text-[#8b97a8]">
                     Completing registration for{" "}
-                    <span className="font-medium text-white">
+                    <span className="font-semibold text-[#eef2f7]">
                       {stored.email}
                     </span>
                   </p>
                 ) : null}
               </div>
 
+              {/* Form */}
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-5"
+                  className="relative z-[2] space-y-4"
                 >
+                  {/* Name row */}
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <FormField
                       control={form.control}
                       name="first_name"
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="text-[0.8rem] font-semibold uppercase tracking-wide text-[#8b97a8]">
+                            First name
+                          </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="First name*"
+                              placeholder="First name"
                               {...field}
-                              className="h-8 rounded-lg border-white/15 bg-[#1E2329] px-4 text-white placeholder:text-white/35 focus-visible:ring-1 focus-visible:ring-[#F0B90B] focus-visible:ring-offset-0"
+                              className={inputCls}
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage className="text-[11px] font-semibold text-[#ef4444]" />
                         </FormItem>
                       )}
                     />
@@ -328,15 +218,18 @@ export default function RegisterBasic() {
                       control={form.control}
                       name="last_name"
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="text-[0.8rem] font-semibold uppercase tracking-wide text-[#8b97a8]">
+                            Last name
+                          </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Last name*"
+                              placeholder="Last name"
                               {...field}
-                              className="h-8 rounded-lg border-white/15 bg-[#1E2329] px-4 text-white placeholder:text-white/35 focus-visible:ring-1 focus-visible:ring-[#F0B90B] focus-visible:ring-offset-0"
+                              className={inputCls}
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage className="text-[11px] font-semibold text-[#ef4444]" />
                         </FormItem>
                       )}
                     />
@@ -346,15 +239,18 @@ export default function RegisterBasic() {
                     control={form.control}
                     name="username"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="space-y-1.5">
+                        <FormLabel className="text-[0.8rem] font-semibold uppercase tracking-wide text-[#8b97a8]">
+                          Username
+                        </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Username*"
+                            placeholder="Choose a username"
                             {...field}
-                            className="h-8 rounded-lg border-white/15 bg-[#1E2329] px-4 text-white placeholder:text-white/35 focus-visible:ring-1 focus-visible:ring-[#F0B90B] focus-visible:ring-offset-0"
+                            className={inputCls}
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-[11px] font-semibold text-[#ef4444]" />
                       </FormItem>
                     )}
                   />
@@ -363,15 +259,18 @@ export default function RegisterBasic() {
                     control={form.control}
                     name="phone"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="space-y-1.5">
+                        <FormLabel className="text-[0.8rem] font-semibold uppercase tracking-wide text-[#8b97a8]">
+                          Phone number
+                        </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Phone number*"
+                            placeholder="Phone number"
                             {...field}
-                            className="h-8 rounded-lg border-white/15 bg-[#1E2329] px-4 text-white placeholder:text-white/35 focus-visible:ring-1 focus-visible:ring-[#F0B90B] focus-visible:ring-offset-0"
+                            className={inputCls}
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-[11px] font-semibold text-[#ef4444]" />
                       </FormItem>
                     )}
                   />
@@ -380,13 +279,16 @@ export default function RegisterBasic() {
                     control={form.control}
                     name="country"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="space-y-1.5">
+                        <FormLabel className="text-[0.8rem] font-semibold uppercase tracking-wide text-[#8b97a8]">
+                          Country
+                        </FormLabel>
                         <Select
                           onValueChange={field.onChange}
                           value={field.value}
                         >
                           <FormControl>
-                            <SelectTrigger className="h-8 rounded-lg border-white/15 bg-[#1E2329] px-4 text-white focus:ring-1 focus:ring-[#F0B90B] focus:ring-offset-0">
+                            <SelectTrigger className="h-12 rounded-[14px] border-[1.5px] border-white/[0.1] bg-gradient-to-br from-white/[0.06] to-white/[0.02] px-[18px] text-[#eef2f7] transition-all hover:border-white/[0.18] focus:border-[#00dfa2] focus:shadow-[0_0_0_3px_rgba(0,223,162,0.1)] focus:ring-0 focus:ring-offset-0">
                               <SelectValue placeholder="Select your country">
                                 {field.value &&
                                   (() => {
@@ -403,7 +305,7 @@ export default function RegisterBasic() {
                               </SelectValue>
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent className="max-h-60 border-white/15 bg-[#1E2329] text-white">
+                          <SelectContent className="max-h-60 border-white/[0.1] bg-[#0f1220] text-[#eef2f7]">
                             {countries.map((country) => (
                               <SelectItem
                                 key={country.value}
@@ -417,7 +319,7 @@ export default function RegisterBasic() {
                             ))}
                           </SelectContent>
                         </Select>
-                        <FormMessage />
+                        <FormMessage className="text-[11px] font-semibold text-[#ef4444]" />
                       </FormItem>
                     )}
                   />
@@ -426,87 +328,206 @@ export default function RegisterBasic() {
                     control={form.control}
                     name="password"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="space-y-1.5">
+                        <FormLabel className="text-[0.8rem] font-semibold uppercase tracking-wide text-[#8b97a8]">
+                          Password
+                        </FormLabel>
                         <div className="relative">
                           <FormControl>
                             <Input
                               type={showPassword ? "text" : "password"}
-                              placeholder="Password*"
+                              placeholder="Min. 8 characters"
                               {...field}
-                              className="h-8 rounded-lg border-white/15 bg-[#1E2329] px-4 pr-11 text-white placeholder:text-white/35 focus-visible:ring-1 focus-visible:ring-[#F0B90B] focus-visible:ring-offset-0"
+                              className={inputCls + " pr-12"}
                             />
                           </FormControl>
                           <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/35 transition hover:text-white"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#4a5468] transition-colors hover:text-[#00dfa2]"
                             aria-label={
                               showPassword ? "Hide password" : "Show password"
                             }
                           >
                             {showPassword ? (
-                              <EyeOff className="h-5 w-5" />
+                              <EyeOff className="h-[18px] w-[18px]" />
                             ) : (
-                              <Eye className="h-5 w-5" />
+                              <Eye className="h-[18px] w-[18px]" />
                             )}
                           </button>
                         </div>
-                        <FormMessage />
+                        {/* Password strength indicator (purely visual) */}
+                        {watchedPassword && (
+                          <div className="mt-1.5 space-y-1">
+                            <div className="h-1 w-full overflow-hidden rounded-full bg-white/[0.06]">
+                              <div
+                                className="h-full rounded-full transition-all duration-300"
+                                style={{
+                                  width: `${getPasswordStrength(watchedPassword).percent}%`,
+                                  backgroundColor: getPasswordStrength(watchedPassword).color,
+                                }}
+                              />
+                            </div>
+                            <p
+                              className="text-[10px] font-semibold"
+                              style={{ color: getPasswordStrength(watchedPassword).color }}
+                            >
+                              {getPasswordStrength(watchedPassword).label}
+                            </p>
+                          </div>
+                        )}
+                        <FormMessage className="text-[11px] font-semibold text-[#ef4444]" />
                       </FormItem>
                     )}
                   />
 
+                  {/* Submit */}
                   <Button
                     type="submit"
-                    className="mt-2 flex h-9 w-full items-center justify-center rounded-xl bg-[#F0B90B] font-semibold text-[#181A20] transition hover:bg-[#f5c842]"
+                    className="mt-2 h-12 w-full rounded-xl bg-gradient-to-br from-[#00ffc3] via-[#00dfa2] to-[#00b881] font-bold text-[0.95rem] text-black shadow-[0_4px_14px_rgba(0,223,162,0.3),inset_0_2px_0_rgba(255,255,255,0.25)] transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(0,223,162,0.4)] active:translate-y-0"
                     disabled={isLoading}
                   >
                     {isLoading ? (
-                      <div className="flex items-center gap-2">
-                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      <span className="flex items-center gap-2">
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                         Creating account...
-                      </div>
+                      </span>
                     ) : (
-                      <>
-                        Create Account
-                        <svg
-                          className="ml-2 h-5 w-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17 8l4 4m0 0l-4 4m4-4H3"
-                          />
-                        </svg>
-                      </>
+                      "Create Account"
                     )}
                   </Button>
                 </form>
               </Form>
 
-              <div className="mt-7 text-center text-sm text-white/60">
+              {/* Login link */}
+              <p className="relative z-[2] mt-5 text-center text-[0.85rem] text-[#8b97a8]">
                 Already have an account?{" "}
                 <Link
                   to="/"
-                  className="font-medium text-[#F0B90B] transition hover:text-[#ffd24d]"
+                  className="font-semibold text-[#00dfa2] transition-colors hover:text-[#00ffc3]"
                 >
                   Login
                 </Link>
+              </p>
+            </div>
+          </div>
+
+          {/* ══════ RIGHT: Trust Panel ══════ */}
+          <div className="order-1 md:order-2">
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-br from-[#0c1629] to-[#080e1c] p-7 sm:p-8">
+              <div className="pointer-events-none absolute -right-1/2 -top-1/2 h-[400px] w-[400px] rounded-full bg-[radial-gradient(circle,rgba(0,223,162,0.08),transparent_70%)]" />
+
+              <div className="relative z-[1] flex flex-col gap-6">
+                <TrustItem
+                  icon={
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <path d="M8 21h8M12 17v4M7 4h10l1 4-2 2v3a4 4 0 0 1-8 0v-3L6 8l1-4Z" />
+                    </svg>
+                  }
+                  title="Trade in minutes"
+                  description="Finish your profile and get full trading access right away."
+                />
+                <TrustItem
+                  icon={
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <path d="M12 3l7 4v10l-7 4-7-4V7l7-4Z" />
+                      <path d="M9 12l2 2 4-4" />
+                    </svg>
+                  }
+                  title="Your data is carried over"
+                  description="Email and signup details are already saved from the previous step."
+                />
+                <TrustItem
+                  icon={
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                  }
+                  title="Licensed and regulated"
+                  description="An authorized financial services provider with global coverage."
+                />
+              </div>
+
+              {/* Separator */}
+              <div className="my-6 h-px bg-gradient-to-r from-transparent via-white/[0.1] to-transparent" />
+
+              {/* Welcome bonus */}
+              <div className="relative z-[1]">
+                <div className="mb-4 flex items-center gap-2.5">
+                  <span className="text-lg drop-shadow-[0_2px_6px_rgba(200,230,78,0.3)]">🎁</span>
+                  <span className="font-[Outfit,sans-serif] text-[0.88rem] font-bold leading-snug text-[#eef2f7]">
+                    Join and claim your{" "}
+                    <span className="font-extrabold text-[#c8e64e]">$5,000</span>{" "}
+                    welcome gift
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <BonusCard amount="200 USDT" description="First spot trading ≥ 20 USDT" />
+                  <BonusCard amount="200 USDT" description="First deposit ≥ 20 USDT" />
+                  <BonusCard amount="200 USDT" description="First futures trading ≥ 100 USDT" />
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="mx-auto mt-8 hidden w-full max-w-6xl items-center justify-center gap-7 text-sm text-white/40 md:flex">
+      {/* ── Footer ── */}
+      <footer className="border-t border-white/[0.06] px-5 py-5">
+        <div className="mx-auto flex max-w-[880px] items-center justify-center gap-7 text-sm text-[#4a5468]">
           <span>English</span>
           <span>Cookies</span>
           <span>Terms</span>
           <span>Privacy</span>
         </div>
+      </footer>
+    </div>
+  );
+}
+
+/* ── Presentational helpers ── */
+
+function TrustItem({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="flex gap-3.5">
+      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl border border-[#00dfa2]/25 bg-gradient-to-br from-[#00dfa2]/20 to-[#00dfa2]/5 text-[#00dfa2] shadow-[0_6px_16px_rgba(0,223,162,0.12)]">
+        {icon}
+      </div>
+      <div>
+        <h3 className="font-[Outfit,sans-serif] text-[0.95rem] font-bold text-white">
+          {title}
+        </h3>
+        <p className="text-[0.8rem] leading-relaxed text-[#a0aec0]">
+          {description}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function BonusCard({
+  amount,
+  description,
+}: {
+  amount: string;
+  description: string;
+}) {
+  return (
+    <div className="relative overflow-hidden rounded-xl border-[1.5px] border-white/[0.08] bg-gradient-to-br from-white/[0.06] to-white/[0.02] px-2 pb-3 pt-3.5 text-center transition-all hover:-translate-y-0.5 hover:border-[#c8e64e]/25 hover:bg-gradient-to-br hover:from-[#c8e64e]/[0.08] hover:to-[#c8e64e]/[0.02]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-2/5 rounded-t-xl bg-gradient-to-b from-white/[0.04] to-transparent" />
+      <div className="font-[Outfit,sans-serif] text-[0.95rem] font-extrabold tracking-tight text-white">
+        {amount}
+      </div>
+      <div className="mt-1 text-[0.65rem] font-medium leading-snug text-[#8b97a8]">
+        {description}
       </div>
     </div>
   );

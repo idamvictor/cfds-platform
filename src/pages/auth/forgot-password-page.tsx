@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AxiosError } from "axios";
+import { KeyRound } from "lucide-react";
 import useUserStore from "@/store/userStore";
 import Logo from "@/components/Logo";
 import { toast } from "@/components/ui/sonner";
@@ -17,11 +17,11 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Link } from "react-router-dom";
 
-// Define the form schema with validation
+// ── Validation (UNCHANGED) ─────────────────────────────────────────
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
 });
@@ -32,14 +32,14 @@ export default function ForgotPasswordPage() {
   const token = useUserStore((state) => state.token);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Check for existing auth and redirect if found
+  // ── Auth redirect (UNCHANGED) ──
   useEffect(() => {
     if (user && token) {
       navigate("/main");
     }
   }, [user, token, navigate]);
 
-  // Initialize form
+  // ── Form (UNCHANGED) ──
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -47,7 +47,7 @@ export default function ForgotPasswordPage() {
     },
   });
 
-  // Form submission handler
+  // ── Submit handler (UNCHANGED) ──
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
@@ -79,124 +79,68 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#181A20] text-white flex flex-col">
-      <div className="w-full border-b border-white/10 bg-[#1E2329] px-4 py-3 text-center text-sm text-white/70">
-        Trading CFDs carries a high level of risk to your capital, and you
-        should only trade with money you can afford to lose.
-      </div>
-
-      <div className="w-full px-4 py-5 md:px-8 md:py-6">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between">
-          <div className="hidden md:block">
-            <Logo />
-          </div>
-          <Link
-            to="/"
-            className="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-white/70 transition hover:bg-white/5 hover:text-white"
-          >
-            <X className="h-5 w-5" />
-          </Link>
-        </div>
-      </div>
-
-      <div className="flex-1 px-4 pb-8 md:px-8 md:pb-12">
-        <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-10 md:grid-cols-2">
-          <div className="order-2 w-full max-w-md mx-auto md:order-1 md:flex-1">
-            <div className="mb-6 flex items-center justify-center gap-3 md:mb-8">
-              <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-[#F0B90B] text-[#181A20] shadow-[0_0_24px_rgba(240,185,11,0.35)]">
-                <Logo />
-              </div>
-              <div className="text-sm text-white/65">
-                <span className="font-semibold text-white">Trade Nation</span>
-              </div>
+    <div className="flex min-h-screen flex-col bg-[#07080c] text-[#eef2f7]">
+      {/* ── Main content ── */}
+      <div className="flex flex-1 items-center justify-center px-5 py-10 md:py-16">
+        <div className="grid w-full max-w-[880px] grid-cols-1 items-center gap-10 md:grid-cols-2">
+          {/* ══════ LEFT: Logo + Form Card ══════ */}
+          <div className="order-2 flex flex-col md:order-1">
+            {/* Logo above card */}
+            <div className="mb-5">
+              <Logo />
             </div>
 
-            <h1 className="max-w-md text-center text-2xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-3xl md:text-4xl">
-              Lost your <span className="text-[#F0B90B]">password?</span>
-            </h1>
+            {/* Glassmorphic form card */}
+            <div className="relative overflow-hidden rounded-3xl border-[1.5px] border-white/[0.08] bg-gradient-to-br from-white/[0.06] via-white/[0.02] to-[#00dfa2]/[0.02] p-7 shadow-[0_4px_24px_rgba(0,0,0,0.4),0_20px_60px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl sm:p-9">
+              {/* Glass highlight overlay */}
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-3xl bg-gradient-to-b from-white/[0.03] to-transparent" />
 
-            <p className="mt-4 max-w-md text-center text-base leading-7 text-white/65 md:text-lg">
-              No stress, it happens to the best of us! Just drop in the email
-              you signed up with, and we'll shoot you a reset link to get you
-              back in action.
-            </p>
-
-            <div className="flex justify-center">
-              <div className="relative mx-auto my-10 flex h-[240px] w-[240px] items-center justify-center md:mx-0 md:my-14 md:h-[280px] md:w-[280px]">
-                <div className="absolute inset-x-10 bottom-8 h-24 rounded-sm border-2 border-[#F0B90B]/90 bg-transparent" />
-                <div className="absolute bottom-20 left-1/2 h-24 w-24 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,_rgba(240,185,11,0.95)_0%,_rgba(240,185,11,0.72)_45%,_rgba(240,185,11,0.05)_72%,_transparent_100%)] blur-[1px]" />
-                <div className="absolute bottom-[6.15rem] left-1/2 z-10 flex h-20 w-20 -translate-x-1/2 items-center justify-center rounded-full bg-[#F0B90B] shadow-[0_0_36px_rgba(240,185,11,0.35)]">
-                  <svg
-                    width="42"
-                    height="42"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#181A20"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                  </svg>
+              {/* Header with icon */}
+              <div className="relative z-[2] mb-7 border-b border-white/[0.06] pb-5">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border border-[#00dfa2]/25 bg-gradient-to-br from-[#00dfa2]/20 to-[#00dfa2]/5 text-[#00dfa2] shadow-[0_6px_16px_rgba(0,223,162,0.12)]">
+                  <KeyRound className="h-6 w-6" />
                 </div>
-                <div className="absolute left-[3.65rem] top-[3.5rem] h-14 w-14 rotate-[-30deg] rounded-full border-2 border-[#F0B90B]" />
-                <div className="absolute right-[3.65rem] top-[4.75rem] h-5 w-5 rounded-full border-2 border-[#F0B90B] border-l-transparent border-b-transparent rotate-[32deg]" />
-                <div className="absolute right-[2.9rem] top-[7.55rem] h-5 w-5 rounded-full border-2 border-[#F0B90B] border-l-transparent border-b-transparent rotate-[32deg]" />
-                <div className="absolute top-[4.7rem] h-12 w-[110px] rotate-[-32deg] border-2 border-[#F0B90B] bg-transparent" />
-                <div className="absolute top-[4.25rem] h-14 w-8 rotate-[-32deg] bg-[linear-gradient(180deg,rgba(240,185,11,0.95),rgba(168,112,0,0.92))] shadow-[0_0_18px_rgba(240,185,11,0.4)]" />
-              </div>
-            </div>
-
-          </div>
-
-          <div className="order-1 w-full max-w-[400px] mx-auto md:order-2 md:max-w-[400px] md:flex-shrink-0">
-            <div className="rounded-[28px] border border-white/10 bg-[#181A20] px-6 py-7 shadow-[0_24px_80px_rgba(0,0,0,0.38)] sm:px-8 sm:py-9">
-              <div className="mb-4">
-                <div className="mb-3 inline-flex items-center gap-2 text-[#F0B90B]">
-                  <div className="grid grid-cols-2 gap-1">
-                    <span className="h-2 w-2 rotate-45 bg-current" />
-                    <span className="h-2 w-2 rotate-45 bg-current opacity-80" />
-                    <span className="h-2 w-2 rotate-45 bg-current opacity-80" />
-                    <span className="h-2 w-2 rotate-45 bg-current" />
-                  </div>
-                  <span className="text-sm font-semibold tracking-[0.12em]">
-                    TRADE NATION
-                  </span>
-                </div>
-                <h2 className="text-xl font-semibold tracking-[-0.03em] text-white md:text-2xl">
+                <h2 className="font-[Outfit,sans-serif] text-2xl font-bold text-[#eef2f7]">
                   Reset password
                 </h2>
+                <p className="mt-2 text-sm leading-relaxed text-[#8b97a8]">
+                  Enter the email you signed up with and we&apos;ll send you a
+                  reset link.
+                </p>
               </div>
 
+              {/* Form */}
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-3"
+                  className="relative z-[2] space-y-5"
                 >
                   <FormField
                     control={form.control}
                     name="email"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="space-y-1.5">
+                        <FormLabel className="text-[0.8rem] font-semibold uppercase tracking-wide text-[#8b97a8]">
+                          Email
+                        </FormLabel>
                         <FormControl>
                           <Input
                             type="email"
                             placeholder="name@example.com"
                             {...field}
-                            className="h-8 rounded-lg border-white/15 bg-[#1E2329] px-4 text-white placeholder:text-white/35 focus-visible:ring-1 focus-visible:ring-[#F0B90B] focus-visible:ring-offset-0"
+                            className="h-12 rounded-[14px] border-[1.5px] border-white/[0.1] bg-gradient-to-br from-white/[0.06] to-white/[0.02] px-[18px] text-[0.95rem] text-[#eef2f7] placeholder:text-[#4a5468] transition-all hover:border-white/[0.18] focus-visible:border-[#00dfa2] focus-visible:shadow-[0_0_0_3px_rgba(0,223,162,0.1)] focus-visible:ring-0 focus-visible:ring-offset-0"
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-[11px] font-semibold text-[#ef4444]" />
                       </FormItem>
                     )}
                   />
 
-                  <div className="flex items-center justify-between gap-3 pt-2">
+                  <div className="flex items-center justify-between gap-3 pt-1">
                     <Button
                       type="button"
                       onClick={() => navigate("/")}
-                      className="h-9 min-w-[96px] rounded-xl border border-white/10 bg-transparent px-4 text-white/70 transition hover:bg-white/[0.03] hover:text-white"
+                      className="h-12 min-w-[100px] rounded-xl border border-white/[0.1] bg-transparent px-5 font-semibold text-[#8b97a8] transition-all hover:bg-white/[0.04] hover:text-[#eef2f7]"
                     >
                       Back
                     </Button>
@@ -204,13 +148,13 @@ export default function ForgotPasswordPage() {
                     <Button
                       type="submit"
                       disabled={isLoading}
-                      className="h-9 min-w-[128px] rounded-xl bg-[#F0B90B] px-4 font-semibold text-[#181A20] transition hover:bg-[#f5c842] flex items-center justify-center"
+                      className="h-12 min-w-[140px] rounded-xl bg-gradient-to-br from-[#00ffc3] via-[#00dfa2] to-[#00b881] px-5 font-bold text-black shadow-[0_4px_14px_rgba(0,223,162,0.3),inset_0_2px_0_rgba(255,255,255,0.25)] transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(0,223,162,0.4)] active:translate-y-0"
                     >
                       {isLoading ? (
-                        <div className="flex items-center gap-2">
-                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                        <span className="flex items-center gap-2">
+                          <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                           Sending...
-                        </div>
+                        </span>
                       ) : (
                         "Continue"
                       )}
@@ -219,29 +163,133 @@ export default function ForgotPasswordPage() {
                 </form>
               </Form>
 
-              <div className="my-7 flex items-center gap-4">
-                <div className="h-px flex-1 bg-white/10" />
-                <span className="text-sm font-medium text-white/45">info</span>
-                <div className="h-px flex-1 bg-white/10" />
+              {/* Info section */}
+              <div className="relative z-[2] my-6 flex items-center gap-4">
+                <div className="h-px flex-1 bg-white/[0.08]" />
+                <span className="text-sm font-medium text-[#4a5468]">info</span>
+                <div className="h-px flex-1 bg-white/[0.08]" />
               </div>
 
-              <div className="space-y-2.5">
-                <div className="rounded-lg border border-white/10 bg-[#1E2329] px-4 py-3 text-sm leading-6 text-white/65">
-                  If you registered through SSO (Google, Apple, or LinkedIn),
-                  we are unable to modify your password. Please utilise the
-                  reset password feature on your chosen platform.
-                </div>
+              <div className="relative z-[2] rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm leading-relaxed text-[#8b97a8]">
+                If you registered through SSO (Google, Apple, or LinkedIn), we
+                are unable to modify your password. Please use the reset
+                password feature on your chosen platform.
+              </div>
+
+              {/* Back to login link */}
+              <p className="relative z-[2] mt-5 text-center text-[0.85rem] text-[#8b97a8]">
+                Remember your password?{" "}
+                <Link
+                  to="/"
+                  className="font-semibold text-[#00dfa2] transition-colors hover:text-[#00ffc3]"
+                >
+                  Log in
+                </Link>
+              </p>
+            </div>
+          </div>
+
+          {/* ══════ RIGHT: Trust Panel ══════ */}
+          <div className="order-1 md:order-2">
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-br from-[#0c1629] to-[#080e1c] p-7 sm:p-8">
+              {/* Subtle radial glow */}
+              <div className="pointer-events-none absolute -right-1/2 -top-1/2 h-[400px] w-[400px] rounded-full bg-[radial-gradient(circle,rgba(0,223,162,0.08),transparent_70%)]" />
+
+              <div className="relative z-[1] flex flex-col gap-6">
+                <TrustItem
+                  icon={
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                  }
+                  title="Your account is safe"
+                  description="Password reset links are encrypted and expire after a short time."
+                />
+                <TrustItem
+                  icon={
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                  }
+                  title="Secure reset process"
+                  description="We verify your identity before allowing any password changes."
+                />
+                <TrustItem
+                  icon={
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                      <path d="M22 6l-10 7L2 6" />
+                    </svg>
+                  }
+                  title="Check your inbox"
+                  description="The reset link will arrive within a few minutes. Check spam if needed."
+                />
+              </div>
+
+              {/* Separator */}
+              <div className="my-6 h-px bg-gradient-to-r from-transparent via-white/[0.1] to-transparent" />
+
+              {/* Security tips */}
+              <div className="relative z-[1]">
+                <h3 className="mb-3 font-[Outfit,sans-serif] text-[0.88rem] font-bold text-[#eef2f7]">
+                  Security tips
+                </h3>
+                <ul className="space-y-2.5 text-[0.8rem] leading-relaxed text-[#a0aec0]">
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#00dfa2]" />
+                    Use a unique password you don&apos;t use anywhere else
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#00dfa2]" />
+                    Include uppercase, lowercase, numbers and symbols
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#00dfa2]" />
+                    Enable two-factor authentication for extra protection
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="mx-auto mt-8 hidden w-full max-w-6xl items-center justify-center gap-7 text-sm text-white/40 md:flex">
+      {/* ── Footer ── */}
+      <footer className="border-t border-white/[0.06] px-5 py-5">
+        <div className="mx-auto flex max-w-[880px] items-center justify-center gap-7 text-sm text-[#4a5468]">
           <span>English</span>
           <span>Cookies</span>
           <span>Terms</span>
           <span>Privacy</span>
         </div>
+      </footer>
+    </div>
+  );
+}
+
+/* ── Trust Item helper ── */
+function TrustItem({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="flex gap-3.5">
+      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl border border-[#00dfa2]/25 bg-gradient-to-br from-[#00dfa2]/20 to-[#00dfa2]/5 text-[#00dfa2] shadow-[0_6px_16px_rgba(0,223,162,0.12)]">
+        {icon}
+      </div>
+      <div>
+        <h3 className="font-[Outfit,sans-serif] text-[0.95rem] font-bold text-white">
+          {title}
+        </h3>
+        <p className="text-[0.8rem] leading-relaxed text-[#a0aec0]">
+          {description}
+        </p>
       </div>
     </div>
   );
