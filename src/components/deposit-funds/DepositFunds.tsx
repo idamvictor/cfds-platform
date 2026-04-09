@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutedTextClass } from "@/hooks/useMutedTextClass";
+
 import { Lock } from "lucide-react";
 import CardFunding from "./CardFunding";
 import CryptoFunding from "./CryptoFunding";
@@ -19,7 +19,7 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
   const url = window.location.href.toLowerCase();
   // stepsCount varies based on the domain to cater to different checkout flows
   const stepsCount = (url.includes("fincapitalmarkets.org") || url.includes("equitymarketspro.com")) ? 4 : 3;
-  const mutedClass = useMutedTextClass();
+
   const { user } = useUserStore();
   const isVerified = user?.verification_status === "approved" || user?.verification_status === "verified";
   const { deposit_config } = useDataStore();
@@ -55,26 +55,26 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
     <div className="space-y-6 text-foreground px-0">
 
       {/* Info Text */}
-      <div className="space-y-4">
-        <p className={`text-xs md:text-sm text-foreground/80 leading-relaxed`}>
+      <div className="space-y-3">
+        <p className={`text-xs md:text-sm text-foreground font-bold leading-relaxed`}>
           Add funds to your account to start trading instantly. You can deposit
           using Fiat or crypto payment methods below
         </p>
 
-        <div className="flex items-start gap-2">
+        <div className="flex items-start gap-2 bg-accent/5 p-3 rounded-xl border border-accent/10">
           <Lock className="w-4 h-4 md:w-5 md:h-5 text-accent flex-shrink-0 mt-0.5" />
-          <p className={`text-xs md:text-sm text-foreground/80 leading-relaxed`}>
-            <strong>Note: Anti-Fraud Verification</strong> <br />
-            For your security, some deposits may require additional verification.
-            In certain cases, our team may request phone or identity confirmation
+          <p className={`text-xs md:text-sm text-foreground font-bold leading-relaxed`}>
+            <strong className="text-accent uppercase tracking-tighter">Anti-Fraud Verification</strong> <br />
+            For your security, some deposits require verification.
+            Our team may request identity confirmation
             before funds are credited.
           </p>
         </div>
       </div>
 
       {/* Payment Method Section */}
-      <div className="space-y-4">
-        <h3 className="text-base md:text-lg font-semibold text-foreground">
+      <div className="space-y-3">
+        <h3 className="text-base md:text-lg font-black text-foreground uppercase tracking-tight">
           Payment Method
         </h3>
 
@@ -119,15 +119,15 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
                   )}
                 </div>
               </div>
-              <h4 className="text-base md:text-lg font-semibold text-foreground mb-1">
+              <h4 className="text-base md:text-lg font-black text-foreground mb-1">
                 Credit/Debit Card
               </h4>
-              <div className="flex items-center gap-1 text-accent text-xs md:text-sm mb-2">
+              <div className="flex items-center gap-1 text-accent text-xs md:text-sm mb-2 font-black">
                 <span>⚡</span>
                 <span>{deposit_config?.credit_card?.estimated_time || "Instant"}</span>
               </div>
-              <p className={`text-xs md:text-sm ${mutedClass}`}>
-                Supported: Visa, Mastercard, Amex, Discover
+              <p className={`text-[10px] md:text-xs text-foreground font-black uppercase tracking-tighter opacity-70`}>
+                Visa, Mastercard, Amex, Discover
               </p>
             </div>
           )}
@@ -165,15 +165,15 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
                   )}
                 </div>
               </div>
-              <h4 className="text-base md:text-lg font-semibold text-foreground mb-1">
+              <h4 className="text-base md:text-lg font-black text-foreground mb-1">
                 Cryptocurrency
               </h4>
-              <div className="flex items-center gap-1 text-accent text-xs md:text-sm mb-2">
+              <div className="flex items-center gap-1 text-accent text-xs md:text-sm mb-2 font-black">
                 <span>🕑</span>
                 <span>{deposit_config?.crypto?.estimated_time || "Instant"}</span>
               </div>
-              <p className={`text-xs md:text-sm ${mutedClass}`}>
-                Supported: BTC, ETH, USDT, and other major assets
+              <p className={`text-[10px] md:text-xs text-foreground font-black uppercase tracking-tighter opacity-70`}>
+                BTC, ETH, USDT, and more
               </p>
             </div>
           )}
@@ -182,12 +182,12 @@ const DepositFunds: React.FC<DepositFundsProps> = ({ onClose }) => {
 
       {/* Next Button */}
       {selectedMethod && (
-        <div className="flex gap-3 pt-4">
+        <div className="flex gap-3 pt-3">
           <button
             onClick={() => setShowCardFunding(true)}
-            className="w-full md:w-auto inline-flex items-center justify-center md:justify-start gap-2 px-10 py-3.5 font-black uppercase tracking-tighter rounded-xl transition-all bg-accent text-background hover:bg-accent/90 hover:scale-[1.02] hover:shadow-xl shadow-lg cursor-pointer"
+            className="inline-flex items-center justify-center gap-2 px-10 py-4 font-black uppercase tracking-tighter rounded-xl transition-all bg-emerald-600 text-white hover:bg-emerald-700 hover:scale-[1.02] hover:shadow-xl shadow-lg shadow-emerald-500/10 cursor-pointer"
           >
-            Next
+            Continue
             <span>→</span>
           </button>
         </div>
