@@ -16,10 +16,11 @@ const fetchNotifications = async (page = 1): Promise<NotificationResponse> => {
 };
 
 // Query hook
-export const useNotificationsQuery = (page = 1) => {
+export const useNotificationsQuery = (page = 1, options = {}) => {
   return useQuery({
     queryKey: ["notifications", page],
     queryFn: () => fetchNotifications(page),
+    ...options,
   });
 };
 
