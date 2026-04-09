@@ -23,6 +23,13 @@ export function SiteProvider({ children }: SiteProviderProps) {
     } = useSiteSettingsStore();
 
     const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+    const [minTimeElapsed, setMinTimeElapsed] = useState(false);
+
+    // Minimum display duration for the loading screen (3s)
+    useEffect(() => {
+        const timer = setTimeout(() => setMinTimeElapsed(true), 3000);
+        return () => clearTimeout(timer);
+    }, []);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -49,7 +56,11 @@ export function SiteProvider({ children }: SiteProviderProps) {
         }
     }, [baseUrl, fetchSettings, initialLoadComplete]);
 
-    if (!initialLoadComplete && isLoading && !initialized) {
+    // App is ready when settings have loaded (or failed)
+    const appReady = initialLoadComplete || initialized || !isLoading;
+
+    // Show loader until BOTH the app is ready AND minimum time has elapsed
+    if (!appReady || !minTimeElapsed) {
         return <LoadingScreen />;
     }
 

@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Your ID Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f6f8;
+            color: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        main {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        /* ── Card ── */
+        .card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow:
+                0 0 0 1px rgba(0,0,0,.03),
+                0 2px 4px rgba(0,0,0,.04),
+                0 12px 32px rgba(0,0,0,.06);
+            padding: 32px 28px 28px;
+            position: relative;
+        }
+
+        /* Green accent line removed */
+
+        /* ── Nav Row ── */
+        .nav-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            width: 34px; height: 34px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #6b7280;
+            font-size: 14px;
+            transition: all .2s;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            border-color: #d1d5db;
+            background: #f9fafb;
+            color: #374151;
+        }
+
+        .step-pill {
+            font-size: 12px;
+            font-weight: 600;
+            color: #7BC043;
+            background: rgba(123,192,67,.08);
+            padding: 5px 14px;
+            border-radius: 20px;
+        }
+
+        /* ── Title ── */
+        .title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #111827;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: .85rem;
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        /* ── Upload Zones ── */
+        .upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .upload-zone {
+            border: 2px dashed #d1d5db;
+            border-radius: 14px;
+            background: #f9fafb;
+            padding: 22px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all .25s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-zone:hover {
+            border-color: #7BC043;
+            background: rgba(123,192,67,.03);
+        }
+
+        .upload-zone.active {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            border-style: solid;
+        }
+
+        .upload-input { display: none; }
+
+        .upload-icon {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            background: rgba(123,192,67,.08);
+            color: #7BC043;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .upload-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .upload-hint {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        .file-status {
+            display: none;
+            padding: 10px;
+            background: rgba(123,192,67,.06);
+            border-radius: 8px;
+            margin-top: 10px;
+            gap: 6px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .file-status.active { display: flex; }
+
+        .file-check { color: #7BC043; font-size: 14px; flex-shrink: 0; }
+
+        .file-name {
+            flex: 1;
+            font-size: 11px;
+            color: #374151;
+            word-break: break-all;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .file-remove {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 14px;
+            transition: color .2s;
+            flex-shrink: 0;
+            padding: 0;
+        }
+
+        .file-remove:hover { color: #ef4444; }
+
+        /* ── ID Guide ── */
+        .guide-box {
+            background: #f9fafb;
+            border: 1px solid #f0f1f3;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .guide-title {
+            font-size: .8rem;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            text-align: center;
+            margin-bottom: 14px;
+        }
+
+        .guide-cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .guide-col-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .guide-dot {
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .guide-dot.bad { background: #ef4444; }
+        .guide-dot.good { background: #10b981; }
+
+        .guide-label {
+            font-size: .78rem;
+            font-weight: 700;
+        }
+
+        .guide-label.bad { color: #ef4444; }
+        .guide-label.good { color: #10b981; }
+
+        /* Mini ID card */
+        .mini-id {
+            border-radius: 6px;
+            padding: 2px;
+            margin-bottom: 10px;
+        }
+
+        .mini-id.bad {
+            border: 1.5px dashed #fca5a5;
+            background: #fef2f2;
+        }
+
+        .mini-id.good {
+            border: 1.5px solid #6ee7b7;
+            background: #ecfdf5;
+        }
+
+        .mini-id-inner {
+            background: #fff;
+            border-radius: 4px;
+            padding: 6px 8px;
+            min-height: 56px;
+        }
+
+        .mini-id-inner.blurry {
+            filter: blur(.8px);
+            transform: rotate(-3deg) scale(.96);
+            opacity: .6;
+        }
+
+        .mini-id-bar {
+            background: #1e40af;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 2px;
+            font-size: 7px;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .mini-id-body {
+            display: flex;
+            gap: 6px;
+        }
+
+        .mini-id-photo {
+            width: 22px; height: 26px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .mini-id-lines {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .mini-id-line {
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 1px;
+        }
+
+        .mini-id-line:nth-child(2) { width: 70%; }
+        .mini-id-line:nth-child(3) { width: 50%; }
+
+        .guide-checks {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .guide-check {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: .72rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .guide-check-dot {
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 7px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .guide-check-dot.bad { background: #ef4444; }
+        .guide-check-dot.good { background: #10b981; }
+
+        /* ── Info Banner ── */
+        .info-banner {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(59,130,246,.04), rgba(59,130,246,.08));
+            border: 1px solid rgba(59,130,246,.12);
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 20px;
+        }
+
+        .info-icon {
+            width: 30px; height: 30px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .info-text strong {
+            display: block;
+            font-size: .78rem;
+            color: #1e40af;
+            font-weight: 600;
+        }
+
+        .info-text span {
+            font-size: .72rem;
+            color: #6b7280;
+        }
+
+        /* ── Button ── */
+        .btn-primary {
+            width: 100%;
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #7BC043, #6ab038);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: .92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .25s;
+            box-shadow: 0 2px 8px rgba(123,192,67,.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,.12), transparent);
+            pointer-events: none;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #86cc4d, #74b83f);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(123,192,67,.3);
+        }
+
+        .btn-primary:active { transform: translateY(0); }
+
+        .btn-primary:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none;
+        }
+
+        /* ── Footer ── */
+        .powered-footer {
+            font-size: .72rem;
+            color: #b0b5bd;
+            text-align: center;
+            margin-top: 20px;
+            letter-spacing: .2px;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 500px) {
+            body { padding: 24px 16px; }
+            .card { padding: 24px 20px 20px; border-radius: 16px; }
+            .guide-cols { grid-template-columns: 1fr; }
+            .upload-grid { grid-template-columns: 1fr; gap: 10px; }
+            .upload-zone { padding: 18px 12px; }
+            .title { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="card">
+            <!-- Nav -->
+            <div class="nav-row">
+                <a href="kyc-verify.html" class="back-btn" title="Go back">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div class="step-pill">Step 2 of 2</div>
+            </div>
+
+            <!-- Title -->
+            <h1 class="title">Let's get you verified</h1>
+            <p class="subtitle">Upload both sides of your identity document</p>
+
+            <!-- Upload Zones -->
+            <div class="upload-grid">
+                <div class="upload-zone" id="frontUploadZone">
+                    <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <div class="upload-label">Front side</div>
+                    <div class="upload-hint">Drag & drop or click</div>
+                    <div class="upload-hint">JPG, PNG, PDF (10MB)</div>
+                    <input type="file" class="upload-input" id="frontInput" accept=".jpg,.jpeg,.png,.pdf">
+                    <div class="file-status" id="frontStatus">
+                        <span class="file-check"><i class="fas fa-check-circle"></i></span>
+                        <span class="file-name" id="frontFileName"></span>
+                        <button class="file-remove" onclick="removeFrontFile()"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+
+                <div class="upload-zone" id="backUploadZone">
+                    <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <div class="upload-label">Back side</div>
+                    <div class="upload-hint">Drag & drop or click</div>
+                    <div class="upload-hint">JPG, PNG, PDF (10MB)</div>
+                    <input type="file" class="upload-input" id="backInput" accept=".jpg,.jpeg,.png,.pdf">
+                    <div class="file-status" id="backStatus">
+                        <span class="file-check"><i class="fas fa-check-circle"></i></span>
+                        <span class="file-name" id="backFileName"></span>
+                        <button class="file-remove" onclick="removeBackFile()"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ID Guide -->
+            <div class="guide-box">
+                <div class="guide-title">Upload Guide</div>
+                <div class="guide-cols">
+                    <div>
+                        <div class="guide-col-header">
+                            <div class="guide-dot bad">&times;</div>
+                            <div class="guide-label bad">Wrong</div>
+                        </div>
+                        <div class="mini-id bad">
+                            <div class="mini-id-inner blurry">
+                                <div class="mini-id-bar"><span>DRIVER LICENSE</span><span>USA</span></div>
+                                <div class="mini-id-body">
+                                    <div class="mini-id-photo"></div>
+                                    <div class="mini-id-lines"><div class="mini-id-line"></div><div class="mini-id-line"></div><div class="mini-id-line"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="guide-checks">
+                            <div class="guide-check"><div class="guide-check-dot bad">&times;</div> Blurred or unreadable</div>
+                            <div class="guide-check"><div class="guide-check-dot bad">&times;</div> Glare or poor lighting</div>
+                            <div class="guide-check"><div class="guide-check-dot bad">&times;</div> Tilted or edges cut off</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="guide-col-header">
+                            <div class="guide-dot good">&check;</div>
+                            <div class="guide-label good">Correct</div>
+                        </div>
+                        <div class="mini-id good">
+                            <div class="mini-id-inner">
+                                <div class="mini-id-bar"><span>DRIVER LICENSE</span><span>USA</span></div>
+                                <div class="mini-id-body">
+                                    <div class="mini-id-photo"></div>
+                                    <div class="mini-id-lines"><div class="mini-id-line"></div><div class="mini-id-line"></div><div class="mini-id-line"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="guide-checks">
+                            <div class="guide-check"><div class="guide-check-dot good">&check;</div> Clear and focused</div>
+                            <div class="guide-check"><div class="guide-check-dot good">&check;</div> Good, even lighting</div>
+                            <div class="guide-check"><div class="guide-check-dot good">&check;</div> Straight, all edges visible</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Banner -->
+            <div class="info-banner">
+                <div class="info-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="info-text">
+                    <strong>Accepted: Driver's License, Passport, National ID</strong>
+                    <span>Ensure your ID is valid and not expired</span>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <button class="btn-primary" id="submitButton" disabled onclick="submitVerification()">
+                Submit for Verification
+            </button>
+        </div>
+
+        <div class="powered-footer">Powered by Sumsub</div>
+    </main>
+
+    <script>
+        let frontFile = null, backFile = null;
+        const frontZone = document.getElementById('frontUploadZone');
+        const backZone  = document.getElementById('backUploadZone');
+        const frontInput = document.getElementById('frontInput');
+        const backInput  = document.getElementById('backInput');
+        const submitBtn  = document.getElementById('submitButton');
+
+        // Front
+        frontZone.addEventListener('click', () => frontInput.click());
+        frontZone.addEventListener('dragover', e => { e.preventDefault(); frontZone.classList.add('active'); });
+        frontZone.addEventListener('dragleave', () => frontZone.classList.remove('active'));
+        frontZone.addEventListener('drop', e => { e.preventDefault(); frontZone.classList.remove('active'); if(e.dataTransfer.files.length){ frontInput.files=e.dataTransfer.files; handleFront(); }});
+        frontInput.addEventListener('change', handleFront);
+
+        function handleFront(){
+            if(!frontInput.files.length) return;
+            const f = frontInput.files[0];
+            if(validate(f)){ frontFile=f; document.getElementById('frontFileName').textContent=f.name; document.getElementById('frontStatus').classList.add('active'); updateBtn(); }
+            else { alert('Invalid file. Use JPG, PNG, or PDF (max 10MB).'); frontInput.value=''; }
+        }
+        function removeFrontFile(){ frontFile=null; frontInput.value=''; document.getElementById('frontStatus').classList.remove('active'); updateBtn(); }
+
+        // Back
+        backZone.addEventListener('click', () => backInput.click());
+        backZone.addEventListener('dragover', e => { e.preventDefault(); backZone.classList.add('active'); });
+        backZone.addEventListener('dragleave', () => backZone.classList.remove('active'));
+        backZone.addEventListener('drop', e => { e.preventDefault(); backZone.classList.remove('active'); if(e.dataTransfer.files.length){ backInput.files=e.dataTransfer.files; handleBack(); }});
+        backInput.addEventListener('change', handleBack);
+
+        function handleBack(){
+            if(!backInput.files.length) return;
+            const f = backInput.files[0];
+            if(validate(f)){ backFile=f; document.getElementById('backFileName').textContent=f.name; document.getElementById('backStatus').classList.add('active'); updateBtn(); }
+            else { alert('Invalid file. Use JPG, PNG, or PDF (max 10MB).'); backInput.value=''; }
+        }
+        function removeBackFile(){ backFile=null; backInput.value=''; document.getElementById('backStatus').classList.remove('active'); updateBtn(); }
+
+        function validate(f){ return ['image/jpeg','image/png','application/pdf'].includes(f.type) && f.size<=10*1024*1024; }
+        function updateBtn(){ submitBtn.disabled = !frontFile || !backFile; }
+
+        function submitVerification(){
+            if(!frontFile||!backFile){ alert('Please upload both sides.'); return; }
+            localStorage.setItem('idVerificationComplete','true');
+            localStorage.setItem('frontDocumentName', frontFile.name);
+            localStorage.setItem('backDocumentName', backFile.name);
+            window.location.href = 'kyc-verify.html?step=5';
+        }
+    </script>
+</body>
+</html>

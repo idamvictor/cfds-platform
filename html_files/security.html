@@ -1,0 +1,2263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Settings — 1 Trade Market</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --accent: #00dfa2;
+            --accent-light: #00ffc3;
+            --accent-dark: #00b881;
+            --bg: #07080c;
+            --bg2: #0a0d15;
+            --t1: #eef2f7;
+            --t2: #8b97a8;
+            --t3: #4a5468;
+            --glass-bg: rgba(255,255,255,0.04);
+            --glass-border: rgba(255,255,255,0.08);
+            --glass-highlight: rgba(255,255,255,0.12);
+            --bonus-accent: #c8e64e;
+            --red: #ff4757;
+            --red-dim: rgba(255, 71, 87, 0.12);
+            --green: #00dfa2;
+            --green-dim: rgba(0, 223, 162, 0.12);
+            --radius: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --mono: 'JetBrains Mono', monospace;
+            --sans: 'Inter', -apple-system, 'Helvetica Neue', sans-serif;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg) 0%, var(--bg2) 100%);
+            color: var(--t1);
+            font-family: var(--sans);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* 1TM Logo */
+        .brand-logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(145deg, var(--accent-light), var(--accent), var(--accent-dark));
+            border-radius: 8px;
+            flex-shrink: 0;
+            margin-right: 8px;
+            font-weight: 800;
+            font-size: 12px;
+            color: #000;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .brand-text {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--t1);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .brand-text-market {
+            color: var(--accent);
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px);
+            border-bottom: 1.5px solid var(--glass-border);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 72px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex: 1;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--t1);
+            white-space: nowrap;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--t2);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, var(--accent-light), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            color: #000;
+        }
+
+        /* Main Layout */
+        .container {
+            display: flex;
+            height: calc(100vh - 72px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px);
+            border-right: 1.5px solid var(--glass-border);
+            padding: 24px 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            padding: 0 12px;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--t3);
+            letter-spacing: 0.5px;
+            padding: 12px 12px;
+            margin-top: 16px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 12px;
+            color: var(--t2);
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: var(--radius);
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .sidebar-link:hover {
+            background: rgba(0, 223, 162, 0.08);
+            color: var(--t1);
+        }
+
+        .sidebar-link.active {
+            color: var(--accent);
+            background: rgba(0, 223, 162, 0.12);
+            border-left-color: var(--accent);
+        }
+
+        .sidebar-icon {
+            width: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            background: transparent;
+            padding: 32px;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--t1);
+            margin-bottom: 8px;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--t2);
+        }
+
+        /* Security Score */
+        .security-score-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02), rgba(0,223,162,0.02));
+            backdrop-filter: blur(40px);
+            border: 1.5px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06);
+            padding: 32px;
+            margin-bottom: 32px;
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            position: relative;
+        }
+
+        .security-score-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0,223,162,0.3), transparent);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .score-circle {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            flex-shrink: 0;
+        }
+
+        .score-svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .score-circle-bg {
+            fill: none;
+            stroke: rgba(255,255,255,0.1);
+            stroke-width: 8;
+        }
+
+        .score-circle-progress {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 471.24;
+            stroke-dashoffset: 117.81;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .score-circle-progress.good {
+            stroke: var(--accent);
+        }
+
+        .score-circle-progress.medium {
+            stroke: var(--bonus-accent);
+        }
+
+        .score-circle-progress.poor {
+            stroke: var(--red);
+        }
+
+        .score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .score-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--t1);
+        }
+
+        .score-label {
+            font-size: 12px;
+            color: var(--t3);
+            margin-top: 4px;
+        }
+
+        .score-content {
+            flex: 1;
+        }
+
+        .score-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .score-status-label {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--t1);
+        }
+
+        .recommendations {
+            margin-top: 16px;
+        }
+
+        .recommendations-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--t3);
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .recommendation-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--t2);
+            margin-bottom: 8px;
+        }
+
+        .recommendation-icon {
+            color: var(--accent);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* Sections */
+        .settings-section {
+            margin-bottom: 32px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .section-header-icon {
+            font-size: 20px;
+            color: var(--accent);
+            width: 24px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--t1);
+            flex: 1;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .section-toggle {
+            color: var(--t3);
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+
+        .section-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .section-content {
+            display: grid;
+            gap: 16px;
+            max-height: 2000px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .section-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        /* Glass Cards */
+        .card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02), rgba(0,223,162,0.02));
+            backdrop-filter: blur(40px);
+            border: 1.5px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06);
+            padding: 20px;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0,223,162,0.3), transparent);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .card:hover {
+            border-color: rgba(0,223,162,0.2);
+            box-shadow: 0 8px 32px rgba(0,223,162,0.15), 0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--t1);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: var(--radius);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-enabled {
+            background: rgba(0, 223, 162, 0.15);
+            color: var(--accent);
+        }
+
+        .badge-disabled {
+            background: rgba(255, 71, 87, 0.15);
+            color: var(--red);
+        }
+
+        .badge-warning {
+            background: rgba(200, 230, 78, 0.15);
+            color: var(--bonus-accent);
+        }
+
+        .card-description {
+            font-size: 13px;
+            color: var(--t2);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .card-meta {
+            font-size: 12px;
+            color: var(--t3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: var(--radius);
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--sans);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(145deg, var(--accent-light), var(--accent), var(--accent-dark));
+            color: #000;
+            box-shadow: 0 4px 12px rgba(0, 223, 162, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+            font-weight: 700;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(145deg, var(--accent-light), var(--accent-light), var(--accent));
+            box-shadow: 0 6px 16px rgba(0, 223, 162, 0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--t1);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(40px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.16);
+        }
+
+        .btn-danger {
+            background: rgba(255, 71, 87, 0.12);
+            color: var(--red);
+            border: 1.5px solid rgba(255, 71, 87, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: rgba(255, 71, 87, 0.18);
+            border-color: rgba(255, 71, 87, 0.4);
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            cursor: pointer;
+            border: 1.5px solid rgba(255,255,255,0.12);
+            transition: all 0.3s;
+        }
+
+        .switch.active {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .switch::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #000;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s;
+        }
+
+        .switch.active::after {
+            transform: translateX(20px);
+            background: #000;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--t1);
+            margin-bottom: 8px;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+            border: 1.5px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius);
+            color: var(--t1);
+            font-size: 13px;
+            font-family: var(--sans);
+            transition: all 0.2s;
+            backdrop-filter: blur(40px);
+        }
+
+        .form-input::placeholder {
+            color: var(--t3);
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 223, 162, 0.2);
+            background: linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+        }
+
+        .form-input.monospace {
+            font-family: var(--mono);
+            letter-spacing: 1px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Password Strength */
+        .password-strength {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+        }
+
+        .strength-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            flex: 1;
+            transition: background 0.2s;
+        }
+
+        .strength-bar.filled {
+            background: var(--red);
+        }
+
+        .strength-bar.filled.medium {
+            background: var(--bonus-accent);
+        }
+
+        .strength-bar.filled.strong {
+            background: var(--accent);
+        }
+
+        .strength-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--t3);
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        .strength-label.weak {
+            color: var(--red);
+        }
+
+        .strength-label.medium {
+            color: var(--bonus-accent);
+        }
+
+        .strength-label.strong {
+            color: var(--accent);
+        }
+
+        /* Requirements Checklist */
+        .requirements {
+            background: rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 12px;
+            margin-top: 12px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .requirement-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--t2);
+            margin-bottom: 6px;
+        }
+
+        .requirement-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .requirement-check {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            border: 1.5px solid rgba(255,255,255,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            background: rgba(255,255,255,0.04);
+            color: transparent;
+            transition: all 0.2s;
+        }
+
+        .requirement-check.met {
+            background: rgba(0, 223, 162, 0.15);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* QR Code */
+        .qr-code-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .qr-code {
+            width: 160px;
+            height: 160px;
+            background: #fff;
+            border: 12px solid #fff;
+            border-radius: var(--radius);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .qr-pattern {
+            position: absolute;
+            background: #000;
+        }
+
+        /* Setup Flow */
+        .setup-step {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .setup-step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .setup-step-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1.5px solid rgba(255,255,255,0.08);
+        }
+
+        .setup-step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(0, 223, 162, 0.15);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .setup-step-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--t1);
+        }
+
+        .app-badges {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .app-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            background: rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            border: 1.5px solid rgba(255,255,255,0.08);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .app-badge:hover {
+            border-color: rgba(0,223,162,0.3);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .app-badge-icon {
+            font-size: 24px;
+        }
+
+        .app-badge-text {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--t2);
+        }
+
+        .backup-key {
+            background: rgba(255,255,255,0.06);
+            border: 1.5px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius);
+            padding: 16px;
+            font-family: var(--mono);
+            font-size: 14px;
+            letter-spacing: 2px;
+            color: var(--t1);
+            text-align: center;
+            margin-bottom: 16px;
+            word-spacing: 8px;
+            user-select: all;
+        }
+
+        .copy-button {
+            margin-left: 8px;
+            padding: 4px 8px;
+            font-size: 11px;
+        }
+
+        .verification-codes {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .code-input {
+            width: 100%;
+            height: 44px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            font-family: var(--mono);
+        }
+
+        .code-input::-webkit-outer-spin-button,
+        .code-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        thead {
+            background: rgba(255,255,255,0.04);
+            border-bottom: 1.5px solid rgba(255,255,255,0.08);
+        }
+
+        th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--t2);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            color: var(--t1);
+        }
+
+        tr:hover {
+            background: rgba(0, 223, 162, 0.05);
+        }
+
+        .text-muted {
+            color: var(--t3);
+        }
+
+        .text-mono {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--t2);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: var(--radius);
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(0, 223, 162, 0.15);
+            color: var(--accent);
+        }
+
+        .status-badge.failed {
+            background: rgba(255, 71, 87, 0.15);
+            color: var(--red);
+        }
+
+        .device-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: var(--radius);
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(0, 223, 162, 0.15);
+            color: var(--accent);
+        }
+
+        .suspicious-link {
+            color: var(--accent);
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .suspicious-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Action Card */
+        .action-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02), rgba(0,223,162,0.02));
+            backdrop-filter: blur(40px);
+            border: 1.5px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0,223,162,0.3), transparent);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .action-card.danger {
+            border-color: rgba(255,255,255,0.08);
+            background: linear-gradient(145deg, rgba(255,71,87,0.04), rgba(255,71,87,0.01));
+        }
+
+        .action-content h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--t1);
+            margin-bottom: 4px;
+        }
+
+        .action-content p {
+            font-size: 12px;
+            color: var(--t3);
+        }
+
+        /* Trust Section */
+        .trust-section {
+            background: rgba(0, 223, 162, 0.05);
+            border: 1.5px solid rgba(0, 223, 162, 0.2);
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 48px;
+            text-align: center;
+        }
+
+        .trust-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--t1);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .trust-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .trust-item {
+            font-size: 12px;
+            color: var(--t2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .trust-item::before {
+            content: '✓';
+            width: 20px;
+            height: 20px;
+            background: rgba(0, 223, 162, 0.15);
+            color: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+            border: 1.5px solid rgba(0, 223, 162, 0.2);
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 223, 162, 0.1), 0 0 60px rgba(0,0,0,0.6);
+            backdrop-filter: blur(40px);
+        }
+
+        .modal-header {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--t1);
+            margin-bottom: 16px;
+        }
+
+        .modal-body {
+            font-size: 13px;
+            color: var(--t2);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1.5px solid rgba(255,255,255,0.08);
+                padding: 12px;
+                display: flex;
+                overflow-x: auto;
+                overflow-y: hidden;
+            }
+
+            .sidebar-section {
+                flex-shrink: 0;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .security-score-card {
+                flex-direction: column;
+                gap: 24px;
+            }
+
+            .trust-items {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .main-content {
+                padding: 16px;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
+            table {
+                font-size: 11px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+    
+/* ═══ TICKER BAR ═══ */
+.ticker-bar{background:rgba(7,8,12,.65);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.04);overflow:hidden;white-space:nowrap;position:relative;z-index:299;height:34px;display:flex;align-items:center;}
+.ticker-track{display:inline-flex;animation:tickerScroll 45s linear infinite;gap:0;}
+.ticker-track:hover{animation-play-state:paused;}
+.ticker-item{display:inline-flex;align-items:center;gap:8px;padding:0 22px;font-size:.7rem;font-weight:600;border-right:1px solid rgba(255,255,255,.03);transition:background .2s;}
+.ticker-item:hover{background:rgba(255,255,255,.03);}
+.ti-sym{font-family:var(--mono);font-weight:700;color:var(--t1);letter-spacing:.04em;font-size:.68rem;}
+.ti-price{font-family:var(--mono);color:var(--t2);letter-spacing:.02em;font-size:.68rem;}
+.ti-change{font-family:var(--mono);font-size:.65rem;font-weight:700;}
+.ti-up{color:var(--accent);}.ti-dn{color:var(--red);}
+.ti-dot{width:4px;height:4px;border-radius:50%;}
+.ti-dot.up{background:var(--accent);box-shadow:0 0 6px var(--accent);}
+.ti-dot.dn{background:var(--red);box-shadow:0 0 6px var(--red);}
+@keyframes tickerScroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+</style>
+</head>
+<body>
+    <div class="ticker-bar"><div class="ticker-track" id="tickerTrack"></div></div>
+<!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <div class="brand">
+                <div class="brand-logo">1TM</div>
+                <span class="brand-text">1 Trade <span class="brand-text-market">Market</span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="markets.html">Markets</a></li>
+                <li><a href="trade.html">Trade</a></li>
+                <li><a href="wallet.html">Wallet</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="api.html">API</a></li>
+            </ul>
+        </div>
+        <div class="nav-right">
+            <div class="avatar">JD</div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-link" onclick="navigateSection('profile')">
+                <div class="sidebar-icon"><i class="fas fa-user"></i></div>
+                <span>Profile</span>
+            </div>
+            <div class="sidebar-link active" onclick="navigateSection('security')">
+                <div class="sidebar-icon"><i class="fas fa-lock"></i></div>
+                <span>Security</span>
+            </div>
+            <div class="sidebar-link" onclick="location.href='kyc.html'">
+                <div class="sidebar-icon"><i class="fas fa-id-card"></i></div>
+                <span>KYC Verification</span>
+            </div>
+            <div class="sidebar-link" onclick="navigateSection('api')">
+                <div class="sidebar-icon"><i class="fas fa-code"></i></div>
+                <span>API Management</span>
+            </div>
+            <div class="sidebar-link" onclick="navigateSection('preferences')">
+                <div class="sidebar-icon"><i class="fas fa-sliders-h"></i></div>
+                <span>Preferences</span>
+            </div>
+            <div class="sidebar-link" onclick="navigateSection('notifications')">
+                <div class="sidebar-icon"><i class="fas fa-bell"></i></div>
+                <span>Notifications</span>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Security Settings — 1 Trade Market</h1>
+                <p class="page-subtitle">Protect your account with advanced security features</p>
+            </div>
+
+            <!-- Security Score -->
+            <div class="security-score-card">
+                <div class="score-circle">
+                    <svg class="score-svg" viewBox="0 0 200 200">
+                        <circle class="score-circle-bg" cx="100" cy="100" r="75"></circle>
+                        <circle class="score-circle-progress good" cx="100" cy="100" r="75"></circle>
+                    </svg>
+                    <div class="score-text">
+                        <div class="score-number" id="scoreNumber">75</div>
+                        <div class="score-label">Score</div>
+                    </div>
+                </div>
+                <div class="score-content">
+                    <div class="score-status">
+                        <div class="score-status-label">Your account is <span id="scoreStatus">Good</span></div>
+                    </div>
+                    <p class="card-description">Enable 2FA to reach maximum security and protect your assets from unauthorized access.</p>
+                    <div class="recommendations">
+                        <div class="recommendations-title">Recommendations</div>
+                        <div class="recommendation-item">
+                            <span class="recommendation-icon">→</span>
+                            Enable Google Authenticator for enhanced protection
+                        </div>
+                        <div class="recommendation-item">
+                            <span class="recommendation-icon">→</span>
+                            Set an anti-phishing code to identify legitimate emails
+                        </div>
+                        <div class="recommendation-item">
+                            <span class="recommendation-icon">→</span>
+                            Review and update your connected devices
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two-Factor Authentication Section -->
+            <div class="settings-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-header-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h2 class="section-title">Two-Factor Authentication</h2>
+                    <div class="section-toggle">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+
+                <div class="section-content">
+                    <!-- Google Authenticator Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Google Authenticator</div>
+                            <div class="badge badge-disabled" id="gaStatus">
+                                <i class="fas fa-times-circle"></i> Off
+                            </div>
+                        </div>
+                        <p class="card-description">Use Google Authenticator app for time-based one-time passwords (TOTP). Most secure 2FA method.</p>
+                        <div id="gaSetup" style="display: none;">
+                            <!-- Step 1: Download App -->
+                            <div class="setup-step active" id="step1">
+                                <div class="setup-step-header">
+                                    <div class="setup-step-number">1</div>
+                                    <div class="setup-step-title">Download the Authenticator App</div>
+                                </div>
+                                <div class="app-badges">
+                                    <a href="#" class="app-badge">
+                                        <div class="app-badge-icon"><i class="fab fa-apple"></i></div>
+                                        <div class="app-badge-text">App Store</div>
+                                    </a>
+                                    <a href="#" class="app-badge">
+                                        <div class="app-badge-icon"><i class="fab fa-google-play"></i></div>
+                                        <div class="app-badge-text">Play Store</div>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Scan QR Code -->
+                            <div class="setup-step" id="step2">
+                                <div class="setup-step-header">
+                                    <div class="setup-step-number">2</div>
+                                    <div class="setup-step-title">Scan QR Code</div>
+                                </div>
+                                <div class="qr-code-container">
+                                    <div class="qr-code" id="qrCode">
+                                        <svg width="160" height="160" viewBox="0 0 160 160" style="width:100%;height:100%">
+                                            <rect width="160" height="160" fill="#fff"/>
+                                            <g fill="#000">
+                                                <rect x="0" y="0" width="40" height="40"/>
+                                                <rect x="10" y="10" width="20" height="20" fill="#fff"/>
+                                                <rect x="12" y="12" width="16" height="16" fill="#000"/>
+                                                <rect x="120" y="0" width="40" height="40"/>
+                                                <rect x="130" y="10" width="20" height="20" fill="#fff"/>
+                                                <rect x="132" y="12" width="16" height="16" fill="#000"/>
+                                                <rect x="0" y="120" width="40" height="40"/>
+                                                <rect x="10" y="130" width="20" height="20" fill="#fff"/>
+                                                <rect x="12" y="132" width="16" height="16" fill="#000"/>
+                                                <line x1="0" y1="50" x2="160" y2="50" stroke="#000" stroke-width="0.5" opacity="0.3"/>
+                                                <line x1="0" y1="60" x2="160" y2="60" stroke="#000" stroke-width="0.5" opacity="0.3"/>
+                                                <line x1="50" y1="0" x2="50" y2="160" stroke="#000" stroke-width="0.5" opacity="0.3"/>
+                                                <line x1="80" y1="0" x2="80" y2="160" stroke="#000" stroke-width="0.5" opacity="0.3"/>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <p class="card-description" style="text-align: center;">Open Google Authenticator and tap the + button to add your account</p>
+                            </div>
+
+                            <!-- Step 3: Backup Key -->
+                            <div class="setup-step" id="step3">
+                                <div class="setup-step-header">
+                                    <div class="setup-step-number">3</div>
+                                    <div class="setup-step-title">Save Your Backup Key</div>
+                                </div>
+                                <p class="card-description">If you lose access to your authenticator, you can use this backup key to regain access. Keep it safe.</p>
+                                <div class="backup-key">JBSW Y3DP EHPK 3PXP</div>
+                                <button class="btn btn-secondary btn-small" onclick="copyToClipboard('JBSW Y3DP EHPK 3PXP')">
+                                    <i class="fas fa-copy"></i> Copy Key
+                                </button>
+                            </div>
+
+                            <!-- Step 4: Verify Code -->
+                            <div class="setup-step" id="step4">
+                                <div class="setup-step-header">
+                                    <div class="setup-step-number">4</div>
+                                    <div class="setup-step-title">Enter Verification Code</div>
+                                </div>
+                                <p class="card-description">Enter the 6-digit code from your authenticator app:</p>
+                                <div class="verification-codes">
+                                    <input type="number" class="form-input code-input" placeholder="0" max="9" inputmode="numeric">
+                                    <input type="number" class="form-input code-input" placeholder="0" max="9" inputmode="numeric">
+                                    <input type="number" class="form-input code-input" placeholder="0" max="9" inputmode="numeric">
+                                    <input type="number" class="form-input code-input" placeholder="0" max="9" inputmode="numeric">
+                                    <input type="number" class="form-input code-input" placeholder="0" max="9" inputmode="numeric">
+                                    <input type="number" class="form-input code-input" placeholder="0" max="9" inputmode="numeric">
+                                </div>
+                                <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="verifyGA()">
+                                    <i class="fas fa-check"></i> Verify & Enable 2FA
+                                </button>
+                            </div>
+                        </div>
+                        <div id="gaActions" style="display: flex; gap: 8px;">
+                            <button class="btn btn-primary" onclick="startGASetup()">
+                                <i class="fas fa-arrow-right"></i> Enable
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SMS Authentication Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">SMS Authentication</div>
+                            <div class="badge badge-enabled">
+                                <i class="fas fa-check-circle"></i> Enabled
+                            </div>
+                        </div>
+                        <p class="card-description">Receive one-time codes via SMS to your registered phone number.</p>
+                        <div class="card-meta">
+                            <i class="fas fa-phone"></i> +41 *** *** *234
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-secondary btn-small">
+                                <i class="fas fa-edit"></i> Change Number
+                            </button>
+                            <button class="btn btn-danger btn-small">
+                                <i class="fas fa-times"></i> Disable
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Email Authentication Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Email Authentication</div>
+                            <div class="badge badge-enabled">
+                                <i class="fas fa-check-circle"></i> Enabled
+                            </div>
+                        </div>
+                        <p class="card-description">Receive verification links and codes at your registered email address.</p>
+                        <div class="card-meta">
+                            <i class="fas fa-envelope"></i> j***@gmail.com
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-secondary btn-small">
+                                <i class="fas fa-cog"></i> Manage
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Password & Login Section -->
+            <div class="settings-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-header-icon"><i class="fas fa-key"></i></div>
+                    <h2 class="section-title">Password & Login</h2>
+                    <div class="section-toggle">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+
+                <div class="section-content">
+                    <!-- Password Strength Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Password Status</div>
+                        </div>
+                        <p class="card-description">Your password is protected and regularly used in secure authentication.</p>
+                        <div class="card-meta">
+                            <i class="fas fa-clock"></i> Last changed 45 days ago
+                        </div>
+                        <div style="margin-bottom: 16px; padding: 12px; background: rgba(200, 230, 78, 0.12); border-radius: var(--radius); border-left: 3px solid var(--bonus-accent);">
+                            <div style="font-size: 13px; color: var(--t1); margin-bottom: 4px;">
+                                <i class="fas fa-exclamation-triangle" style="color: var(--bonus-accent); margin-right: 8px;"></i>
+                                Consider changing your password if it's been more than 90 days
+                            </div>
+                        </div>
+
+                        <!-- Change Password Form -->
+                        <button class="btn btn-primary" onclick="togglePasswordForm()" style="margin-bottom: 16px;">
+                            <i class="fas fa-redo"></i> Change Password
+                        </button>
+
+                        <div id="passwordForm" style="display: none; border-top: 1.5px solid rgba(255,255,255,0.08); padding-top: 16px;">
+                            <div class="form-group">
+                                <label class="form-label">Current Password</label>
+                                <input type="password" class="form-input" placeholder="Enter your current password">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">New Password</label>
+                                <input type="password" class="form-input" id="newPassword" placeholder="Enter new password" onkeyup="checkPasswordStrength(this.value)">
+                                <div class="password-strength">
+                                    <div class="strength-bar" id="bar1"></div>
+                                    <div class="strength-bar" id="bar2"></div>
+                                    <div class="strength-bar" id="bar3"></div>
+                                </div>
+                                <div class="strength-label" id="strengthLabel">Weak</div>
+
+                                <div class="requirements">
+                                    <div class="requirement-item">
+                                        <div class="requirement-check" id="req1">✓</div>
+                                        <span>At least 8 characters</span>
+                                    </div>
+                                    <div class="requirement-item">
+                                        <div class="requirement-check" id="req2">✓</div>
+                                        <span>Uppercase letter (A-Z)</span>
+                                    </div>
+                                    <div class="requirement-item">
+                                        <div class="requirement-check" id="req3">✓</div>
+                                        <span>Lowercase letter (a-z)</span>
+                                    </div>
+                                    <div class="requirement-item">
+                                        <div class="requirement-check" id="req4">✓</div>
+                                        <span>Number (0-9)</span>
+                                    </div>
+                                    <div class="requirement-item">
+                                        <div class="requirement-check" id="req5">✓</div>
+                                        <span>Special character (!@#$%)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Confirm Password</label>
+                                <input type="password" class="form-input" placeholder="Confirm new password">
+                            </div>
+
+                            <div class="card-actions">
+                                <button class="btn btn-primary" onclick="updatePassword()">
+                                    <i class="fas fa-save"></i> Update Password
+                                </button>
+                                <button class="btn btn-secondary" onclick="togglePasswordForm()">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Anti-Phishing Code Section -->
+            <div class="settings-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-header-icon"><i class="fas fa-fishing-rod"></i></div>
+                    <h2 class="section-title">Anti-Phishing Code</h2>
+                    <div class="section-toggle">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+
+                <div class="section-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Set Your Anti-Phishing Code</div>
+                            <div class="badge badge-warning">
+                                <i class="fas fa-exclamation-circle"></i> Not Set
+                            </div>
+                        </div>
+                        <p class="card-description">Create a unique code that will appear in all official emails from 1 Trade Market. This helps you identify phishing attempts.</p>
+
+                        <div class="form-group">
+                            <label class="form-label">Anti-Phishing Code</label>
+                            <input type="text" class="form-input" id="phishingCode" placeholder="4-20 characters" maxlength="20" onkeyup="updatePhishingPreview()">
+                            <div style="font-size: 11px; color: var(--t3); margin-top: 4px;">4-20 alphanumeric characters</div>
+                        </div>
+
+                        <div style="background: rgba(0, 223, 162, 0.08); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; border-left: 3px solid var(--accent);">
+                            <div style="font-size: 11px; font-weight: 600; color: var(--t3); text-transform: uppercase; margin-bottom: 8px;">Example Email</div>
+                            <div style="background: rgba(255,255,255,0.04); border-radius: var(--radius); padding: 12px; font-size: 12px; color: var(--t2); font-family: var(--mono);">
+                                <div>From: security@1trade.market</div>
+                                <div>Subject: Verify your login</div>
+                                <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08);">
+                                    Hello,
+                                    <div style="margin-top: 8px;">
+                                        Your verification code is: 123456
+                                    </div>
+                                    <div style="margin-top: 12px; padding: 8px; background: rgba(0, 223, 162, 0.15); border-radius: var(--radius); color: var(--accent); text-align: center; font-weight: 600;">
+                                        <span id="previewCode">---</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-actions">
+                            <button class="btn btn-primary" onclick="setPhishingCode()">
+                                <i class="fas fa-check"></i> Set Anti-Phishing Code
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Withdrawal Whitelist Section -->
+            <div class="settings-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-header-icon"><i class="fas fa-list-check"></i></div>
+                    <h2 class="section-title">Withdrawal Whitelist</h2>
+                    <div class="section-toggle">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+
+                <div class="section-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Address Whitelist Management</div>
+                        </div>
+                        <p class="card-description">When enabled, withdrawals can only be sent to pre-approved addresses. This prevents accidental transfers to wrong addresses.</p>
+
+                        <div style="margin-bottom: 16px;">
+                            <div class="toggle-switch">
+                                <div class="switch" id="whitelistToggle" onclick="toggleWhitelist()"></div>
+                                <span style="font-size: 13px; color: var(--t2);">Enable withdrawal whitelist</span>
+                            </div>
+                        </div>
+
+                        <div style="overflow-x: auto; margin-bottom: 16px;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Coin</th>
+                                        <th>Address</th>
+                                        <th>Label</th>
+                                        <th>Added</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>BTC</td>
+                                        <td class="text-mono">1A1z7aD...Pw9q2w</td>
+                                        <td>Cold Wallet</td>
+                                        <td class="text-muted">2024-12-01</td>
+                                        <td>
+                                            <button class="btn btn-danger btn-small">
+                                                <i class="fas fa-trash"></i> Remove
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>ETH</td>
+                                        <td class="text-mono">0x742d35C...8ab12d</td>
+                                        <td>Ledger Hardware</td>
+                                        <td class="text-muted">2024-11-15</td>
+                                        <td>
+                                            <button class="btn btn-danger btn-small">
+                                                <i class="fas fa-trash"></i> Remove
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <button class="btn btn-secondary" onclick="toggleModal('addAddressModal')">
+                            <i class="fas fa-plus"></i> Add Address
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Device Management Section -->
+            <div class="settings-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-header-icon"><i class="fas fa-devices"></i></div>
+                    <h2 class="section-title">Device Management</h2>
+                    <div class="section-toggle">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+
+                <div class="section-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Active Devices</div>
+                        </div>
+                        <p class="card-description">Manage devices that have access to your account.</p>
+
+                        <div style="overflow-x: auto;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Device</th>
+                                        <th>Browser</th>
+                                        <th>IP Address</th>
+                                        <th>Location</th>
+                                        <th>Last Active</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <i class="fas fa-laptop" style="color: var(--t2);"></i>
+                                                <div>
+                                                    <div style="font-weight: 600;">MacBook Pro</div>
+                                                    <span class="device-badge">This Device</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-muted">Chrome 124.0</td>
+                                        <td class="text-mono">185.*.*.42</td>
+                                        <td class="text-muted">Zurich, Switzerland</td>
+                                        <td class="text-muted">Now</td>
+                                        <td><span style="color:var(--t3);font-size:11px">N/A</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <i class="fas fa-mobile-alt" style="color: var(--t2);"></i>
+                                                <span>iPhone 15</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-muted">Safari 17.2</td>
+                                        <td class="text-mono">203.*.*.158</td>
+                                        <td class="text-muted">Zurich, Switzerland</td>
+                                        <td class="text-muted">3 hours ago</td>
+                                        <td>
+                                            <button class="btn btn-danger btn-small">
+                                                <i class="fas fa-times"></i> Remove
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <i class="fas fa-laptop" style="color: var(--t2);"></i>
+                                                <span>Windows PC</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-muted">Firefox 123.0</td>
+                                        <td class="text-mono">92.*.*.201</td>
+                                        <td class="text-muted">Bern, Switzerland</td>
+                                        <td class="text-muted">1 day ago</td>
+                                        <td>
+                                            <button class="btn btn-danger btn-small">
+                                                <i class="fas fa-times"></i> Remove
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Login Activity Log Section -->
+            <div class="settings-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-header-icon"><i class="fas fa-history"></i></div>
+                    <h2 class="section-title">Login Activity Log</h2>
+                    <div class="section-toggle">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+
+                <div class="section-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <div style="flex: 1;">
+                                <div class="card-title">Recent Login Activity</div>
+                                <p class="card-description" style="margin-top: 4px;">View all login attempts to your account</p>
+                            </div>
+                            <a href="#" class="suspicious-link" onclick="toggleModal('suspiciousModal'); return false;">
+                                <i class="fas fa-exclamation-circle"></i> Suspicious activity?
+                            </a>
+                        </div>
+
+                        <div style="overflow-x: auto;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date & Time</th>
+                                        <th>IP Address</th>
+                                        <th>Location</th>
+                                        <th>Device</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-muted">Mar 25, 2024 14:32</td>
+                                        <td class="text-mono">185.*.*.42</td>
+                                        <td class="text-muted">Zurich, CH</td>
+                                        <td class="text-muted">Chrome on macOS</td>
+                                        <td><span class="status-badge"><i class="fas fa-check-circle"></i> Success</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Mar 24, 2024 09:15</td>
+                                        <td class="text-mono">203.*.*.158</td>
+                                        <td class="text-muted">Zurich, CH</td>
+                                        <td class="text-muted">Safari on iOS</td>
+                                        <td><span class="status-badge"><i class="fas fa-check-circle"></i> Success</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Mar 23, 2024 16:47</td>
+                                        <td class="text-mono">92.*.*.201</td>
+                                        <td class="text-muted">Bern, CH</td>
+                                        <td class="text-muted">Firefox on Windows</td>
+                                        <td><span class="status-badge"><i class="fas fa-check-circle"></i> Success</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Mar 22, 2024 11:20</td>
+                                        <td class="text-mono">156.*.*.89</td>
+                                        <td class="text-muted">Unknown Location</td>
+                                        <td class="text-muted">Chrome on Windows</td>
+                                        <td><span class="status-badge failed"><i class="fas fa-times-circle"></i> Failed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Mar 21, 2024 20:05</td>
+                                        <td class="text-mono">185.*.*.42</td>
+                                        <td class="text-muted">Zurich, CH</td>
+                                        <td class="text-muted">Chrome on macOS</td>
+                                        <td><span class="status-badge"><i class="fas fa-check-circle"></i> Success</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Mar 20, 2024 15:33</td>
+                                        <td class="text-mono">203.*.*.158</td>
+                                        <td class="text-muted">Zurich, CH</td>
+                                        <td class="text-muted">Safari on iOS</td>
+                                        <td><span class="status-badge"><i class="fas fa-check-circle"></i> Success</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Mar 19, 2024 12:11</td>
+                                        <td class="text-mono">92.*.*.201</td>
+                                        <td class="text-muted">Bern, CH</td>
+                                        <td class="text-muted">Firefox on Windows</td>
+                                        <td><span class="status-badge"><i class="fas fa-check-circle"></i> Success</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Mar 18, 2024 08:44</td>
+                                        <td class="text-mono">185.*.*.42</td>
+                                        <td class="text-muted">Zurich, CH</td>
+                                        <td class="text-muted">Chrome on macOS</td>
+                                        <td><span class="status-badge"><i class="fas fa-check-circle"></i> Success</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Mar 17, 2024 19:22</td>
+                                        <td class="text-mono">78.*.*.145</td>
+                                        <td class="text-muted">Lausanne, CH</td>
+                                        <td class="text-muted">Safari on iOS</td>
+                                        <td><span class="status-badge"><i class="fas fa-check-circle"></i> Success</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Mar 16, 2024 13:56</td>
+                                        <td class="text-mono">185.*.*.42</td>
+                                        <td class="text-muted">Zurich, CH</td>
+                                        <td class="text-muted">Chrome on macOS</td>
+                                        <td><span class="status-badge"><i class="fas fa-check-circle"></i> Success</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Actions Section -->
+            <div class="settings-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-header-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <h2 class="section-title">Account Actions</h2>
+                    <div class="section-toggle">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+
+                <div class="section-content">
+                    <div class="action-card danger">
+                        <div class="action-content">
+                            <h3><i class="fas fa-snowflake" style="color: var(--accent-light); margin-right: 8px;"></i>Freeze Account</h3>
+                            <p>Temporarily freeze your account to prevent all trading and withdrawals. You can unfreeze at any time.</p>
+                        </div>
+                        <button class="btn btn-primary" style="background: linear-gradient(145deg, var(--accent-light), var(--accent));" onclick="toggleModal('freezeModal')">
+                            Freeze Now
+                        </button>
+                    </div>
+
+                    <div class="action-card danger">
+                        <div class="action-content">
+                            <h3><i class="fas fa-ban" style="color: var(--red); margin-right: 8px;"></i>Disable Account</h3>
+                            <p>Permanently disable your account. This action cannot be undone. All assets will be frozen.</p>
+                        </div>
+                        <button class="btn btn-danger" onclick="toggleModal('disableModal')">
+                            Disable Account
+                        </button>
+                    </div>
+
+                    <div class="action-card">
+                        <div class="action-content">
+                            <h3><i class="fas fa-download" style="color: var(--bonus-accent); margin-right: 8px;"></i>Export Account Data</h3>
+                            <p>Download your complete account data in compliance with data protection regulations.</p>
+                        </div>
+                        <button class="btn btn-secondary" onclick="exportData()">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trust Section -->
+            <div class="trust-section">
+                <div class="trust-title">
+                    <i class="fas fa-shield-alt" style="color: var(--accent); font-size: 20px;"></i>
+                    Security & Trust
+                </div>
+                <div class="trust-items">
+                    <div class="trust-item">
+                        Enterprise-Grade Encryption
+                    </div>
+                    <div class="trust-item">
+                        All data encrypted at rest and in transit
+                    </div>
+                    <div class="trust-item">
+                        3D Glassmorphism Dark Theme
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add Address Modal -->
+    <div class="modal" id="addAddressModal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">Add Whitelisted Address</div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Cryptocurrency</label>
+                    <select class="form-select">
+                        <option>Bitcoin (BTC)</option>
+                        <option>Ethereum (ETH)</option>
+                        <option>Litecoin (LTC)</option>
+                        <option>Ripple (XRP)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Address</label>
+                    <input type="text" class="form-input" placeholder="Enter wallet address">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Label (Optional)</label>
+                    <input type="text" class="form-input" placeholder="e.g., Cold Wallet, Hardware Wallet">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="toggleModal('addAddressModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="addAddress(); toggleModal('addAddressModal');">Add Address</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Suspicious Activity Modal -->
+    <div class="modal" id="suspiciousModal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">Report Suspicious Activity</div>
+            <div class="modal-body">
+                <p>If you notice unauthorized login attempts or suspicious activity, we recommend:</p>
+                <ul style="margin-top: 12px; margin-left: 20px; color: var(--t2); font-size: 13px; line-height: 1.6;">
+                    <li>Change your password immediately</li>
+                    <li>Review and update your authorized devices</li>
+                    <li>Enable all available 2FA methods</li>
+                    <li>Contact our security team at security@1trade.market</li>
+                </ul>
+                <p style="margin-top: 16px; padding: 12px; background: rgba(255, 71, 87, 0.12); border-radius: var(--radius); color: var(--red); font-size: 12px; border-left: 3px solid var(--red);">
+                    If you believe your account has been compromised, please freeze your account immediately using the button below.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="toggleModal('suspiciousModal')">Close</button>
+                <button class="btn btn-primary" style="background: linear-gradient(145deg, var(--accent-light), var(--accent));" onclick="toggleModal('suspiciousModal'); toggleModal('freezeModal');">Freeze Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Freeze Account Modal -->
+    <div class="modal" id="freezeModal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">Freeze Your Account</div>
+            <div class="modal-body">
+                <p style="margin-bottom: 12px;">You are about to temporarily freeze your account. While frozen:</p>
+                <ul style="margin-left: 20px; color: var(--t2); font-size: 13px; line-height: 1.8; margin-bottom: 16px;">
+                    <li>✗ Cannot trade or transfer assets</li>
+                    <li>✓ Can view your portfolio</li>
+                    <li>✓ Can unfreeze at any time</li>
+                </ul>
+                <div style="padding: 12px; background: rgba(0, 223, 162, 0.12); border-radius: var(--radius); color: var(--accent); font-size: 12px; border-left: 3px solid var(--accent);">
+                    Enter your current password to confirm this action
+                </div>
+                <input type="password" class="form-input" placeholder="Current password" style="margin-top: 12px;">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="toggleModal('freezeModal')">Cancel</button>
+                <button class="btn btn-primary" style="background: linear-gradient(145deg, var(--accent-light), var(--accent));" onclick="freezeAccount(); toggleModal('freezeModal');">Freeze Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disable Account Modal -->
+    <div class="modal" id="disableModal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">Disable Your Account</div>
+            <div class="modal-body">
+                <p style="color: var(--red); font-weight: 600; margin-bottom: 12px;">⚠ This action cannot be undone</p>
+                <p style="margin-bottom: 16px;">Disabling your account will:</p>
+                <ul style="margin-left: 20px; color: var(--t2); font-size: 13px; line-height: 1.8; margin-bottom: 16px;">
+                    <li>Permanently close your account</li>
+                    <li>Freeze all assets indefinitely</li>
+                    <li>Delete all API keys and connections</li>
+                    <li>Make your email unavailable for new accounts for 90 days</li>
+                </ul>
+                <div style="padding: 12px; background: rgba(255, 71, 87, 0.12); border-radius: var(--radius); color: var(--red); font-size: 12px; border-left: 3px solid var(--red); margin-bottom: 16px;">
+                    Type "DISABLE" to confirm this irreversible action
+                </div>
+                <input type="text" class="form-input" id="disableConfirm" placeholder="Type DISABLE">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="toggleModal('disableModal')">Cancel</button>
+                <button class="btn btn-danger" onclick="disableAccount(); toggleModal('disableModal');" id="disableBtn" disabled>
+                    Disable Account
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle section expand/collapse
+        function toggleSection(header) {
+            const toggle = header.querySelector('.section-toggle');
+            const content = header.nextElementSibling;
+            toggle.classList.toggle('collapsed');
+            content.classList.toggle('collapsed');
+        }
+
+        // Modal functions
+        function toggleModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.toggle('active');
+        }
+
+        function closeModal(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+
+        // GA Setup
+        function startGASetup() {
+            const setup = document.getElementById('gaSetup');
+            const actions = document.getElementById('gaActions');
+            setup.style.display = 'block';
+            actions.style.display = 'none';
+        }
+
+        function verifyGA() {
+            const codeInputs = document.querySelectorAll('.code-input');
+            const code = Array.from(codeInputs).map(input => input.value).join('');
+
+            if (code.length === 6) {
+                document.getElementById('gaStatus').innerHTML = '<i class="fas fa-check-circle"></i> On';
+                document.getElementById('gaStatus').className = 'badge badge-enabled';
+                document.getElementById('gaSetup').style.display = 'none';
+                document.getElementById('gaActions').style.display = 'flex';
+                alert('Google Authenticator has been successfully enabled!');
+            } else {
+                alert('Please enter all 6 digits');
+            }
+        }
+
+        // Password strength meter
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            const reqs = {
+                length: password.length >= 8,
+                upper: /[A-Z]/.test(password),
+                lower: /[a-z]/.test(password),
+                number: /[0-9]/.test(password),
+                special: /[!@#$%^&*]/.test(password)
+            };
+
+            const reqElements = ['req1', 'req2', 'req3', 'req4', 'req5'];
+            const reqValues = [reqs.length, reqs.upper, reqs.lower, reqs.number, reqs.special];
+
+            reqValues.forEach((met, idx) => {
+                const el = document.getElementById(reqElements[idx]);
+                if (met) {
+                    el.classList.add('met');
+                    strength++;
+                } else {
+                    el.classList.remove('met');
+                }
+            });
+
+            const bars = [document.getElementById('bar1'), document.getElementById('bar2'), document.getElementById('bar3')];
+            const label = document.getElementById('strengthLabel');
+
+            bars.forEach(bar => bar.classList.remove('filled', 'medium', 'strong'));
+
+            if (strength === 0) {
+                label.textContent = 'Weak';
+                label.className = 'strength-label weak';
+            } else if (strength <= 2) {
+                bars[0].classList.add('filled');
+                label.textContent = 'Weak';
+                label.className = 'strength-label weak';
+            } else if (strength <= 3) {
+                bars[0].classList.add('filled', 'medium');
+                bars[1].classList.add('filled', 'medium');
+                label.textContent = 'Medium';
+                label.className = 'strength-label medium';
+            } else {
+                bars[0].classList.add('filled', 'strong');
+                bars[1].classList.add('filled', 'strong');
+                bars[2].classList.add('filled', 'strong');
+                label.textContent = 'Strong';
+                label.className = 'strength-label strong';
+            }
+        }
+
+        // Toggle password form
+        function togglePasswordForm() {
+            const form = document.getElementById('passwordForm');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Update password
+        function updatePassword() {
+            alert('Password has been updated successfully!');
+            togglePasswordForm();
+        }
+
+        // Anti-phishing code
+        function updatePhishingPreview() {
+            const code = document.getElementById('phishingCode').value || '---';
+            document.getElementById('previewCode').textContent = code;
+        }
+
+        function setPhishingCode() {
+            const code = document.getElementById('phishingCode').value;
+            if (code.length >= 4 && code.length <= 20) {
+                alert('Anti-phishing code has been set successfully!');
+                document.getElementById('phishingCode').value = '';
+                document.getElementById('previewCode').textContent = '---';
+            } else {
+                alert('Anti-phishing code must be 4-20 characters');
+            }
+        }
+
+        // Whitelist functions
+        function toggleWhitelist() {
+            const toggle = document.getElementById('whitelistToggle');
+            toggle.classList.toggle('active');
+        }
+
+        function addAddress() {
+            alert('Address has been added to whitelist!');
+        }
+
+        // Account actions
+        function freezeAccount() {
+            alert('Your account has been frozen successfully. You can unfreeze it at any time from your security settings.');
+        }
+
+        function disableAccount() {
+            const confirmInput = document.getElementById('disableConfirm');
+            if (confirmInput.value === 'DISABLE') {
+                alert('Your account has been permanently disabled.');
+                confirmInput.value = '';
+            } else {
+                alert('Please type DISABLE to confirm');
+            }
+        }
+
+        function exportData() {
+            alert('Your account data is being prepared for export. You will receive a download link via email within 24 hours.');
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard!');
+            });
+        }
+
+        // Disable button logic for disable modal
+        document.addEventListener('DOMContentLoaded', () => {
+            const disableConfirm = document.getElementById('disableConfirm');
+            const disableBtn = document.getElementById('disableBtn');
+
+            if (disableConfirm) {
+                disableConfirm.addEventListener('input', (e) => {
+                    disableBtn.disabled = e.target.value !== 'DISABLE';
+                });
+            }
+
+            // Navigate section (sidebar)
+            window.navigateSection = (section) => {
+                console.log('Navigating to:', section);
+            };
+
+            // Auto-focus code inputs
+            const codeInputs = document.querySelectorAll('.code-input');
+            codeInputs.forEach((input, idx) => {
+                input.addEventListener('input', (e) => {
+                    if (e.target.value.length === 1 && idx < codeInputs.length - 1) {
+                        codeInputs[idx + 1].focus();
+                    }
+                });
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && e.target.value.length === 0 && idx > 0) {
+                        codeInputs[idx - 1].focus();
+                    }
+                });
+            });
+        });
+    </script>
+
+<script>
+
+/* ═══ TICKER ═══ */
+var TICKER_COINS=[
+  {sym:'BTC',price:'67234.50',change:'+3.45'},{sym:'ETH',price:'3892.10',change:'+2.18'},
+  {sym:'XRP',price:'2.48',change:'+1.92'},{sym:'SOL',price:'189.32',change:'+4.67'},
+  {sym:'DOGE',price:'0.42',change:'+5.23'},{sym:'ADA',price:'1.15',change:'+2.14'},
+  {sym:'POL',price:'0.89',change:'+7.32'},{sym:'LINK',price:'18.45',change:'+1.84'},
+  {sym:'ARB',price:'1.78',change:'+3.21'},{sym:'OP',price:'3.45',change:'+2.76'},
+  {sym:'AVAX',price:'48.92',change:'+2.45'},{sym:'ATOM',price:'12.34',change:'+1.67'},
+  {sym:'NEAR',price:'7.89',change:'+3.92'},{sym:'INJ',price:'56.78',change:'+4.18'}
+];
+function buildTicker(){
+  var t=document.getElementById('tickerTrack');
+  if(!t)return;
+  var h=TICKER_COINS.map(function(c){var up=c.change.startsWith('+');return'<div class="ticker-item"><span class="ti-dot '+(up?'up':'dn')+'"></span><span class="ti-sym">'+c.sym+'</span><span class="ti-price">$'+c.price+'</span><span class="ti-change '+(up?'ti-up':'ti-dn')+'">'+c.change+'%</span></div>';}).join('');
+  t.innerHTML=h+h;
+}
+function fluctuatePrices(){
+  document.querySelectorAll('.ticker-item').forEach(function(item){
+    var priceEl=item.querySelector('.ti-price');
+    var changeEl=item.querySelector('.ti-change');
+    if(!priceEl||Math.random()>.15)return;
+    var base=parseFloat(priceEl.textContent.replace('$','').replace(',',''));
+    var delta=base*(Math.random()*.004-.002);
+    var newPrice=Math.max(0.01,base+delta);
+    priceEl.textContent='$'+newPrice.toFixed(2);
+    priceEl.style.color=delta>=0?'var(--accent)':'var(--red)';
+    setTimeout(function(){priceEl.style.color='';},600);
+  });
+}
+buildTicker();
+setInterval(fluctuatePrices,2500);
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome Bonus — 1 Trade Market</title>
+<meta name="description" content="New users get 0% trading fees for 30 days + up to $5,000 in welcome bonuses. Sign up now and start trading on 1 Trade Market.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --accent: #00dfa2;
+  --accent-light: #00ffc3;
+  --accent-dark: #00b881;
+  --bg: #07080c;
+  --bg2: #0a0d15;
+  --t1: #eef2f7;
+  --t2: #8b97a8;
+  --t3: #4a5468;
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-highlight: rgba(255, 255, 255, 0.12);
+  --bonus-accent: #c8e64e;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Inter', -apple-system, sans-serif;
+  --heading: 'Outfit', -apple-system, sans-serif;
+}
+
+* , *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--sans);
+  background: linear-gradient(135deg, var(--bg) 0%, var(--bg2) 100%);
+  color: var(--t1);
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.15s;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input, select {
+  font-family: inherit;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.container-lg {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Glass morphism effect */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px);
+  border: 1px solid var(--glass-border);
+  position: relative;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--glass-highlight) 0%, transparent 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.glass-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  pointer-events: none;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 600;
+  border-radius: var(--radius);
+  transition: all 0.2s;
+  white-space: nowrap;
+  font-size: 0.875rem;
+  padding: 10px 22px;
+  border: none;
+}
+
+.btn-accent {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+  color: #000;
+  box-shadow: 0 8px 32px rgba(0, 223, 162, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  font-weight: 700;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-accent::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: left 0.3s;
+  z-index: 0;
+}
+
+.btn-accent:hover::before {
+  left: 100%;
+}
+
+.btn-accent:hover {
+  box-shadow: 0 12px 48px rgba(0, 223, 162, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-accent span {
+  position: relative;
+  z-index: 1;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
+  box-shadow: 0 0 0 rgba(0, 223, 162, 0.2);
+}
+
+.btn-outline:hover {
+  background: rgba(0, 223, 162, 0.1);
+  box-shadow: 0 0 20px rgba(0, 223, 162, 0.3);
+}
+
+.btn-dark {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--t1);
+}
+
+.btn-dark:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--glass-highlight);
+}
+
+.btn-lg {
+  padding: 14px 32px;
+  font-size: 0.95rem;
+  border-radius: var(--radius-lg);
+}
+
+.btn-sm {
+  padding: 7px 16px;
+  font-size: 0.8rem;
+}
+
+.btn-xl {
+  padding: 16px 40px;
+  font-size: 1.05rem;
+  border-radius: var(--radius-lg);
+  font-weight: 700;
+}
+
+/* Nav */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.nav-logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 0.9rem;
+  color: #000;
+  font-family: var(--heading);
+}
+
+.nav-logo-text {
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--t1);
+  white-space: nowrap;
+  font-family: var(--heading);
+}
+
+.nav-logo-text em {
+  font-style: normal;
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.nav-links a {
+  padding: 8px 14px;
+  font-size: 0.835rem;
+  font-weight: 500;
+  color: var(--t2);
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+
+.nav-links a:hover {
+  color: var(--t1);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--glass-border);
+  margin: 0 8px;
+}
+
+.hamburger {
+  display: none;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hamburger span {
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  background: var(--t2);
+  border-radius: 2px;
+}
+
+/* ===== HERO ===== */
+.hero {
+  padding: 64px 0 48px;
+  position: relative;
+  overflow: hidden;
+  min-height: 560px;
+  display: flex;
+  align-items: center;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 20%, rgba(0, 223, 162, 0.1), transparent 60%);
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(0, 223, 162, 0.01) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(0, 223, 162, 0.01) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none;
+}
+
+.hero .container {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 48px;
+  align-items: center;
+}
+
+/* Left */
+.hero-left {
+}
+
+.promo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 6px;
+  background: rgba(0, 223, 162, 0.1);
+  border: 1px solid rgba(0, 223, 162, 0.2);
+  border-radius: 50px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent-light);
+  margin-bottom: 20px;
+}
+
+.promo-badge i {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  font-family: var(--heading);
+}
+
+.hero h1 .highlight {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero h1 .big-num {
+  font-family: var(--mono);
+  font-size: clamp(2.8rem, 5vw, 4rem);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: 1.05rem;
+  color: var(--t2);
+  line-height: 1.7;
+  margin-bottom: 28px;
+  max-width: 520px;
+}
+
+/* Countdown */
+.countdown {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.cd-box {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  text-align: center;
+  min-width: 72px;
+  backdrop-filter: blur(40px);
+}
+
+.cd-val {
+  font-family: var(--mono);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.cd-lab {
+  font-size: 0.65rem;
+  color: var(--t3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.cd-sep {
+  font-family: var(--mono);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--t3);
+  display: flex;
+  align-items: center;
+  padding-bottom: 12px;
+}
+
+/* Signup */
+.hero-signup {
+  display: flex;
+  gap: 0;
+  max-width: 480px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px);
+  margin-bottom: 14px;
+}
+
+.hero-signup input {
+  flex: 1;
+  padding: 15px 16px;
+  background: transparent;
+  border: none;
+  color: var(--t1);
+  font-size: 0.9rem;
+  outline: none;
+  min-width: 0;
+}
+
+.hero-signup input::placeholder {
+  color: var(--t3);
+}
+
+.hero-signup .btn {
+  border-radius: 0;
+  padding: 15px 28px;
+  flex-shrink: 0;
+}
+
+.signup-note {
+  font-size: 0.75rem;
+  color: var(--t3);
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.signup-note i {
+  color: var(--accent);
+  font-size: 0.7rem;
+}
+
+/* Right: Bonus Card */
+.bonus-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 223, 162, 0.1);
+  backdrop-filter: blur(40px);
+  position: relative;
+}
+
+.bonus-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(0, 223, 162, 0.3) 0%, transparent 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.bonus-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 0 0 1px var(--glass-highlight);
+  pointer-events: none;
+}
+
+.bc-header {
+  background: linear-gradient(135deg, rgba(0, 223, 162, 0.08), rgba(0, 223, 162, 0.02));
+  padding: 28px 28px 24px;
+  border-bottom: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.bc-header::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 223, 162, 0.1), transparent 70%);
+  pointer-events: none;
+}
+
+.bc-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.bc-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--accent);
+  font-family: var(--heading);
+}
+
+.bc-live {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.bc-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: livePulse 2s infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(0, 223, 162, 0.4);
+  }
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 0 0 6px rgba(0, 223, 162, 0);
+  }
+}
+
+.bc-amount {
+  font-family: var(--mono);
+  font-size: 3.2rem;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 4px;
+  position: relative;
+}
+
+.bc-amount .dollar {
+  font-size: 1.8rem;
+  color: var(--accent-light);
+  vertical-align: top;
+  margin-right: 2px;
+}
+
+.bc-amount .val {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bc-amount-sub {
+  font-size: 0.85rem;
+  color: var(--t2);
+  position: relative;
+}
+
+/* Bonus Steps */
+.bc-body {
+  padding: 24px 28px;
+}
+
+.bc-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.bc-step {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--glass-border);
+  position: relative;
+}
+
+.bc-step:last-child {
+  border-bottom: none;
+}
+
+.bc-step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--glass-bg);
+  border: 1.5px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.bc-step-content {
+  flex: 1;
+}
+
+.bc-step-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 3px;
+  font-family: var(--heading);
+}
+
+.bc-step-desc {
+  font-size: 0.8rem;
+  color: var(--t2);
+  line-height: 1.5;
+}
+
+.bc-step-reward {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.bc-step-reward.green {
+  background: rgba(0, 223, 162, 0.15);
+  color: var(--accent);
+}
+
+.bc-step-reward.bonus {
+  background: rgba(200, 230, 78, 0.15);
+  color: var(--bonus-accent);
+}
+
+/* Progress bar */
+.bc-footer {
+  padding: 16px 28px 24px;
+  border-top: 1px solid var(--glass-border);
+}
+
+.bc-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--t3);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.bc-progress-track {
+  height: 6px;
+  background: var(--glass-bg);
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+}
+
+.bc-progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%);
+  width: 0%;
+  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bc-footer-note {
+  font-size: 0.7rem;
+  color: var(--t3);
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bc-footer-note i {
+  color: var(--accent);
+  font-size: 0.65rem;
+}
+
+/* ===== REWARDS BREAKDOWN ===== */
+.sec {
+  padding: 72px 0;
+}
+
+.sec-dark {
+  background: var(--bg2);
+}
+
+.sec-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+  font-family: var(--heading);
+}
+
+.sec-title {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  margin-bottom: 12px;
+  line-height: 1.2;
+  font-family: var(--heading);
+}
+
+.sec-desc {
+  font-size: 0.95rem;
+  color: var(--t2);
+  max-width: 560px;
+  line-height: 1.7;
+}
+
+.sec-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.sec-header .sec-desc {
+  margin: 0 auto;
+}
+
+.rewards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.reward-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(40px);
+}
+
+.reward-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(0, 223, 162, 0.2) 0%, transparent 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.25s;
+  pointer-events: none;
+}
+
+.reward-card:hover {
+  border-color: rgba(0, 223, 162, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 48px rgba(0, 223, 162, 0.15);
+}
+
+.reward-card:hover::before {
+  opacity: 1;
+}
+
+.rc-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  background: rgba(0, 223, 162, 0.15);
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.rc-bonus {
+  font-family: var(--mono);
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.rc-bonus .accent {
+  color: var(--accent);
+}
+
+.reward-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-family: var(--heading);
+}
+
+.reward-card p {
+  font-size: 0.83rem;
+  color: var(--t2);
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+
+.rc-req {
+  font-size: 0.75rem;
+  color: var(--t3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-border);
+}
+
+.rc-req i {
+  color: var(--accent);
+  font-size: 0.7rem;
+}
+
+/* ===== ZERO FEE SECTION ===== */
+.zero-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+
+.zero-visual {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(40px);
+}
+
+.zero-visual::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 30%, rgba(0, 223, 162, 0.05), transparent 65%);
+  pointer-events: none;
+}
+
+.zero-compare {
+  position: relative;
+}
+
+.zc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--glass-border);
+  position: relative;
+}
+
+.zc-row:last-child {
+  border-bottom: none;
+}
+
+.zc-label {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--t2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zc-label i {
+  width: 20px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--accent);
+}
+
+.zc-vals {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.zc-other {
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  color: var(--t3);
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+.zc-ours {
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(0, 223, 162, 0.15);
+  padding: 4px 12px;
+  border-radius: 4px;
+}
+
+.zc-head {
+  display: flex;
+  justify-content: flex-end;
+  gap: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--glass-border);
+  margin-bottom: 4px;
+}
+
+.zc-head span {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--t3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.zc-head span:last-child {
+  color: var(--accent);
+  background: rgba(0, 223, 162, 0.1);
+  padding: 3px 10px;
+  border-radius: 4px;
+}
+
+.zero-saving {
+  text-align: center;
+  margin-top: 24px;
+  padding: 20px;
+  background: rgba(0, 223, 162, 0.05);
+  border: 1px solid rgba(0, 223, 162, 0.1);
+  border-radius: var(--radius-lg);
+  position: relative;
+}
+
+.zero-saving-label {
+  font-size: 0.75rem;
+  color: var(--t2);
+  margin-bottom: 4px;
+}
+
+.zero-saving-val {
+  font-family: var(--mono);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.zero-saving-note {
+  font-size: 0.72rem;
+  color: var(--t3);
+  margin-top: 2px;
+}
+
+.zero-features {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 28px;
+}
+
+.zf-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.zf-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(0, 223, 162, 0.15);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.zf-item h4 {
+  font-size: 0.92rem;
+  font-weight: 600;
+  margin-bottom: 3px;
+  font-family: var(--heading);
+}
+
+.zf-item p {
+  font-size: 0.83rem;
+  color: var(--t2);
+  line-height: 1.6;
+}
+
+/* ===== HOW IT WORKS ===== */
+.how-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  position: relative;
+}
+
+.how-grid::before {
+  content: '';
+  position: absolute;
+  top: 36px;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, var(--accent) 0, var(--accent) 4px, transparent 4px, transparent 12px);
+  opacity: 0.2;
+}
+
+.how-step {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.how-num {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--glass-bg);
+  border: 2px solid rgba(0, 223, 162, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  font-family: var(--mono);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--accent);
+  position: relative;
+}
+
+.how-num::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 223, 162, 0.1);
+}
+
+.how-step h3 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-family: var(--heading);
+}
+
+.how-step p {
+  font-size: 0.8rem;
+  color: var(--t2);
+  line-height: 1.6;
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+/* ===== TERMS TABLE ===== */
+.terms-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.terms-table th {
+  text-align: left;
+  padding: 14px 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--t2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--glass-bg);
+  border-bottom: 1px solid var(--glass-border);
+  font-family: var(--heading);
+}
+
+.terms-table td {
+  padding: 14px 20px;
+  font-size: 0.88rem;
+  color: var(--t1);
+  border-bottom: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.terms-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.terms-table tbody tr:hover td {
+  background: rgba(0, 223, 162, 0.02);
+}
+
+.terms-table td:first-child {
+  font-weight: 600;
+  color: var(--t1);
+}
+
+.terms-table .mono {
+  font-family: var(--mono);
+}
+
+.terms-table .accent {
+  color: var(--accent);
+}
+
+.terms-table .bonus {
+  color: var(--bonus-accent);
+}
+
+/* ===== FAQ ===== */
+.faq-list {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.faq-q {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 20px 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--t1);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.15s;
+  font-family: var(--heading);
+}
+
+.faq-q:hover {
+  color: var(--accent-light);
+}
+
+.faq-icon {
+  color: var(--accent);
+  font-size: 0.8rem;
+  transition: transform 0.3s;
+  flex-shrink: 0;
+  margin-left: 16px;
+}
+
+.faq-item.open .faq-icon {
+  transform: rotate(45deg);
+}
+
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+}
+
+.faq-item.open .faq-a {
+  max-height: 300px;
+}
+
+.faq-a p {
+  padding-bottom: 20px;
+  font-size: 0.88rem;
+  color: var(--t2);
+  line-height: 1.75;
+}
+
+/* ===== CTA ===== */
+.cta-section {
+  padding: 72px 0;
+}
+
+.cta-box {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 64px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(40px);
+}
+
+.cta-box::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(0, 223, 162, 0.08), transparent 55%);
+  pointer-events: none;
+}
+
+.cta-box .sec-title, .cta-box .sec-desc, .cta-actions {
+  position: relative;
+}
+
+.cta-box .sec-desc {
+  margin: 0 auto 28px;
+}
+
+.cta-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.cta-trust {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 24px;
+  position: relative;
+}
+
+.cta-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--t3);
+}
+
+.cta-trust-item i {
+  color: var(--accent);
+  font-size: 0.75rem;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--glass-border);
+  padding: 40px 0 0;
+}
+
+.ft-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.ft-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.ft-links {
+  display: flex;
+  gap: 20px;
+}
+
+.ft-links a {
+  font-size: 0.8rem;
+  color: var(--t3);
+  transition: color 0.15s;
+}
+
+.ft-links a:hover {
+  color: var(--accent-light);
+}
+
+.ft-bottom {
+  padding: 16px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ft-copy {
+  font-size: 0.75rem;
+  color: var(--t3);
+}
+
+.ft-social {
+  display: flex;
+  gap: 8px;
+}
+
+.ft-social a {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--t3);
+  font-size: 0.8rem;
+  transition: all 0.15s;
+}
+
+.ft-social a:hover {
+  border-color: rgba(0, 223, 162, 0.3);
+  color: var(--accent);
+}
+
+.discl {
+  padding: 16px 0;
+  background: var(--bg);
+  border-top: 1px solid var(--glass-border);
+}
+
+.discl p {
+  font-size: 0.68rem;
+  color: var(--t3);
+  opacity: 0.7;
+  line-height: 1.7;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Animations */
+.fi {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.fi.v {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .hero-layout {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .hero-signup {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero-sub {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .countdown {
+    justify-content: center;
+  }
+  .signup-note {
+    justify-content: center;
+  }
+  .bonus-card {
+    max-width: 460px;
+    margin: 32px auto 0;
+  }
+  .rewards-grid {
+    grid-template-columns: 1fr;
+  }
+  .zero-layout {
+    grid-template-columns: 1fr;
+  }
+  .how-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .sec {
+    padding: 48px 0;
+  }
+  .nav-links {
+    display: none;
+  }
+  .hamburger {
+    display: flex;
+  }
+  .rewards-grid, .how-grid {
+    grid-template-columns: 1fr;
+  }
+  .how-grid::before {
+    display: none;
+  }
+  .cta-box {
+    padding: 40px 20px;
+  }
+  .hero {
+    padding: 40px 0 32px;
+    min-height: auto;
+  }
+  .cta-trust {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .ft-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .ft-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+
+/* ═══ TICKER BAR ═══ */
+.ticker-bar{background:rgba(7,8,12,.65);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.04);overflow:hidden;white-space:nowrap;position:relative;z-index:299;height:34px;display:flex;align-items:center;}
+.ticker-track{display:inline-flex;animation:tickerScroll 45s linear infinite;gap:0;}
+.ticker-track:hover{animation-play-state:paused;}
+.ticker-item{display:inline-flex;align-items:center;gap:8px;padding:0 22px;font-size:.7rem;font-weight:600;border-right:1px solid rgba(255,255,255,.03);transition:background .2s;}
+.ticker-item:hover{background:rgba(255,255,255,.03);}
+.ti-sym{font-family:var(--mono);font-weight:700;color:var(--t1);letter-spacing:.04em;font-size:.68rem;}
+.ti-price{font-family:var(--mono);color:var(--t2);letter-spacing:.02em;font-size:.68rem;}
+.ti-change{font-family:var(--mono);font-size:.65rem;font-weight:700;}
+.ti-up{color:var(--accent);}.ti-dn{color:var(--red);}
+.ti-dot{width:4px;height:4px;border-radius:50%;}
+.ti-dot.up{background:var(--accent);box-shadow:0 0 6px var(--accent);}
+.ti-dot.dn{background:var(--red);box-shadow:0 0 6px var(--red);}
+@keyframes tickerScroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+</style>
+</head>
+<body>
+
+<div class="ticker-bar"><div class="ticker-track" id="tickerTrack"></div></div>
+<!-- NAV -->
+<nav class="nav">
+  <div class="container-lg nav-inner">
+    <a href="1trade-home.html" class="nav-logo">
+      <div class="nav-logo-icon">1TM</div>
+      <div class="nav-logo-text"><em>1 Trade</em> Market</div>
+    </a>
+    <div class="nav-links">
+      <a href="1trade-home.html#markets">Markets</a>
+      <a href="1trade-home.html#features">Features</a>
+      <a href="1trade-home.html#security">Security</a>
+      <a href="1trade-home.html#app">App</a>
+    </div>
+    <a href="trading-plans.html" style="color:var(--t2,#ccc);text-decoration:none;padding:0 12px;font-size:.875rem;font-weight:500;">VIP Plans</a>
+    <a href="fund-protection.html">Fund Protection</a>
+    <div class="nav-right">
+      <div class="nav-divider"></div>
+      <a href="#" class="btn btn-dark btn-sm">Log In</a>
+      <a href="#" class="btn btn-accent btn-sm"><span>Sign Up</span></a>
+    </div>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-layout">
+      <!-- Left -->
+      <div>
+        <div class="promo-badge"><i class="fa-solid fa-gift"></i> Limited Time Offer, New Users Only</div>
+        <h1>Get up to<br><span class="big-num">$5,000</span><br>in <span class="highlight">Welcome Bonuses</span></h1>
+        <p class="hero-sub">Sign up today and enjoy 0% trading fees for your first 30 days, plus unlock up to $5,000 in trading bonuses through simple deposit and volume milestones.</p>
+
+        <!-- Countdown -->
+        <div class="countdown fi" id="countdown">
+          <div class="cd-box"><div class="cd-val" id="cdDays">14</div><div class="cd-lab">Days</div></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-box"><div class="cd-val" id="cdHours">08</div><div class="cd-lab">Hours</div></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-box"><div class="cd-val" id="cdMins">42</div><div class="cd-lab">Mins</div></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-box"><div class="cd-val" id="cdSecs">17</div><div class="cd-lab">Secs</div></div>
+        </div>
+
+        <!-- Signup -->
+        <div class="hero-signup fi">
+          <input type="email" placeholder="Enter your email to claim bonus">
+          <button class="btn btn-accent"><span>Claim Now</span></button>
+        </div>
+        <div class="signup-note fi"><i class="fa-solid fa-circle-check"></i> No minimum deposit &nbsp;·&nbsp; <i class="fa-solid fa-circle-check"></i> Instant activation</div>
+      </div>
+
+      <!-- Right, Bonus Card -->
+      <div>
+        <div class="bonus-card fi">
+          <div class="bc-header">
+            <div class="bc-header-top">
+              <div class="bc-label">Welcome Package</div>
+              <div class="bc-live"><span class="bc-live-dot"></span> Active</div>
+            </div>
+            <div class="bc-amount"><span class="dollar">$</span><span class="val">5,000</span></div>
+            <div class="bc-amount-sub">Maximum welcome bonus for new accounts</div>
+          </div>
+          <div class="bc-body">
+            <div class="bc-steps">
+              <div class="bc-step">
+                <div class="bc-step-num">1</div>
+                <div class="bc-step-content">
+                  <div class="bc-step-title">Sign Up & Verify KYC</div>
+                  <div class="bc-step-desc">Create your account and complete identity verification.</div>
+                  <span class="bc-step-reward green"><i class="fa-solid fa-gift"></i> $10 Bonus</span>
+                </div>
+              </div>
+              <div class="bc-step">
+                <div class="bc-step-num">2</div>
+                <div class="bc-step-content">
+                  <div class="bc-step-title">First Deposit</div>
+                  <div class="bc-step-desc">Deposit $100 or more within 7 days of registration.</div>
+                  <span class="bc-step-reward green"><i class="fa-solid fa-gift"></i> $50 Bonus</span>
+                </div>
+              </div>
+              <div class="bc-step">
+                <div class="bc-step-num">3</div>
+                <div class="bc-step-content">
+                  <div class="bc-step-title">Trade $10,000+ Volume</div>
+                  <div class="bc-step-desc">Reach $10K in cumulative trading volume within 30 days.</div>
+                  <span class="bc-step-reward bonus"><i class="fa-solid fa-trophy"></i> $200 Bonus</span>
+                </div>
+              </div>
+              <div class="bc-step">
+                <div class="bc-step-num">4</div>
+                <div class="bc-step-content">
+                  <div class="bc-step-title">VIP Volume Tiers</div>
+                  <div class="bc-step-desc">Unlock additional bonuses up to $4,740 with higher volume tiers.</div>
+                  <span class="bc-step-reward bonus"><i class="fa-solid fa-crown"></i> Up to $4,740</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bc-footer">
+            <div class="bc-progress-label"><span>Bonus Unlocked</span><span>$0 / $5,000</span></div>
+            <div class="bc-progress-track"><div class="bc-progress-fill" id="progressFill"></div></div>
+            <div class="bc-footer-note"><i class="fa-solid fa-circle-info"></i> Progress updates in real-time after registration</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REWARDS BREAKDOWN -->
+<section class="sec sec-dark">
+  <div class="container">
+    <div class="sec-header fi">
+      <div class="sec-label">Rewards Breakdown</div>
+      <div class="sec-title">Three Ways to Earn</div>
+      <p class="sec-desc">Complete simple tasks to unlock your bonuses. Each reward is credited instantly to your trading account.</p>
+    </div>
+    <div class="rewards-grid">
+      <div class="reward-card fi">
+        <div class="rc-icon"><i class="fa-solid fa-percent"></i></div>
+        <div class="rc-bonus"><span class="accent">0%</span> Fees</div>
+        <h3>Zero Trading Fees</h3>
+        <p>Enjoy 30 full days of zero maker and taker fees on all spot trading pairs. No limits on volume.</p>
+        <div class="rc-req"><i class="fa-solid fa-check"></i> Automatically applied on signup</div>
+      </div>
+      <div class="reward-card fi">
+        <div class="rc-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
+        <div class="rc-bonus">Up to <span class="accent">$260</span></div>
+        <h3>Deposit Bonuses</h3>
+        <p>Earn instant trading credits based on your deposit amount. Higher deposits unlock bigger bonuses.</p>
+        <div class="rc-req"><i class="fa-solid fa-check"></i> Minimum deposit: $100</div>
+      </div>
+      <div class="reward-card fi">
+        <div class="rc-icon"><i class="fa-solid fa-chart-line"></i></div>
+        <div class="rc-bonus">Up to <span class="accent">$4,740</span></div>
+        <h3>Volume Bonuses</h3>
+        <p>Hit cumulative trading milestones to unlock tiered rewards. Trade spot or futures to qualify.</p>
+        <div class="rc-req"><i class="fa-solid fa-check"></i> Trade within 30 days of signup</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZERO FEES -->
+<section class="sec">
+  <div class="container">
+    <div class="zero-layout">
+      <div class="fi">
+        <div class="sec-label">30-Day Zero Fee Trial</div>
+        <div class="sec-title">Save Thousands on Every Trade</div>
+        <p class="sec-desc">While other exchanges charge up to 0.10% per trade, new 1 Trade Market users pay nothing for their first 30 days.</p>
+        <div class="zero-features">
+          <div class="zf-item"><div class="zf-icon"><i class="fa-solid fa-check"></i></div><div><h4>All Spot Pairs Included</h4><p>Trade any of our 800+ spot pairs with zero fees. No pair restrictions.</p></div></div>
+          <div class="zf-item"><div class="zf-icon"><i class="fa-solid fa-check"></i></div><div><h4>Unlimited Volume</h4><p>No caps on trading volume. Whether you trade $100 or $10M, fees stay at 0%.</p></div></div>
+          <div class="zf-item"><div class="zf-icon"><i class="fa-solid fa-check"></i></div><div><h4>Maker & Taker Both Zero</h4><p>Both sides of the order book, zero fees. No hidden markups or spreads.</p></div></div>
+          <div class="zf-item"><div class="zf-icon"><i class="fa-solid fa-check"></i></div><div><h4>Automatically Activated</h4><p>No code needed. Zero-fee period starts the moment your account is verified.</p></div></div>
+        </div>
+      </div>
+      <div class="zero-visual fi">
+        <div class="zc-head"><span>Others</span><span>1 Trade Market</span></div>
+        <div class="zero-compare">
+          <div class="zc-row">
+            <div class="zc-label"><i class="fa-solid fa-arrow-right-arrow-left"></i> Spot Maker Fee</div>
+            <div class="zc-vals"><span class="zc-other">0.10%</span><span class="zc-ours">0.00%</span></div>
+          </div>
+          <div class="zc-row">
+            <div class="zc-label"><i class="fa-solid fa-arrow-right-arrow-left"></i> Spot Taker Fee</div>
+            <div class="zc-vals"><span class="zc-other">0.10%</span><span class="zc-ours">0.00%</span></div>
+          </div>
+          <div class="zc-row">
+            <div class="zc-label"><i class="fa-solid fa-rocket"></i> Futures Maker</div>
+            <div class="zc-vals"><span class="zc-other">0.02%</span><span class="zc-ours">0.01%</span></div>
+          </div>
+          <div class="zc-row">
+            <div class="zc-label"><i class="fa-solid fa-rocket"></i> Futures Taker</div>
+            <div class="zc-vals"><span class="zc-other">0.06%</span><span class="zc-ours">0.03%</span></div>
+          </div>
+        </div>
+        <div class="zero-saving">
+          <div class="zero-saving-label">Estimated 30-day savings on $500K volume</div>
+          <div class="zero-saving-val">$1,000+</div>
+          <div class="zero-saving-note">Compared to industry-average exchange fees</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="sec sec-dark">
+  <div class="container">
+    <div class="sec-header fi">
+      <div class="sec-label">How to Claim</div>
+      <div class="sec-title">Claim Your Bonus in 4 Steps</div>
+    </div>
+    <div class="how-grid">
+      <div class="how-step fi"><div class="how-num">01</div><h3>Create Account</h3><p>Sign up with email in under 60 seconds.</p></div>
+      <div class="how-step fi"><div class="how-num">02</div><h3>Verify Identity</h3><p>Quick automated KYC, takes ~2 minutes.</p></div>
+      <div class="how-step fi"><div class="how-num">03</div><h3>Deposit Funds</h3><p>Deposit $100+ via crypto, card, or bank.</p></div>
+      <div class="how-step fi"><div class="how-num">04</div><h3>Start Trading</h3><p>Fees auto-waived. Bonuses unlock as you trade.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- BONUS TIERS TABLE -->
+<section class="sec">
+  <div class="container">
+    <div class="sec-header fi">
+      <div class="sec-label">Bonus Tiers</div>
+      <div class="sec-title">Volume-Based Reward Tiers</div>
+      <p class="sec-desc">The more you trade, the more you earn. All bonuses are credited as trading credits to your account.</p>
+    </div>
+    <div class="fi" style="overflow-x:auto">
+    <table class="terms-table">
+      <thead>
+        <tr>
+          <th>Tier</th>
+          <th>Cumulative Volume</th>
+          <th>Bonus Reward</th>
+          <th>Timeframe</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><i class="fa-solid fa-seedling" style="color:var(--accent);margin-right:6px"></i> Starter</td>
+          <td class="mono">$0</td>
+          <td class="mono bonus">$10</td>
+          <td>Instant</td>
+          <td><span style="color:var(--accent);font-weight:600;font-size:.82rem"><i class="fa-solid fa-circle-check" style="margin-right:4px"></i> On Signup + KYC</span></td>
+        </tr>
+        <tr>
+          <td><i class="fa-solid fa-coins" style="color:var(--accent);margin-right:6px"></i> Depositor</td>
+          <td class="mono">$100+ deposit</td>
+          <td class="mono bonus">$50</td>
+          <td>Within 7 days</td>
+          <td><span style="color:var(--t2);font-size:.82rem">First deposit required</span></td>
+        </tr>
+        <tr>
+          <td><i class="fa-solid fa-bolt" style="color:var(--accent);margin-right:6px"></i> Active</td>
+          <td class="mono">$10,000</td>
+          <td class="mono bonus">$200</td>
+          <td>30 days</td>
+          <td><span style="color:var(--t2);font-size:.82rem">Trade to unlock</span></td>
+        </tr>
+        <tr>
+          <td><i class="fa-solid fa-fire" style="color:var(--accent);margin-right:6px"></i> Pro</td>
+          <td class="mono">$100,000</td>
+          <td class="mono bonus">$500</td>
+          <td>30 days</td>
+          <td><span style="color:var(--t2);font-size:.82rem">Trade to unlock</span></td>
+        </tr>
+        <tr>
+          <td><i class="fa-solid fa-gem" style="color:var(--accent);margin-right:6px"></i> Elite</td>
+          <td class="mono">$500,000</td>
+          <td class="mono bonus">$1,500</td>
+          <td>30 days</td>
+          <td><span style="color:var(--t2);font-size:.82rem">Trade to unlock</span></td>
+        </tr>
+        <tr>
+          <td><i class="fa-solid fa-crown" style="color:var(--accent);margin-right:6px"></i> VIP</td>
+          <td class="mono">$1,000,000+</td>
+          <td class="mono bonus">$2,740</td>
+          <td>30 days</td>
+          <td><span style="color:var(--t2);font-size:.82rem">Trade to unlock</span></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec sec-dark">
+  <div class="container">
+    <div class="sec-header fi">
+      <div class="sec-label">FAQ</div>
+      <div class="sec-title">Frequently Asked Questions</div>
+    </div>
+    <div class="faq-list fi">
+      <div class="faq-item">
+        <button class="faq-q">Who is eligible for the welcome bonus?<span class="faq-icon"><i class="fa-solid fa-plus"></i></span></button>
+        <div class="faq-a"><p>All new users who register for a 1 Trade Market account are eligible. The offer applies to accounts created during the promotional period. Existing users and sub-accounts are not eligible.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">How long do I have to claim the bonuses?<span class="faq-icon"><i class="fa-solid fa-plus"></i></span></button>
+        <div class="faq-a"><p>The zero-fee period starts immediately upon KYC verification and lasts exactly 30 calendar days. Deposit bonuses must be claimed within 7 days of registration. Volume bonuses must be earned within 30 days of registration.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Can I withdraw the bonus directly?<span class="faq-icon"><i class="fa-solid fa-plus"></i></span></button>
+        <div class="faq-a"><p>Bonuses are credited as trading credits and cannot be withdrawn directly. However, any profits earned using the bonus credits are fully withdrawable. There is a 1x trading volume requirement on bonus credits before withdrawal of profits.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Does the 0% fee apply to futures trading too?<span class="faq-icon"><i class="fa-solid fa-plus"></i></span></button>
+        <div class="faq-a"><p>The zero-fee promotion applies to all spot trading pairs. Futures trading receives a discounted rate of 0.01% maker / 0.03% taker during the 30-day period, still significantly below industry average.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Is there a minimum deposit to get started?<span class="faq-icon"><i class="fa-solid fa-plus"></i></span></button>
+        <div class="faq-a"><p>There is no minimum deposit to create an account or to benefit from the zero-fee period. However, to unlock the deposit bonus tier, a minimum first deposit of $100 (or equivalent in crypto) is required within 7 days.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">What happens after 30 days?<span class="faq-icon"><i class="fa-solid fa-plus"></i></span></button>
+        <div class="faq-a"><p>After the 30-day promotional period, your account moves to our standard fee schedule starting at 0.05% maker / 0.10% taker. High-volume traders qualify for our VIP tier program with further discounts.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-box fi">
+      <div class="sec-label">Don't Miss Out</div>
+      <div class="sec-title">Claim Your $5,000 Welcome Bonus</div>
+      <p class="sec-desc">Limited-time offer for new users. Zero fees + up to $5,000 in trading credits. Takes less than 60 seconds to sign up.</p>
+      <div class="cta-actions">
+        <a href="#" class="btn btn-accent btn-xl"><span>Create Free Account <i class="fa-solid fa-arrow-right" style="font-size:.85rem"></i></span></a>
+      </div>
+      <div class="cta-trust">
+        <div class="cta-trust-item"><i class="fa-solid fa-shield-halved"></i> Licensed & Regulated</div>
+        <div class="cta-trust-item"><i class="fa-solid fa-lock"></i> Bank-Grade Security</div>
+        <div class="cta-trust-item"><i class="fa-solid fa-users"></i> 12M+ Traders</div>
+        <div class="cta-trust-item"><i class="fa-solid fa-clock"></i> 24/7 Support</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="ft-inner">
+      <div class="ft-left">
+        <a href="1trade-home.html" class="nav-logo">
+          <div class="nav-logo-icon">1TM</div>
+          <div class="nav-logo-text"><em>1 Trade</em> Market</div>
+        </a>
+        <div class="ft-links">
+          <a href="1trade-home.html">Home</a>
+          <a href="1trade-home.html#markets">Markets</a>
+          <a href="1trade-home.html#features">Features</a>
+          <a href="1trade-home.html#security">Security</a>
+        </div>
+      </div>
+      <div class="ft-social">
+        <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#"><i class="fa-brands fa-telegram"></i></a>
+        <a href="#"><i class="fa-brands fa-discord"></i></a>
+        <a href="#"><i class="fa-brands fa-youtube"></i></a>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <div class="ft-copy">&copy; 2024–2026 1 Trade Market Inc. All rights reserved.</div>
+      <div class="ft-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">AML Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+<div class="discl"><div class="container"><p><strong>Risk Disclaimer:</strong> Digital asset trading involves significant risk and can result in loss of invested capital. Bonus credits are non-withdrawable but profits earned from trading with bonus credits can be withdrawn. Offer valid for new accounts only during the promotional period. 1 Trade Market does not provide financial advice.</p></div></div>
+
+<script>
+/* Countdown Timer: 14 days from now */
+const end=new Date();end.setDate(end.getDate()+14);end.setHours(23,59,59,0);
+function updateCD(){
+  const now=new Date(),diff=end-now;
+  if(diff<=0)return;
+  const d=Math.floor(diff/864e5),h=Math.floor((diff%864e5)/36e5),m=Math.floor((diff%36e5)/6e4),s=Math.floor((diff%6e4)/1e3);
+  document.getElementById('cdDays').textContent=String(d).padStart(2,'0');
+  document.getElementById('cdHours').textContent=String(h).padStart(2,'0');
+  document.getElementById('cdMins').textContent=String(m).padStart(2,'0');
+  document.getElementById('cdSecs').textContent=String(s).padStart(2,'0');
+}
+updateCD();setInterval(updateCD,1000);
+
+/* Progress bar animation */
+setTimeout(()=>{const pf=document.getElementById('progressFill');if(pf)pf.style.width='2%'},800);
+
+/* FAQ Accordion */
+document.querySelectorAll('.faq-q').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const item=btn.parentElement;
+    const wasOpen=item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+    if(!wasOpen)item.classList.add('open');
+  });
+});
+
+/* Scroll animations */
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('v')})},{threshold:.06,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+
+/* Smooth scroll */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(this.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})})});
+
+/* Mobile menu */
+document.getElementById('hamburger').addEventListener('click',function(){
+  const m=document.querySelector('.nav-links');if(!m)return;
+  if(m.style.display==='flex'){m.style.display='none';return}
+  m.style.cssText='display:flex;flex-direction:column;position:absolute;top:60px;left:0;right:0;background:rgba(7,8,12,.95);backdrop-filter:blur(40px);padding:16px 20px;gap:4px;border-bottom:1px solid var(--glass-border);z-index:999;box-shadow:0 16px 48px rgba(0,0,0,.3)';
+});
+</script>
+
+<script>
+
+/* ═══ TICKER ═══ */
+var TICKER_COINS=[
+  {sym:'BTC',price:'67234.50',change:'+3.45'},{sym:'ETH',price:'3892.10',change:'+2.18'},
+  {sym:'XRP',price:'2.48',change:'+1.92'},{sym:'SOL',price:'189.32',change:'+4.67'},
+  {sym:'DOGE',price:'0.42',change:'+5.23'},{sym:'ADA',price:'1.15',change:'+2.14'},
+  {sym:'POL',price:'0.89',change:'+7.32'},{sym:'LINK',price:'18.45',change:'+1.84'},
+  {sym:'ARB',price:'1.78',change:'+3.21'},{sym:'OP',price:'3.45',change:'+2.76'},
+  {sym:'AVAX',price:'48.92',change:'+2.45'},{sym:'ATOM',price:'12.34',change:'+1.67'},
+  {sym:'NEAR',price:'7.89',change:'+3.92'},{sym:'INJ',price:'56.78',change:'+4.18'}
+];
+function buildTicker(){
+  var t=document.getElementById('tickerTrack');
+  if(!t)return;
+  var h=TICKER_COINS.map(function(c){var up=c.change.startsWith('+');return'<div class="ticker-item"><span class="ti-dot '+(up?'up':'dn')+'"></span><span class="ti-sym">'+c.sym+'</span><span class="ti-price">$'+c.price+'</span><span class="ti-change '+(up?'ti-up':'ti-dn')+'">'+c.change+'%</span></div>';}).join('');
+  t.innerHTML=h+h;
+}
+function fluctuatePrices(){
+  document.querySelectorAll('.ticker-item').forEach(function(item){
+    var priceEl=item.querySelector('.ti-price');
+    var changeEl=item.querySelector('.ti-change');
+    if(!priceEl||Math.random()>.15)return;
+    var base=parseFloat(priceEl.textContent.replace('$','').replace(',',''));
+    var delta=base*(Math.random()*.004-.002);
+    var newPrice=Math.max(0.01,base+delta);
+    priceEl.textContent='$'+newPrice.toFixed(2);
+    priceEl.style.color=delta>=0?'var(--accent)':'var(--red)';
+    setTimeout(function(){priceEl.style.color='';},600);
+  });
+}
+buildTicker();
+setInterval(fluctuatePrices,2500);
+
+</script>
+</body>
+</html>

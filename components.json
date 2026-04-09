@@ -19,3 +19,206 @@
   },
   "iconLibrary": "lucide"
 }
+
+
+# CLAUDE.md
+
+## Project Overview
+
+This is a production React trading platform.
+
+The primary objective is to **redesign the UI using Tailwind CSS and new layout structures** while **strictly preserving all existing business logic and functionality**.
+
+This project follows a **functional UI migration approach**, not a rewrite.
+
+---
+
+## 🔒 Core Principle (MANDATORY)
+
+> **Open for UI additions, closed for logic modification**
+
+- Existing logic MUST NOT be rewritten, simplified, or replaced
+- New UI can be added freely, but must integrate with existing logic
+- The system must behave exactly the same after UI changes
+
+---
+
+## 🧠 Source of Truth Rules
+
+### React Hook Form
+
+- `react-hook-form` is the **single source of truth** for all submitted data
+- Any UI element that affects submitted values MUST be wired to form state
+
+#### ❗ NEVER DO THIS:
+- Create UI state (e.g. `selectedCoin`) that is not synced with form values
+
+#### ✅ ALWAYS DO THIS:
+- Use `form.setValue`, `watch`, or `Controller`
+- Ensure UI reflects actual submitted payload
+
+---
+
+## 🧩 UI Migration Rules
+
+### What you MUST preserve:
+- hooks (`useForm`, `useEffect`, etc.)
+- validation schemas (Zod)
+- API calls (axiosInstance)
+- submit handlers
+- state management (store usage)
+- routing behavior
+- existing component contracts (props)
+
+### What you MAY change:
+- JSX layout structure
+- Tailwind classNames
+- component composition
+- visual grouping of elements
+
+---
+
+## 🧱 Component Strategy
+
+### Existing components:
+- MUST be reused
+- MUST NOT have their logic rewritten
+
+### New components:
+- Create when required by new design
+- Must follow existing project patterns
+- Must be presentational unless logic is explicitly required
+
+---
+
+## 🎨 Styling Rules
+
+- Use Tailwind CSS utilities
+- Prefer reusable class patterns
+- Avoid mixing multiple styling systems unnecessarily
+- Keep styling consistent across components
+
+---
+
+## ⚠️ Critical Anti-Patterns (DO NOT DO)
+
+❌ Rewrite existing business logic  
+❌ Modify API request structure  
+❌ Change validation schemas without instruction  
+❌ Rename form fields used in submission  
+❌ Break existing handlers or hooks  
+❌ Create duplicate state for submitted values  
+❌ Let UI state diverge from form state  
+
+---
+
+## 🔄 UI State Synchronization Rule
+
+For every new UI element:
+
+1. Does it affect submitted data?
+   - YES → MUST sync with form state
+   - NO → can remain local UI state
+
+2. If YES:
+   - show where it maps in form schema
+   - wire it using `setValue` / `watch` / `Controller`
+
+---
+
+## 🧪 Validation Before Completion
+
+Before finishing any task:
+
+- Identify all fields sent in submission
+- Verify UI reflects those values
+- Confirm no drift between UI and payload
+- Ensure existing flows still work:
+  - submit
+  - validation errors
+  - API success/failure
+  - state updates
+
+---
+
+## 📐 Layout Migration Strategy
+
+When redesigning a page:
+
+1. Analyze existing logic
+2. Analyze new HTML/design
+3. Map sections:
+   - reuse existing logic
+   - wrap existing functionality
+   - add new presentational sections
+   - identify new features (UI only if no backend)
+
+4. Rebuild layout
+5. Reattach logic
+6. Verify behavior
+
+---
+
+## 🧭 Workflow Rules
+
+### Always follow this order:
+
+1. Analyze (no edits)
+2. Plan (list files + changes)
+3. Implement (file-by-file)
+4. Validate (logic + UI sync)
+
+---
+
+## 🗂 File Editing Rules
+
+- Make minimal, focused changes
+- Show which files are modified
+- Do not refactor unrelated code
+- Do not introduce breaking changes
+
+---
+
+## 💬 Communication Rules
+
+When making changes:
+
+- Explain what was changed
+- Explain why
+- Highlight any risks
+- Confirm logic was preserved
+
+---
+
+## 🧠 Mental Model
+
+This project is:
+
+> **A UI shell replacement over a stable logic engine**
+
+NOT:
+- a rewrite
+- a refactor of business logic
+- a feature redesign
+
+---
+
+## ✅ Success Criteria
+
+A task is successful if:
+
+- UI matches the new design
+- ALL original functionality still works
+- submitted payloads are correct
+- no logic was unintentionally changed
+- new UI is properly integrated
+
+---
+
+## 🚨 If unsure
+
+When in doubt:
+
+- DO NOT modify logic
+- ASK or explain uncertainty
+- default to preserving existing behavior

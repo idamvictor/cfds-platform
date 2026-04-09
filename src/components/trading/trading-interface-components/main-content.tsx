@@ -6,76 +6,116 @@ import CalendarPanel from "./panels/calendar-panel";
 import MarketNewsPanel from "./panels/market-news-panel";
 import { useMobile } from "@/hooks/use-mobile";
 import TradingViewWidget from "./trading-view-widget";
-// import useAssetStore from "@/store/assetStore";
 import TradingInterface from "../trading-interface";
 import OrderTable from "../order-table";
+import ChartToolbar from "../ChartToolbar";
+import OrderBookPanel from "../OrderBookPanel";
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface MainContentProps {
-  sidebarExpanded: boolean;
   activeView: ActiveView;
   activePair: string;
   addCurrencyPair: (pair: string) => void;
+  onClosePanel: () => void;
+  onToggleView: (view: NonNullable<ActiveView>) => void;
 }
 
 export default function MainContent({
-  // sidebarExpanded,
   activeView,
   addCurrencyPair,
+  onClosePanel,
+  onToggleView,
 }: MainContentProps) {
-  const isMobile = useMobile();
-  const isLargeScreen = useMobile(1024);
-
-  // const { activeAsset } = useAssetStore();
-  // console.log("sidebarExtended", sidebarExpanded);
-
-  // Log when active asset changes
-  // useEffect(() => {
-  //   console.log("MainContent - Active asset changed:", activeAsset);
-  // }, [activeAsset]);
+  const isMobile = useMobile(768);
 
   return (
-    <div className="flex flex-col flex-1 overflow-hidden">
-      {/* Main content area */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Left panel - shows based on active view (desktop only) */}
-        {activeView && !isMobile && (
-          <div className="w-[300px] border-r border-border overflow-y-auto hidden md:block">
-            {activeView === "market-watch" && (
-              <MarketWatchPanel addCurrencyPair={addCurrencyPair} />
-            )}
-            {activeView === "active-orders" && <ActiveOrdersPanel />}
-            {activeView === "trading-history" && <TradingHistoryPanel />}
-            {activeView === "calendar" && <CalendarPanel />}
-            {activeView === "market-news" && <MarketNewsPanel />}
+    <div className="flex-1 flex flex-col overflow-hidden min-h-0">
+      {/* Side panel overlay for mobile when a view is active */}
+      {activeView && isMobile && (
+        <SidePanelOverlay
+          activeView={activeView}
+          addCurrencyPair={addCurrencyPair}
+          onClose={onClosePanel}
+        />
+      )}
+
+      {/* Main grid: Chart + Right Panel */}
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_280px] min-h-0 overflow-hidden">
+        {/* Left: Chart Panel */}
+        <div className="flex flex-col min-w-0 min-h-0 border-r border-border/30">
+          <ChartToolbar activeView={activeView} onToggleView={onToggleView} />
+          <div className="flex-1 min-h-0 bg-background">
+            <TradingViewWidget />
           </div>
-        )}
+        </div>
 
-        {/* Center - Chart and Orders */}
-        <div className="flex-1 flex flex-col gap-2 overflow-hidden w-full">
-          {/* Chart and Trading Interface */}
-          <div className="flex flex-1 border-b border-border bg-background w-full">
-            {/* Chart area */}
-            <div className="flex-1 bg-background border-muted border-2 w-full">
-              <TradingViewWidget />
-            </div>
-
-            {/* Trading Interface */}
-            {!isLargeScreen && (
-              <div className="w-[300px] border-2 border-border overflow-y-auto">
-                <TradingInterface />
-              </div>
-            )}
+        {/* Right: Order Book + Order Form (desktop only) */}
+        <div className="hidden lg:flex flex-col min-h-0 overflow-hidden bg-background/50">
+          {/* Order Book */}
+          <div className="flex-1 min-h-0 overflow-y-auto border-b border-border/30">
+            <OrderBookPanel />
           </div>
+          {/* Order Form */}
+          <div className="border-t border-border/30 overflow-y-auto" style={{ maxHeight: "50%" }}>
+            <TradingInterface />
+          </div>
+        </div>
+      </div>
 
-          {/* Orders table */}
-          {isLargeScreen && (
-            <div className="border-b-2 border-border w-full">
-              <TradingInterface />
-            </div>
+      {/* Mobile Order Form */}
+      <div className="lg:hidden border-t border-border/30">
+        <TradingInterface />
+      </div>
+
+      {/* Bottom Panel: Orders Table */}
+      <div className="border-t border-border/30 max-h-[180px] overflow-hidden">
+        <OrderTable />
+      </div>
+
+      {/* Desktop side panel (when active view is set, shows as overlay on left) */}
+      {activeView && !isMobile && (
+        <SidePanelOverlay
+          activeView={activeView}
+          addCurrencyPair={addCurrencyPair}
+          onClose={onClosePanel}
+        />
+      )}
+    </div>
+  );
+}
+
+function SidePanelOverlay({
+  activeView,
+  addCurrencyPair,
+  onClose,
+}: {
+  activeView: NonNullable<ActiveView>;
+  addCurrencyPair: (pair: string) => void;
+  onClose: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm" onClick={onClose}>
+      <div
+        className="absolute left-0 top-0 h-full w-[320px] bg-background border-r border-border shadow-xl overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between p-3 border-b border-border">
+          <span className="text-sm font-semibold capitalize">
+            {activeView.replace("-", " ")}
+          </span>
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}>
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+        <div className="flex-1 overflow-y-auto">
+          {activeView === "market-watch" && (
+            <MarketWatchPanel addCurrencyPair={addCurrencyPair} />
           )}
-          <div className="h-auto overflow-auto w-full">
-            <OrderTable />
-          </div>
+          {activeView === "active-orders" && <ActiveOrdersPanel />}
+          {activeView === "trading-history" && <TradingHistoryPanel />}
+          {activeView === "calendar" && <CalendarPanel />}
+          {activeView === "market-news" && <MarketNewsPanel />}
         </div>
       </div>
     </div>

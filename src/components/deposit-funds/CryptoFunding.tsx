@@ -26,11 +26,13 @@ import {
 interface CryptoFundingProps {
   onChangeMethod: () => void;
   stepsCount?: 3 | 4;
+  onDepositSuccess?: () => void;
 }
 
-const CryptoFunding: React.FC<CryptoFundingProps> = ({ 
+const CryptoFunding: React.FC<CryptoFundingProps> = ({
   onChangeMethod,
-  stepsCount = 4
+  stepsCount = 4,
+  onDepositSuccess,
 }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -230,6 +232,7 @@ const CryptoFunding: React.FC<CryptoFundingProps> = ({
       toast.success("Deposit request submitted successfully!", {
         description: "Your deposit is awaiting admin approval.",
       });
+      onDepositSuccess?.();
     } catch (error: any) {
       console.error("Deposit submission failed:", error);
       toast.error("Submission Failed", {

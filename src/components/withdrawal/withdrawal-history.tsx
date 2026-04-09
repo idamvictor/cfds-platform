@@ -79,29 +79,29 @@ export function WithdrawalHistory({
 
   if (isLoading) {
     return (
-      <div className="rounded-md border border-border/40 overflow-hidden">
+      <div className="glass-card overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="bg-card hover:bg-card">
-              <TableHead className="text-foreground font-bold">DATE</TableHead>
-              <TableHead className="text-foreground font-bold">
+            <TableRow className="bg-[#0a0d15] hover:bg-[#0a0d15] border-b border-white/[0.04]">
+              <TableHead className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">DATE</TableHead>
+              <TableHead className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
                 AMOUNT
               </TableHead>
-              <TableHead className="text-foreground font-bold">TYPE</TableHead>
-              <TableHead className="text-foreground font-bold">ACCOUNT</TableHead>
-              <TableHead className="text-foreground font-bold">
+              <TableHead className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">TYPE</TableHead>
+              <TableHead className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">ACCOUNT</TableHead>
+              <TableHead className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
                 DETAILS
               </TableHead>
-              <TableHead className="text-foreground font-bold">
+              <TableHead className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
                 STATUS
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell colSpan={5} className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white mx-auto"></div>
-                <p>Loading withdrawal history...</p>
+            <TableRow className="border-b border-white/[0.04]">
+              <TableCell colSpan={5} className="text-center py-10">
+                <div className="animate-spin rounded-full h-7 w-7 border-2 border-[#131a28] border-t-[#00dfa2] mx-auto"></div>
+                <p className="mt-3 text-xs text-[#4a5468]">Loading withdrawal history...</p>
               </TableCell>
             </TableRow>
           </TableBody>
@@ -111,60 +111,60 @@ export function WithdrawalHistory({
   }
 
   if (error) {
-    return <div className="p-4 text-center text-destructive">{error}</div>;
+    return <div className="glass-card p-6 text-center text-sm text-[#ff5876]">{error}</div>;
   }
 
   return (
     <>
-      <div className="rounded-md border border-border/40 overflow-hidden">
+      <div className="glass-card overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="bg-card hover:bg-card">
-              <TableHead className="text-foreground font-bold">DATE</TableHead>
-              <TableHead className="text-foreground font-bold">
+            <TableRow className="bg-[#0a0d15] hover:bg-[#0a0d15] border-b border-white/[0.04]">
+              <TableHead className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">DATE</TableHead>
+              <TableHead className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
                 AMOUNT
               </TableHead>
-              <TableHead className="text-foreground font-bold">TYPE</TableHead>
-              <TableHead className="text-foreground font-bold">ACCOUNT</TableHead>
-              <TableHead className="text-foreground font-bold">
+              <TableHead className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">TYPE</TableHead>
+              <TableHead className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">ACCOUNT</TableHead>
+              <TableHead className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
                 DETAILS
               </TableHead>
-              <TableHead className="text-foreground font-bold">
+              <TableHead className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
                 STATUS
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {withdrawals.length === 0 ? (
-              <TableRow>
+              <TableRow className="border-b border-white/[0.04]">
                 <TableCell
                   colSpan={5}
-                  className="text-center text-muted-foreground"
+                  className="text-center py-10 text-xs text-[#4a5468]"
                 >
                   No withdrawal history found
                 </TableCell>
               </TableRow>
             ) : (
               withdrawals.map((request) => (
-                <TableRow key={request.id} className="bg-card/50 hover:bg-card">
-                  <TableCell className="text-muted-foreground">
+                <TableRow key={request.id} className="border-b border-white/[0.04] bg-transparent hover:bg-white/[0.02] transition-colors duration-150">
+                  <TableCell className="text-xs text-[#7a8899] font-mono">
                     {request.date}
                   </TableCell>
-                  <TableCell>{request.amount}</TableCell>
-                  <TableCell className="capitalize">{request.type}</TableCell>
-                  <TableCell className="capitalize">{request.account}</TableCell>
+                  <TableCell className="text-sm font-bold text-[#eef2f7] font-mono">{request.amount}</TableCell>
+                  <TableCell className="capitalize text-xs text-[#a8b5c8]">{request.type}</TableCell>
+                  <TableCell className="capitalize text-xs text-[#a8b5c8]">{request.account}</TableCell>
                   <TableCell>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
+                      className="flex items-center gap-1.5 text-[#4a5468] hover:text-[#00dfa2] hover:bg-[#00dfa2]/[0.06] rounded-lg transition-colors duration-150"
                       onClick={() => {
                         setSelectedRequest(request);
                         setIsDetailsOpen(true);
                       }}
                     >
-                      <Info className="h-4 w-4" />
-                      <span>View Details</span>
+                      <Info className="h-3.5 w-3.5" />
+                      <span className="text-xs font-semibold">View</span>
                     </Button>
                   </TableCell>
                   <TableCell>
@@ -178,13 +178,13 @@ export function WithdrawalHistory({
       </div>
 
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md border-white/[0.08] bg-[#0f1220] shadow-[0_24px_48px_rgba(0,0,0,0.6)] backdrop-blur-xl">
           <DialogHeader>
-            <DialogTitle>Withdrawal Details</DialogTitle>
+            <DialogTitle className="text-base font-extrabold text-white">Withdrawal Details</DialogTitle>
           </DialogHeader>
           {selectedRequest && (
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-2 text-sm">
+              <div className="grid grid-cols-2 gap-x-3 gap-y-2.5 text-sm rounded-xl bg-[#0a0d15] p-4 border border-white/[0.04]">
                 {selectedRequest.details &&
                   (() => {
                     try {
@@ -195,10 +195,10 @@ export function WithdrawalHistory({
 
                       return Object.entries(details).map(([key, value]) => (
                         <div key={key} className="contents">
-                          <div className="font-medium capitalize">
+                          <div className="text-xs font-semibold capitalize text-[#4a5468]">
                             {key.replace(/_/g, " ")}:
                           </div>
-                          <div className="text-muted-foreground break-all">
+                          <div className="text-xs text-[#a8b5c8] break-all font-mono">
                             {String(value)}
                           </div>
                         </div>
@@ -206,28 +206,29 @@ export function WithdrawalHistory({
                     } catch (error) {
                       console.error("Error parsing details:", error);
                       return (
-                        <div className="col-span-2 text-destructive">
+                        <div className="col-span-2 text-xs text-[#ff5876]">
                           Unable to display additional details
                         </div>
                       );
                     }
                   })()}
-                <div className="font-medium">Status:</div>
+                <div className="text-xs font-semibold text-[#4a5468]">Status:</div>
                 <div>
                   <StatusBadge status={selectedRequest.status} />
                 </div>
-                <div className="font-medium">Amount:</div>
-                <div className="text-muted-foreground">
+                <div className="text-xs font-semibold text-[#4a5468]">Amount:</div>
+                <div className="text-xs text-[#a8b5c8] font-mono font-bold">
                   {selectedRequest.amount}
                 </div>
-                <div className="font-medium">Date:</div>
-                <div className="text-muted-foreground">
+                <div className="text-xs font-semibold text-[#4a5468]">Date:</div>
+                <div className="text-xs text-[#a8b5c8] font-mono">
                   {selectedRequest.date}
                 </div>
               </div>
               <div className="flex justify-end">
                 <Button
                   variant="outline"
+                  className="rounded-xl border-white/[0.08] bg-[#131a28] text-[#8b97a8] transition-all duration-200 hover:border-white/[0.14] hover:bg-[#1a2438] hover:text-white"
                   onClick={() => setIsDetailsOpen(false)}
                 >
                   Close
@@ -247,8 +248,9 @@ function StatusBadge({ status }: { status: string }) {
       return (
         <Badge
           variant="outline"
-          className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
+          className="gap-1.5 rounded-full border-[#FF9800]/30 bg-[#FF9800]/10 px-2.5 py-0.5 text-[11px] font-bold text-[#FF9800]"
         >
+          <span className="h-1.5 w-1.5 rounded-full bg-[#FF9800] animate-pulse" />
           Pending
         </Badge>
       );
@@ -256,8 +258,9 @@ function StatusBadge({ status }: { status: string }) {
       return (
         <Badge
           variant="outline"
-          className="bg-success/10 text-success border-success/20"
+          className="gap-1.5 rounded-full border-[#00dfa2]/30 bg-[#00dfa2]/10 px-2.5 py-0.5 text-[11px] font-bold text-[#00dfa2]"
         >
+          <span className="h-1.5 w-1.5 rounded-full bg-[#00dfa2]" />
           Completed
         </Badge>
       );
@@ -265,14 +268,15 @@ function StatusBadge({ status }: { status: string }) {
       return (
         <Badge
           variant="outline"
-          className="bg-destructive/10 text-destructive border-destructive/20"
+          className="gap-1.5 rounded-full border-[#ff5876]/30 bg-[#ff5876]/10 px-2.5 py-0.5 text-[11px] font-bold text-[#ff5876]"
         >
+          <span className="h-1.5 w-1.5 rounded-full bg-[#ff5876]" />
           Rejected
         </Badge>
       );
     default:
       return (
-        <Badge variant="outline">
+        <Badge variant="outline" className="rounded-full border-white/[0.08] bg-white/[0.04] px-2.5 py-0.5 text-[11px] font-bold text-[#8b97a8]">
           {status.charAt(0).toUpperCase() + status.slice(1)}
         </Badge>
       );

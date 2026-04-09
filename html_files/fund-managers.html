@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fund Managers — 1 Trade Market</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            /* 1 Trade Market Dark 3D Glassmorphism Theme */
+            --accent: #00dfa2;
+            --accent-light: #00ffc3;
+            --accent-dark: #00b881;
+            --bg: #07080c;
+            --bg2: #0a0d15;
+            --t1: #eef2f7;
+            --t2: #8b97a8;
+            --t3: #4a5468;
+            --glass-bg: rgba(255,255,255,0.04);
+            --glass-border: rgba(255,255,255,0.08);
+            --glass-highlight: rgba(255,255,255,0.12);
+            --bonus-accent: #c8e64e;
+            /* Legacy support */
+            --yellow: #c8e64e;
+            --yellow-dim: rgba(200,230,78,0.10);
+            --green: #00dfa2;
+            --green-dim: rgba(0,223,162,0.10);
+            --red: #ff6b6b;
+            --red-dim: rgba(255,107,107,0.10);
+            --mono: 'JetBrains Mono', monospace;
+            --sans: 'Inter', sans-serif;
+            --heading: 'Outfit', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg) 0%, var(--bg2) 100%);
+            color: var(--t1);
+            font-family: var(--sans);
+            line-height: 1.6;
+        }
+
+        .logo-box {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(145deg, #00ffc3, #00dfa2, #00b881);
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 0.75rem;
+            color: #07080c;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 24px rgba(0,223,162,0.4), inset 0 1px 2px rgba(255,255,255,0.3);
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 var(--glass-highlight);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--t1);
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+            font-family: var(--heading);
+        }
+
+        .nav-brand:hover {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--t2);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--t1);
+        }
+
+        .nav-links a.active {
+            color: var(--accent);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 1px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-dropdown {
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(0,223,162,0.4);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            min-width: 200px;
+            margin-top: 0.5rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 var(--glass-highlight);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s;
+            z-index: 1000;
+        }
+
+        .user-dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--t2);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .dropdown-menu a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-menu a:hover {
+            background: var(--glass-highlight);
+            color: var(--accent);
+        }
+
+        /* Leaderboard Hero Banner */
+        .leaderboard-banner {
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: inset 0 1px 0 var(--glass-highlight);
+        }
+
+        .banner-top {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .banner-left h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--t1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0;
+            font-family: var(--heading);
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--green-dim);
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .live-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 1.4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.5); }
+        }
+
+        .banner-center {
+            text-align: center;
+        }
+
+        .period-tabs {
+            display: flex;
+            gap: 6px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 4px;
+            box-shadow: inset 0 1px 0 var(--glass-highlight);
+        }
+
+        .period-tab {
+            padding: 6px 16px;
+            border-radius: 6px;
+            border: none;
+            background: transparent;
+            color: var(--t2);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
+        }
+
+        .period-tab.active {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: #000;
+            box-shadow: 0 4px 12px rgba(0,223,162,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
+        .banner-right {
+            display: flex;
+            gap: 1rem;
+            min-width: 300px;
+        }
+
+        .search-box {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 0 10px;
+            box-shadow: inset 0 1px 0 var(--glass-highlight);
+        }
+
+        .search-box i {
+            color: var(--t3);
+            margin-right: 8px;
+        }
+
+        .search-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 8px 0;
+            color: var(--t1);
+            font-family: var(--sans);
+            font-size: 13px;
+            outline: none;
+        }
+
+        .search-box input::placeholder {
+            color: var(--t3);
+        }
+
+        .sort-dropdown {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--t1);
+            padding: 8px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: inset 0 1px 0 var(--glass-highlight);
+        }
+
+        .sort-dropdown:hover {
+            border-color: var(--glass-border);
+        }
+
+        .banner-stats {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--glass-border);
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--t2);
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--t1);
+            font-family: var(--mono);
+        }
+
+        /* Podium Section */
+        .podium-section {
+            max-width: 1400px;
+            margin: 0 auto 2rem;
+            padding: 0 2rem;
+        }
+
+        .podium-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.15fr 1fr;
+            gap: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .podium-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 var(--glass-highlight);
+        }
+
+        .podium-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent);
+            box-shadow: 0 12px 48px rgba(0,223,162,0.2), inset 0 1px 0 var(--glass-highlight);
+        }
+
+        .podium-card.rank1 {
+            border-color: rgba(0,223,162,0.4);
+            background: linear-gradient(135deg, var(--glass-bg), rgba(0,223,162,0.08));
+        }
+
+        .podium-card.rank1 .rank-badge {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: #000;
+        }
+
+        .podium-card.rank2 .rank-badge {
+            background: linear-gradient(135deg, #C0C0C0, #E0E0E0);
+            color: #000;
+        }
+
+        .podium-card.rank3 .rank-badge {
+            background: linear-gradient(135deg, #CD7F32, #D4A574);
+            color: #fff;
+        }
+
+        .rank-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .podium-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 12px;
+            border: 2px solid var(--glass-border);
+            font-family: var(--mono);
+        }
+
+        .podium-card.rank1 .podium-avatar {
+            border-color: rgba(0,223,162,0.6);
+        }
+
+        .podium-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--t1);
+            margin-bottom: 4px;
+        }
+
+        .podium-addr {
+            font-size: 11px;
+            color: var(--t2);
+            font-family: var(--mono);
+            margin-bottom: 12px;
+        }
+
+        .podium-roi {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: var(--mono);
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .roi-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--glass-bg);
+            border-radius: 2px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .roi-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            border-radius: 2px;
+        }
+
+        .podium-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .stat-chip {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 8px;
+            font-size: 11px;
+            text-align: center;
+            box-shadow: inset 0 1px 0 var(--glass-highlight);
+        }
+
+        .stat-chip-label {
+            display: block;
+            color: var(--t3);
+            font-size: 10px;
+            margin-bottom: 2px;
+        }
+
+        .stat-chip-value {
+            display: block;
+            color: var(--t1);
+            font-weight: 700;
+            font-family: var(--mono);
+        }
+
+        .podium-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-follow {
+            flex: 1;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: #000;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0,223,162,0.3);
+        }
+
+        .btn-follow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,223,162,0.4);
+        }
+
+        .btn-profile {
+            flex: 1;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            color: var(--t1);
+            border: 1px solid var(--glass-border);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: inset 0 1px 0 var(--glass-highlight);
+        }
+
+        .btn-profile:hover {
+            background: var(--glass-highlight);
+            border-color: var(--accent);
+        }
+
+        /* Leaderboard Table */
+        .table-section {
+            max-width: 1400px;
+            margin: 0 auto 3rem;
+            padding: 0 2rem;
+        }
+
+        .table-wrap {
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 var(--glass-highlight);
+        }
+
+        .table-header-title {
+            padding: 1rem 1.5rem;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--t1);
+            border-bottom: 1px solid var(--glass-border);
+            font-family: var(--heading);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table thead tr {
+            background: var(--glass-bg);
+        }
+
+        table th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--t2);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--glass-border);
+            color: var(--t1);
+            font-size: 13px;
+        }
+
+        table tbody tr:hover td {
+            background: rgba(0,223,162,0.05);
+        }
+
+        table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .rank-num {
+            font-weight: 700;
+            color: var(--t2);
+            font-family: var(--mono);
+            width: 40px;
+        }
+
+        .trader-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .trader-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: 700;
+            font-size: 12px;
+            flex-shrink: 0;
+            border: 1px solid var(--glass-border);
+            font-family: var(--mono);
+        }
+
+        .trader-info {
+            flex: 1;
+        }
+
+        .trader-name {
+            font-weight: 700;
+            color: var(--t1);
+            font-size: 13px;
+        }
+
+        .trader-addr {
+            font-size: 11px;
+            color: var(--t2);
+            font-family: var(--mono);
+        }
+
+        .roi-cell {
+            color: var(--accent);
+            font-weight: 700;
+            font-family: var(--mono);
+            position: relative;
+        }
+
+        .roi-mini-bar {
+            position: absolute;
+            bottom: 2px;
+            left: 0;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 1px;
+        }
+
+        .positive {
+            color: var(--accent);
+            font-weight: 700;
+            font-family: var(--mono);
+        }
+
+        .negative {
+            color: var(--red);
+            font-weight: 700;
+            font-family: var(--mono);
+        }
+
+        .table-follow-btn {
+            padding: 6px 12px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .table-follow-btn:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(0,223,162,0.3);
+        }
+
+        /* Verified Managers Section */
+        .managers-section {
+            max-width: 1400px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--t1);
+            font-family: var(--heading);
+        }
+
+        .manage-link {
+            color: var(--t2);
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.2s;
+        }
+
+        .manage-link:hover {
+            color: var(--accent);
+        }
+
+        .managers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .manager-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 18px;
+            transition: all 0.3s;
+            position: relative;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 var(--glass-highlight);
+        }
+
+        .manager-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent);
+            box-shadow: 0 12px 48px rgba(0,223,162,0.2), inset 0 1px 0 var(--glass-highlight);
+        }
+
+        .badge-top {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(0,223,162,0.15);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .manager-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .manager-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+            border: 2px solid var(--glass-border);
+            font-family: var(--mono);
+        }
+
+        .manager-title {
+            flex: 1;
+        }
+
+        .manager-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--t1);
+            margin-bottom: 4px;
+        }
+
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--green-dim);
+            color: var(--accent);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .manager-roi {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: var(--mono);
+            margin-bottom: 12px;
+            line-height: 1;
+        }
+
+        .manager-stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .manager-stat {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 8px;
+            font-size: 10px;
+            text-align: center;
+            box-shadow: inset 0 1px 0 var(--glass-highlight);
+        }
+
+        .manager-stat-label {
+            display: block;
+            color: var(--t3);
+            margin-bottom: 2px;
+            font-weight: 500;
+        }
+
+        .manager-stat-value {
+            display: block;
+            color: var(--t1);
+            font-weight: 700;
+            font-family: var(--mono);
+            font-size: 12px;
+        }
+
+        .sparkline-container {
+            margin-bottom: 12px;
+            height: 40px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 8px;
+            padding: 4px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .sparkline {
+            width: 100%;
+            height: 100%;
+        }
+
+        .manager-footer {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-copy-trade {
+            flex: 1;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: #000;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0,223,162,0.3);
+        }
+
+        .btn-copy-trade:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,223,162,0.4);
+        }
+
+        .btn-details {
+            flex: 1;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            color: var(--t1);
+            border: 1px solid var(--glass-border);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: inset 0 1px 0 var(--glass-highlight);
+        }
+
+        .btn-details:hover {
+            background: var(--glass-highlight);
+            border-color: var(--accent);
+        }
+
+        /* Detail Panel */
+        .detail-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px);
+            border-top: 1px solid var(--glass-border);
+            margin-top: 3rem;
+            padding: 2rem;
+            box-shadow: inset 0 1px 0 var(--glass-highlight);
+        }
+
+        .detail-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .detail-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: 700;
+            font-size: 24px;
+            border: 3px solid var(--glass-border);
+            font-family: var(--mono);
+        }
+
+        .detail-info h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--t1);
+            margin-bottom: 4px;
+            font-family: var(--heading);
+        }
+
+        .detail-since {
+            font-size: 13px;
+            color: var(--t2);
+        }
+
+        .detail-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .detail-stat {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: inset 0 1px 0 var(--glass-highlight);
+        }
+
+        .detail-stat-label {
+            font-size: 12px;
+            color: var(--t3);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .detail-stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--t1);
+            font-family: var(--mono);
+        }
+
+        .detail-stat-value.positive {
+            color: var(--accent);
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .podium-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .banner-top {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 0.75rem 1rem;
+            }
+
+            .nav-left {
+                gap: 1.5rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.85rem;
+            }
+
+            .banner-top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .banner-right {
+                width: 100%;
+            }
+
+            .managers-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .period-tabs {
+                width: 100%;
+            }
+
+            table th:nth-child(n+5),
+            table td:nth-child(n+5) {
+                display: none;
+            }
+        }
+    
+/* ═══ TICKER BAR ═══ */
+.ticker-bar{background:rgba(7,8,12,.65);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.04);overflow:hidden;white-space:nowrap;position:relative;z-index:299;height:34px;display:flex;align-items:center;}
+.ticker-track{display:inline-flex;animation:tickerScroll 45s linear infinite;gap:0;}
+.ticker-track:hover{animation-play-state:paused;}
+.ticker-item{display:inline-flex;align-items:center;gap:8px;padding:0 22px;font-size:.7rem;font-weight:600;border-right:1px solid rgba(255,255,255,.03);transition:background .2s;}
+.ticker-item:hover{background:rgba(255,255,255,.03);}
+.ti-sym{font-family:var(--mono);font-weight:700;color:var(--t1);letter-spacing:.04em;font-size:.68rem;}
+.ti-price{font-family:var(--mono);color:var(--t2);letter-spacing:.02em;font-size:.68rem;}
+.ti-change{font-family:var(--mono);font-size:.65rem;font-weight:700;}
+.ti-up{color:var(--accent);}.ti-dn{color:var(--red);}
+.ti-dot{width:4px;height:4px;border-radius:50%;}
+.ti-dot.up{background:var(--accent);box-shadow:0 0 6px var(--accent);}
+.ti-dot.dn{background:var(--red);box-shadow:0 0 6px var(--red);}
+@keyframes tickerScroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+</style>
+</head>
+<body>
+    <div class="ticker-bar"><div class="ticker-track" id="tickerTrack"></div></div>
+<!-- Navigation -->
+    <nav>
+        <div class="nav-left">
+            <a href="#" class="nav-brand">
+                <div class="logo-box">1TM</div>
+                1 Trade Market
+            </a>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="markets.html">Markets</a></li>
+                <li><a href="trade.html">Trade</a></li>
+                <li><a href="wallet.html">Wallet</a>
+                    <a href="trading-plans.html" style="color:var(--t2);text-decoration:none;font-size:0.875rem;font-weight:500;transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--t2)'">Trading Plans</a>
+                    <a href="fund-protection.html">Fund Protection</a></li>
+                <li><a href="fund-managers.html" class="active">Fund Managers</a></li>
+                <li><a href="crypto-ira.html">Retirement Staking™</a></li>
+                <li><a href="trade-access.html">Trade Access</a></li>
+            </ul>
+        </div>
+        <div class="nav-right">
+            <div class="user-dropdown">
+                <div class="user-avatar">JD</div>
+                <div class="dropdown-menu">
+                    <a href="kyc.html">KYC Verification</a>
+                    <a href="security.html">Security Settings</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Leaderboard Banner -->
+    <div class="leaderboard-banner">
+        <div class="banner-top">
+            <div class="banner-left">
+                <h1>
+                    Fund Managers
+                    <span class="live-badge">Live</span>
+                </h1>
+            </div>
+            <div class="banner-center">
+                <div class="period-tabs">
+                    <button class="period-tab active" onclick="lbSetPeriod('7d', this)">7D</button>
+                    <button class="period-tab" onclick="lbSetPeriod('30d', this)">30D</button>
+                    <button class="period-tab" onclick="lbSetPeriod('90d', this)">90D</button>
+                    <button class="period-tab" onclick="lbSetPeriod('all', this)">All</button>
+                </div>
+            </div>
+            <div class="banner-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search trader...">
+                </div>
+                <select class="sort-dropdown" id="sortFilter">
+                    <option value="roi">Sort by ROI</option>
+                    <option value="pnl">Sort by PnL</option>
+                    <option value="followers">Sort by Followers</option>
+                </select>
+            </div>
+        </div>
+        <div class="banner-stats">
+            <div class="stat-item">
+                <span class="stat-label">Active Traders:</span>
+                <span class="stat-value">12,847</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Total AUM:</span>
+                <span class="stat-value">$2.1B</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Avg Win Rate:</span>
+                <span class="stat-value">87.3%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top 3 Podium -->
+    <div class="podium-section">
+        <div class="podium-grid" id="lbPodium">
+            <!-- Podium cards rendered here -->
+        </div>
+    </div>
+
+    <!-- Leaderboard Table -->
+    <div class="table-section">
+        <div class="table-wrap">
+            <div class="table-header-title">Leaderboard Rankings</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Trader</th>
+                        <th>ROI (30D)</th>
+                        <th>PnL</th>
+                        <th>Win Rate</th>
+                        <th>Max DD</th>
+                        <th>Trades</th>
+                        <th>Followers</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="lbTableBody">
+                    <!-- Table rows rendered here -->
+                </tbody>
+            </table>
+        </div>
+        <div id="lbNotice"></div>
+    </div>
+
+    <!-- Platform Verified Managers -->
+    <div class="managers-section">
+        <div class="section-header">
+            <h2 class="section-title">Platform Verified Managers</h2>
+            <a href="#" class="manage-link">Manage →</a>
+        </div>
+        <div class="managers-grid" id="managersGrid">
+            <!-- Manager cards rendered here -->
+        </div>
+    </div>
+
+    <!-- Detail Panel -->
+    <section class="detail-section hidden" id="detailSection">
+        <div class="detail-container">
+            <div class="detail-header">
+                <div class="detail-avatar" id="detailAvatar">AK</div>
+                <div class="detail-info">
+                    <h2 id="detailName">Alexander Kovac</h2>
+                    <div class="detail-since">Member since <span id="detailSince">Jan 2024</span></div>
+                </div>
+            </div>
+
+            <div class="detail-stats">
+                <div class="detail-stat">
+                    <div class="detail-stat-label">Current ROI</div>
+                    <div class="detail-stat-value positive" id="detailRoi">+127.4%</div>
+                </div>
+                <div class="detail-stat">
+                    <div class="detail-stat-label">Total PnL</div>
+                    <div class="detail-stat-value positive" id="detailPnL">+$2.4M</div>
+                </div>
+                <div class="detail-stat">
+                    <div class="detail-stat-label">Win Rate</div>
+                    <div class="detail-stat-value" id="detailWinRate">92.3%</div>
+                </div>
+                <div class="detail-stat">
+                    <div class="detail-stat-label">Followers</div>
+                    <div class="detail-stat-value" id="detailInvestors">1,203</div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                <!-- Performance Chart -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.5rem; box-shadow: inset 0 1px 0 var(--glass-highlight);">
+                    <div style="font-size: 14px; font-weight: 700; color: var(--t1); margin-bottom: 1rem; font-family: var(--heading);">Performance Chart</div>
+                    <canvas id="performanceChart" style="width: 100%; height: 300px;"></canvas>
+                </div>
+
+                <!-- Stats Sidebar -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.5rem; box-shadow: inset 0 1px 0 var(--glass-highlight);">
+                    <div style="font-size: 13px; font-weight: 700; color: var(--t1); margin-bottom: 1rem; font-family: var(--heading);">Manager Stats</div>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div>
+                            <div style="font-size: 11px; color: var(--t3); margin-bottom: 4px;">AUM</div>
+                            <div style="font-size: 18px; font-weight: 700; font-family: var(--mono); color: var(--t1);" id="detailCapital">$78.5M</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 11px; color: var(--t3); margin-bottom: 4px;">Mgmt Fee</div>
+                            <div style="font-size: 16px; font-weight: 700; color: var(--t1);" id="detailMgmtFee">1.5%</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 11px; color: var(--t3); margin-bottom: 4px;">Performance Fee</div>
+                            <div style="font-size: 16px; font-weight: 700; color: var(--t1);" id="detailPerfFee">15%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Returns Table -->
+            <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: inset 0 1px 0 var(--glass-highlight);">
+                <div style="font-size: 14px; font-weight: 700; color: var(--t1); margin-bottom: 1rem; font-family: var(--heading);">Monthly Returns</div>
+                <table style="width: 100%;">
+                    <thead>
+                        <tr style="background: var(--glass-bg);">
+                            <th style="padding: 8px; text-align: left; font-size: 11px; color: var(--t3); border-bottom: 1px solid var(--glass-border);">Month</th>
+                            <th style="padding: 8px; text-align: left; font-size: 11px; color: var(--t3); border-bottom: 1px solid var(--glass-border);">Return</th>
+                            <th style="padding: 8px; text-align: left; font-size: 11px; color: var(--t3); border-bottom: 1px solid var(--glass-border);">Trades</th>
+                            <th style="padding: 8px; text-align: left; font-size: 11px; color: var(--t3); border-bottom: 1px solid var(--glass-border);">Win %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="returnsTable"></tbody>
+                </table>
+            </div>
+
+            <!-- Open Positions Table -->
+            <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: inset 0 1px 0 var(--glass-highlight);">
+                <div style="font-size: 14px; font-weight: 700; color: var(--t1); margin-bottom: 1rem; font-family: var(--heading);">Open Positions</div>
+                <table style="width: 100%;">
+                    <thead>
+                        <tr style="background: var(--glass-bg);">
+                            <th style="padding: 8px; text-align: left; font-size: 11px; color: var(--t3); border-bottom: 1px solid var(--glass-border);">Pair</th>
+                            <th style="padding: 8px; text-align: left; font-size: 11px; color: var(--t3); border-bottom: 1px solid var(--glass-border);">Entry</th>
+                            <th style="padding: 8px; text-align: left; font-size: 11px; color: var(--t3); border-bottom: 1px solid var(--glass-border);">Current</th>
+                            <th style="padding: 8px; text-align: left; font-size: 11px; color: var(--t3); border-bottom: 1px solid var(--glass-border);">PnL</th>
+                            <th style="padding: 8px; text-align: left; font-size: 11px; color: var(--t3); border-bottom: 1px solid var(--glass-border);">Size</th>
+                        </tr>
+                    </thead>
+                    <tbody id="positionsTable"></tbody>
+                </table>
+            </div>
+
+            <!-- Invest Form -->
+            <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.5rem; box-shadow: inset 0 1px 0 var(--glass-highlight);">
+                <div style="font-size: 14px; font-weight: 700; color: var(--t1); margin-bottom: 1.5rem; font-family: var(--heading);">Invest with this Manager</div>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div>
+                        <label style="font-size: 0.9rem; color: var(--t2); margin-bottom: 0.5rem; display: block;">Amount (USD)</label>
+                        <input type="number" id="investAmount" placeholder="0" min="0" style="width: 100%; padding: 0.75rem; border: 1px solid var(--glass-border); border-radius: 8px; font-family: var(--mono); font-size: 1rem; color: var(--t1); background: var(--glass-bg); backdrop-filter: blur(20px); box-shadow: inset 0 1px 0 var(--glass-highlight);">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--t3); margin-bottom: 0.3rem;">Investment</div>
+                            <div style="font-size: 1.1rem; font-weight: 700; font-family: var(--mono); color: var(--t1);" id="investDisplay">$0</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--t3); margin-bottom: 0.3rem;">Mgmt Fee (1st Year)</div>
+                            <div style="font-size: 1.1rem; font-weight: 700; font-family: var(--mono); color: var(--red);" id="feeDisplay">$0</div>
+                        </div>
+                    </div>
+                    <button style="background: linear-gradient(135deg, var(--accent), var(--accent-light)); color: #000; border: none; padding: 0.75rem; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,223,162,0.3);" onmouseover="this.style.boxShadow='0 6px 20px rgba(0,223,162,0.4)'" onmouseout="this.style.boxShadow='0 4px 12px rgba(0,223,162,0.3)'">Invest Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Sample manager data
+        const managers = [
+            {
+                id: 1,
+                name: 'Alexander Kovac',
+                role: 'Verified',
+                roi: 127.4,
+                aum: 78.5,
+                followers: 1203,
+                winRate: 92.3,
+                since: 'Jan 2024',
+                mgmtFee: 1.5,
+                perfFee: 15,
+                monthlyReturns: [8, 12, -2, 15, 18, 9, 11, 16, 7, 14, 21, 11],
+                positions: [
+                    { pair: 'BTC/USD', entry: 42300, current: 51200, pnl: 21.0, size: 0.5 },
+                    { pair: 'ETH/USD', entry: 2100, current: 2650, pnl: 26.2, size: 5.0 },
+                    { pair: 'SOL/USD', entry: 98, current: 145, pnl: 48.0, size: 25.0 }
+                ]
+            },
+            {
+                id: 2,
+                name: 'Maria Santoro',
+                role: 'Verified',
+                roi: 89.2,
+                aum: 45.2,
+                followers: 876,
+                winRate: 85.6,
+                since: 'Mar 2023',
+                mgmtFee: 1.0,
+                perfFee: 20,
+                monthlyReturns: [6, 8, 10, 7, 9, 11, 8, 12, 10, 6, 9, 7]
+            },
+            {
+                id: 3,
+                name: 'James Chen',
+                role: 'Verified',
+                roi: 156.8,
+                aum: 120.0,
+                followers: 1547,
+                winRate: 88.2,
+                since: 'Jul 2022',
+                mgmtFee: 2.0,
+                perfFee: 25,
+                monthlyReturns: [12, 15, 9, 18, 22, 16, 13, 19, 14, 20, 17, 15]
+            },
+            {
+                id: 4,
+                name: 'Sarah Williams',
+                role: 'Verified',
+                roi: 203.4,
+                aum: 89.7,
+                followers: 2103,
+                winRate: 91.0,
+                since: 'Sep 2022',
+                mgmtFee: 1.75,
+                perfFee: 20,
+                monthlyReturns: [14, 18, 12, 20, 25, 19, 16, 22, 18, 24, 21, 19]
+            },
+            {
+                id: 5,
+                name: 'David Park',
+                role: 'Verified',
+                roi: 78.5,
+                aum: 56.3,
+                followers: 923,
+                winRate: 84.2,
+                since: 'Dec 2023',
+                mgmtFee: 1.25,
+                perfFee: 15,
+                monthlyReturns: [5, 7, 9, 6, 8, 10, 7, 9, 8, 11, 10, 8]
+            },
+            {
+                id: 6,
+                name: 'Lisa Rosenberg',
+                role: 'Verified',
+                roi: 245.6,
+                aum: 145.8,
+                followers: 3012,
+                winRate: 89.8,
+                since: 'May 2022',
+                mgmtFee: 2.5,
+                perfFee: 30,
+                monthlyReturns: [16, 20, 14, 22, 28, 21, 18, 25, 20, 26, 23, 21]
+            }
+        ];
+
+        let selectedManager = null;
+
+        function formatCurrency(value) {
+            return '$' + (value / 1000000).toFixed(1) + 'M';
+        }
+
+        function renderManagerCards() {
+            const grid = document.getElementById('managersGrid');
+            grid.innerHTML = '';
+
+            managers.forEach(manager => {
+                const card = document.createElement('div');
+                card.className = 'manager-card';
+                card.innerHTML = `
+                    <div class="badge-top">⭐ Verified</div>
+                    <div class="manager-header">
+                        <div class="manager-avatar">${manager.name.split(' ').map(n => n[0]).join('')}</div>
+                        <div class="manager-title">
+                            <div class="manager-name">${manager.name}</div>
+                            <div class="verified-badge"><i class="fas fa-check-circle"></i> ${manager.role}</div>
+                        </div>
+                    </div>
+
+                    <div class="manager-roi">${manager.roi > 0 ? '+' : ''}${manager.roi.toFixed(1)}%</div>
+
+                    <div class="manager-stats-row">
+                        <div class="manager-stat">
+                            <div class="manager-stat-label">ROI 12M</div>
+                            <div class="manager-stat-value">${manager.roi.toFixed(1)}%</div>
+                        </div>
+                        <div class="manager-stat">
+                            <div class="manager-stat-label">AUM</div>
+                            <div class="manager-stat-value">${manager.aum.toFixed(1)}M</div>
+                        </div>
+                        <div class="manager-stat">
+                            <div class="manager-stat-label">Win Rate</div>
+                            <div class="manager-stat-value">${manager.winRate.toFixed(1)}%</div>
+                        </div>
+                    </div>
+
+                    <div class="sparkline-container">
+                        <canvas class="sparkline" data-manager-id="${manager.id}"></canvas>
+                    </div>
+
+                    <div style="font-size: 11px; color: var(--t2); margin-bottom: 12px; display: flex; justify-content: space-between;">
+                        <span>Followers: ${manager.followers.toLocaleString()}</span>
+                        <span>Fee: ${manager.mgmtFee}% + ${manager.perfFee}%</span>
+                    </div>
+
+                    <div class="manager-footer">
+                        <button class="btn-copy-trade" onclick="followManager(${manager.id})">Copy Trade</button>
+                        <button class="btn-details" onclick="showManagerDetail(${manager.id})">Details</button>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+
+                // Draw sparkline
+                setTimeout(() => {
+                    const canvas = card.querySelector('.sparkline');
+                    drawSparkline(canvas, manager.monthlyReturns);
+                }, 100);
+            });
+        }
+
+        function drawSparkline(canvas, data) {
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            const width = canvas.offsetWidth || 200;
+            const height = canvas.offsetHeight || 40;
+            canvas.width = width;
+            canvas.height = height;
+
+            const padding = 2;
+            const min = Math.min(...data);
+            const max = Math.max(...data);
+            const range = max - min || 1;
+
+            ctx.strokeStyle = '#00dfa2';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            data.forEach((val, i) => {
+                const x = padding + (width - padding * 2) * (i / (data.length - 1));
+                const y = height - padding - (height - padding * 2) * ((val - min) / range);
+
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+
+            ctx.stroke();
+
+            // Draw fill under curve
+            ctx.lineTo(width - padding, height - padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(0,223,162,0.15)';
+            ctx.fill();
+        }
+
+        function followManager(id) {
+            const button = event.target;
+            button.textContent = button.classList.contains('following') ? 'Copy Trade' : 'Following';
+            button.classList.toggle('following');
+        }
+
+        function showManagerDetail(id) {
+            selectedManager = managers.find(m => m.id === id);
+            if (!selectedManager) return;
+
+            // Update detail section
+            document.getElementById('detailAvatar').textContent = selectedManager.name.split(' ').map(n => n[0]).join('');
+            document.getElementById('detailName').textContent = selectedManager.name;
+            document.getElementById('detailSince').textContent = selectedManager.since;
+            document.getElementById('detailInvestors').textContent = selectedManager.followers.toLocaleString();
+            document.getElementById('detailCapital').textContent = formatCurrency(selectedManager.aum * 1000000);
+            document.getElementById('detailRoi').textContent = `+${selectedManager.roi.toFixed(1)}%`;
+            document.getElementById('detailPnL').textContent = `+${formatCurrency(selectedManager.aum * selectedManager.roi / 100 * 1000000)}`;
+            document.getElementById('detailWinRate').textContent = `${selectedManager.winRate.toFixed(1)}%`;
+            document.getElementById('detailMgmtFee').textContent = `${selectedManager.mgmtFee}%`;
+            document.getElementById('detailPerfFee').textContent = `${selectedManager.perfFee}%`;
+
+            // Render returns table
+            const tbody = document.getElementById('returnsTable');
+            tbody.innerHTML = '';
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            selectedManager.monthlyReturns.forEach((ret, i) => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td style="padding: 8px; font-family: var(--mono); font-size: 12px;">${months[i]} 2024</td>
+                    <td style="padding: 8px; font-family: var(--mono); font-size: 12px; color: ${ret > 0 ? 'var(--accent)' : 'var(--red)'};">${ret > 0 ? '+' : ''}${ret}%</td>
+                    <td style="padding: 8px; font-family: var(--mono); font-size: 12px;">${Math.floor(Math.random() * 50 + 10)}</td>
+                    <td style="padding: 8px; font-family: var(--mono); font-size: 12px;">${(Math.random() * 10 + 80).toFixed(1)}%</td>
+                `;
+            });
+
+            // Render positions table
+            const posBody = document.getElementById('positionsTable');
+            posBody.innerHTML = '';
+
+            if (selectedManager.positions) {
+                selectedManager.positions.forEach(pos => {
+                    const row = posBody.insertRow();
+                    row.innerHTML = `
+                        <td style="padding: 8px; font-family: var(--mono); font-size: 12px;"><strong>${pos.pair}</strong></td>
+                        <td style="padding: 8px; font-family: var(--mono); font-size: 12px;">$${pos.entry.toLocaleString()}</td>
+                        <td style="padding: 8px; font-family: var(--mono); font-size: 12px;">$${pos.current.toLocaleString()}</td>
+                        <td style="padding: 8px; font-family: var(--mono); font-size: 12px; color: var(--accent);">+${pos.pnl.toFixed(1)}%</td>
+                        <td style="padding: 8px; font-family: var(--mono); font-size: 12px;">${pos.size.toFixed(2)}</td>
+                    `;
+                });
+            }
+
+            document.getElementById('detailSection').classList.remove('hidden');
+
+            // Scroll to detail section
+            document.getElementById('detailSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateInvestDisplay() {
+            const amount = parseFloat(document.getElementById('investAmount').value) || 0;
+            const fee = (amount * selectedManager.mgmtFee / 100).toFixed(0);
+            document.getElementById('investDisplay').textContent = '$' + amount.toLocaleString('en-US', { maximumFractionDigits: 0 });
+            document.getElementById('feeDisplay').textContent = '$' + fee;
+        }
+
+        document.getElementById('investAmount').addEventListener('input', updateInvestDisplay);
+
+        // Simple performance chart simulation
+        const drawChart = () => {
+            const canvas = document.getElementById('performanceChart');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            const width = canvas.offsetWidth || 400;
+            const height = canvas.offsetHeight || 300;
+            canvas.width = width;
+            canvas.height = height;
+
+            const padding = 40;
+            ctx.fillStyle = 'var(--bg)';
+            ctx.fillRect(0, 0, width, height);
+
+            // Draw grid lines
+            ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 5; i++) {
+                const y = padding + (height - padding * 2) * (i / 5);
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+            }
+
+            // Draw data
+            if (selectedManager && selectedManager.monthlyReturns) {
+                const data = selectedManager.monthlyReturns;
+                const min = Math.min(...data);
+                const max = Math.max(...data);
+                const range = max - min || 1;
+
+                ctx.strokeStyle = '#00dfa2';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+
+                data.forEach((val, i) => {
+                    const x = padding + (width - padding * 2) * (i / (data.length - 1));
+                    const y = height - padding - (height - padding * 2) * ((val - min) / range);
+
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                });
+
+                ctx.stroke();
+
+                // Draw points
+                ctx.fillStyle = '#00dfa2';
+                data.forEach((val, i) => {
+                    const x = padding + (width - padding * 2) * (i / (data.length - 1));
+                    const y = height - padding - (height - padding * 2) * ((val - min) / range);
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+        };
+
+        // Redraw chart when detail is shown
+        const observer = new MutationObserver(() => {
+            if (!document.getElementById('detailSection').classList.contains('hidden')) {
+                setTimeout(drawChart, 100);
+            }
+        });
+        observer.observe(document.getElementById('detailSection'), { attributes: true, attributeFilter: ['class'] });
+
+        /* ════════════════════════════════════════════════
+           LIVE BINANCE BSC LEADERBOARD
+        ════════════════════════════════════════════════ */
+        let _lbPeriod = '7d';
+        let _lbCache  = {};   // cache per period
+        let _lbTimer  = null;
+
+        const CORS_PROXIES = [
+            'https://corsproxy.io/?url=',
+            'https://api.allorigins.win/raw?url=',
+        ];
+        const BNB_WEB3_URL  = 'https://web3.binance.com/bapi/defi/v1/public/wallet-direct/market/leaderboard/query/ai';
+        const BNB_FUT_URL   = 'https://www.binance.com/bapi/futures/v3/public/future/leaderboard/getLeaderboardRank';
+
+        // Period map for Binance Web3 API
+        const PERIOD_MAP = { '7d':'7d', '30d':'30d', '90d':'90d', 'all':'all' };
+        // Period map for Binance Futures API
+        const FUT_PERIOD_MAP = { '7d':'WEEKLY', '30d':'MONTHLY', '90d':'QUARTERLY', 'all':'ALL' };
+
+        async function lbFetchWeb3(period) {
+            const body = JSON.stringify({
+                tag:'', pageNo:1, chainId:'56', pageSize:20,
+                sortBy:'roi', orderBy:'desc', period: PERIOD_MAP[period] || '30d',
+                sentiment:'', socialLanguage:'', targetLanguage:''
+            });
+            const headers = { 'Content-Type':'application/json', 'Accept':'application/json' };
+            // Try direct first, then proxies
+            const urls = [
+                BNB_WEB3_URL,
+                ...CORS_PROXIES.map(p => p + encodeURIComponent(BNB_WEB3_URL))
+            ];
+            for (const url of urls) {
+                try {
+                    const r = await fetch(url, { method:'POST', headers, body, signal: AbortSignal.timeout(7000) });
+                    if (!r.ok) continue;
+                    const j = await r.json();
+                    const list = j?.data?.list || j?.data?.data || j?.data || [];
+                    if (Array.isArray(list) && list.length) return { source:'web3', list };
+                } catch {}
+            }
+            return null;
+        }
+
+        async function lbFetchFutures(period) {
+            const body = JSON.stringify({
+                periodType: FUT_PERIOD_MAP[period] || 'MONTHLY',
+                statisticsType: 'ROI', traderType:'REGULAR',
+                isShared:true, isTrader:false
+            });
+            const headers = { 'Content-Type':'application/json', 'Accept':'application/json', 'clienttype':'web' };
+            const urls = [
+                BNB_FUT_URL,
+                ...CORS_PROXIES.map(p => p + encodeURIComponent(BNB_FUT_URL))
+            ];
+            for (const url of urls) {
+                try {
+                    const r = await fetch(url, { method:'POST', headers, body, signal: AbortSignal.timeout(7000) });
+                    if (!r.ok) continue;
+                    const j = await r.json();
+                    const list = j?.data || [];
+                    if (Array.isArray(list) && list.length) return { source:'futures', list };
+                } catch {}
+            }
+            return null;
+        }
+
+        // Normalise API response → common trader object
+        function lbNormalise(raw, source, rank) {
+            if (source === 'web3') {
+                const addr = raw.address || raw.walletAddress || '';
+                return {
+                    rank,
+                    uid:      addr,
+                    name:     raw.nickName || (addr ? addr.slice(0,6)+'…'+addr.slice(-4) : `Trader #${rank}`),
+                    initials: raw.nickName ? raw.nickName.slice(0,2).toUpperCase() : (addr ? addr.slice(2,4).toUpperCase() : 'T' + rank),
+                    roi:      (raw.roi   || 0) * 100,   // decimal → percent
+                    pnl:      raw.pnl    || 0,
+                    winRate:  (raw.winRate || 0) * 100,
+                    txCount:  raw.txCount || raw.tradeCount || 0,
+                    followers: raw.followerCount || raw.followers || 0,
+                    addr:     addr ? addr.slice(0,6)+'…'+addr.slice(-4) : '',
+                };
+            } else {
+                // futures
+                const roi = (raw.value || 0);   // already a decimal ratio
+                const name = raw.nickName || `Trader #${rank}`;
+                return {
+                    rank,
+                    uid:      raw.encryptedUid || '',
+                    name,
+                    initials: name.slice(0,2).toUpperCase(),
+                    roi:      roi * 100,
+                    pnl:      raw.pnl || 0,
+                    winRate:  (raw.winRate || 0) * 100,
+                    txCount:  raw.tradeCount || raw.sharedPositionCount || 0,
+                    followers: raw.followerCount || 0,
+                    addr:     '',
+                };
+            }
+        }
+
+        // Demo fallback data
+        function lbDemoData() {
+            const names = ['CryptoWhale_BSC','AlphaTrader','BullRunKing','SatoshiPro','DeFi_Master',
+                           'BSC_Legend','HodlGod','MoonSniper','WhaleAlert','GreenCandle',
+                           'PolyBull','NightTrader','LayerZero_X','PumpKing','SolFlash',
+                           'ArbMaster','BTCMaxi','ETHGhost','ChainBreaker','ZeroDelta'];
+            return names.map((n,i) => ({
+                rank: i+1, uid:'demo'+i, name: n,
+                initials: n.slice(0,2).toUpperCase(),
+                roi:  Math.round((380 - i * 17 + (i%3)*5) * 10) / 10,
+                pnl:  Math.round((2800000 - i*120000 + (i%4)*30000)),
+                winRate: Math.round((91 - i*1.8 + (i%3)) * 10) / 10,
+                txCount: Math.round(820 - i*35 + (i%5)*12),
+                followers: Math.round(12400 - i*520 + (i%4)*80),
+                addr: i < 5 ? '' : '0x'+Array(8).fill(0).map(()=>Math.floor(Math.random()*16).toString(16)).join('')+'…',
+            }));
+        }
+
+        function lbFmt(n, prefix='$') {
+            if (n === null || n === undefined || isNaN(n)) return '—';
+            const abs = Math.abs(n);
+            let s = abs >= 1e9 ? (abs/1e9).toFixed(2)+'B'
+                  : abs >= 1e6 ? (abs/1e6).toFixed(2)+'M'
+                  : abs >= 1e3 ? (abs/1e3).toFixed(1)+'K'
+                  : abs.toFixed(2);
+            return (n < 0 ? '-' : '+') + prefix + s;
+        }
+
+        function lbRenderPodium(top3, isDemo) {
+            const pod = document.getElementById('lbPodium');
+            const medals = ['🥇','🥈','🥉'];
+            const cls    = ['rank1','rank2','rank3'];
+            pod.innerHTML = top3.map((t,i) => `
+                <div class="podium-card ${cls[i]}" onclick="lbOpenTrader('${t.uid}','${t.name}')">
+                    <div class="rank-badge">${i+1}</div>
+                    <div class="podium-avatar">${t.initials}</div>
+                    <div class="podium-name">${t.name}</div>
+                    <div class="podium-addr">${t.addr || (t.uid ? t.uid.slice(0,10)+'…' : 'BSC Network')}</div>
+                    <div class="podium-roi">${t.roi >= 0 ? '+' : ''}${t.roi.toFixed(1)}%</div>
+                    <div class="roi-bar"><div class="roi-bar-fill" style="width: ${Math.min(100, (t.roi / 380) * 100)}%"></div></div>
+                    <div class="podium-stats">
+                        <div class="stat-chip">
+                            <span class="stat-chip-label">PnL</span>
+                            <span class="stat-chip-value">${lbFmt(t.pnl).replace('$','')}</span>
+                        </div>
+                        <div class="stat-chip">
+                            <span class="stat-chip-label">Win</span>
+                            <span class="stat-chip-value">${t.winRate > 0 ? t.winRate.toFixed(1)+'%' : '—'}</span>
+                        </div>
+                        <div class="stat-chip">
+                            <span class="stat-chip-label">Trades</span>
+                            <span class="stat-chip-value">${t.txCount > 0 ? t.txCount.toLocaleString() : '—'}</span>
+                        </div>
+                        <div class="stat-chip">
+                            <span class="stat-chip-label">Followers</span>
+                            <span class="stat-chip-value">${t.followers > 0 ? t.followers.toLocaleString() : '—'}</span>
+                        </div>
+                    </div>
+                    <div class="podium-buttons">
+                        <button class="btn-follow">Follow</button>
+                        <button class="btn-profile">Profile</button>
+                    </div>
+                </div>`).join('');
+        }
+
+        function lbRenderTable(rest, isDemo) {
+            const tbody = document.getElementById('lbTableBody');
+            tbody.innerHTML = rest.map(t => `
+                <tr>
+                    <td class="rank-num">#${t.rank}</td>
+                    <td>
+                        <div class="trader-cell">
+                            <div class="trader-avatar">${t.initials}</div>
+                            <div class="trader-info">
+                                <div class="trader-name">${t.name}</div>
+                                ${t.addr ? `<div class="trader-addr">${t.addr}</div>` : ''}
+                            </div>
+                        </div>
+                    </td>
+                    <td class="roi-cell">${t.roi >= 0 ? '+' : ''}${t.roi.toFixed(1)}%<div class="roi-mini-bar" style="width: ${Math.min(100, (t.roi / 380) * 100)}%"></div></td>
+                    <td class="${t.pnl >= 0 ? 'positive' : 'negative'}">${lbFmt(t.pnl)}</td>
+                    <td>${t.winRate > 0 ? t.winRate.toFixed(1)+'%' : '—'}</td>
+                    <td>—</td>
+                    <td>${t.txCount > 0 ? t.txCount.toLocaleString() : '—'}</td>
+                    <td>${t.followers > 0 ? t.followers.toLocaleString() : '—'}</td>
+                    <td><button class="table-follow-btn" onclick="lbFollowTrader(this,'${t.uid}')">Follow</button></td>
+                </tr>`).join('');
+        }
+
+        function lbShowNotice(msg, icon='fa-circle-info') {
+            document.getElementById('lbNotice').innerHTML =
+                `<div style="font-size: 12px; color: var(--t2); background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 8px; padding: 10px; margin-top: 8px; display: flex; align-items: center; gap: 8px; box-shadow: inset 0 1px 0 var(--glass-highlight);"><i class="fa-solid ${icon}" style="color: var(--accent);"></i> ${msg}</div>`;
+        }
+
+        function lbRender(traders, isDemo, source) {
+            const top3 = traders.slice(0, 3);
+            const rest  = traders.slice(3, 20);
+            lbRenderPodium(top3, isDemo);
+            lbRenderTable(rest, isDemo);
+            if (isDemo) {
+                lbShowNotice('Live data unavailable (CORS restriction on local file). Showing representative demo data — deploy to a web server for real Binance BSC live feed.', 'fa-triangle-exclamation');
+            } else {
+                document.getElementById('lbNotice').innerHTML = '';
+            }
+        }
+
+        async function lbLoad(period) {
+            // Show loading state
+            document.getElementById('lbPodium').innerHTML =
+                '<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--t2); font-size:13px;"><div style="width:18px;height:18px;border:2px solid var(--glass-border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;margin-right:10px;vertical-align:middle;"></div> Fetching live data…</div>';
+            document.getElementById('lbTableBody').innerHTML =
+                '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--t2);">Loading…</td></tr>';
+            document.getElementById('lbNotice').innerHTML = '';
+
+            // Check cache
+            if (_lbCache[period]) { lbRender(_lbCache[period].traders, _lbCache[period].isDemo, _lbCache[period].source); return; }
+
+            // Try Web3 BSC → Futures → Demo
+            let result = await lbFetchWeb3(period);
+            let source = 'web3', isDemo = false;
+            if (!result) {
+                result = await lbFetchFutures(period);
+                source = 'futures';
+            }
+            let traders;
+            if (result && result.list.length) {
+                traders = result.list.map((r, i) => lbNormalise(r, result.source, i + 1));
+                source  = result.source;
+            } else {
+                traders = lbDemoData();
+                isDemo  = true;
+                source  = 'demo';
+            }
+            _lbCache[period] = { traders, isDemo, source };
+            lbRender(traders, isDemo, source);
+        }
+
+        function lbSetPeriod(period, el) {
+            _lbPeriod = period;
+            document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
+            if (el) el.classList.add('active');
+            lbLoad(period);
+        }
+
+        function lbOpenTrader(uid, name) {
+            if (!uid || uid.startsWith('demo')) return;
+            const url = uid.startsWith('0x')
+                ? `https://web3.binance.com/en/address/${uid}?chain=bsc`
+                : `https://www.binance.com/en/futures-activity/leaderboard/user?encryptedUid=${uid}`;
+            window.open(url, '_blank', 'noopener');
+        }
+
+        function lbFollowTrader(btn, uid) {
+            const following = btn.textContent === 'Unfollow';
+            btn.textContent = following ? 'Follow' : 'Unfollow';
+            btn.style.background = following ? '' : 'var(--accent)';
+            btn.style.color      = following ? '' : '#000';
+        }
+
+        // Auto-refresh every 90 seconds
+        function lbStartRefresh() {
+            clearInterval(_lbTimer);
+            _lbTimer = setInterval(() => { _lbCache = {}; lbLoad(_lbPeriod); }, 90000);
+        }
+
+        /* ════════════════════════════════════════════════
+           CUSTOM MANAGERS FROM ADMIN BACKEND
+        ════════════════════════════════════════════════ */
+        const CPT_MGRS_KEY = 'cpt_custom_managers';
+
+        function cptGetCustomManagers() {
+            try { return JSON.parse(localStorage.getItem(CPT_MGRS_KEY) || '[]'); }
+            catch { return []; }
+        }
+
+        function renderCustomManagerCards(grid) {
+            const custom = cptGetCustomManagers().filter(m => m.visible !== false);
+            if (!custom.length) return;
+            custom.forEach(m => {
+                const card = document.createElement('div');
+                const isMp  = m.badge === 'most_profitable';
+                card.className = 'manager-card ' + (isMp ? 'is-profitable' : 'is-featured');
+                const badgeHtml = isMp
+                    ? `<span class="badge-top"><i class="fa-solid fa-fire"></i> Most Profitable</span>`
+                    : `<span class="badge-top"><i class="fa-solid fa-star"></i> Featured</span>`;
+                card.innerHTML = `
+                    ${badgeHtml}
+                    <div class="manager-header">
+                        <div class="manager-avatar" style="${isMp ? 'background:linear-gradient(135deg,#FF8C00,#FF4500);' : ''}">${(m.name||'?').split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
+                        <div class="manager-title">
+                            <div class="manager-name">${m.name||'—'}</div>
+                            <div class="verified-badge"><i class="fas fa-check-circle"></i> Verified</div>
+                        </div>
+                    </div>
+
+                    <div class="manager-roi">${m.roi >= 0 ? '+' : ''}${parseFloat(m.roi||0).toFixed(1)}%</div>
+
+                    <div class="manager-stats-row">
+                        <div class="manager-stat"><div class="manager-stat-label">ROI 12M</div>
+                            <div class="manager-stat-value">${parseFloat(m.roi||0).toFixed(1)}%</div></div>
+                        <div class="manager-stat"><div class="manager-stat-label">AUM</div>
+                            <div class="manager-stat-value">${parseFloat(m.aum||0).toFixed(1)}M</div></div>
+                        <div class="manager-stat"><div class="manager-stat-label">Win Rate</div>
+                            <div class="manager-stat-value">${parseFloat(m.winRate||0).toFixed(1)}%</div></div>
+                    </div>
+
+                    <div class="sparkline-container">
+                        <canvas class="sparkline" id="spark-custom-${m.id}"></canvas>
+                    </div>
+
+                    <div style="font-size: 11px; color: var(--t2); margin-bottom: 12px; display: flex; justify-content: space-between;">
+                        <span>Followers: ${parseInt(m.followers||0).toLocaleString()}</span>
+                        <span>Fee: ${parseFloat(m.mgmtFee||0)}% + ${parseFloat(m.perfFee||0)}%</span>
+                    </div>
+
+                    <div class="manager-footer">
+                        <button class="btn-copy-trade" onclick="followManager(${m.id})">Copy Trade</button>
+                        <button class="btn-details" onclick="showCustomManagerDetail(${m.id})">Details</button>
+                    </div>`;
+                grid.insertBefore(card, grid.firstChild);
+                setTimeout(() => {
+                    const cv = document.getElementById('spark-custom-' + m.id);
+                    const returns = m.monthlyReturns && m.monthlyReturns.length
+                        ? m.monthlyReturns : [5,8,12,9,15,11,14,18,10,16,13,17];
+                    drawSparkline(cv, returns);
+                }, 100);
+            });
+        }
+
+        function showCustomManagerDetail(id) {
+            const m = cptGetCustomManagers().find(x => x.id === id);
+            if (!m) return;
+            const fake = {
+                id:   m.id, name: m.name, roi: parseFloat(m.roi||0),
+                aum:  parseFloat(m.aum||0), followers: parseInt(m.followers||0),
+                winRate: parseFloat(m.winRate||0), since: m.since||'—',
+                mgmtFee: parseFloat(m.mgmtFee||0), perfFee: parseFloat(m.perfFee||0),
+                monthlyReturns: m.monthlyReturns||[5,8,12,9,15,11,14,18,10,16,13,17],
+                positions: [],
+            };
+            managers.push(fake);
+            showManagerDetail(m.id);
+        }
+
+        /* ════════════════════════════════════════════════
+           PATCH renderManagerCards to include custom first
+        ════════════════════════════════════════════════ */
+        const _origRenderManagerCards = renderManagerCards;
+        renderManagerCards = function() {
+            _origRenderManagerCards();
+            const grid = document.getElementById('managersGrid');
+            renderCustomManagerCards(grid);
+        };
+
+        /* ════════════════════════════════════════════════
+           INIT
+        ════════════════════════════════════════════════ */
+        renderManagerCards();
+        lbLoad('7d');
+        lbStartRefresh();
+    </script>
+
+<script>
+
+/* ═══ TICKER ═══ */
+var TICKER_COINS=[
+  {sym:'BTC',price:'67234.50',change:'+3.45'},{sym:'ETH',price:'3892.10',change:'+2.18'},
+  {sym:'XRP',price:'2.48',change:'+1.92'},{sym:'SOL',price:'189.32',change:'+4.67'},
+  {sym:'DOGE',price:'0.42',change:'+5.23'},{sym:'ADA',price:'1.15',change:'+2.14'},
+  {sym:'POL',price:'0.89',change:'+7.32'},{sym:'LINK',price:'18.45',change:'+1.84'},
+  {sym:'ARB',price:'1.78',change:'+3.21'},{sym:'OP',price:'3.45',change:'+2.76'},
+  {sym:'AVAX',price:'48.92',change:'+2.45'},{sym:'ATOM',price:'12.34',change:'+1.67'},
+  {sym:'NEAR',price:'7.89',change:'+3.92'},{sym:'INJ',price:'56.78',change:'+4.18'}
+];
+function buildTicker(){
+  var t=document.getElementById('tickerTrack');
+  if(!t)return;
+  var h=TICKER_COINS.map(function(c){var up=c.change.startsWith('+');return'<div class="ticker-item"><span class="ti-dot '+(up?'up':'dn')+'"></span><span class="ti-sym">'+c.sym+'</span><span class="ti-price">$'+c.price+'</span><span class="ti-change '+(up?'ti-up':'ti-dn')+'">'+c.change+'%</span></div>';}).join('');
+  t.innerHTML=h+h;
+}
+function fluctuatePrices(){
+  document.querySelectorAll('.ticker-item').forEach(function(item){
+    var priceEl=item.querySelector('.ti-price');
+    var changeEl=item.querySelector('.ti-change');
+    if(!priceEl||Math.random()>.15)return;
+    var base=parseFloat(priceEl.textContent.replace('$','').replace(',',''));
+    var delta=base*(Math.random()*.004-.002);
+    var newPrice=Math.max(0.01,base+delta);
+    priceEl.textContent='$'+newPrice.toFixed(2);
+    priceEl.style.color=delta>=0?'var(--accent)':'var(--red)';
+    setTimeout(function(){priceEl.style.color='';},600);
+  });
+}
+buildTicker();
+setInterval(fluctuatePrices,2500);
+
+</script>
+</body>
+</html>

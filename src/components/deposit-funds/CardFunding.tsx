@@ -35,12 +35,14 @@ type CardFundingFormData = z.infer<typeof cardFundingSchema>;
 interface CardFundingProps {
   onChangeMethod: () => void;
   onClose?: () => void;
+  onDepositSuccess?: () => void;
   stepsCount?: 3 | 4;
 }
 
-const CardFunding: React.FC<CardFundingProps> = ({ 
-  onChangeMethod, 
+const CardFunding: React.FC<CardFundingProps> = ({
+  onChangeMethod,
   onClose,
+  onDepositSuccess,
   stepsCount = 4
 }) => {
   const navigate = useNavigate();
@@ -95,6 +97,7 @@ const CardFunding: React.FC<CardFundingProps> = ({
           });
           setIsSubmitted(true);
           reset();
+          onDepositSuccess?.();
         },
         onError: (error) => {
           const errorMessage =

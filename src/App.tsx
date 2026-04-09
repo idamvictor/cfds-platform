@@ -27,6 +27,7 @@ const ProtectedRoute = lazy(() => import("./components/ProtectedRoute"));
 
 const MainLayout = lazy(() => import("./layouts/MainLayout"));
 const MarketplacePage = lazy(() => import("@/pages/marketplace/marketplace-page.tsx"));
+const MarketPage = lazy(() => import("@/pages/market/MarketPage"));
 const DepositLayout = lazy(() => import("./layouts/DepositLayout"));
 const MT4Layout = lazy(() => import("./layouts/MT4Layout"));
 const MainContent = lazy(() => import("./components/mt4/main-content"));
@@ -159,6 +160,10 @@ const App = () => {
                       />
                     </Route>
 
+                    <Route
+                      path="/main/market"
+                      element={<MarketPage />}
+                    />
                     <Route
                       path="/main/marketplace"
                       element={<MarketplacePage />}

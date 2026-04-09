@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KYC Verification</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+            background: #f5f6f8;
+            color: #1a1a1a;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        /* ── Card ── */
+        .card {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow:
+                0 0 0 1px rgba(0,0,0,.04),
+                0 2px 6px rgba(0,0,0,.04),
+                0 12px 32px rgba(0,0,0,.06);
+            padding: 40px 36px 36px;
+            position: relative;
+            overflow: hidden;
+            border-top: none;
+        }
+
+        /* Ensure no accent line */
+        .card::before {
+            display: none !important;
+        }
+
+        /* ── Screens ── */
+        .screen { display: none; animation: fadeUp .4s ease; }
+        .screen.active { display: block; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Welcome Screen ── */
+        .welcome-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            text-align: center;
+            margin-bottom: 12px;
+            letter-spacing: -0.3px;
+        }
+
+        .welcome-sub {
+            font-size: .88rem;
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 40px;
+            line-height: 1.65;
+            max-width: 380px;
+            margin-left: auto;
+            margin-right: auto;
+            letter-spacing: 0.1px;
+        }
+
+        /* ── Steps ── */
+        .steps-list {
+            margin-bottom: 36px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .step-row {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .step-icon-circle {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #eef0f4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #6b7280;
+            font-size: 22px;
+        }
+
+        .step-info .step-label {
+            font-size: .72rem;
+            font-weight: 700;
+            color: #9ca3af;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .step-info h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.02rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -0.1px;
+        }
+
+        /* ── Green Button ── */
+        .btn-primary {
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #7BC043, #6ab038);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .25s;
+            box-shadow: 0 4px 16px rgba(123,192,67,.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,.15), transparent);
+            pointer-events: none;
+            border-radius: 14px 14px 0 0;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #86cc4d, #74b83f);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(123,192,67,.35);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(123,192,67,.2);
+        }
+
+        /* ── Footer ── */
+        .powered-footer {
+            font-size: .74rem;
+            color: #b0b5bd;
+            text-align: center;
+            margin-top: 28px;
+            letter-spacing: .3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .powered-footer strong {
+            color: #374151;
+            font-weight: 700;
+            font-size: .82rem;
+            letter-spacing: -0.2px;
+        }
+
+        /* ── Complete Screen ── */
+        .complete-badge {
+            width: 72px; height: 72px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #7BC043, #6ab038);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 32px;
+            box-shadow: 0 8px 24px rgba(123,192,67,.25);
+        }
+
+        .complete-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .complete-text {
+            font-size: .88rem;
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 14px 24px;
+            background: #fff;
+            color: #374151;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 14px;
+            font-family: 'Outfit', sans-serif;
+            font-size: .92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .25s;
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            border-color: #d1d5db;
+            background: #f9fafb;
+        }
+
+        /* ── Modal Overlay ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.4);
+            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow:
+                0 0 0 1px rgba(0,0,0,.04),
+                0 4px 12px rgba(0,0,0,.08),
+                0 24px 56px rgba(0,0,0,.12);
+            padding: 32px 28px 28px;
+            max-width: 380px;
+            width: 100%;
+            position: relative;
+            animation: modalSlideUp .35s cubic-bezier(.34,1.56,.64,1);
+        }
+
+        @keyframes modalSlideUp {
+            from { opacity: 0; transform: translateY(24px) scale(.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px; right: 16px;
+            width: 30px; height: 30px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            color: #9ca3af;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .modal-close:hover {
+            border-color: #d1d5db;
+            color: #374151;
+            background: #f9fafb;
+        }
+
+        .modal-icon {
+            width: 52px; height: 52px;
+            margin: 0 auto 16px;
+            background: #eef0f4;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7BC043;
+            font-size: 22px;
+        }
+
+        .modal-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .modal-text {
+            font-size: .85rem;
+            color: #6b7280;
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .modal-steps {
+            margin-bottom: 24px;
+        }
+
+        .modal-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 0;
+        }
+
+        .modal-step:not(:last-child) {
+            border-bottom: 1px solid #f0f1f3;
+        }
+
+        .modal-step-num {
+            width: 28px; height: 28px;
+            border-radius: 8px;
+            background: #eef0f4;
+            color: #7BC043;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .modal-step-text {
+            font-size: .85rem;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .modal-step .check-done {
+            margin-left: auto;
+            color: #7BC043;
+            font-size: 16px;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 500px) {
+            body { padding: 24px 16px; }
+            .card { padding: 32px 24px 28px; border-radius: 20px; }
+            .modal-card { padding: 28px 22px 24px; border-radius: 20px; }
+            .welcome-title { font-size: 1.3rem; }
+            .step-icon-circle { width: 48px; height: 48px; font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Screen 1: Welcome -->
+        <div class="screen active" id="screen1">
+            <div class="card">
+                <h1 class="welcome-title">Let's get you verified</h1>
+                <p class="welcome-sub">We are required to collect this information to meet regulatory requirements. Your details will be kept safe and will not be shared with third parties.</p>
+
+                <div class="steps-list">
+                    <div class="step-row">
+                        <div class="step-icon-circle">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <div class="step-info">
+                            <div class="step-label">Step 1</div>
+                            <h3>Provide identity document</h3>
+                        </div>
+                    </div>
+                    <div class="step-row">
+                        <div class="step-icon-circle">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="step-info">
+                            <div class="step-label">Step 2</div>
+                            <h3>Complete verification</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="startVerification()">Start verification</button>
+            </div>
+            <div class="powered-footer">
+                Powered by
+                <!-- Sumsub pixel-art mascot -->
+                <svg width="28" height="28" viewBox="0 0 40 40" style="vertical-align:middle;">
+                  <!-- Hat (teal) -->
+                  <rect x="12" y="2" width="16" height="4" rx="1" fill="#00C9A7"/>
+                  <rect x="10" y="6" width="20" height="3" rx="1" fill="#00C9A7"/>
+                  <!-- Head -->
+                  <rect x="10" y="9" width="20" height="4" fill="#1a1a2e"/>
+                  <!-- Eyes -->
+                  <rect x="12" y="10" width="4" height="2" fill="#fff"/>
+                  <rect x="13" y="10" width="2" height="2" fill="#1a1a2e"/>
+                  <rect x="24" y="10" width="4" height="2" fill="#fff"/>
+                  <rect x="25" y="10" width="2" height="2" fill="#1a1a2e"/>
+                  <!-- Body -->
+                  <rect x="10" y="13" width="20" height="8" fill="#1a1a2e"/>
+                  <!-- Chest detail -->
+                  <rect x="14" y="15" width="4" height="2" fill="#fff"/>
+                  <rect x="22" y="15" width="4" height="2" fill="#fff"/>
+                  <!-- Arms -->
+                  <rect x="6" y="14" width="4" height="6" fill="#1a1a2e"/>
+                  <rect x="30" y="14" width="4" height="6" fill="#1a1a2e"/>
+                  <!-- Legs -->
+                  <rect x="12" y="21" width="5" height="6" fill="#1a1a2e"/>
+                  <rect x="23" y="21" width="5" height="6" fill="#1a1a2e"/>
+                  <!-- Feet -->
+                  <rect x="10" y="27" width="7" height="3" rx="1" fill="#1a1a2e"/>
+                  <rect x="23" y="27" width="7" height="3" rx="1" fill="#1a1a2e"/>
+                </svg>
+                <strong>sumsub</strong>
+            </div>
+        </div>
+
+        <!-- Screen 2: Complete -->
+        <div class="screen" id="screenComplete">
+            <div class="card">
+                <div class="complete-badge">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h2 class="complete-title">Verification awaiting approval</h2>
+                <p class="complete-text">Your documents have been submitted and are currently under review. You'll receive an email notification once your verification is complete.</p>
+
+                <button class="btn-primary" onclick="goToDashboard()">Continue to Dashboard</button>
+            </div>
+            <div class="powered-footer">
+                Powered by
+                <!-- Sumsub pixel-art mascot -->
+                <svg width="28" height="28" viewBox="0 0 40 40" style="vertical-align:middle;">
+                  <!-- Hat (teal) -->
+                  <rect x="12" y="2" width="16" height="4" rx="1" fill="#00C9A7"/>
+                  <rect x="10" y="6" width="20" height="3" rx="1" fill="#00C9A7"/>
+                  <!-- Head -->
+                  <rect x="10" y="9" width="20" height="4" fill="#1a1a2e"/>
+                  <!-- Eyes -->
+                  <rect x="12" y="10" width="4" height="2" fill="#fff"/>
+                  <rect x="13" y="10" width="2" height="2" fill="#1a1a2e"/>
+                  <rect x="24" y="10" width="4" height="2" fill="#fff"/>
+                  <rect x="25" y="10" width="2" height="2" fill="#1a1a2e"/>
+                  <!-- Body -->
+                  <rect x="10" y="13" width="20" height="8" fill="#1a1a2e"/>
+                  <!-- Chest detail -->
+                  <rect x="14" y="15" width="4" height="2" fill="#fff"/>
+                  <rect x="22" y="15" width="4" height="2" fill="#fff"/>
+                  <!-- Arms -->
+                  <rect x="6" y="14" width="4" height="6" fill="#1a1a2e"/>
+                  <rect x="30" y="14" width="4" height="6" fill="#1a1a2e"/>
+                  <!-- Legs -->
+                  <rect x="12" y="21" width="5" height="6" fill="#1a1a2e"/>
+                  <rect x="23" y="21" width="5" height="6" fill="#1a1a2e"/>
+                  <!-- Feet -->
+                  <rect x="10" y="27" width="7" height="3" rx="1" fill="#1a1a2e"/>
+                  <rect x="23" y="27" width="7" height="3" rx="1" fill="#1a1a2e"/>
+                </svg>
+                <strong>sumsub</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup: Complete Verification Later -->
+    <div class="modal-overlay" id="verifyLaterModal">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            <div class="modal-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <h3 class="modal-title">Complete verification later?</h3>
+            <p class="modal-text">To unlock full trading features, complete the remaining verification steps at any time from your dashboard.</p>
+
+            <div class="modal-steps">
+                <div class="modal-step">
+                    <div class="modal-step-num">1</div>
+                    <span class="modal-step-text">Provide identity document</span>
+                </div>
+                <div class="modal-step">
+                    <div class="modal-step-num">2</div>
+                    <span class="modal-step-text">Complete verification</span>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="goToIdVerify()">Start verification now</button>
+            <button class="btn-secondary" onclick="skipToHome()">I'll do it later</button>
+        </div>
+    </div>
+
+    <script>
+        function startVerification() {
+            // Go to the ID verification page
+            localStorage.setItem('kyc_started', '1');
+            window.location.href = 'id-verify.html';
+        }
+
+        function goToScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            if (screenId === 'complete') {
+                document.getElementById('screenComplete').classList.add('active');
+            } else {
+                document.getElementById('screen1').classList.add('active');
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function closeModal() {
+            document.getElementById('verifyLaterModal').classList.remove('active');
+        }
+
+        function showLaterModal() {
+            document.getElementById('verifyLaterModal').classList.add('active');
+        }
+
+        function goToIdVerify() {
+            closeModal();
+            window.location.href = 'id-verify.html';
+        }
+
+        function skipToHome() {
+            closeModal();
+            localStorage.setItem('kyc_reminder', '1');
+            window.location.href = 'kyc.html';
+        }
+
+        function goToDashboard() {
+            localStorage.setItem('kyc_docs_submitted', '1');
+            window.location.href = 'kyc.html';
+        }
+
+        function checkUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            const step = params.get('step');
+            if (step === '5' || step === 'complete') {
+                goToScreen('complete');
+            }
+        }
+
+        // Close modal on overlay click
+        document.getElementById('verifyLaterModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            checkUrlParams();
+        });
+    </script>
+</body>
+</html>

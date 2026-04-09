@@ -8,8 +8,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card } from "@/components/ui/card";
-import { User } from "lucide-react";
+import {
+  User,
+  UserCircle,
+  MapPin,
+  Globe,
+  CalendarDays,
+  Mail,
+  Phone,
+  Shield,
+  Upload,
+  Camera,
+} from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -149,196 +159,274 @@ export default function PersonalInformation() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-8 p-6 bg-background text-foreground min-h-screen"
+      className="flex flex-col gap-6 p-4 md:p-8 max-w-5xl mx-auto w-full"
     >
-      <h1 className="text-2xl font-bold text-center">PERSONAL INFORMATION</h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <label htmlFor="first_name" className="text-muted-foreground">
-            First Name
-          </label>
-          <Input
-            id="first_name"
-            {...register("first_name")}
-            className="bg-card-foreground border-card-foreground/10"
-          />
-          {errors.first_name && (
-            <p className="text-red-500 text-sm">{errors.first_name.message}</p>
-          )}
+      {/* Page Header */}
+      <div className="flex items-center gap-3 mb-2">
+        <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-[#00dfa2]/10">
+          <UserCircle className="h-5 w-5 text-[#00dfa2]" />
         </div>
-
-        <div className="space-y-2">
-          <label htmlFor="last_name" className="text-muted-foreground">
-            Last Name
-          </label>
-          <Input
-            id="last_name"
-            {...register("last_name")}
-            className="bg-card border-card-foreground/10"
-          />
-          {errors.last_name && (
-            <p className="text-red-500 text-sm">{errors.last_name.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="address" className="text-muted-foreground">
-            Address
-          </label>
-          <Input
-            id="address"
-            {...register("address")}
-            className="bg-card border-card-foreground/10"
-          />
-          {errors.address && (
-            <p className="text-red-500 text-sm">{errors.address.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="country" className="text-muted-foreground">
-            Country
-          </label>
-          <Select
-            defaultValue={user?.country || "maldives"}
-            onValueChange={(value) => setValue("country", value)}
-          >
-            <SelectTrigger className="bg-card border-card-foreground/10">
-              <SelectValue placeholder="Select a country" />
-            </SelectTrigger>
-            <SelectContent>
-              {countries.map((country) => (
-                <SelectItem key={country.value} value={country.value}>
-                  {country.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {errors.country && (
-            <p className="text-red-500 text-sm">{errors.country.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="birth_date" className="text-muted-foreground">
-            Date of Birth
-          </label>
-          <Input
-            id="birth_date"
-            type="date"
-            {...register("birth_date")}
-            className="bg-card border-card-foreground/10 [color-scheme:dark]"
-          />
-          {errors.birth_date && (
-            <p className="text-red-500 text-sm">{errors.birth_date.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="email" className="text-muted-foreground">
-            Email
-          </label>
-          <Input
-            id="email"
-            type="email"
-            {...register("email")}
-            className="bg-card border-card-foreground/10"
-          />
-          {errors.email && (
-            <p className="text-red-500 text-sm">{errors.email.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="phone" className="text-muted-foreground">
-            Phone
-          </label>
-          <Input
-            id="phone"
-            type="tel"
-            {...register("phone")}
-            className="bg-card border-card-foreground/10"
-          />
-          {errors.phone && (
-            <p className="text-red-500 text-sm">{errors.phone.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="account_type" className="text-muted-foreground">
-            Account Type
-          </label>
-          <Input
-            id="account_type"
-            value={user?.account_type?.title || "Basic Plan"}
-            disabled
-            className="bg-card border-card-foreground/10 opacity-70 cursor-not-allowed"
-          />
-          <p className="text-xs text-muted-foreground">
-            Account type cannot be modified
+        <div>
+          <h1 className="text-lg font-extrabold tracking-tight text-[#eef2f7]">
+            Personal Information
+          </h1>
+          <p className="text-[11px] text-[#4a5468] font-semibold">
+            Manage your account details and profile
           </p>
         </div>
       </div>
 
-      <div className="flex gap-4">
-        <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Submitting..." : "Submit"}
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => {
-            // Reset form to default values
-            Object.keys(formSchema.shape).forEach((key) => {
-              setValue(key as keyof FormValues, "");
-            });
-            setImage(null);
-          }}
-        >
-          Reset
-        </Button>
+      {/* Personal Details Card */}
+      <div className="glass-card p-5 md:p-7">
+        {/* Section header with accent top border */}
+        <div className="flex items-center gap-2 mb-6">
+          <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#00dfa2]">
+            Account Details
+          </span>
+          <div className="flex-1 h-px bg-white/[0.06]" />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-4">
+          {/* First Name */}
+          <FieldGroup
+            label="First Name"
+            icon={<User className="h-3.5 w-3.5" />}
+            error={errors.first_name?.message}
+          >
+            <Input
+              id="first_name"
+              {...register("first_name")}
+              className="h-10 bg-white/[0.03] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] placeholder:text-[#3a4556] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all"
+            />
+          </FieldGroup>
+
+          {/* Last Name */}
+          <FieldGroup
+            label="Last Name"
+            icon={<User className="h-3.5 w-3.5" />}
+            error={errors.last_name?.message}
+          >
+            <Input
+              id="last_name"
+              {...register("last_name")}
+              className="h-10 bg-white/[0.03] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] placeholder:text-[#3a4556] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all"
+            />
+          </FieldGroup>
+
+          {/* Address */}
+          <FieldGroup
+            label="Address"
+            icon={<MapPin className="h-3.5 w-3.5" />}
+            error={errors.address?.message}
+          >
+            <Input
+              id="address"
+              {...register("address")}
+              className="h-10 bg-white/[0.03] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] placeholder:text-[#3a4556] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all"
+            />
+          </FieldGroup>
+
+          {/* Country */}
+          <FieldGroup
+            label="Country"
+            icon={<Globe className="h-3.5 w-3.5" />}
+            error={errors.country?.message}
+          >
+            <Select
+              defaultValue={user?.country || "maldives"}
+              onValueChange={(value) => setValue("country", value)}
+            >
+              <SelectTrigger className="h-10 bg-white/[0.03] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all">
+                <SelectValue placeholder="Select a country" />
+              </SelectTrigger>
+              <SelectContent className="bg-[#0f1220] border-white/[0.08]">
+                {countries.map((country) => (
+                  <SelectItem key={country.value} value={country.value}>
+                    {country.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </FieldGroup>
+
+          {/* Date of Birth */}
+          <FieldGroup
+            label="Date of Birth"
+            icon={<CalendarDays className="h-3.5 w-3.5" />}
+            error={errors.birth_date?.message}
+          >
+            <Input
+              id="birth_date"
+              type="date"
+              {...register("birth_date")}
+              className="h-10 bg-white/[0.03] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] placeholder:text-[#3a4556] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all [color-scheme:dark]"
+            />
+          </FieldGroup>
+
+          {/* Email */}
+          <FieldGroup
+            label="Email"
+            icon={<Mail className="h-3.5 w-3.5" />}
+            error={errors.email?.message}
+          >
+            <Input
+              id="email"
+              type="email"
+              {...register("email")}
+              className="h-10 bg-white/[0.03] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] placeholder:text-[#3a4556] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all"
+            />
+          </FieldGroup>
+
+          {/* Phone */}
+          <FieldGroup
+            label="Phone"
+            icon={<Phone className="h-3.5 w-3.5" />}
+            error={errors.phone?.message}
+          >
+            <Input
+              id="phone"
+              type="tel"
+              {...register("phone")}
+              className="h-10 bg-white/[0.03] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] placeholder:text-[#3a4556] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all"
+            />
+          </FieldGroup>
+
+          {/* Account Type */}
+          <FieldGroup
+            label="Account Type"
+            icon={<Shield className="h-3.5 w-3.5" />}
+            hint="Account type cannot be modified"
+          >
+            <Input
+              id="account_type"
+              value={user?.account_type?.title || "Basic Plan"}
+              disabled
+              className="h-10 bg-white/[0.02] border-white/[0.06] rounded-lg text-sm text-[#8b97a8] cursor-not-allowed transition-all"
+            />
+          </FieldGroup>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex items-center gap-3 mt-7 pt-5 border-t border-white/[0.06]">
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="bg-gradient-to-br from-[#00dfa2] to-[#00b881] text-[#07080c] font-extrabold text-xs px-6 py-2.5 rounded-lg shadow-[0_4px_16px_rgba(0,223,162,0.2)] hover:shadow-[0_6px_24px_rgba(0,223,162,0.3)] hover:-translate-y-px transition-all active:scale-[0.98] disabled:opacity-50"
+          >
+            {isLoading ? "Submitting..." : "Save Changes"}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              Object.keys(formSchema.shape).forEach((key) => {
+                setValue(key as keyof FormValues, "");
+              });
+              setImage(null);
+            }}
+            className="border-white/[0.08] bg-white/[0.03] text-[#8b97a8] font-bold text-xs px-6 py-2.5 rounded-lg hover:bg-white/[0.06] hover:text-[#eef2f7] hover:border-white/[0.12] transition-all active:scale-[0.98]"
+          >
+            Reset
+          </Button>
+        </div>
       </div>
 
-      <div className="mt-4">
-        <h2 className="text-l font-bold mb-6">PROFILE PHOTO</h2>
+      {/* Profile Photo Card */}
+      <div className="glass-card p-5 md:p-7">
+        <div className="flex items-center gap-2 mb-6">
+          <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#00dfa2]">
+            Profile Photo
+          </span>
+          <div className="flex-1 h-px bg-white/[0.06]" />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card
-            className="flex flex-col items-center justify-center p-6 h-full min-h-[400px] bg-card border-card-foreground/10 cursor-pointer"
+          {/* Upload Zone */}
+          <div
+            className={`group relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 min-h-[340px] cursor-pointer transition-all duration-200 ${
+              isDragging
+                ? "border-[#00dfa2]/60 bg-[#00dfa2]/[0.04]"
+                : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14] hover:bg-white/[0.03]"
+            }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             onClick={handleClick}
           >
-            <div className="flex flex-col items-center justify-center w-full h-full">
-              <div
-                className={`relative flex items-center justify-center w-64 h-64 rounded-full mb-6 transition-all ${
-                  isDragging ? "scale-110" : ""
-                }`}
-                style={{
-                  background:
-                    "radial-gradient(circle, rgba(34,197,94,0.2) 0%, rgba(17,24,39,1) 70%)",
-                }}
-              >
+            {/* Avatar circle */}
+            <div
+              className={`relative flex items-center justify-center w-48 h-48 rounded-full mb-5 transition-transform duration-200 ${
+                isDragging ? "scale-105" : "group-hover:scale-[1.02]"
+              }`}
+              style={{
+                background:
+                  "radial-gradient(circle, rgba(0,223,162,0.12) 0%, rgba(0,223,162,0.02) 60%, transparent 80%)",
+              }}
+            >
+              <div className="w-40 h-40 rounded-full overflow-hidden border-2 border-white/[0.08] bg-[#0a0d15] flex items-center justify-center">
                 {image ? (
                   <img
                     src={image || "/placeholder.svg"}
                     alt="Profile"
-                    className="w-56 h-56 rounded-full object-cover"
+                    className="w-full h-full object-cover"
                   />
                 ) : (
-                  <User className="w-32 h-32 text-muted-foreground/50" />
+                  <User className="w-16 h-16 text-[#4a5468]" />
                 )}
               </div>
-              <p className="text-muted-foreground text-center">
-                Drop a file on the circle above to upload
-              </p>
+              {/* Camera overlay badge */}
+              <div className="absolute bottom-1 right-1 flex items-center justify-center w-9 h-9 rounded-full bg-[#00dfa2] shadow-[0_4px_12px_rgba(0,223,162,0.3)]">
+                <Camera className="h-4 w-4 text-[#07080c]" />
+              </div>
             </div>
-          </Card>
+
+            {/* Upload text */}
+            <div className="flex items-center gap-2 text-[#8b97a8] mb-1">
+              <Upload className="h-4 w-4" />
+              <span className="text-sm font-semibold">
+                {isDragging ? "Drop to upload" : "Click or drag to upload"}
+              </span>
+            </div>
+            <p className="text-[11px] text-[#4a5468] font-medium">
+              JPG, GIF or PNG. Max 5 MB.
+            </p>
+          </div>
+
+          {/* Photo Guidelines */}
           <PhotoGuidelines />
         </div>
       </div>
     </form>
+  );
+}
+
+/* ── Field Group helper ── */
+function FieldGroup({
+  label,
+  icon,
+  error,
+  hint,
+  children,
+}: {
+  label: string;
+  icon: React.ReactNode;
+  error?: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <label className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
+        {icon}
+        {label}
+      </label>
+      {children}
+      {error && (
+        <p className="text-[11px] font-semibold text-[#f43f5e]">{error}</p>
+      )}
+      {hint && (
+        <p className="text-[10px] font-medium text-[#4a5468]">{hint}</p>
+      )}
+    </div>
   );
 }

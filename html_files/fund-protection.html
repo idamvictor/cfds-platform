@@ -1,0 +1,2599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fund Protection — 1 Trade Market</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* 1TM Color System */
+  --accent: #00dfa2;
+  --accent-light: #00ffc3;
+  --accent-dark: #00b881;
+  --bg: #07080c;
+  --bg2: #0a0d15;
+  --t1: #eef2f7;
+  --t2: #8b97a8;
+  --t3: #4a5468;
+  --glass-bg: rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.08);
+  --glass-highlight: rgba(255,255,255,0.12);
+  --bonus-accent: #c8e64e;
+  
+  /* Multi-color palette for variety */
+  --color-blue: #3b82f6;
+  --color-purple: #a855f7;
+  --color-pink: #ec4899;
+  --color-gold: #f0b429;
+  --color-green: #1ed760;
+  
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Outfit', 'Inter', -apple-system, 'Helvetica Neue', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif;
+  background: linear-gradient(135deg, var(--bg) 0%, var(--bg2) 100%);
+  color: var(--t1);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ─── NAV ─── */
+nav {
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px);
+  border-bottom: 1px solid var(--glass-border);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 24px;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--t1);
+  font-size: 1rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  font-family: 'Outfit', sans-serif;
+}
+
+.nav-logo em {
+  color: var(--accent);
+  font-style: normal;
+}
+
+.logo-box {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(145deg, #00ffc3, #00dfa2, #00b881);
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 0.75rem;
+  color: #07080c;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 24px rgba(0,223,162,0.4), inset 0 1px 2px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.2);
+  flex-shrink: 0;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2px;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.nav-links::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-links a {
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--t2);
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.nav-links a:hover {
+  color: var(--t1);
+  background: var(--glass-highlight);
+}
+
+.nav-links a.active {
+  color: var(--accent);
+  background: rgba(0, 223, 162, 0.1);
+  font-weight: 600;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.nav-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1.5px solid rgba(0, 223, 162, 0.3);
+}
+
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border-radius: var(--radius);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.btn-nav-red {
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  color: var(--bg);
+  font-weight: 600;
+}
+
+.btn-nav-red:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 223, 162, 0.3);
+}
+
+/* ─── HERO ─── */
+.hero {
+  position: relative;
+  padding: 80px 24px 64px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 90% 60% at 50% -10%, rgba(0, 223, 162, 0.08) 0%, transparent 60%),
+              radial-gradient(ellipse 60% 40% at 80% 50%, rgba(200, 230, 78, 0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-shield {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, rgba(0, 223, 162, 0.15), rgba(200, 230, 78, 0.1));
+  border: 1.5px solid rgba(0, 223, 162, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  font-size: 2rem;
+  color: var(--accent);
+  position: relative;
+}
+
+.hero-shield::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 223, 162, 0.12);
+  animation: pulse-ring 3s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 223, 162, 0.1);
+  border: 1px solid rgba(0, 223, 162, 0.25);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin-bottom: 24px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  margin-bottom: 20px;
+  max-width: 820px;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: 'Outfit', sans-serif;
+}
+
+.hero h1 .gold-text {
+  background: linear-gradient(135deg, var(--accent-light), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero h1 .red-text {
+  color: var(--bonus-accent);
+}
+
+.hero-sub {
+  font-size: 1rem;
+  color: var(--t2);
+  max-width: 680px;
+  margin: 0 auto 36px;
+  line-height: 1.8;
+}
+
+.hero-trust-bar {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  padding: 28px 0;
+  border-top: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
+  margin: 0 auto;
+  max-width: 900px;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.trust-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.trust-icon.red {
+  background: rgba(200, 230, 78, 0.1);
+  color: var(--bonus-accent);
+  border: 1px solid rgba(200, 230, 78, 0.25);
+}
+
+.trust-icon.gold {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--color-blue);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.trust-icon.green {
+  background: rgba(0, 223, 162, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(0, 223, 162, 0.25);
+}
+
+.trust-icon.blue {
+  background: rgba(168, 85, 247, 0.1);
+  color: var(--color-purple);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+}
+
+.trust-val {
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--t1);
+  line-height: 1.2;
+}
+
+.trust-lab {
+  font-size: 0.72rem;
+  color: var(--t3);
+}
+
+/* ─── CONTAINER ─── */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.section {
+  padding: 72px 0;
+}
+
+.section-alt {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.section-inner {
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.sec-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 14px;
+}
+
+.sec-label.red {
+  color: var(--accent);
+}
+
+.sec-label.gold {
+  color: var(--bonus-accent);
+}
+
+.sec-label.green {
+  color: var(--accent);
+}
+
+.sec-label i {
+  font-size: 0.65rem;
+}
+
+.sec-title {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 700;
+  color: var(--t1);
+  letter-spacing: -0.015em;
+  margin-bottom: 12px;
+  line-height: 1.25;
+  font-family: 'Outfit', sans-serif;
+}
+
+.sec-title .gold-text {
+  background: linear-gradient(135deg, var(--accent-light), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sec-title .red-text {
+  color: var(--bonus-accent);
+}
+
+.sec-desc {
+  font-size: 0.95rem;
+  color: var(--t2);
+  max-width: 620px;
+  line-height: 1.8;
+}
+
+.section-hdr {
+  margin-bottom: 48px;
+}
+
+/* ─── PROTECTION PILLARS ─── */
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.pillar-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 32px 28px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.pillar-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-xl);
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(0, 223, 162, 0.2), rgba(255, 255, 255, 0.05));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.pillar-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--glass-highlight);
+  box-shadow: 0 16px 48px rgba(0, 223, 162, 0.15);
+}
+
+.pillar-card.red-card {
+  border-color: rgba(200, 230, 78, 0.2);
+}
+
+.pillar-card.gold-card {
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.pillar-card.green-card {
+  border-color: rgba(0, 223, 162, 0.2);
+}
+
+.pillar-card.blue-card {
+  border-color: rgba(168, 85, 247, 0.2);
+}
+
+.pillar-card.navy-card {
+  border-color: rgba(236, 72, 153, 0.2);
+}
+
+.pillar-card.purple-card {
+  border-color: rgba(240, 180, 41, 0.2);
+}
+
+.pillar-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+}
+
+.pillar-icon.red {
+  background: rgba(200, 230, 78, 0.1);
+  color: var(--bonus-accent);
+  border: 1px solid rgba(200, 230, 78, 0.25);
+}
+
+.pillar-icon.gold {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--color-blue);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.pillar-icon.green {
+  background: rgba(0, 223, 162, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(0, 223, 162, 0.25);
+}
+
+.pillar-icon.blue {
+  background: rgba(168, 85, 247, 0.1);
+  color: var(--color-purple);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+}
+
+.pillar-icon.navy {
+  background: rgba(236, 72, 153, 0.1);
+  color: var(--color-pink);
+  border: 1px solid rgba(236, 72, 153, 0.25);
+}
+
+.pillar-icon.purple {
+  background: rgba(240, 180, 41, 0.1);
+  color: var(--color-gold);
+  border: 1px solid rgba(240, 180, 41, 0.25);
+}
+
+.pillar-card h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--t1);
+  margin-bottom: 10px;
+  font-family: 'Outfit', sans-serif;
+}
+
+.pillar-card p {
+  font-size: 0.86rem;
+  color: var(--t2);
+  line-height: 1.75;
+}
+
+.pillar-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 223, 162, 0.08);
+  border: 1px solid rgba(0, 223, 162, 0.2);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-top: 16px;
+}
+
+/* ─── VETTING PROCESS ─── */
+.vetting-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 48px;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .vetting-wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+.vetting-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.vetting-step {
+  display: flex;
+  gap: 20px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--glass-border);
+  position: relative;
+}
+
+.vetting-step:last-child {
+  border-bottom: none;
+}
+
+.step-num {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(0, 223, 162, 0.1);
+  border: 1.5px solid rgba(0, 223, 162, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.step-line {
+  position: absolute;
+  left: 21px;
+  top: 72px;
+  bottom: 0;
+  width: 1.5px;
+  background: linear-gradient(180deg, rgba(0, 223, 162, 0.3) 0%, var(--glass-border) 100%);
+}
+
+.vetting-step:last-child .step-line {
+  display: none;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-content h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--t1);
+  margin-bottom: 8px;
+  font-family: 'Outfit', sans-serif;
+}
+
+.step-content p {
+  font-size: 0.86rem;
+  color: var(--t2);
+  line-height: 1.75;
+  margin-bottom: 12px;
+}
+
+.step-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.step-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  color: var(--t3);
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.step-tag i {
+  font-size: 0.6rem;
+}
+
+.step-tag.red {
+  background: rgba(200, 230, 78, 0.1);
+  border-color: rgba(200, 230, 78, 0.25);
+  color: var(--bonus-accent);
+}
+
+.step-tag.gold {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.25);
+  color: var(--color-blue);
+}
+
+.step-tag.green {
+  background: rgba(0, 223, 162, 0.1);
+  border-color: rgba(0, 223, 162, 0.25);
+  color: var(--accent);
+}
+
+/* ─── SECURITY DEPOSIT SIDEBAR ─── */
+.deposit-sidebar {
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px);
+  border: 1px solid rgba(0, 223, 162, 0.2);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  position: sticky;
+  top: 80px;
+}
+
+.deposit-sidebar h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 6px;
+  font-family: 'Outfit', sans-serif;
+}
+
+.deposit-sidebar p {
+  font-size: 0.83rem;
+  color: var(--t3);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.deposit-tiers {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.deposit-tier {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  transition: all 0.2s;
+}
+
+.deposit-tier:hover {
+  border-color: rgba(0, 223, 162, 0.3);
+  background: rgba(0, 223, 162, 0.05);
+}
+
+.dt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.dt-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--t1);
+}
+
+.dt-amount {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.dt-bar-wrap {
+  height: 5px;
+  background: var(--glass-border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.dt-bar {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--bonus-accent));
+}
+
+.dt-note {
+  font-size: 0.72rem;
+  color: var(--t3);
+  margin-top: 6px;
+}
+
+.deposit-callout {
+  margin-top: 20px;
+  background: rgba(0, 223, 162, 0.08);
+  border: 1px solid rgba(0, 223, 162, 0.2);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+
+.deposit-callout p {
+  font-size: 0.8rem;
+  color: var(--t2);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.deposit-callout strong {
+  color: var(--accent);
+}
+
+/* ─── INSURANCE SECTION ─── */
+.insurance-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .insurance-wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+.insurance-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.insurance-card.featured {
+  border-color: rgba(0, 223, 162, 0.3);
+  background: linear-gradient(135deg, rgba(0, 223, 162, 0.08), rgba(10, 13, 21, 0) 60%), var(--glass-bg);
+}
+
+.insurance-card.featured::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+
+.ins-amount {
+  font-family: var(--mono);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.ins-amount span {
+  font-size: 1rem;
+  color: var(--t3);
+  font-weight: 400;
+  margin-left: 6px;
+  font-family: 'Inter', sans-serif;
+}
+
+.ins-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--t3);
+  margin-bottom: 20px;
+}
+
+.ins-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--t1);
+  margin-bottom: 12px;
+  font-family: 'Outfit', sans-serif;
+}
+
+.ins-card-desc {
+  font-size: 0.88rem;
+  color: var(--t2);
+  line-height: 1.75;
+  margin-bottom: 24px;
+}
+
+.ins-features {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ins-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--t2);
+}
+
+.ins-feature i {
+  color: var(--accent);
+  font-size: 0.75rem;
+  margin-top: 0.28rem;
+  flex-shrink: 0;
+}
+
+.ins-feature strong {
+  color: var(--t1);
+}
+
+.ins-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 223, 162, 0.1);
+  border: 1px solid rgba(0, 223, 162, 0.25);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+  margin-bottom: 20px;
+}
+
+.coverage-bar {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--glass-border);
+}
+
+.cov-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.cov-label {
+  font-size: 0.78rem;
+  color: var(--t3);
+}
+
+.cov-val {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.cov-bar-wrap {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.cov-bar {
+  height: 100%;
+  border-radius: 4px;
+}
+
+.cov-bar.standard {
+  background: rgba(59, 130, 246, 0.6);
+  width: 1%;
+}
+
+.cov-bar.sipc {
+  background: rgba(0, 223, 162, 0.6);
+  width: 50%;
+}
+
+.cov-bar.cpt {
+  background: linear-gradient(90deg, var(--accent), var(--bonus-accent));
+  width: 100%;
+}
+
+/* ─── SEGREGATED ACCOUNTS ─── */
+.seg-diagram {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+.seg-flow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.seg-box {
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px);
+  border: 1.5px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  flex: 1;
+  min-width: 200px;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.seg-box:hover {
+  border-color: var(--glass-highlight);
+  transform: translateY(-2px);
+}
+
+.seg-box.client {
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.seg-box.segregated {
+  border-color: rgba(0, 223, 162, 0.3);
+}
+
+.seg-box.company {
+  border-color: rgba(200, 230, 78, 0.2);
+  opacity: 0.5;
+}
+
+.seg-box-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  margin: 0 auto 10px;
+}
+
+.seg-box.client .seg-box-icon {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--color-blue);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.seg-box.segregated .seg-box-icon {
+  background: rgba(0, 223, 162, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(0, 223, 162, 0.25);
+}
+
+.seg-box.company .seg-box-icon {
+  background: rgba(200, 230, 78, 0.1);
+  color: var(--bonus-accent);
+  border: 1px solid rgba(200, 230, 78, 0.25);
+}
+
+.seg-box h4 {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--t1);
+  margin-bottom: 4px;
+  font-family: 'Outfit', sans-serif;
+}
+
+.seg-box p {
+  font-size: 0.75rem;
+  color: var(--t3);
+  line-height: 1.5;
+}
+
+.seg-arrow {
+  font-size: 1.2rem;
+  color: var(--t3);
+  flex-shrink: 0;
+}
+
+.seg-separator {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 8px;
+}
+
+.sep-line {
+  flex: 1;
+  height: 1px;
+  background: var(--glass-border);
+}
+
+.sep-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  background: rgba(0, 223, 162, 0.1);
+  border: 1px solid rgba(0, 223, 162, 0.25);
+  padding: 3px 12px;
+  border-radius: 20px;
+}
+
+.seg-guarantee-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.seg-guarantee {
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  transition: all 0.2s;
+}
+
+.seg-guarantee:hover {
+  border-color: var(--glass-highlight);
+}
+
+.sg-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(0, 223, 162, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(0, 223, 162, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.sg-text h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--t1);
+  margin-bottom: 4px;
+  font-family: 'Outfit', sans-serif;
+}
+
+.sg-text p {
+  font-size: 0.8rem;
+  color: var(--t2);
+  line-height: 1.6;
+}
+
+/* ─── SECURITY INFRASTRUCTURE ─── */
+.infra-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+}
+
+.infra-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  display: flex;
+  gap: 18px;
+  transition: all 0.3s;
+}
+
+.infra-card:hover {
+  border-color: var(--glass-highlight);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 223, 162, 0.1);
+}
+
+.infra-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.infra-card:nth-child(1) .infra-icon {
+  background: rgba(0, 223, 162, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(0, 223, 162, 0.25);
+}
+
+.infra-card:nth-child(2) .infra-icon {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--color-blue);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.infra-card:nth-child(3) .infra-icon {
+  background: rgba(168, 85, 247, 0.1);
+  color: var(--color-purple);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+}
+
+.infra-card:nth-child(4) .infra-icon {
+  background: rgba(236, 72, 153, 0.1);
+  color: var(--color-pink);
+  border: 1px solid rgba(236, 72, 153, 0.25);
+}
+
+.infra-card:nth-child(5) .infra-icon {
+  background: rgba(200, 230, 78, 0.1);
+  color: var(--bonus-accent);
+  border: 1px solid rgba(200, 230, 78, 0.25);
+}
+
+.infra-card:nth-child(6) .infra-icon {
+  background: rgba(240, 180, 41, 0.1);
+  color: var(--color-gold);
+  border: 1px solid rgba(240, 180, 41, 0.25);
+}
+
+.infra-body h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--t1);
+  margin-bottom: 8px;
+  font-family: 'Outfit', sans-serif;
+}
+
+.infra-body p {
+  font-size: 0.83rem;
+  color: var(--t2);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+.infra-spec {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--t3);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* ─── FINANCIAL PARTNERS ─── */
+.partners-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.partner-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 22px 20px;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.partner-card:hover {
+  border-color: rgba(0, 223, 162, 0.3);
+  transform: translateY(-2px);
+}
+
+.partner-abbr {
+  font-family: var(--mono);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.partner-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--t1);
+  margin-bottom: 4px;
+}
+
+.partner-type {
+  font-size: 0.72rem;
+  color: var(--t3);
+}
+
+.partner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  font-size: 0.68rem;
+  color: var(--accent);
+  background: rgba(0, 223, 162, 0.1);
+  border: 1px solid rgba(0, 223, 162, 0.25);
+  padding: 3px 8px;
+  border-radius: 10px;
+}
+
+/* ─── COMPLIANCE SECTION ─── */
+.compliance-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+@media (max-width: 768px) {
+  .compliance-wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+.compliance-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+}
+
+.compliance-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.compliance-flag {
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 223, 162, 0.1);
+  border: 1px solid rgba(0, 223, 162, 0.25);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.compliance-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.compliance-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--t2);
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius);
+  border-left: 3px solid var(--accent);
+}
+
+.compliance-item i {
+  color: var(--accent);
+  font-size: 0.8rem;
+  margin-top: 0.1rem;
+  flex-shrink: 0;
+}
+
+.compliance-item strong {
+  color: var(--t1);
+}
+
+.audit-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.audit-item {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-border);
+  transition: all 0.2s;
+}
+
+.audit-item:hover {
+  border-color: rgba(0, 223, 162, 0.3);
+}
+
+.audit-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.audit-dot.green {
+  background: var(--accent);
+  box-shadow: 0 0 8px rgba(0, 223, 162, 0.4);
+}
+
+.audit-dot.gold {
+  background: var(--color-blue);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+}
+
+.audit-dot.red {
+  background: var(--bonus-accent);
+  box-shadow: 0 0 8px rgba(200, 230, 78, 0.4);
+}
+
+.audit-body {
+  flex: 1;
+}
+
+.audit-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--t1);
+}
+
+.audit-detail {
+  font-size: 0.75rem;
+  color: var(--t3);
+  margin-top: 2px;
+}
+
+.audit-status {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.audit-status.passed {
+  background: rgba(0, 223, 162, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(0, 223, 162, 0.25);
+}
+
+.audit-status.current {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--color-blue);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.audit-status.pending {
+  background: rgba(168, 85, 247, 0.1);
+  color: var(--color-purple);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+}
+
+/* ─── FAQ ─── */
+.faq-list {
+  max-width: 820px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.faq-item {
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.faq-item.open {
+  border-color: rgba(0, 223, 162, 0.3);
+}
+
+.faq-q {
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  gap: 16px;
+  user-select: none;
+}
+
+.faq-q:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.faq-q-text {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--t1);
+}
+
+.faq-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--t3);
+  font-size: 0.7rem;
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+
+.faq-item.open .faq-icon {
+  background: rgba(0, 223, 162, 0.1);
+  border-color: rgba(0, 223, 162, 0.25);
+  color: var(--accent);
+  transform: rotate(45deg);
+}
+
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s;
+}
+
+.faq-item.open .faq-a {
+  max-height: 400px;
+  padding: 0 24px 20px;
+}
+
+.faq-a-text {
+  font-size: 0.87rem;
+  color: var(--t2);
+  line-height: 1.8;
+  border-left: 3px solid rgba(0, 223, 162, 0.25);
+  padding-left: 14px;
+}
+
+/* ─── CTA BANNER ─── */
+.cta-banner {
+  background: linear-gradient(135deg, rgba(0, 223, 162, 0.1), rgba(200, 230, 78, 0.05));
+  border: 1px solid rgba(0, 223, 162, 0.2);
+  border-radius: var(--radius-xl);
+  padding: 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(0, 223, 162, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.cta-banner h2 {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--t1);
+  margin-bottom: 12px;
+  font-family: 'Outfit', sans-serif;
+}
+
+.cta-banner p {
+  font-size: 0.95rem;
+  color: var(--t2);
+  max-width: 560px;
+  margin: 0 auto 28px;
+  line-height: 1.7;
+}
+
+.cta-btns {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 28px;
+  border-radius: var(--radius);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s;
+}
+
+.btn-red {
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  color: var(--bg);
+  font-weight: 600;
+}
+
+.btn-red:hover {
+  background: linear-gradient(135deg, var(--accent-light), var(--accent));
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(0, 223, 162, 0.3);
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, var(--bonus-accent), #a88830);
+  color: var(--bg);
+}
+
+.btn-gold:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(200, 230, 78, 0.3);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--t1);
+  border: 1.5px solid var(--glass-highlight);
+}
+
+.btn-outline:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ─── NOTICE BANNER ─── */
+.notice-bar {
+  background: linear-gradient(90deg, rgba(0, 223, 162, 0.06), rgba(200, 230, 78, 0.04));
+  border-bottom: 1px solid rgba(0, 223, 162, 0.2);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.8rem;
+  color: var(--t2);
+}
+
+.notice-bar i {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  background: rgba(255, 255, 255, 0.01);
+  border-top: 1px solid var(--glass-border);
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  text-decoration: none;
+  color: var(--t3);
+  font-size: 0.8rem;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: var(--accent);
+}
+
+footer p {
+  font-size: 0.75rem;
+  color: var(--t3);
+  line-height: 1.6;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* ─── SCROLL REVEAL ─── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 48px 16px 40px;
+  }
+  
+  .trust-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 6px;
+  }
+  
+  .hero-trust-bar {
+    gap: 24px;
+  }
+  
+  .seg-flow {
+    flex-direction: column;
+  }
+  
+  .seg-arrow {
+    transform: rotate(90deg);
+  }
+  
+  .infra-card {
+    flex-direction: column;
+  }
+  
+  .vetting-wrapper {
+    grid-template-columns: 1fr;
+  }
+  
+  .insurance-wrapper {
+    grid-template-columns: 1fr;
+  }
+  
+  .compliance-wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ═══ TICKER BAR ═══ */
+.ticker-bar{background:rgba(7,8,12,.65);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.04);overflow:hidden;white-space:nowrap;position:relative;z-index:299;height:34px;display:flex;align-items:center;}
+.ticker-track{display:inline-flex;animation:tickerScroll 45s linear infinite;gap:0;}
+.ticker-track:hover{animation-play-state:paused;}
+.ticker-item{display:inline-flex;align-items:center;gap:8px;padding:0 22px;font-size:.7rem;font-weight:600;border-right:1px solid rgba(255,255,255,.03);transition:background .2s;}
+.ticker-item:hover{background:rgba(255,255,255,.03);}
+.ti-sym{font-family:var(--mono);font-weight:700;color:var(--t1);letter-spacing:.04em;font-size:.68rem;}
+.ti-price{font-family:var(--mono);color:var(--t2);letter-spacing:.02em;font-size:.68rem;}
+.ti-change{font-family:var(--mono);font-size:.65rem;font-weight:700;}
+.ti-up{color:var(--accent);}.ti-dn{color:var(--red);}
+.ti-dot{width:4px;height:4px;border-radius:50%;}
+.ti-dot.up{background:var(--accent);box-shadow:0 0 6px var(--accent);}
+.ti-dot.dn{background:var(--red);box-shadow:0 0 6px var(--red);}
+@keyframes tickerScroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+</style>
+</head>
+<body>
+
+<div class="ticker-bar"><div class="ticker-track" id="tickerTrack"></div></div>
+<!-- NOTICE BAR -->
+<div class="notice-bar">
+  <i class="fas fa-shield-halved"></i>
+  <span>1 Trade Market operates under 1 Trade Market financial regulations. All client funds are protected by institutional-grade security protocols and segregated account policies.</span>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="crypto-prime-trade.html" class="nav-logo">
+    <div class="logo-box">1TM</div>
+    Crypto<em>Prime</em> Trade
+  </a>
+  <div class="nav-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="crypto-prime-trade.html">Markets</a>
+    <a href="dashboard.html">Trade</a>
+    <a href="wallet.html">Wallet</a>
+    <a href="fund-managers.html">Fund Managers</a>
+    <a href="crypto-ira.html">Retirement Staking™</a>
+    <a href="trade-access.html">Trade Access</a>
+    <a href="trading-plans.html">Trading Plans</a>
+    <a href="fund-protection.html" class="active">Fund Protection</a>
+  </div>
+  <div class="nav-right">
+    <a href="kyc.html" class="btn-nav btn-nav-red"><i class="fas fa-user-shield"></i> Apply as Manager</a>
+    <div class="nav-avatar">JD</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-shield">
+    <i class="fas fa-shield-halved"></i>
+  </div>
+  <div class="hero-badge"><i class="fas fa-lock"></i> 1 Trade Market Investor Protection</div>
+  <h1>Your Funds Are Protected<br>by <span class="gold-text">Institutional</span> <span class="red-text">Standards</span></h1>
+  <p class="hero-sub">1 Trade Market continuously invests in infrastructure, maintains the highest security standards, and partners with the most reputable financial institutions worldwide, ensuring that whatever happens, your capital is fully protected.</p>
+
+  <div class="hero-trust-bar container">
+    <div class="trust-item">
+      <div class="trust-icon gold"><i class="fas fa-coins"></i></div>
+      <div>
+        <div class="trust-val">$1,000,000</div>
+        <div class="trust-lab">Enhanced Insurance</div>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon green"><i class="fas fa-building-columns"></i></div>
+      <div>
+        <div class="trust-val">100%</div>
+        <div class="trust-lab">Funds Segregated</div>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon red"><i class="fas fa-user-tie"></i></div>
+      <div>
+        <div class="trust-val">$20M+</div>
+        <div class="trust-lab">Min. Manager Bond</div>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon blue"><i class="fas fa-database"></i></div>
+      <div>
+        <div class="trust-val">98%</div>
+        <div class="trust-lab">Cold Storage</div>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon gold"><i class="fas fa-certificate"></i></div>
+      <div>
+        <div class="trust-val">FINMA</div>
+        <div class="trust-lab">Regulated Entity</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROTECTION PILLARS -->
+<section class="section">
+  <div class="container">
+    <div class="section-hdr reveal">
+      <div class="sec-label red"><i class="fas fa-shield-halved"></i> Core Protections</div>
+      <h2 class="sec-title">Six Layers of <span class="gold-text">Investor Protection</span></h2>
+      <p class="sec-desc">Every client account at 1 Trade Market is backed by multiple, independent layers of protection, from legal segregation to cutting-edge cybersecurity.</p>
+    </div>
+    <div class="pillars-grid">
+      <div class="pillar-card gold-card reveal">
+        <div class="pillar-icon gold"><i class="fas fa-file-shield"></i></div>
+        <h3>Enhanced Insurance Coverage</h3>
+        <p>1 Trade Market has purchased separate insurance protection covering losses in excess of $10,000 up to $1,000,000 per client in the event of insolvency, at no direct cost to clients.</p>
+        <span class="pillar-stat"><i class="fas fa-coins"></i> Up to $1,000,000 per client</span>
+      </div>
+      <div class="pillar-card green-card reveal">
+        <div class="pillar-icon green"><i class="fas fa-building-columns"></i></div>
+        <h3>Ring-Fenced Segregated Accounts</h3>
+        <p>All client accounts are legally ring-fenced from company operating funds, held in segregated accounts with internationally recognised Tier-1 financial institutions. Company insolvency cannot affect client assets.</p>
+        <span class="pillar-stat"><i class="fas fa-circle-check"></i> Fully Ring-Fenced</span>
+      </div>
+      <div class="pillar-card red-card reveal">
+        <div class="pillar-icon red"><i class="fas fa-user-shield"></i></div>
+        <h3>Vetted Fund Manager Bonds</h3>
+        <p>All fund managers operating on our platform must post a mandatory security deposit of $20M–$500M before managing any client capital. This bond is locked for the duration of their engagement.</p>
+        <span class="pillar-stat"><i class="fas fa-lock"></i> $20M–$500M Security Deposit</span>
+      </div>
+      <div class="pillar-card blue-card reveal">
+        <div class="pillar-icon blue"><i class="fas fa-snowflake"></i></div>
+        <h3>Cold Storage Asset Custody</h3>
+        <p>98% of all digital assets are held in air-gapped, hardware-secured cold storage facilities with multi-signature approval requirements and geographically distributed backups.</p>
+        <span class="pillar-stat"><i class="fas fa-hdd"></i> 98% Cold Storage</span>
+      </div>
+      <div class="pillar-card navy-card reveal">
+        <div class="pillar-icon navy"><i class="fas fa-certificate"></i></div>
+        <h3>Regulatory Compliance</h3>
+        <p>1 Trade Market is fully compliant with FINMA (Financial Market Supervisory Authority) guidelines, International Anti-Money Laundering laws, and international FATF standards.</p>
+        <span class="pillar-stat"><i class="fas fa-landmark"></i> FINMA Regulated</span>
+      </div>
+      <div class="pillar-card purple-card reveal">
+        <div class="pillar-icon purple"><i class="fas fa-magnifying-glass-chart"></i></div>
+        <h3>Independent Quarterly Audits</h3>
+        <p>An independent Big Four audit firm conducts quarterly financial and security audits. Audit reports are published on our transparency portal for all clients to verify.</p>
+        <span class="pillar-stat"><i class="fas fa-calendar-check"></i> Quarterly Audits</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FUND MANAGER VETTING -->
+<section class="section section-alt" id="vetting">
+  <div class="container">
+    <div class="section-hdr reveal">
+      <div class="sec-label red"><i class="fas fa-user-tie"></i> Manager Vetting</div>
+      <h2 class="sec-title">Rigorous <span class="red-text">Fund Manager</span> Vetting Process</h2>
+      <p class="sec-desc">Every fund manager on our platform undergoes a thorough, multi-stage vetting process before being approved to manage client capital. We accept only the most qualified, compliant, and financially sound managers.</p>
+    </div>
+
+    <div class="vetting-wrapper">
+      <!-- STEPS -->
+      <div class="vetting-steps reveal">
+
+        <div class="vetting-step">
+          <div class="step-num">01<div class="step-line"></div></div>
+          <div class="step-content">
+            <h4>Initial Application & Identity Verification</h4>
+            <p>Prospective managers submit a detailed application including entity registration documents, regulatory licences, and personal identification for all principals. Full KYB (Know Your Business) and KYC verification is conducted through our Swiss-grade compliance partner.</p>
+            <div class="step-tags">
+              <span class="step-tag red"><i class="fas fa-passport"></i> Government ID</span>
+              <span class="step-tag"><i class="fas fa-building"></i> Entity Docs</span>
+              <span class="step-tag"><i class="fas fa-certificate"></i> Regulatory Licence</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="vetting-step">
+          <div class="step-num">02<div class="step-line"></div></div>
+          <div class="step-content">
+            <h4>Track Record & Performance Audit</h4>
+            <p>A minimum 3-year verifiable trading history is required. We review audited performance reports, Sharpe ratio, maximum drawdown, risk-adjusted returns, and trading strategy documentation. All performance claims are independently verified by our risk committee.</p>
+            <div class="step-tags">
+              <span class="step-tag gold"><i class="fas fa-chart-line"></i> 3-Year History</span>
+              <span class="step-tag"><i class="fas fa-calculator"></i> Audited P&L</span>
+              <span class="step-tag"><i class="fas fa-percent"></i> Sharpe Ratio ≥ 1.2</span>
+              <span class="step-tag"><i class="fas fa-arrow-trend-down"></i> Max Drawdown ≤ 20%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="vetting-step">
+          <div class="step-num">03<div class="step-line"></div></div>
+          <div class="step-content">
+            <h4>AML, Sanctions & Background Screening</h4>
+            <p>Comprehensive background screening across international watchlists including OFAC, EU Sanctions, UN Sanctions, and Interpol databases. Full Anti-Money Laundering (AML) check and source of funds verification for all principals and beneficial owners.</p>
+            <div class="step-tags">
+              <span class="step-tag"><i class="fas fa-list-check"></i> OFAC / EU Sanctions</span>
+              <span class="step-tag"><i class="fas fa-scale-balanced"></i> AML Clearance</span>
+              <span class="step-tag"><i class="fas fa-money-bill-transfer"></i> Source of Funds</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="vetting-step">
+          <div class="step-num">04<div class="step-line"></div></div>
+          <div class="step-content">
+            <h4>Risk Assessment & Strategy Evaluation</h4>
+            <p>The manager's trading strategy is evaluated by our internal risk committee. Leverage limits, position concentration rules, stop-loss protocols, and risk management frameworks are reviewed. Managers must demonstrate compliance with our investor protection mandate.</p>
+            <div class="step-tags">
+              <span class="step-tag red"><i class="fas fa-shield-halved"></i> Risk Framework</span>
+              <span class="step-tag"><i class="fas fa-sliders"></i> Leverage Limits</span>
+              <span class="step-tag"><i class="fas fa-triangle-exclamation"></i> Stop-Loss Rules</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="vetting-step">
+          <div class="step-num">05<div class="step-line"></div></div>
+          <div class="step-content">
+            <h4>Mandatory Security Deposit Lodgement</h4>
+            <p>Approved managers must post a mandatory, locked security deposit scaled to the total Assets Under Management (AUM) they intend to manage. This deposit acts as a performance bond and investor protection mechanism. The deposit is held in a segregated trust account and cannot be accessed during the management period.</p>
+            <div class="step-tags">
+              <span class="step-tag gold"><i class="fas fa-lock"></i> $20M–$500M Deposit</span>
+              <span class="step-tag green"><i class="fas fa-vault"></i> Locked in Trust</span>
+              <span class="step-tag"><i class="fas fa-clock"></i> Duration-Locked</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="vetting-step">
+          <div class="step-num">06<div class="step-line"></div></div>
+          <div class="step-content">
+            <h4>Ongoing Monitoring & Annual Re-vetting</h4>
+            <p>Approved managers are subject to real-time trade monitoring, monthly performance reviews, and full re-vetting on an annual basis. Any breach of risk parameters, unusual trading patterns, or compliance failures triggers immediate suspension and investigation.</p>
+            <div class="step-tags">
+              <span class="step-tag"><i class="fas fa-eye"></i> Real-Time Monitoring</span>
+              <span class="step-tag gold"><i class="fas fa-calendar-check"></i> Annual Re-Vetting</span>
+              <span class="step-tag red"><i class="fas fa-ban"></i> Instant Suspension</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SECURITY DEPOSIT SIDEBAR -->
+      <div class="deposit-sidebar reveal">
+        <h3><i class="fas fa-vault" style="margin-right:8px"></i>Security Deposit Scale</h3>
+        <p>The mandatory security deposit is calculated based on total AUM and remains locked for the duration of the management engagement.</p>
+
+        <div class="deposit-tiers">
+          <div class="deposit-tier">
+            <div class="dt-row">
+              <span class="dt-label">AUM: Up to $50M</span>
+              <span class="dt-amount">$20,000,000</span>
+            </div>
+            <div class="dt-bar-wrap"><div class="dt-bar" style="width:4%"></div></div>
+            <div class="dt-note">Minimum deposit for all managers · Entry Tier</div>
+          </div>
+          <div class="deposit-tier">
+            <div class="dt-row">
+              <span class="dt-label">AUM: $50M – $150M</span>
+              <span class="dt-amount">$50,000,000</span>
+            </div>
+            <div class="dt-bar-wrap"><div class="dt-bar" style="width:10%"></div></div>
+            <div class="dt-note">Growth tier · Enhanced monitoring active</div>
+          </div>
+          <div class="deposit-tier">
+            <div class="dt-row">
+              <span class="dt-label">AUM: $150M – $500M</span>
+              <span class="dt-amount">$100,000,000</span>
+            </div>
+            <div class="dt-bar-wrap"><div class="dt-bar" style="width:20%"></div></div>
+            <div class="dt-note">Mid-tier · Dedicated compliance officer assigned</div>
+          </div>
+          <div class="deposit-tier">
+            <div class="dt-row">
+              <span class="dt-label">AUM: $500M – $2B</span>
+              <span class="dt-amount">$200,000,000</span>
+            </div>
+            <div class="dt-bar-wrap"><div class="dt-bar" style="width:40%"></div></div>
+            <div class="dt-note">Institutional tier · Quarterly board review</div>
+          </div>
+          <div class="deposit-tier">
+            <div class="dt-row">
+              <span class="dt-label">AUM: $2B – $5B</span>
+              <span class="dt-amount">$350,000,000</span>
+            </div>
+            <div class="dt-bar-wrap"><div class="dt-bar" style="width:70%"></div></div>
+            <div class="dt-note">Tier 1 · Independent custodian required</div>
+          </div>
+          <div class="deposit-tier" style="border-color:var(--border-gold)">
+            <div class="dt-row">
+              <span class="dt-label">AUM: $5B+</span>
+              <span class="dt-amount">$500,000,000</span>
+            </div>
+            <div class="dt-bar-wrap"><div class="dt-bar" style="width:100%"></div></div>
+            <div class="dt-note">Maximum tier · Sovereign-grade oversight</div>
+          </div>
+        </div>
+
+        <div class="deposit-callout">
+          <p><strong>Important:</strong> Security deposits are held in segregated trust and are not accessible to 1 Trade Market. In the event of manager misconduct, the deposit is used to compensate affected investors before any other recourse.</p>
+        </div>
+
+        <a href="kyc.html" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:20px;background:var(--accent);color:#07080c;padding:12px;border-radius:var(--radius);font-size:.85rem;font-weight:600;text-decoration:none;transition:background .2s" onmouseover="this.style.background='var(--accent-dark)'" onmouseout="this.style.background='var(--accent)'">
+          <i class="fas fa-user-tie"></i> Apply as Fund Manager
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ENHANCED INSURANCE -->
+<section class="section" id="insurance">
+  <div class="container">
+    <div class="section-hdr reveal">
+      <div class="sec-label gold"><i class="fas fa-file-shield"></i> Insurance Protection</div>
+      <h2 class="sec-title">Enhanced <span class="gold-text">Insurance</span> Up to $1,000,000</h2>
+      <p class="sec-desc">1 Trade Market has purchased, at no direct cost to clients, separate insurance protection to cover losses in the event of an insolvency incident, far exceeding standard industry coverage.</p>
+    </div>
+
+    <div class="insurance-wrapper reveal">
+      <div class="insurance-card featured">
+        <div class="ins-badge"><i class="fas fa-shield-halved"></i> 1 Trade Market Enhanced Coverage</div>
+        <div class="ins-amount">$1,000,000<span>per client</span></div>
+        <div class="ins-label">Enhanced Insurance Protection, No Direct Cost to Clients</div>
+        <p class="ins-card-desc">In the event of an insolvency event at 1 Trade Market, clients are covered for losses exceeding $10,000 up to a maximum of $1,000,000 per account. This separate insurance policy is underwritten by Lloyd's of London syndicates and is entirely funded by 1 Trade Market, not deducted from client assets.</p>
+        <div class="ins-features">
+          <div class="ins-feature"><i class="fas fa-circle-check"></i><span>Covers insolvency-related losses above <strong>$10,000</strong></span></div>
+          <div class="ins-feature"><i class="fas fa-circle-check"></i><span>Maximum protection of <strong>$1,000,000 per client account</strong></span></div>
+          <div class="ins-feature"><i class="fas fa-circle-check"></i><span>Underwritten by <strong>Lloyd's of London</strong> syndicates</span></div>
+          <div class="ins-feature"><i class="fas fa-circle-check"></i><span><strong>Zero cost</strong> to clients, fully funded by 1 Trade Market</span></div>
+          <div class="ins-feature"><i class="fas fa-circle-check"></i><span>Coverage applies to <strong>all client account types</strong> including Retirement Staking™</span></div>
+          <div class="ins-feature"><i class="fas fa-circle-check"></i><span>Claims processed within <strong>30 business days</strong> of verified event</span></div>
+        </div>
+        <div class="coverage-bar">
+          <div class="cov-row"><span class="cov-label">Industry Standard (FDIC-equivalent)</span><span class="cov-val">$10,000</span></div>
+          <div class="cov-bar-wrap"><div class="cov-bar standard"></div></div>
+          <div class="cov-row" style="margin-top:10px"><span class="cov-label">Typical Crypto Broker (SIPC-style)</span><span class="cov-val">$500,000</span></div>
+          <div class="cov-bar-wrap"><div class="cov-bar sipc"></div></div>
+          <div class="cov-row" style="margin-top:10px"><span class="cov-label">1 Trade Market Enhanced</span><span class="cov-val">$1,000,000</span></div>
+          <div class="cov-bar-wrap"><div class="cov-bar cpt"></div></div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div class="insurance-card">
+          <div class="pillar-icon gold" style="margin-bottom:16px"><i class="fas fa-handshake"></i></div>
+          <div class="ins-card-title">How Claims Work</div>
+          <p class="ins-card-desc">In the event of an insolvency or platform failure, our legal team initiates the claims process automatically on your behalf. You will be notified within 48 hours and provided with a dedicated claims case number.</p>
+          <div class="ins-features">
+            <div class="ins-feature"><i class="fas fa-circle-check"></i><span>Automatic claim initiation</span></div>
+            <div class="ins-feature"><i class="fas fa-circle-check"></i><span>48-hour client notification</span></div>
+            <div class="ins-feature"><i class="fas fa-circle-check"></i><span>Dedicated claims case manager</span></div>
+            <div class="ins-feature"><i class="fas fa-circle-check"></i><span>Settlement within 30 business days</span></div>
+          </div>
+        </div>
+        <div class="insurance-card">
+          <div class="pillar-icon green" style="margin-bottom:16px"><i class="fas fa-scale-balanced"></i></div>
+          <div class="ins-card-title">What Is Covered</div>
+          <p class="ins-card-desc">Coverage applies to direct losses arising from 1 Trade Market's insolvency. This includes cash balances, crypto holdings, and Retirement Staking™ accounts held on our platform.</p>
+          <div class="ins-features">
+            <div class="ins-feature"><i class="fas fa-circle-check"></i><span><strong>Cash balances</strong>, USD, EUR, CHF</span></div>
+            <div class="ins-feature"><i class="fas fa-circle-check"></i><span><strong>Digital assets</strong>, BTC, ETH, and all supported cryptos</span></div>
+            <div class="ins-feature"><i class="fas fa-circle-check"></i><span><strong>Retirement Staking™ accounts</strong>, crypto holdings</span></div>
+            <div class="ins-feature"><i class="fas fa-circle-check"></i><span><strong>Staking rewards</strong>, accrued but unclaimed</span></div>
+          </div>
+        </div>
+        <div class="insurance-card" style="background:rgba(0,223,162,0.1);border-color:rgba(0,223,162,0.15)">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+            <i class="fas fa-triangle-exclamation" style="color:var(--accent);font-size:1.1rem"></i>
+            <span style="font-size:.88rem;font-weight:700;color:var(--t1)">What Is Not Covered</span>
+          </div>
+          <div class="ins-features">
+            <div class="ins-feature"><i class="fas fa-circle-xmark" style="color:var(--accent)"></i><span>Trading losses from market movements</span></div>
+            <div class="ins-feature"><i class="fas fa-circle-xmark" style="color:var(--accent)"></i><span>Losses from client's own negligence (e.g. sharing credentials)</span></div>
+            <div class="ins-feature"><i class="fas fa-circle-xmark" style="color:var(--accent)"></i><span>Fund manager performance losses</span></div>
+            <div class="ins-feature"><i class="fas fa-circle-xmark" style="color:var(--accent)"></i><span>Losses from unauthorised third-party access due to client error</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEGREGATED ACCOUNTS -->
+<section class="section section-alt" id="segregated">
+  <div class="container">
+    <div class="section-hdr reveal">
+      <div class="sec-label green"><i class="fas fa-building-columns"></i> Account Segregation</div>
+      <h2 class="sec-title">Ring-Fenced <span class="gold-text">Segregated</span> Accounts</h2>
+      <p class="sec-desc">All client accounts are ring-fenced from company funds by being held in segregated accounts with reputable, internationally recognised financial institutions. This is a legal and operational requirement, not merely a policy.</p>
+    </div>
+
+    <div class="seg-diagram reveal">
+      <div class="seg-flow">
+        <div class="seg-box client">
+          <div class="seg-box-icon"><i class="fas fa-user"></i></div>
+          <h4>Client Deposits</h4>
+          <p>Your funds deposited on the platform</p>
+        </div>
+        <div class="seg-arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="seg-box segregated">
+          <div class="seg-box-icon"><i class="fas fa-vault"></i></div>
+          <h4>Segregated Trust Account</h4>
+          <p>Held at Tier-1 financial institutions · legally ring-fenced</p>
+        </div>
+        <div class="seg-arrow"><i class="fas fa-not-equal" style="color:var(--accent)"></i></div>
+        <div class="seg-box company">
+          <div class="seg-box-icon"><i class="fas fa-building"></i></div>
+          <h4>Company Operating Funds</h4>
+          <p>Completely separate · cannot touch client assets</p>
+        </div>
+      </div>
+
+      <div class="seg-separator">
+        <div class="sep-line"></div>
+        <div class="sep-label"><i class="fas fa-lock" style="margin-right:6px"></i>Legal Firewall, Client Funds Are Fully Protected</div>
+        <div class="sep-line"></div>
+      </div>
+    </div>
+
+    <div class="seg-guarantee-grid reveal">
+      <div class="seg-guarantee">
+        <div class="sg-icon"><i class="fas fa-scale-balanced"></i></div>
+        <div class="sg-text">
+          <h4>Legal Protection</h4>
+          <p>Under Swiss law, segregated client assets cannot be used to satisfy claims by 1 Trade Market's creditors in the event of insolvency.</p>
+        </div>
+      </div>
+      <div class="seg-guarantee">
+        <div class="sg-icon"><i class="fas fa-handshake-simple"></i></div>
+        <div class="sg-text">
+          <h4>Institutional Partners</h4>
+          <p>Client funds are held at Tier-1 banks and custodians including UBS, Julius Bär, Deutsche Bank, and HSBC, all FINMA-regulated entities.</p>
+        </div>
+      </div>
+      <div class="seg-guarantee">
+        <div class="sg-icon"><i class="fas fa-eye"></i></div>
+        <div class="sg-text">
+          <h4>Daily Reconciliation</h4>
+          <p>An independent reconciliation agent verifies that total client liabilities match segregated account balances every 24 hours.</p>
+        </div>
+      </div>
+      <div class="seg-guarantee">
+        <div class="sg-icon"><i class="fas fa-arrows-to-dot"></i></div>
+        <div class="sg-text">
+          <h4>Immediate Return Guarantee</h4>
+          <p>If 1 Trade Market were to cease operations, segregated client funds would be returned directly to clients without any prior satisfaction of company debts.</p>
+        </div>
+      </div>
+      <div class="seg-guarantee">
+        <div class="sg-icon"><i class="fas fa-globe"></i></div>
+        <div class="sg-text">
+          <h4>International Custody</h4>
+          <p>Crypto assets are held under institutional custody across multiple jurisdictions including Switzerland, Singapore, and the Cayman Islands to reduce systemic risk.</p>
+        </div>
+      </div>
+      <div class="seg-guarantee">
+        <div class="sg-icon"><i class="fas fa-magnifying-glass"></i></div>
+        <div class="sg-text">
+          <h4>Client Verification Portal</h4>
+          <p>All clients can independently verify their segregated account balance and custody status at any time through our real-time transparency portal.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECURITY INFRASTRUCTURE -->
+<section class="section" id="security">
+  <div class="container">
+    <div class="section-hdr reveal">
+      <div class="sec-label gold"><i class="fas fa-microchip"></i> Infrastructure</div>
+      <h2 class="sec-title">Enterprise-Grade <span class="gold-text">Security Infrastructure</span></h2>
+      <p class="sec-desc">Our platform is built on the same security architecture used by the world's largest financial institutions, from quantum-resistant encryption to physical vault custody.</p>
+    </div>
+
+    <div class="infra-grid reveal">
+      <div class="infra-card">
+        <div class="infra-icon" style="background:var(--gold-dim);color:var(--gold);border:1px solid var(--border-gold)"><i class="fas fa-snowflake"></i></div>
+        <div class="infra-body">
+          <h3>Cold Storage Vault System</h3>
+          <p>98% of all digital assets are stored in air-gapped hardware security modules (HSMs) with no internet connectivity. Physical vaults are located in Swiss mountain facilities with biometric access controls.</p>
+          <span class="infra-spec">AES-256 · Multi-Sig 3-of-5 · HSM Level 3</span>
+        </div>
+      </div>
+      <div class="infra-card">
+        <div class="infra-icon" style="background:rgba(0,223,162,0.1);color:var(--accent);border:1px solid rgba(0,223,162,0.25)"><i class="fas fa-key"></i></div>
+        <div class="infra-body">
+          <h3>Multi-Signature Authorization</h3>
+          <p>All withdrawals above $10,000 require multi-signature approval from geographically separated key holders. No single employee can authorise or execute large transfers alone.</p>
+          <span class="infra-spec">3-of-5 Multi-Sig · HSM Protected · Geo-Distributed</span>
+        </div>
+      </div>
+      <div class="infra-card">
+        <div class="infra-icon" style="background:var(--green-dim);color:var(--green);border:1px solid var(--green-border)"><i class="fas fa-lock"></i></div>
+        <div class="infra-body">
+          <h3>End-to-End Encryption</h3>
+          <p>All client data and communications are encrypted using TLS 1.3 in transit and AES-256 at rest. Our cryptographic standards exceed NIST SP 800-57 recommendations.</p>
+          <span class="infra-spec">TLS 1.3 · AES-256 · NIST SP 800-57</span>
+        </div>
+      </div>
+      <div class="infra-card">
+        <div class="infra-icon" style="background:var(--blue-dim);color:var(--blue);border:1px solid rgba(59,130,246,.2)"><i class="fas fa-shield-virus"></i></div>
+        <div class="infra-body">
+          <h3>Real-Time Threat Detection</h3>
+          <p>AI-powered intrusion detection systems monitor all network traffic 24/7. Anomalous patterns trigger automatic account locks and security team alerts within seconds.</p>
+          <span class="infra-spec">ML-Based IDS · &lt;2s Response Time · 24/7/365</span>
+        </div>
+      </div>
+      <div class="infra-card">
+        <div class="infra-icon" style="background:rgba(139,92,246,.08);color:#8B5CF6;border:1px solid rgba(139,92,246,.2)"><i class="fas fa-mobile-screen-button"></i></div>
+        <div class="infra-body">
+          <h3>Mandatory Two-Factor Authentication</h3>
+          <p>All accounts require 2FA via hardware security keys (FIDO2/WebAuthn), TOTP authenticator apps, or biometric verification. SMS-only 2FA is not permitted for high-value accounts.</p>
+          <span class="infra-spec">FIDO2 / WebAuthn · TOTP · Biometric</span>
+        </div>
+      </div>
+      <div class="infra-card">
+        <div class="infra-icon" style="background:rgba(30,58,95,.3);color:#4A90D9;border:1px solid rgba(74,144,217,.2)"><i class="fas fa-network-wired"></i></div>
+        <div class="infra-body">
+          <h3>Distributed Infrastructure</h3>
+          <p>Platform infrastructure is distributed across 5 data centres in Zurich, Frankfurt, Singapore, New York, and Tokyo, ensuring 99.99% uptime and resilience against regional failures.</p>
+          <span class="infra-spec">99.99% SLA · 5-Region · Active-Active</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINANCIAL PARTNERS -->
+<section class="section section-alt" id="partners">
+  <div class="container">
+    <div class="section-hdr reveal">
+      <div class="sec-label green"><i class="fas fa-handshake"></i> Institutional Partners</div>
+      <h2 class="sec-title">Trusted <span class="gold-text">Financial Institution</span> Partners</h2>
+      <p class="sec-desc">Client funds are held exclusively with the world's most reputable, FINMA-regulated and internationally recognised financial institutions.</p>
+    </div>
+
+    <div class="partners-grid reveal">
+      <div class="partner-card">
+        <div class="partner-abbr">UBS</div>
+        <div class="partner-name">UBS Group AG</div>
+        <div class="partner-type">Custody · Cash Clearing</div>
+        <div class="partner-badge"><i class="fas fa-circle-check"></i> FINMA Regulated</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-abbr">JB</div>
+        <div class="partner-name">Julius Bär</div>
+        <div class="partner-type">Private Banking · Custody</div>
+        <div class="partner-badge"><i class="fas fa-circle-check"></i> FINMA Regulated</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-abbr">DB</div>
+        <div class="partner-name">Deutsche Bank</div>
+        <div class="partner-type">Correspondent Banking</div>
+        <div class="partner-badge"><i class="fas fa-circle-check"></i> BaFin Regulated</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-abbr">HSBC</div>
+        <div class="partner-name">HSBC Holdings</div>
+        <div class="partner-type">International Clearing</div>
+        <div class="partner-badge"><i class="fas fa-circle-check"></i> FCA Regulated</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-abbr">BC</div>
+        <div class="partner-name">BitGo Custody</div>
+        <div class="partner-type">Digital Asset Custody</div>
+        <div class="partner-badge"><i class="fas fa-circle-check"></i> $250M Insured</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-abbr">FF</div>
+        <div class="partner-name">Fireblocks</div>
+        <div class="partner-type">Crypto Infrastructure</div>
+        <div class="partner-badge"><i class="fas fa-circle-check"></i> MPC-CMP Secured</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPLIANCE & AUDITS -->
+<section class="section" id="compliance">
+  <div class="container">
+    <div class="section-hdr reveal">
+      <div class="sec-label red"><i class="fas fa-landmark"></i> Compliance</div>
+      <h2 class="sec-title">Regulatory <span class="red-text">Compliance</span> & Audit Record</h2>
+      <p class="sec-desc">1 Trade Market is a fully regulated entity operating under Swiss law. Our compliance programme exceeds the requirements of FINMA and international financial standards bodies.</p>
+    </div>
+
+    <div class="compliance-wrapper reveal">
+      <div class="compliance-card">
+        <div class="compliance-header">
+          <div class="compliance-flag"><i class="fas fa-flag"></i></div>
+          <div>
+            <h3 style="font-size:1.05rem;font-weight:700;color:var(--t1)">Swiss Regulatory Framework</h3>
+            <p style="font-size:.82rem;color:var(--t3)">FINMA · AMLA · FIDLEG · DLT Act 2021</p>
+          </div>
+        </div>
+        <div class="compliance-list">
+          <div class="compliance-item"><i class="fas fa-circle-check"></i><span><strong>FINMA Authorisation</strong>, Licensed as a FinTech company under Art. 1b BankA</span></div>
+          <div class="compliance-item"><i class="fas fa-circle-check"></i><span><strong>AMLA Compliance</strong>, Full International Anti-Money Laundering Act compliance with FINMA-supervised SRO membership</span></div>
+          <div class="compliance-item"><i class="fas fa-circle-check"></i><span><strong>FIDLEG / FinSA</strong>, Compliant with Swiss Financial Services Act client protection requirements</span></div>
+          <div class="compliance-item"><i class="fas fa-circle-check"></i><span><strong>DLT Act 2021</strong>, Registered under Switzerland's blockchain-specific regulatory framework</span></div>
+          <div class="compliance-item"><i class="fas fa-circle-check"></i><span><strong>FATF Compliance</strong>, Full Travel Rule implementation and VASP registration</span></div>
+          <div class="compliance-item"><i class="fas fa-circle-check"></i><span><strong>GDPR / nDSG</strong>, Swiss Data Protection Act compliant with EU GDPR equivalency</span></div>
+        </div>
+      </div>
+
+      <div class="compliance-card">
+        <div class="compliance-header">
+          <div style="width:44px;height:44px;border-radius:10px;background:var(--gold-dim);border:1.5px solid var(--border-gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1.1rem;flex-shrink:0"><i class="fas fa-clipboard-list"></i></div>
+          <div>
+            <h3 style="font-size:1.05rem;font-weight:700;color:var(--t1)">Audit & Certification Record</h3>
+            <p style="font-size:.82rem;color:var(--t3)">Independent third-party assessments</p>
+          </div>
+        </div>
+        <div class="audit-timeline">
+          <div class="audit-item">
+            <div class="audit-dot green"></div>
+            <div class="audit-body">
+              <div class="audit-title">Q1 2026 Financial Audit, PwC Switzerland</div>
+              <div class="audit-detail">Full balance sheet and segregated accounts verification</div>
+            </div>
+            <span class="audit-status passed">Passed</span>
+          </div>
+          <div class="audit-item">
+            <div class="audit-dot green"></div>
+            <div class="audit-body">
+              <div class="audit-title">ISO/IEC 27001:2022 Certification</div>
+              <div class="audit-detail">Information Security Management System, Bureau Veritas</div>
+            </div>
+            <span class="audit-status passed">Certified</span>
+          </div>
+          <div class="audit-item">
+            <div class="audit-dot gold"></div>
+            <div class="audit-body">
+              <div class="audit-title">SOC 2 Type II Report, Deloitte</div>
+              <div class="audit-detail">Security, Availability, Confidentiality assessment, Q2 2026</div>
+            </div>
+            <span class="audit-status current">In Progress</span>
+          </div>
+          <div class="audit-item">
+            <div class="audit-dot green"></div>
+            <div class="audit-body">
+              <div class="audit-title">FINMA Supervisory Review 2025</div>
+              <div class="audit-detail">On-site inspection, full regulatory compliance confirmed</div>
+            </div>
+            <span class="audit-status passed">Passed</span>
+          </div>
+          <div class="audit-item">
+            <div class="audit-dot green"></div>
+            <div class="audit-body">
+              <div class="audit-title">Penetration Testing, NCC Group</div>
+              <div class="audit-detail">Black-box and white-box security penetration test</div>
+            </div>
+            <span class="audit-status passed">Passed</span>
+          </div>
+          <div class="audit-item">
+            <div class="audit-dot gold"></div>
+            <div class="audit-body">
+              <div class="audit-title">Smart Contract Audit, CertiK</div>
+              <div class="audit-detail">Full audit of on-chain contracts and custody logic, Q3 2026</div>
+            </div>
+            <span class="audit-status pending">Scheduled</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-hdr reveal">
+      <div class="sec-label gold"><i class="fas fa-circle-question"></i> Common Questions</div>
+      <h2 class="sec-title">Frequently Asked <span class="gold-text">Questions</span></h2>
+    </div>
+
+    <div class="faq-list reveal">
+      <div class="faq-item open">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">What happens to my funds if 1 Trade Market becomes insolvent?</span>
+          <div class="faq-icon"><i class="fas fa-plus"></i></div>
+        </div>
+        <div class="faq-a">
+          <p class="faq-a-text">Your funds are held in legally segregated accounts entirely separate from 1 Trade Market's company assets. Under Swiss law, these cannot be used to satisfy company debts. Additionally, our enhanced insurance policy covers losses above $10,000 up to $1,000,000 per client, meaning your capital is protected even in the worst-case scenario.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">How is the fund manager security deposit used to protect me?</span>
+          <div class="faq-icon"><i class="fas fa-plus"></i></div>
+        </div>
+        <div class="faq-a">
+          <p class="faq-a-text">Every fund manager must post a mandatory security deposit (between $20M and $500M depending on their AUM) before managing any client capital. This deposit is held in a locked trust account. If a manager engages in misconduct, fraud, or causes losses due to negligence, this deposit is liquidated first to compensate affected investors, before any other recourse is taken.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">What qualifications does a fund manager need to be approved?</span>
+          <div class="faq-icon"><i class="fas fa-plus"></i></div>
+        </div>
+        <div class="faq-a">
+          <p class="faq-a-text">Managers must complete a 6-stage vetting process: identity and entity verification, a 3-year audited track record, AML/sanctions screening, risk framework evaluation, security deposit lodgement, and ongoing monitoring. We require a minimum Sharpe ratio of 1.2, maximum drawdown of 20%, and a valid regulatory licence in their home jurisdiction.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">Can I verify where my funds are held?</span>
+          <div class="faq-icon"><i class="fas fa-plus"></i></div>
+        </div>
+        <div class="faq-a">
+          <p class="faq-a-text">Yes. All clients have access to our real-time Transparency Portal, which shows the total balance held in segregated accounts at each custodian institution, reconciled daily by an independent agent. You can log in at any time and verify that your account balance is fully represented in our segregated holdings.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">Is my insurance coverage automatic or do I need to register?</span>
+          <div class="faq-icon"><i class="fas fa-plus"></i></div>
+        </div>
+        <div class="faq-a">
+          <p class="faq-a-text">Insurance coverage is automatic for all registered clients, there is no separate registration or opt-in required. Coverage applies from the moment your account is verified and active. The policy is maintained by 1 Trade Market at no cost to you, and applies to all account types including standard trading accounts and Retirement Staking™ accounts.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">How do I revoke a fund manager's access to my account?</span>
+          <div class="faq-icon"><i class="fas fa-plus"></i></div>
+        </div>
+        <div class="faq-a">
+          <p class="faq-a-text">You can revoke a fund manager's access at any time, instantly, from the Trade Access page in your dashboard. The revocation takes effect immediately, the manager loses all access and cannot place any further trades. Any open positions remain yours to manage, and a full audit log of all activity during the managed period is available for download.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="section">
+  <div class="container">
+    <div class="cta-banner reveal">
+      <div class="hero-shield" style="width:60px;height:60px;margin:0 auto 20px;font-size:1.5rem"><i class="fas fa-shield-halved"></i></div>
+      <h2>Ready to Invest with <span style="color:var(--gold)">Complete Confidence?</span></h2>
+      <p>Open your verified account today and benefit from Swiss-grade fund protection, $1M insurance coverage, and access to our rigorously vetted fund manager network.</p>
+      <div class="cta-btns">
+        <a href="kyc.html" class="btn btn-red"><i class="fas fa-user-plus"></i> Open Protected Account</a>
+        <a href="fund-managers.html" class="btn btn-gold"><i class="fas fa-user-tie"></i> Browse Fund Managers</a>
+        <a href="trading-plans.html" class="btn btn-outline"><i class="fas fa-crown"></i> View VIP Plans</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-links">
+    <a href="crypto-prime-trade.html">Home</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="wallet.html">Wallet</a>
+    <a href="fund-managers.html">Fund Managers</a>
+    <a href="kyc.html">KYC / Onboarding</a>
+    <a href="security.html">Security</a>
+    <a href="crypto-ira.html">Retirement Staking™</a>
+    <a href="trade-access.html">Trade Access</a>
+    <a href="trading-plans.html">Trading Plans</a>
+    <a href="fund-protection.html">Fund Protection</a>
+  </div>
+  <p>© 2026 1 Trade Market · Registered in Switzerland · Zug, Switzerland · FINMA Licensed<br>
+  All client funds are held in segregated accounts. Enhanced insurance up to $1,000,000 per client. Past performance is not indicative of future results. Crypto assets are subject to market risk.</p>
+</footer>
+
+<script>
+// FAQ Toggle
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// Scroll Reveal
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => {
+        entry.target.classList.add('visible');
+      }, (entry.target.dataset.delay || 0));
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach((el, i) => {
+  el.dataset.delay = (i % 4) * 80;
+  revealObserver.observe(el);
+});
+
+// Animate counter stats
+function animateCounter(el, target, prefix = '', suffix = '') {
+  const duration = 1800;
+  const steps = 60;
+  const increment = target / steps;
+  let current = 0;
+  let step = 0;
+
+  const timer = setInterval(() => {
+    step++;
+    current += increment;
+    if (step >= steps) {
+      current = target;
+      clearInterval(timer);
+    }
+    if (target >= 1000000) {
+      el.textContent = prefix + '$' + (current / 1000000).toFixed(1) + 'M' + suffix;
+    } else if (target >= 1000) {
+      el.textContent = prefix + '$' + Math.round(current).toLocaleString() + suffix;
+    } else {
+      el.textContent = prefix + Math.round(current) + suffix;
+    }
+  }, duration / steps);
+}
+
+// Trigger counters when hero trust bar becomes visible
+const trustBar = document.querySelector('.hero-trust-bar');
+if (trustBar) {
+  const counterObserver = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      counterObserver.disconnect();
+    }
+  }, { threshold: 0.5 });
+  counterObserver.observe(trustBar);
+}
+</script>
+
+<script>
+
+/* ═══ TICKER ═══ */
+var TICKER_COINS=[
+  {sym:'BTC',price:'67234.50',change:'+3.45'},{sym:'ETH',price:'3892.10',change:'+2.18'},
+  {sym:'XRP',price:'2.48',change:'+1.92'},{sym:'SOL',price:'189.32',change:'+4.67'},
+  {sym:'DOGE',price:'0.42',change:'+5.23'},{sym:'ADA',price:'1.15',change:'+2.14'},
+  {sym:'POL',price:'0.89',change:'+7.32'},{sym:'LINK',price:'18.45',change:'+1.84'},
+  {sym:'ARB',price:'1.78',change:'+3.21'},{sym:'OP',price:'3.45',change:'+2.76'},
+  {sym:'AVAX',price:'48.92',change:'+2.45'},{sym:'ATOM',price:'12.34',change:'+1.67'},
+  {sym:'NEAR',price:'7.89',change:'+3.92'},{sym:'INJ',price:'56.78',change:'+4.18'}
+];
+function buildTicker(){
+  var t=document.getElementById('tickerTrack');
+  if(!t)return;
+  var h=TICKER_COINS.map(function(c){var up=c.change.startsWith('+');return'<div class="ticker-item"><span class="ti-dot '+(up?'up':'dn')+'"></span><span class="ti-sym">'+c.sym+'</span><span class="ti-price">$'+c.price+'</span><span class="ti-change '+(up?'ti-up':'ti-dn')+'">'+c.change+'%</span></div>';}).join('');
+  t.innerHTML=h+h;
+}
+function fluctuatePrices(){
+  document.querySelectorAll('.ticker-item').forEach(function(item){
+    var priceEl=item.querySelector('.ti-price');
+    var changeEl=item.querySelector('.ti-change');
+    if(!priceEl||Math.random()>.15)return;
+    var base=parseFloat(priceEl.textContent.replace('$','').replace(',',''));
+    var delta=base*(Math.random()*.004-.002);
+    var newPrice=Math.max(0.01,base+delta);
+    priceEl.textContent='$'+newPrice.toFixed(2);
+    priceEl.style.color=delta>=0?'var(--accent)':'var(--red)';
+    setTimeout(function(){priceEl.style.color='';},600);
+  });
+}
+buildTicker();
+setInterval(fluctuatePrices,2500);
+
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.\\(ts|tsx\\)$\")",
+      "Bash(grep -E '\\\\.html$')",
+      "Bash(grep -E \"\\\\.tsx?$\")",
+      "Bash(npx tsc:*)",
+      "Bash(npm run:*)",
+      "Bash(grep -E '\\\\.\\(ts|tsx\\)$')"
+    ]
+  }
+}

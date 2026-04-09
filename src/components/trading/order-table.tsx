@@ -141,42 +141,42 @@ export default function OrderTable() {
   };
 
   return (
-    <div className="flex flex-col bg-background text-foreground border border-muted shadow-sm w-full">
+    <div className="flex flex-col bg-background text-foreground w-full">
       {!isCollapsed && !isMobile && (
         <div className="flex-1">
-          <div className="border-b border-muted flex justify-between items-center sticky top-0 z-20 bg-background">
-            <div className="flex overflow-x-auto scrollbar-hide">
+          <div className="border-b border-border/30 flex justify-between items-center sticky top-0 z-20 bg-background/95 px-3">
+            <div className="flex overflow-x-auto scrollbar-hide gap-0">
               <button
                 className={cn(
-                  "rounded-none border-b-2 border-transparent px-4 py-2 whitespace-nowrap text-xs",
+                  "border-b-2 border-transparent px-3.5 py-1.5 whitespace-nowrap text-[11px] font-bold transition-colors",
                   activeTab === "active"
-                    ? "border-primary text-primary"
-                    : "text-muted-foreground"
+                    ? "border-emerald-500 text-emerald-500"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
                 onClick={() => setActiveTab("active")}
               >
-                ACTIVE ORDERS
+                Open Orders ({openTrades.length})
               </button>
               <button
                 className={cn(
-                  "rounded-none border-b-2 border-transparent px-4 py-2 whitespace-nowrap text-xs",
+                  "border-b-2 border-transparent px-3.5 py-1.5 whitespace-nowrap text-[11px] font-bold transition-colors",
                   activeTab === "history"
-                    ? "border-primary text-primary"
-                    : "text-muted-foreground"
+                    ? "border-emerald-500 text-emerald-500"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
                 onClick={() => setActiveTab("history")}
               >
-                ORDERS HISTORY
+                Order History
               </button>
             </div>
             <div className="flex items-center">
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 mr-2"
+                className="h-6 w-6"
                 onClick={() => setIsCollapsed(true)}
               >
-                <ChevronDown className="h-4 w-4" />
+                <ChevronDown className="h-3.5 w-3.5" />
               </Button>
             </div>
           </div>
