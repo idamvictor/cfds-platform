@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface StatCardProps {
@@ -14,10 +13,10 @@ interface StatCardProps {
 }
 
 const iconToneClasses = {
-  green: "bg-emerald-500/12 text-emerald-300 border-emerald-400/10",
-  blue: "bg-sky-500/12 text-sky-300 border-sky-400/10",
-  violet: "bg-violet-500/12 text-violet-300 border-violet-400/10",
-  amber: "bg-amber-500/12 text-amber-300 border-amber-400/10",
+  green: "bg-[rgba(0,223,162,0.1)] text-[#00dfa2]",
+  blue: "bg-[rgba(91,141,239,0.1)] text-[#5b8def]",
+  violet: "bg-[rgba(240,180,41,0.1)] text-[#F0B429]",
+  amber: "bg-[rgba(30,215,96,0.1)] text-[#1ED760]",
 };
 
 export function StatCard({
@@ -31,19 +30,16 @@ export function StatCard({
   iconTone = "green",
 }: StatCardProps) {
   return (
-    <Card className="h-full  border-white/6 bg-[#0d131d] p-5 text-white shadow-none stat_card">
-      <div className="flex h-full flex-col ">
-        <div className="mb-8- flex items-start justify-between gap-4">
-          <div>
-            <h3 className="sub_header font-semibold uppercase  text-[#6f7c92]">
-              {title}
-            </h3>
-          
+    <div className="scard relative overflow-hidden rounded-2xl border-[1.5px] border-white/[0.06] bg-[linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-[22px_24px] shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]">
+      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[linear-gradient(175deg,rgba(255,255,255,0.03),transparent_40%)]" />
+      <div className="relative">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="text-[0.72rem] font-bold uppercase tracking-[0.06em] text-[#4a5468]">
+            {title}
           </div>
-
           <div
             className={cn(
-              "flex h-8 w-8 items-center justify-center rounded-md border",
+              "flex h-9 w-9 items-center justify-center rounded-[10px] text-[0.82rem]",
               iconToneClasses[iconTone],
             )}
           >
@@ -51,23 +47,29 @@ export function StatCard({
           </div>
         </div>
 
-        <div className="mt-auto-">
-          <div className="flex items-end- gap-2">
-            <div className={cn("header font-semibold leading-none text-white", valueClassName)}>
-              {value}
-            </div>
-            {secondaryValue && (
-              <div className="pb-1 text-lg font-semibold text-[#56647c]">{secondaryValue}</div>
+        <div className="flex items-baseline gap-1">
+          <div
+            className={cn(
+              "font-mono text-[1.45rem] font-extrabold tracking-[-0.02em] text-[#eef2f7]",
+              valueClassName,
             )}
+          >
+            {value}
           </div>
-  {metaValue && (
-              <div className="mt-3 inline-flex rounded-md bg-white/4 px-1.5 py-0.5 text-xs font-semibold text-[#7f8ca3]">
-                {metaValue}
-              </div>
-            )}
-          {footnote && <p className="mt-3 text-[10px] text-[#5e6b83]">{footnote}</p>}
+          {secondaryValue && (
+            <span className="font-mono text-[1.45rem] font-normal text-[#4a5468]">
+              {secondaryValue}
+            </span>
+          )}
         </div>
+
+        {metaValue && (
+          <div className="mt-1 text-[0.72rem] text-[#4a5468]">{metaValue}</div>
+        )}
+        {footnote && (
+          <p className="mt-2 text-[0.72rem] text-[#4a5468]">{footnote}</p>
+        )}
       </div>
-    </Card>
+    </div>
   );
 }

@@ -49,6 +49,10 @@ const Verification = lazy(() => import("./pages/Preferences/verification"));
 const AccountsPage = lazy(() => import("./pages/Preferences/accounts-page"));
 const LiveChat = lazy(() => import("./pages/Preferences/live-chat"));
 const SettingsPage = lazy(() => import("./pages/Preferences/settings-page"));
+const SecurityPage = lazy(() => import("./pages/Preferences/security-page"));
+const KYCWelcomePage = lazy(() => import("./pages/Preferences/kyc-welcome-page"));
+const KYCFlowPage = lazy(() => import("./pages/Preferences/kyc-flow-page"));
+const KYCAwaitingPage = lazy(() => import("./pages/Preferences/kyc-awaiting-page"));
 const SavingsPage = lazy(() => import("./pages/Preferences/savings-page"));
 const CryptoWalletDeposit = lazy(
   () => import("./pages/deposit/CryptoWalletDeposit"),
@@ -175,6 +179,10 @@ const App = () => {
                       element={<WithdrawalForm />}
                     />
                     <Route
+                      path="/main/wallet"
+                      element={<WithdrawalForm />}
+                    />
+                    <Route
                       path="/main/deposit-history"
                       element={<DepositHistoryPage />}
                     />
@@ -190,6 +198,10 @@ const App = () => {
                     <Route path="/main/chat" element={<LiveChat />} />
                     <Route path="/main/savings" element={<SavingsPage />} />
                     <Route path="/main/settings" element={<SettingsPage />} />
+                    <Route path="/main/security" element={<SecurityPage />} />
+                    <Route path="/main/kyc" element={<KYCWelcomePage />} />
+                    <Route path="/main/kyc/flow" element={<KYCFlowPage />} />
+                    <Route path="/main/kyc/awaiting" element={<KYCAwaitingPage />} />
                     <Route path="/main/test" element={<Test />} />
                   </Route>
 

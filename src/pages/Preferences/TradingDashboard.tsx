@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import {
   ArrowRight,
   BadgeDollarSign,
@@ -6,10 +6,13 @@ import {
   Check,
   Coins,
   Landmark,
+  Menu,
   TrendingUp,
 } from "lucide-react";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { TopStoriesWidget } from "@/components/dashboard/TopStoriesWidget";
+import { TickerBar } from "@/components/dashboard/TickerBar";
+import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { useCurrency } from "@/hooks/useCurrency";
 import useUserStore from "@/store/userStore";
 import { Button } from "@/components/ui/button";
@@ -39,6 +42,7 @@ const marketTickers = [
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const user = useUserStore((state) => state.user);
   const { formatCurrency } = useCurrency();
   const balance = user?.balance || 0;
@@ -66,212 +70,270 @@ export default function Dashboard() {
     second: "2-digit",
   }).format(new Date());
 
+  // Hide the parent MainLayout header + sidebar when dashboard mounts
+  useEffect(() => {
+    document.body.classList.add("dashboard-active");
+    return () => {
+      document.body.classList.remove("dashboard-active");
+    };
+  }, []);
+
   const dashboardCardFallback = (
-    <div className="min-h-[320px] animate-pulse rounded-xl border border-white/6 bg-[#0d131d]" />
+    <div className="min-h-[240px] animate-pulse rounded-2xl border-[1.5px] border-white/[0.06] bg-[linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))]" />
   );
 
   return (
-    <div className="min-h-screen text-[#485262] font_fam">
-      <div className="mx-auto max-w-[1400px]  bg-[#090e16] p-4 shadow-[0_20px_80px_rgba(0,0,0,0.45)]- sm:p-6- ">
-        <div className="mb-6 flex flex-col gap-5 rounded-[28px] p-5-  lg:p-">
-          <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
-            <div className="space-y-3">
-              {/* <div className="flex items-center gap-2 text-sm text-[#72819d]">
-                <span>Home</span>
-                <span className="text-[#465065]">›</span>
-                <span className="text-[#9ba7bd]">Dashboard</span>
-              </div> */}
+    <>
+      {/* CSS to hide the parent layout header + sidebar on dashboard only */}
+      <style>{`
+        body.dashboard-active .fixed.top-0.left-0.right-0.z-20,
+        body.dashboard-active .fixed.top-\\[60px\\].left-0.bottom-0 {
+          display: none !important;
+        }
+        body.dashboard-active .flex.flex-1.pt-\\[90px\\] {
+          padding-top: 0 !important;
+        }
+        body.dashboard-active .flex-1.md\\:ml-\\[80px\\] {
+          margin-left: 0 !important;
+        }
+      `}</style>
 
-              <div>
-                <h1 className="title_header tracking-tight text-white ">
-                  Welcome back,{" "}
-                  <span className="text-[#16e28d]">{displayName}</span>
-                </h1>
-                <p className="mt-1 sub_header font-semibold text-[#6d7a92] !capitalize ">
-                  {settings?.name || "Test Platform"} ®{" "}
-                  <span className="mx-1"> Platform</span>
-                  <span className="text-[#4d586d] !capitalize ">—</span>{" "}
-                  {user?.account_type?.title || "Starter Account"}
-                </p>
-              </div>
-            </div>
+      {/* ═══ FULL DASHBOARD SHELL ═══ */}
+      <div
+        className="fixed inset-0 z-30 flex flex-col font-[Inter,-apple-system,sans-serif]"
+        style={{
+          background: "linear-gradient(135deg, #07080c 0%, #0a0d15 100%)",
+          color: "#eef2f7",
+        }}
+      >
+        {/* ═══ TICKER BAR ═══ */}
+        <TickerBar />
 
-            <div className="flex flex-wrap items-center gap-3 xl:justify-end">
-              <div
-                className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium ${
-                  isVerified
-                    ? "border border-emerald-500/20 bg-emerald-500/10 text-emerald-300"
-                    : "border border-amber-400/15 bg-amber-400/10 text-amber-300"
-                }`}
-              >
-                <span
-                  className={`h-2 w-2 rounded-full ${
-                    isVerified ? "bg-emerald-400" : "bg-amber-300"
-                  }`}
-                />
-                <span>{isVerified ? "Verified" : "Unverified"}</span>
-                {isVerified && <Check className="h-3.5 w-3.5" />}
-              </div>
+        {/* ═══ PAGE WRAP: sidebar + main ═══ */}
+        <div className="grid flex-1 grid-cols-1 md:grid-cols-[60px_1fr] min-h-0">
+          {/* Dashboard-specific sidebar (HTML match) */}
+          <DashboardSidebar
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+          />
 
-              <div className="rounded-2xl border border-white/6 bg-[#101722] px-4 py-2 font-mono text-sm text-[#7f8ca3]">
-                {now}
-              </div>
-            </div>
-          </div>
+          {/* ═══ MAIN SCROLLABLE AREA ═══ */}
+          <main className="overflow-y-auto px-4 py-7 md:px-8" style={{ maxHeight: "100%" }}>
 
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-[1.2fr_0.9fr_0.9fr_0.9fr]">
-            <div
-              className="rounded-xl border border-[#0f5d45] bg-[linear-gradient(135deg,rgba(9,22,21,0.96),rgba(13,29,23,0.92))] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_24px_70px_rgba(15,226,141,0.08)]"
-              style={{
-                backgroundImage:
-                  "radial-gradient(circle at top right, rgba(18, 226, 142, 0.12), transparent 28%), linear-gradient(135deg, rgba(9,22,21,0.96), rgba(13,29,23,0.92))",
-              }}
-            >
-              <div className="mb-3 flex items-start justify-between gap-4">
+            {/* ═══ HEADER ═══ */}
+            <div className="mb-7 flex flex-wrap items-start justify-between gap-3">
+              <div className="flex items-start gap-3">
+                {/* Mobile sidebar toggle */}
+                <button
+                  onClick={() => setIsSidebarOpen(true)}
+                  aria-label="Open navigation"
+                  className="md:hidden mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.03)] text-[#8b97a8] transition-colors hover:bg-[rgba(255,255,255,0.06)] hover:text-[#eef2f7]"
+                >
+                  <Menu className="h-[1.1rem] w-[1.1rem]" />
+                </button>
+
                 <div>
-                  <p className="sub_header font-bold uppercase text-[#6e7c92] word-spacing-[4.5rem]">
-                    Account <span className="ms-1">Balance</span>
-                  </p>
-                  <div className="mt-4 font-semibold leading-none text-[#15e28d] header">
+                  <h1 className="font-[Outfit,sans-serif] text-[1.3rem] sm:text-[1.65rem] font-extrabold tracking-[-0.03em] leading-tight">
+                    Welcome back,{" "}
+                    <span className="text-[#00dfa2]">{displayName}</span>
+                  </h1>
+                  <div className="mt-0.5 text-[0.8rem] font-medium text-[#4a5468]">
+                    {settings?.name || "Test Platform"}
+                    <sup>&reg;</sup> Platform &middot;{" "}
+                    <span className="font-bold text-[#00dfa2]">
+                      {user?.account_type?.title || "Starter"}
+                    </span>{" "}
+                    Account
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-[14px]">
+                {isVerified ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-[20px] border border-[rgba(0,223,162,0.25)] bg-[rgba(0,223,162,0.1)] px-4 py-1.5 text-[0.72rem] font-bold text-[#00dfa2]">
+                    <Check className="h-3.5 w-3.5" />
+                    Verified
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 rounded-[20px] border border-[rgba(244,63,94,0.15)] bg-[rgba(244,63,94,0.08)] px-4 py-1.5 text-[0.72rem] font-bold text-[#f43f5e]">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#f43f5e] shadow-[0_0_8px_#f43f5e] animate-[pulse_2s_ease-in-out_infinite]" />
+                    Unverified
+                  </span>
+                )}
+
+                <span className="rounded-[20px] border border-white/[0.05] bg-white/[0.03] px-4 py-1.5 font-mono text-[0.78rem] font-medium text-[#8b97a8]">
+                  {now}
+                </span>
+              </div>
+            </div>
+
+            {/* ═══ STAT CARDS ═══ */}
+            <div className="mb-6 grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-[1.2fr_1fr_1fr_0.9fr]">
+              {/* Account Balance — special card */}
+              <div className="scard relative overflow-hidden rounded-2xl border-[1.5px] border-white/[0.06] bg-[linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-[22px_24px] shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]">
+                <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[linear-gradient(175deg,rgba(255,255,255,0.03),transparent_40%)]" />
+                <div className="relative">
+                  <div className="mb-4 flex items-center justify-between">
+                    <div className="text-[0.72rem] font-bold uppercase tracking-[0.06em] text-[#4a5468]">
+                      Account Balance
+                    </div>
+                    <div className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[rgba(0,223,162,0.1)] text-[#00dfa2]">
+                      <BadgeDollarSign className="h-[0.82rem] w-[0.82rem]" />
+                    </div>
+                  </div>
+
+                  <div className="mb-4 font-mono text-[1.45rem] font-extrabold tracking-[-0.02em] text-[#00dfa2]">
                     {formatCurrency(balance)}
                   </div>
-                </div>
 
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0f2b22] text-[#15e28d] shadow-[0_0_22px_rgba(21,226,141,0.12)]">
-                  <BadgeDollarSign className="h-5 w-5" />
+                  <div className="flex flex-col gap-2 border-t border-white/[0.04] pt-[14px]">
+                    <div className="flex items-center justify-between text-[0.78rem]">
+                      <span className="font-medium text-[#4a5468]">Leverage</span>
+                      <span className="font-mono font-bold text-[#00dfa2]">
+                        1:{user?.account_type?.leverage || "1"}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-[0.78rem]">
+                      <span className="font-medium text-[#4a5468]">
+                        {user?.custom_wallet || "Credit Balance"}
+                      </span>
+                      <span className="font-mono font-bold text-[#8b97a8]">
+                        {formatCurrency(user?.credit_balance || 0)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-[0.78rem]">
+                      <span className="font-medium text-[#4a5468]">
+                        Account Type
+                      </span>
+                      <span className="font-mono font-bold text-[#00dfa2]">
+                        {user?.account_type?.title || "Starter"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <Button
+                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-[10px] border-none bg-[linear-gradient(135deg,#00dfa2,#00b881)] py-3 text-[0.82rem] font-extrabold tracking-[0.02em] text-[#07080c] shadow-[0_4px_16px_rgba(0,223,162,0.2)] transition-all hover:-translate-y-px hover:shadow-[0_6px_24px_rgba(0,223,162,0.3)]"
+                    onClick={() => navigate("/trading")}
+                  >
+                    Open Trade Room
+                  </Button>
                 </div>
               </div>
 
-              <div className="space-y-1 border-t border-white/8 pt-2 body">
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-[#6f7c92]">Leverage</span>
-                  <span className="font-semibold tracking-wide text-[#73a8ff]">
-                    1:{user?.account_type?.leverage || "1"}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between gap-3 body">
-                  <span className="text-[#6f7c92]">
-                    {user?.custom_wallet || "Credit Balance"}
-                  </span>
-                  <span className="font-semibold- text-white/90">
-                    {formatCurrency(user?.credit_balance || 0)}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between gap-3 body">
-                  <span className="text-[#6f7c92]">Account Type</span>
-                  <span className="font-semibold text-[#16e28d]">
-                    {user?.account_type?.title || "Starter"}
-                  </span>
-                </div>
-              </div>
+              <StatCard
+                title="Total PNL"
+                value={formatCurrency(tradesSummary.total_pnl)}
+                icon={<Coins className="h-5 w-5" />}
+                footnote="Based on current exchange rate"
+                metaValue={`${tradesSummary.win_rate.toFixed(2)}%`}
+                iconTone="blue"
+              />
 
-              <Button
-                className="mt-6 h-8 w-full rounded-xl border border-[#22f59e]/30 bg-[#10d17f] text-xs text-white font-semibold  shadow-[0_14px_30px_rgba(16,209,127,0.35)] transition hover:bg-[#19e58c]"
-                onClick={() => navigate("/trading")}
-              >
-                Open Trade Room
-              </Button>
+              <StatCard
+                title="Total Deposits"
+                value={formatCurrency(tradesSummary.total_deposit || 0)}
+                icon={<Landmark className="h-5 w-5" />}
+                metaValue={`No deposits yet`}
+                iconTone="violet"
+              />
+
+              <StatCard
+                title="Profitable Orders"
+                value={`${tradesSummary.total_wins}`}
+                secondaryValue={`/${tradesSummary.trades_count}`}
+                icon={<BriefcaseBusiness className="h-3 w-3" />}
+                metaValue={`No orders placed`}
+                iconTone="amber"
+              />
             </div>
 
-            <StatCard
-              title="Total PNL"
-              value={formatCurrency(tradesSummary.total_pnl)}
-              icon={<Coins className="h-5 w-5" />}
-              footnote="* using current exchange rate"
-              metaValue={`${tradesSummary.win_rate.toFixed(2)}%`}
-              iconTone="blue"
-            />
-
-            <StatCard
-              title="Total Deposits"
-              value={formatCurrency(tradesSummary.total_deposit || 0)}
-              icon={<Landmark className="h-5 w-5" />}
-              metaValue={`No deposits yet`}
-              iconTone="violet"
-            />
-
-            <StatCard
-              title="Profitable Orders"
-              value={`${tradesSummary.total_wins}`}
-              secondaryValue={`/ ${tradesSummary.trades_count}`}
-              icon={<BriefcaseBusiness className="h-3 w-3" />}
-              metaValue={`No orders placed`}
-              iconTone="amber"
-            />
-          </div>
-        </div>
-
-        <div className="mb-6 grid gap-3 grid-cols-2  md:grid-cols-4 xl:grid-cols-7 ">
-          {marketTickers.map((ticker) => (
-            <div
-              key={ticker.symbol}
-              className="rounded-xl border border-white/6 bg-[#0d131d] px-3 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <div className="text-sm font-semibold text-white">
-                    {ticker.symbol}
-                  </div>
-                  <div
-                    className={`text-sm font-semibold ${
-                      ticker.positive ? "text-[#16e28d]" : "text-[#ff5876]"
-                    }`}
-                  >
-                    {ticker.change}
+            {/* ═══ MARKET STRIP ═══ */}
+            <div className="mb-6 grid gap-3 grid-cols-2 md:grid-cols-4 xl:grid-cols-7">
+              {marketTickers.map((ticker) => (
+                <div
+                  key={ticker.symbol}
+                  className="rounded-xl border border-white/6 bg-[#0d131d] px-3 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <div className="text-sm font-semibold text-white">
+                        {ticker.symbol}
+                      </div>
+                      <div
+                        className={`text-sm font-semibold ${
+                          ticker.positive ? "text-[#16e28d]" : "text-[#ff5876]"
+                        }`}
+                      >
+                        {ticker.change}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-lg font-semibold leading-none text-white/90">
+                        {ticker.value}
+                      </div>
+                      <div
+                        className={`mt-1 inline-flex items-center gap-1 text-[10px] ${
+                          ticker.positive ? "text-[#16e28d]" : "text-[#ff5876]"
+                        }`}
+                      >
+                        <TrendingUp
+                          className={`h-3.5 w-3.5 ${ticker.positive ? "" : "rotate-180"}`}
+                        />
+                        <span>{ticker.positive ? "Bullish" : "Bearish"}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="text-lg font-semibold leading-none text-white/90">
-                    {ticker.value}
-                  </div>
-                  <div
-                    className={`mt-1 inline-flex items-center gap-1 text-[10px] ${
-                      ticker.positive ? "text-[#16e28d]" : "text-[#ff5876]"
-                    }`}
-                  >
-                    <TrendingUp
-                      className={`h-3.5 w-3.5 ${ticker.positive ? "" : "rotate-180"}`}
-                    />
-                    <span>{ticker.positive ? "Bullish" : "Bearish"}</span>
-                  </div>
+              ))}
+            </div>
+
+            {/* ═══ BOTTOM GRID: Chart + Success Rate ═══ */}
+            <div className="mb-6 grid gap-5 grid-cols-1 lg:grid-cols-[1fr_340px]">
+              {/* Trading Results */}
+              <div className="gcard relative overflow-hidden rounded-2xl border-[1.5px] border-white/[0.06] bg-[linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]">
+                <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[linear-gradient(175deg,rgba(255,255,255,0.03),transparent_40%)]" />
+                <div className="relative">
+                  <Suspense fallback={dashboardCardFallback}>
+                    <TradingResultsChart />
+                  </Suspense>
+                </div>
+              </div>
+
+              {/* Success Rate */}
+              <div className="gcard relative overflow-hidden rounded-2xl border-[1.5px] border-white/[0.06] bg-[linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]">
+                <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[linear-gradient(175deg,rgba(255,255,255,0.03),transparent_40%)]" />
+                <div className="relative">
+                  <Suspense fallback={dashboardCardFallback}>
+                    <SuccessRateCard />
+                  </Suspense>
                 </div>
               </div>
             </div>
-          ))}
+
+            {/* ═══ TOP STORIES ═══ */}
+            <div className="gcard relative overflow-hidden rounded-2xl border-[1.5px] border-white/[0.06] bg-[linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]">
+              <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[linear-gradient(175deg,rgba(255,255,255,0.03),transparent_40%)]" />
+              <div className="relative">
+                <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <h2 className="text-[0.88rem] font-bold text-[#eef2f7]">
+                    Top Market Stories
+                  </h2>
+                  <a
+                    href="https://www.tradingview.com/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-[#00dfa2] transition hover:text-[#00ffc3]"
+                  >
+                    Track all markets on TradingView
+                    <ArrowRight className="h-4 w-4" />
+                  </a>
+                </div>
+                <TopStoriesWidget />
+              </div>
+            </div>
+          </main>
         </div>
-
-        <div className="mb-6 grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
-          <section className="rounded-xl border border-white/6 bg-[#0b111b] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] sm:p-6">
-            <Suspense fallback={dashboardCardFallback}>
-              <TradingResultsChart />
-            </Suspense>
-          </section>
-
-          <section className="rounded-xl border border-white/6 bg-[#0b111b] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] sm:p-6">
-            <Suspense fallback={dashboardCardFallback}>
-              <SuccessRateCard />
-            </Suspense>
-          </section>
-        </div>
-
-        <section className="rounded-xl border border-white/6 bg-[#0b111b] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] sm:p-6">
-          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <h2 className="text-[15px] sm:text-[17px]  font-semibold tracking-tight text-white">
-              Top Market Stories
-            </h2>
-            <a
-              href="https://www.tradingview.com/"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#16e28d] transition hover:text-[#41efab]"
-            >
-              Track all markets on TradingView
-              <ArrowRight className="h-4 w-4" />
-            </a>
-          </div>
-          <TopStoriesWidget />
-        </section>
       </div>
-    </div>
+    </>
   );
 }

@@ -262,10 +262,10 @@ export default function Header({
                     <div className="border-t border-border mt-2 px-3 py-2">
                       <div className="space-y-2">
                         <AutoTraderModal />
-                        <Link to="/main/deposit">
+                        <Link to="/main/wallet">
                           <Button className="w-full justify-start gap-2">
                             <Wallet className="h-4 w-4" />
-                            <span>Deposit</span>
+                            <span>Wallet</span>
                           </Button>
                         </Link>
                       </div>
@@ -453,7 +453,7 @@ export default function Header({
             Dashboard
           </Link>
           <Link
-            to="/main/deposit"
+            to="/main/wallet"
             className="text-xs font-semibold text-muted-foreground hover:text-foreground px-2 py-1 rounded-md hover:bg-muted/50 transition-colors"
           >
             Wallet

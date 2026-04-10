@@ -24,10 +24,14 @@ import axiosInstance from "@/lib/axios";
 import { useState, useEffect } from "react";
 import useDataStore from "@/store/dataStore";
 import useUserStore from "@/store/userStore";
-import {WireTransferConfirmationModal} from "@/components/withdrawal/WireTransferConfirmationModal.tsx";
-import { ArrowDownToLine, ArrowUpFromLine, TriangleAlert } from "lucide-react";
-import { BalanceStrip } from "@/components/withdrawal/BalanceStrip";
-import { ModeSwitch } from "@/components/withdrawal/ModeSwitch";
+import { WireTransferConfirmationModal } from "@/components/withdrawal/WireTransferConfirmationModal.tsx";
+import {
+  ArrowDownToLine,
+  ArrowUpFromLine,
+  TriangleAlert,
+  ChartPie,
+  Coins,
+} from "lucide-react";
 import { WithdrawalModeBar } from "@/components/withdrawal/WithdrawalModeBar";
 import { CoinGrid } from "@/components/withdrawal/CoinGrid";
 import { WithdrawalSummary } from "@/components/withdrawal/WithdrawalSummary";
@@ -37,6 +41,12 @@ import { StakedWithdrawalPanel } from "@/components/withdrawal/StakedWithdrawalP
 import { WithdrawalFAQ } from "@/components/withdrawal/WithdrawalFAQ";
 import { ContributePanel } from "@/components/deposit/ContributePanel";
 import DepositHistory from "@/components/deposit-history";
+import { WalletNav } from "@/components/wallet/WalletNav";
+import { WalletSidebar, type WalletView } from "@/components/wallet/WalletSidebar";
+import { WalletOverviewPanel } from "@/components/wallet/WalletOverviewPanel";
+import { WalletAssetsPanel } from "@/components/wallet/WalletAssetsPanel";
+import { WalletGoldPanel } from "@/components/wallet/WalletGoldPanel";
+import { GoldTierBanner } from "@/components/wallet/GoldTierBanner";
 
 // ── Schemas (unchanged) ──────────────────────────────────────────────
 
@@ -93,6 +103,10 @@ export default function WithdrawalForm() {
   const [selectedCoin, setSelectedCoin] = useState("BTC");
   const [selectedCoinName, setSelectedCoinName] = useState("Bitcoin");
 
+  // New UI-only view state for wallet panels (HTML match)
+  const [viewMode, setViewMode] = useState<WalletView>("overview");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   const form = useForm<WithdrawalFormData>({
     resolver: zodResolver(combinedSchema),
     defaultValues: {
@@ -128,6 +142,21 @@ export default function WithdrawalForm() {
       }
     }
   }, [data?.crypto_networks, form]);
+
+  // Hide the parent MainLayout header + sidebar while this page is mounted
+  useEffect(() => {
+    document.body.classList.add("wallet-active");
+    return () => {
+      document.body.classList.remove("wallet-active");
+    };
+  }, []);
+
+  // Keep activeMode (deposit/withdraw) in sync with viewMode so existing
+  // withdrawal/deposit logic still drives the form behaviour exactly as before.
+  useEffect(() => {
+    if (viewMode === "dep") setActiveMode("deposit");
+    else if (viewMode === "wit") setActiveMode("withdraw");
+  }, [viewMode]);
 
   // This function prepares the form submission and shows modal for wire transfers
   async function onSubmit(values: WithdrawalFormData) {
@@ -175,10 +204,6 @@ export default function WithdrawalForm() {
     }
   };
 
-  const handleModeChange = (mode: "deposit" | "withdraw") => {
-    setActiveMode(mode);
-  };
-
   const handleCoinSelect = (symbol: string, name: string, network: string) => {
     setSelectedCoin(symbol);
     setSelectedCoinName(name);
@@ -186,370 +211,567 @@ export default function WithdrawalForm() {
     form.setValue("network", network, { shouldValidate: true });
   };
 
+  const tabs: Array<{ id: WalletView; label: string; icon: React.ComponentType<{ className?: string }>; tag?: string }> = [
+    { id: "overview", label: "Overview", icon: ChartPie },
+    { id: "assets", label: "Assets", icon: Coins },
+    { id: "dep", label: "Deposit", icon: ArrowDownToLine },
+    { id: "wit", label: "Withdraw", icon: ArrowUpFromLine },
+    { id: "gold", label: "Physical Gold", icon: Coins, tag: "Elite" },
+  ];
+
   return (
-    <div className="flex flex-col gap-6 withdrawal-page-bg text-[#eef2f7] min-h-screen p-4 sm:p-7">
-      {/* ── Page Header ── */}
-      <div>
-        <h1 className="flex items-center gap-2.5 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
-          {activeMode === "deposit" ? (
-            <>
-              <ArrowDownToLine className="h-5 w-5 text-[#00dfa2]" />
-              Deposit
-            </>
-          ) : (
-            <>
-              <ArrowUpFromLine className="h-5 w-5 text-[#00dfa2]" />
-              Withdrawal
-            </>
-          )}
-        </h1>
-        <p className="mt-1 text-xs text-[#4a5468] sm:text-sm">
-          {activeMode === "deposit"
-            ? "Add funds to your portfolio. All deposits are actively managed."
-            : "Select your withdrawal type below. New clients may withdraw freely. Clients with staked funds are subject to the 10% early exit fee."}
-        </p>
-      </div>
+    <>
+      {/* Hide MainLayout chrome while wallet is mounted */}
+      <style>{`
+        body.wallet-active .fixed.top-0.left-0.right-0.z-20,
+        body.wallet-active .fixed.top-\\[60px\\].left-0.bottom-0 {
+          display: none !important;
+        }
+        body.wallet-active .flex.flex-1.pt-\\[90px\\] {
+          padding-top: 0 !important;
+        }
+        body.wallet-active .flex-1.md\\:ml-\\[80px\\] {
+          margin-left: 0 !important;
+        }
+      `}</style>
 
-      {/* ── Balance Strip ── */}
-      <BalanceStrip />
+      <div
+        className="fixed inset-0 z-30 flex flex-col font-[Inter,-apple-system,sans-serif]"
+        style={{
+          background:
+            "linear-gradient(135deg,#07080c 0%,#0a0d15 100%)",
+          color: "#eef2f7",
+        }}
+      >
+        {/* Top nav */}
+        <WalletNav onToggleSidebar={() => setIsSidebarOpen(true)} />
 
-      {/* ── Mode Switch ── */}
-      <ModeSwitch activeMode={activeMode} onModeChange={handleModeChange} />
+        {/* Layout: sidebar + main */}
+        <div className="grid flex-1 grid-cols-1 md:grid-cols-[260px_1fr] min-h-0">
+          <WalletSidebar
+            currentView={viewMode}
+            onChangeView={setViewMode}
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+          />
 
-      {/* ── Withdrawal Mode Bar (only shown in withdraw mode) ── */}
-      {activeMode === "withdraw" && (
-        <WithdrawalModeBar clientMode={clientMode} onModeChange={setClientMode} />
-      )}
+          <main className="overflow-y-auto p-5 md:p-9" style={{ maxHeight: "100%" }}>
+            {/* Page Head */}
+            <div className="mb-7">
+              <h1 className="flex items-center gap-2.5 font-[Outfit,sans-serif] text-[1.65rem] font-extrabold tracking-[-0.03em] text-[#eef2f7]">
+                <ChartPie className="h-5 w-5 text-[#00dfa2]" />
+                My Wallet
+              </h1>
+              <p className="mt-1 text-[0.87rem] text-[#4a5468]">
+                Manage your portfolio, deposit, and withdraw funds
+              </p>
+            </div>
 
-      {/* ── Main Content: 2-column layout ── */}
-      <div className="grid items-start gap-5 xl:grid-cols-[1fr_360px]">
+            {/* Mode Switch (5 tabs) */}
+            <div
+              className="mb-7 inline-flex rounded-[12px] border-[1.5px] border-[rgba(255,255,255,0.08)] p-[5px] backdrop-blur-[40px]"
+              style={{
+                background:
+                  "linear-gradient(145deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))",
+              }}
+            >
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                const active = viewMode === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setViewMode(tab.id)}
+                    className={`flex items-center gap-1.5 whitespace-nowrap rounded-[9px] px-4 py-2.5 text-[0.82rem] font-bold transition-all duration-200 sm:px-6 ${
+                      active
+                        ? "text-[#07080c] shadow-[0_4px_15px_rgba(0,223,162,0.4),inset_0_1px_2px_rgba(255,255,255,0.3),inset_0_-2px_4px_rgba(0,0,0,0.2)]"
+                        : "text-[#4a5468] hover:text-[#eef2f7]"
+                    }`}
+                    style={
+                      active
+                        ? {
+                            background:
+                              "linear-gradient(145deg,#00ffc3,#00dfa2,#00b881)",
+                          }
+                        : undefined
+                    }
+                  >
+                    <Icon className="h-[0.82rem] w-[0.82rem]" />
+                    <span className="hidden sm:inline">{tab.label}</span>
+                    {tab.tag && (
+                      <span
+                        className="ml-1 rounded-full border border-[rgba(0,223,162,0.3)] px-1.5 py-0.5 text-[0.62rem] font-bold text-[#00dfa2]"
+                        style={{ background: "rgba(0,223,162,0.1)" }}
+                      >
+                        {tab.tag}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
 
-        {/* ═══ LEFT COLUMN ═══ */}
-        <div className="flex flex-col gap-4">
+            {/* Gold tier banner (conditional on user.balance) */}
+            <GoldTierBanner />
 
-          {activeMode === "deposit" ? (
-            <>
-              {/* ── Contribute Tab ── */}
-              <ContributePanel onDepositSuccess={() => setRefreshTrigger((p) => p + 1)} />
-            </>
-          ) : (
-            <>
-              {clientMode === "fresh" ? (
-                <>
-                  {/* ── Fresh Withdrawal Form ── */}
-                  <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0f1220] p-5 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)] sm:p-6">
-                    <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.02] to-transparent" />
+            {/* ═══ OVERVIEW VIEW ═══ */}
+            {viewMode === "overview" && <WalletOverviewPanel />}
 
-                    <div className="relative">
-                      <div className="mb-5 flex items-center gap-2 text-sm font-extrabold text-white">
-                        <ArrowUpFromLine className="h-4 w-4 text-[#00dfa2]" />
-                        Withdraw Crypto Assets
-                      </div>
+            {/* ═══ ASSETS VIEW ═══ */}
+            {viewMode === "assets" && <WalletAssetsPanel />}
 
-                      <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+            {/* ═══ GOLD VIEW ═══ */}
+            {viewMode === "gold" && <WalletGoldPanel />}
 
-                          {/* Coin selection grid */}
-                          <CoinGrid
-                            selectedCoin={selectedCoin}
-                            formNetwork={watchedNetwork || ""}
-                            onCoinSelect={handleCoinSelect}
-                          />
+            {/* ═══ DEPOSIT / WITHDRAW VIEW ═══ */}
+            {(viewMode === "dep" || viewMode === "wit") && (
+              <div className="grid items-start gap-5 xl:grid-cols-[1fr_360px]">
+                {/* LEFT COLUMN */}
+                <div className="flex flex-col gap-4">
+                  {/* Withdrawal Mode Bar (only withdraw) */}
+                  {activeMode === "withdraw" && (
+                    <WithdrawalModeBar
+                      clientMode={clientMode}
+                      onModeChange={setClientMode}
+                    />
+                  )}
 
-                          {/* Amount + Method row */}
-                          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  {activeMode === "deposit" ? (
+                    <>
+                      {/* Deposit Header */}
+                      <div
+                        className="relative overflow-hidden rounded-2xl border-[1.5px] border-[rgba(255,255,255,0.08)] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)]"
+                        style={{
+                          background:
+                            "linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04),rgba(0,223,162,0.02))",
+                        }}
+                      >
+                        <div
+                          className="pointer-events-none absolute inset-0 rounded-2xl"
+                          style={{
+                            background:
+                              "linear-gradient(175deg,rgba(255,255,255,0.04),transparent 40%)",
+                          }}
+                        />
+                        <div className="relative">
+                          <div className="mb-5 flex items-center gap-2.5 border-b border-[rgba(255,255,255,0.06)] pb-4">
+                            <ArrowDownToLine className="h-4 w-4 text-[#00dfa2]" />
                             <div>
-                              <FormField
-                                control={form.control}
-                                name="amount"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
-                                      Withdrawal Amount
-                                    </FormLabel>
-                                    <FormControl>
-                                      <div className="flex overflow-hidden rounded-xl border-[1.5px] border-white/[0.08] bg-[#0a0d15] transition-all duration-200 focus-within:border-[#00dfa2] focus-within:shadow-[0_0_0_3px_rgba(0,223,162,0.1)]">
-                                        <div className="flex items-center px-3.5 text-sm font-bold text-[#00dfa2] bg-[#131a28] border-r border-white/[0.04]">
-                                          $
-                                        </div>
-                                        <Input
-                                          placeholder="0.00"
-                                          {...field}
-                                          type="number"
-                                          className="border-0 bg-transparent font-mono text-[#eef2f7] shadow-none focus-visible:ring-0"
+                              <div className="text-[1.05rem] font-extrabold text-[#eef2f7]">
+                                Deposit Funds
+                              </div>
+                              <div className="text-[0.78rem] text-[#4a5468]">
+                                Choose how you want to add funds to your account
+                              </div>
+                            </div>
+                          </div>
+                          <ContributePanel
+                            onDepositSuccess={() =>
+                              setRefreshTrigger((p) => p + 1)
+                            }
+                          />
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {clientMode === "fresh" ? (
+                        <>
+                          {/* Fresh Withdrawal Form */}
+                          <div
+                            className="relative overflow-hidden rounded-2xl border-[1.5px] border-[rgba(255,255,255,0.08)] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)]"
+                            style={{
+                              background:
+                                "linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04),rgba(0,223,162,0.02))",
+                            }}
+                          >
+                            <div
+                              className="pointer-events-none absolute inset-0 rounded-2xl"
+                              style={{
+                                background:
+                                  "linear-gradient(175deg,rgba(255,255,255,0.04),transparent 40%)",
+                              }}
+                            />
+                            <div className="relative">
+                              <div className="mb-5 flex items-center gap-2.5 border-b border-[rgba(255,255,255,0.06)] pb-4 text-[0.95rem] font-extrabold text-[#eef2f7]">
+                                <ArrowUpFromLine className="h-4 w-4 text-[#00dfa2]" />
+                                Withdraw Crypto Assets
+                              </div>
+
+                              <Form {...form}>
+                                <form
+                                  onSubmit={form.handleSubmit(onSubmit)}
+                                  className="space-y-5"
+                                >
+                                  {/* Coin selection grid */}
+                                  <CoinGrid
+                                    selectedCoin={selectedCoin}
+                                    formNetwork={watchedNetwork || ""}
+                                    onCoinSelect={handleCoinSelect}
+                                  />
+
+                                  {/* Amount + Method row */}
+                                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                    <div>
+                                      <FormField
+                                        control={form.control}
+                                        name="amount"
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
+                                              Withdrawal Amount
+                                            </FormLabel>
+                                            <FormControl>
+                                              <div className="flex overflow-hidden rounded-xl border-[1.5px] border-white/[0.08] bg-[#0a0d15] transition-all duration-200 focus-within:border-[#00dfa2] focus-within:shadow-[0_0_0_3px_rgba(0,223,162,0.1)]">
+                                                <div className="flex items-center border-r border-white/[0.04] bg-[#131a28] px-3.5 text-sm font-bold text-[#00dfa2]">
+                                                  $
+                                                </div>
+                                                <Input
+                                                  placeholder="0.00"
+                                                  {...field}
+                                                  type="number"
+                                                  className="border-0 bg-transparent font-mono text-[#eef2f7] shadow-none focus-visible:ring-0"
+                                                />
+                                              </div>
+                                            </FormControl>
+                                            <FormMessage />
+                                            {/* Quick amount buttons */}
+                                            <div className="mt-1.5 flex gap-1.5">
+                                              {["1000", "5000", "10000"].map(
+                                                (v) => (
+                                                  <button
+                                                    key={v}
+                                                    type="button"
+                                                    onClick={() =>
+                                                      form.setValue(
+                                                        "amount",
+                                                        v,
+                                                        { shouldValidate: true },
+                                                      )
+                                                    }
+                                                    className="flex-1 rounded-md border border-white/[0.06] bg-[#131a28] py-1 text-[11px] font-bold text-[#4a5468] transition-colors hover:border-white/[0.1] hover:text-[#a8b5c8]"
+                                                  >
+                                                    ${Number(v).toLocaleString()}
+                                                  </button>
+                                                ),
+                                              )}
+                                              <button
+                                                type="button"
+                                                onClick={() =>
+                                                  form.setValue(
+                                                    "amount",
+                                                    String(availableBalance),
+                                                    { shouldValidate: true },
+                                                  )
+                                                }
+                                                className="flex-1 rounded-md border border-[#00dfa2]/30 bg-[#00dfa2]/[0.06] py-1 text-[11px] font-bold text-[#00dfa2] transition-colors hover:bg-[#00dfa2]/10"
+                                              >
+                                                Max
+                                              </button>
+                                            </div>
+                                          </FormItem>
+                                        )}
+                                      />
+                                    </div>
+
+                                    <div>
+                                      <FormField
+                                        control={form.control}
+                                        name="method"
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
+                                              Payment Method
+                                            </FormLabel>
+                                            <Select
+                                              onValueChange={field.onChange}
+                                              defaultValue={field.value}
+                                            >
+                                              <FormControl>
+                                                <SelectTrigger className="input-focus-glow">
+                                                  <SelectValue placeholder="Select payment method" />
+                                                </SelectTrigger>
+                                              </FormControl>
+                                              <SelectContent className="border-white/[0.08] bg-[#0f1220]">
+                                                <SelectItem value="crypto">
+                                                  Cryptocurrency
+                                                </SelectItem>
+                                                <SelectItem value="wire_transfer">
+                                                  Wire Transfer
+                                                </SelectItem>
+                                              </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                          </FormItem>
+                                        )}
+                                      />
+                                    </div>
+                                  </div>
+
+                                  {/* Crypto fields */}
+                                  {method === "crypto" && (
+                                    <div className="space-y-4 rounded-xl border border-white/[0.04] bg-[#0a0d15] p-4">
+                                      <FormField
+                                        control={form.control}
+                                        name="network"
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
+                                              Network
+                                            </FormLabel>
+                                            <Select
+                                              onValueChange={field.onChange}
+                                              defaultValue={field.value}
+                                            >
+                                              <FormControl>
+                                                <SelectTrigger className="input-focus-glow">
+                                                  <SelectValue placeholder="Select network" />
+                                                </SelectTrigger>
+                                              </FormControl>
+                                              <SelectContent className="border-white/[0.08] bg-[#0f1220]">
+                                                {data?.crypto_networks?.map(
+                                                  (network) => (
+                                                    <SelectItem
+                                                      key={network}
+                                                      value={network}
+                                                    >
+                                                      {network}
+                                                    </SelectItem>
+                                                  ),
+                                                )}
+                                              </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                          </FormItem>
+                                        )}
+                                      />
+
+                                      <FormField
+                                        control={form.control}
+                                        name="wallet_address"
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
+                                              Destination Wallet Address
+                                            </FormLabel>
+                                            <FormControl>
+                                              <Input
+                                                placeholder="Enter your external wallet address (e.g. bc1q...)"
+                                                {...field}
+                                                className="input-focus-glow font-mono text-xs"
+                                              />
+                                            </FormControl>
+                                            <div className="mt-1.5 flex items-center gap-1 text-[11px] text-[#5f6b7f]">
+                                              <TriangleAlert className="h-3 w-3 text-[#FF9800]" />
+                                              Double-check the address and network.
+                                              Transactions cannot be reversed.
+                                            </div>
+                                            <FormMessage />
+                                          </FormItem>
+                                        )}
+                                      />
+                                    </div>
+                                  )}
+
+                                  {/* Wire transfer fields */}
+                                  {method === "wire_transfer" && (
+                                    <div className="space-y-4 rounded-xl border border-white/[0.04] bg-[#0a0d15] p-4">
+                                      <FormField
+                                        control={form.control}
+                                        name="bank_name"
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
+                                              Bank Name
+                                            </FormLabel>
+                                            <FormControl>
+                                              <Input
+                                                placeholder="Enter bank name"
+                                                {...field}
+                                                className="input-focus-glow"
+                                              />
+                                            </FormControl>
+                                            <FormMessage />
+                                          </FormItem>
+                                        )}
+                                      />
+
+                                      <FormField
+                                        control={form.control}
+                                        name="bank_address"
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
+                                              Bank Address
+                                            </FormLabel>
+                                            <FormControl>
+                                              <Input
+                                                placeholder="Enter bank address"
+                                                {...field}
+                                                className="input-focus-glow"
+                                              />
+                                            </FormControl>
+                                            <FormMessage />
+                                          </FormItem>
+                                        )}
+                                      />
+
+                                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                        <FormField
+                                          control={form.control}
+                                          name="account_number"
+                                          render={({ field }) => (
+                                            <FormItem>
+                                              <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
+                                                Account Number
+                                              </FormLabel>
+                                              <FormControl>
+                                                <Input
+                                                  placeholder="Enter account number"
+                                                  {...field}
+                                                  className="input-focus-glow font-mono"
+                                                />
+                                              </FormControl>
+                                              <FormMessage />
+                                            </FormItem>
+                                          )}
+                                        />
+
+                                        <FormField
+                                          control={form.control}
+                                          name="account_name"
+                                          render={({ field }) => (
+                                            <FormItem>
+                                              <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
+                                                Account Name
+                                              </FormLabel>
+                                              <FormControl>
+                                                <Input
+                                                  placeholder="Enter account name"
+                                                  {...field}
+                                                  className="input-focus-glow"
+                                                />
+                                              </FormControl>
+                                              <FormMessage />
+                                            </FormItem>
+                                          )}
                                         />
                                       </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                    {/* Quick amount buttons */}
-                                    <div className="mt-1.5 flex gap-1.5">
-                                      {["1000", "5000", "10000"].map((v) => (
-                                        <button
-                                          key={v}
-                                          type="button"
-                                          onClick={() => form.setValue("amount", v, { shouldValidate: true })}
-                                          className="flex-1 rounded-md border border-white/[0.06] bg-[#131a28] py-1 text-[11px] font-bold text-[#4a5468] transition-colors hover:border-white/[0.1] hover:text-[#a8b5c8]"
-                                        >
-                                          ${Number(v).toLocaleString()}
-                                        </button>
-                                      ))}
-                                      <button
-                                        type="button"
-                                        onClick={() => form.setValue("amount", String(availableBalance), { shouldValidate: true })}
-                                        className="flex-1 rounded-md border border-[#c8e64e]/30 bg-[#c8e64e]/[0.06] py-1 text-[11px] font-bold text-[#c8e64e] transition-colors hover:bg-[#c8e64e]/10"
-                                      >
-                                        Max
-                                      </button>
-                                    </div>
-                                  </FormItem>
-                                )}
-                              />
-                            </div>
 
-                            <div>
-                              <FormField
-                                control={form.control}
-                                name="method"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
-                                      Payment Method
-                                    </FormLabel>
-                                    <Select
-                                      onValueChange={field.onChange}
-                                      defaultValue={field.value}
+                                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                        <FormField
+                                          control={form.control}
+                                          name="iban_number"
+                                          render={({ field }) => (
+                                            <FormItem>
+                                              <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
+                                                IBAN Number
+                                              </FormLabel>
+                                              <FormControl>
+                                                <Input
+                                                  placeholder="Enter IBAN Number"
+                                                  {...field}
+                                                  className="input-focus-glow font-mono"
+                                                />
+                                              </FormControl>
+                                              <FormMessage />
+                                            </FormItem>
+                                          )}
+                                        />
+
+                                        <FormField
+                                          control={form.control}
+                                          name="swiftcode"
+                                          render={({ field }) => (
+                                            <FormItem>
+                                              <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
+                                                Swift Code
+                                              </FormLabel>
+                                              <FormControl>
+                                                <Input
+                                                  placeholder="Enter SWIFT code"
+                                                  {...field}
+                                                  className="input-focus-glow font-mono"
+                                                />
+                                              </FormControl>
+                                              <FormMessage />
+                                            </FormItem>
+                                          )}
+                                        />
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {/* Withdrawal Summary */}
+                                  <WithdrawalSummary
+                                    coinSymbol={selectedCoin}
+                                    coinName={selectedCoinName}
+                                    amount={watchedAmount || "0"}
+                                    network={watchedNetwork || ""}
+                                  />
+
+                                  {/* Submit / Reset */}
+                                  <div className="flex gap-3 pt-1">
+                                    <Button
+                                      type="submit"
+                                      className="gradient-btn-green flex-1 gap-2 px-8 py-3 text-sm sm:flex-none"
+                                      disabled={isSubmitting}
                                     >
-                                      <FormControl>
-                                        <SelectTrigger className="input-focus-glow">
-                                          <SelectValue placeholder="Select payment method" />
-                                        </SelectTrigger>
-                                      </FormControl>
-                                      <SelectContent className="border-white/[0.08] bg-[#0f1220]">
-                                        <SelectItem value="crypto">Cryptocurrency</SelectItem>
-                                        <SelectItem value="wire_transfer">Wire Transfer</SelectItem>
-                                      </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
+                                      <ArrowUpFromLine className="h-4 w-4" />
+                                      {isSubmitting
+                                        ? "Submitting..."
+                                        : "Submit Withdrawal Request"}
+                                    </Button>
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      className="rounded-xl border-white/[0.08] bg-[#131a28] text-[#8b97a8] transition-all duration-200 hover:border-white/[0.14] hover:bg-[#1a2438] hover:text-white"
+                                      onClick={() => form.reset()}
+                                    >
+                                      Reset
+                                    </Button>
+                                  </div>
+                                </form>
+                              </Form>
                             </div>
                           </div>
 
-                          {/* Crypto fields */}
-                          {method === "crypto" && (
-                            <div className="space-y-4 rounded-xl border border-white/[0.04] bg-[#0a0d15] p-4">
-                              <FormField
-                                control={form.control}
-                                name="network"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">Network</FormLabel>
-                                    <Select
-                                      onValueChange={field.onChange}
-                                      defaultValue={field.value}
-                                    >
-                                      <FormControl>
-                                        <SelectTrigger className="input-focus-glow">
-                                          <SelectValue placeholder="Select network" />
-                                        </SelectTrigger>
-                                      </FormControl>
-                                      <SelectContent className="border-white/[0.08] bg-[#0f1220]">
-                                        {data?.crypto_networks?.map((network) => (
-                                          <SelectItem key={network} value={network}>
-                                            {network}
-                                          </SelectItem>
-                                        ))}
-                                      </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
+                          {/* Processing Timeline */}
+                          <ProcessingTimeline />
+                        </>
+                      ) : (
+                        <>
+                          {/* Staked Withdrawal Panel */}
+                          <StakedWithdrawalPanel />
+                        </>
+                      )}
+                    </>
+                  )}
 
-                              <FormField
-                                control={form.control}
-                                name="wallet_address"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
-                                      Destination Wallet Address
-                                    </FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        placeholder="Enter your external wallet address (e.g. bc1q...)"
-                                        {...field}
-                                        className="input-focus-glow font-mono text-xs"
-                                      />
-                                    </FormControl>
-                                    <div className="mt-1.5 flex items-center gap-1 text-[11px] text-[#5f6b7f]">
-                                      <TriangleAlert className="h-3 w-3 text-[#FF9800]" />
-                                      Double-check the address and network. Transactions cannot be reversed.
-                                    </div>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                            </div>
-                          )}
+                  {/* FAQ (shown for both modes) */}
+                  <WithdrawalFAQ />
+                </div>
 
-                          {/* Wire transfer fields */}
-                          {method === "wire_transfer" && (
-                            <div className="space-y-4 rounded-xl border border-white/[0.04] bg-[#0a0d15] p-4">
-                              <FormField
-                                control={form.control}
-                                name="bank_name"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">Bank Name</FormLabel>
-                                    <FormControl>
-                                      <Input placeholder="Enter bank name" {...field} className="input-focus-glow" />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
+                {/* RIGHT COLUMN */}
+                <div className="flex flex-col gap-4">
+                  {/* Penalty Schedule + Milestones (withdraw only) */}
+                  {activeMode === "withdraw" && <PenaltySchedule />}
 
-                              <FormField
-                                control={form.control}
-                                name="bank_address"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">Bank Address</FormLabel>
-                                    <FormControl>
-                                      <Input placeholder="Enter bank address" {...field} className="input-focus-glow" />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-
-                              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                <FormField
-                                  control={form.control}
-                                  name="account_number"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">Account Number</FormLabel>
-                                      <FormControl>
-                                        <Input placeholder="Enter account number" {...field} className="input-focus-glow font-mono" />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-
-                                <FormField
-                                  control={form.control}
-                                  name="account_name"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">Account Name</FormLabel>
-                                      <FormControl>
-                                        <Input placeholder="Enter account name" {...field} className="input-focus-glow" />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                              </div>
-
-                              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                <FormField
-                                  control={form.control}
-                                  name="iban_number"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">IBAN Number</FormLabel>
-                                      <FormControl>
-                                        <Input placeholder="Enter IBAN Number" {...field} className="input-focus-glow font-mono" />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-
-                                <FormField
-                                  control={form.control}
-                                  name="swiftcode"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">Swift Code</FormLabel>
-                                      <FormControl>
-                                        <Input placeholder="Enter SWIFT code" {...field} className="input-focus-glow font-mono" />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Withdrawal Summary */}
-                          <WithdrawalSummary
-                            coinSymbol={selectedCoin}
-                            coinName={selectedCoinName}
-                            amount={watchedAmount || "0"}
-                            network={watchedNetwork || ""}
-                          />
-
-                          {/* Submit / Reset */}
-                          <div className="flex gap-3 pt-1">
-                            <Button
-                              type="submit"
-                              className="gradient-btn-green flex-1 gap-2 px-8 py-3 text-sm sm:flex-none"
-                              disabled={isSubmitting}
-                            >
-                              <ArrowUpFromLine className="h-4 w-4" />
-                              {isSubmitting ? "Submitting..." : "Submit Withdrawal Request"}
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              className="rounded-xl border-white/[0.08] bg-[#131a28] text-[#8b97a8] transition-all duration-200 hover:border-white/[0.14] hover:bg-[#1a2438] hover:text-white"
-                              onClick={() => form.reset()}
-                            >
-                              Reset
-                            </Button>
-                          </div>
-                        </form>
-                      </Form>
+                  {/* Transaction History */}
+                  <div className="rounded-2xl border border-white/[0.06] bg-[#0f1220] p-5">
+                    <div className="mb-4 text-sm font-extrabold text-white">
+                      Transaction History
                     </div>
+                    {activeMode === "deposit" ? (
+                      <DepositHistory key={refreshTrigger} />
+                    ) : (
+                      <WithdrawalHistory refreshTrigger={refreshTrigger} />
+                    )}
                   </div>
-
-                  {/* Processing Timeline */}
-                  <ProcessingTimeline />
-                </>
-              ) : (
-                <>
-                  {/* ── Staked Withdrawal Panel ── */}
-                  <StakedWithdrawalPanel />
-                </>
-              )}
-            </>
-          )}
-
-          {/* ── FAQ (shown for both modes) ── */}
-          <WithdrawalFAQ />
-        </div>
-
-        {/* ═══ RIGHT COLUMN ═══ */}
-        <div className="flex flex-col gap-4">
-          {/* Penalty Schedule + Milestones (withdraw only) */}
-          {activeMode === "withdraw" && <PenaltySchedule />}
-
-          {/* Transaction History */}
-          <div className="rounded-2xl border border-white/[0.06] bg-[#0f1220] p-5">
-            <div className="mb-4 text-sm font-extrabold text-white">
-              Transaction History
-            </div>
-            {activeMode === "deposit" ? (
-              <DepositHistory key={refreshTrigger} />
-            ) : (
-              <WithdrawalHistory refreshTrigger={refreshTrigger} />
+                </div>
+              </div>
             )}
-          </div>
+          </main>
         </div>
       </div>
 
@@ -561,6 +783,6 @@ export default function WithdrawalForm() {
         onConfirm={handleConfirm}
         isSubmitting={isSubmitting}
       />
-    </div>
+    </>
   );
 }
