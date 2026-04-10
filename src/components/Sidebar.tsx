@@ -60,7 +60,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
     { title: "Personal Information", icon: User, path: "/main/personal" },
     { title: "Withdrawal", icon: ArrowUpDown, path: "/main/withdrawal" },
     { title: "Deposit History", icon: History, path: "/main/deposit-history" },
-    { title: "Verification", icon: FileCheck, path: "/main/verification" },
+    { title: "Verification", icon: FileCheck, path: "/main/kyc" },
     { title: "KYC Partners", icon: Handshake, path: "/main/kyc-partners" },
     { title: "Accounts", icon: Folders, path: "/main/accounts" },
     // { title: "Live Chat", icon: MessageSquare, path: "/main/chat" },

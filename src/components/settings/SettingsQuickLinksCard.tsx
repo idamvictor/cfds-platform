@@ -1,20 +1,20 @@
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
+  UserCircle,
   ShieldCheck,
+  Wallet,
   IdCard,
-  Sliders,
-  MessageSquare,
 } from "lucide-react";
 
 const LINKS = [
+  { to: "/main/personal", icon: UserCircle, label: "Personal Information" },
   { to: "/main/security", icon: ShieldCheck, label: "Security Settings" },
   { to: "/main/kyc", icon: IdCard, label: "KYC Verification" },
-  { to: "/main/settings", icon: Sliders, label: "Preferences" },
-  { to: "/main/chat", icon: MessageSquare, label: "Contact Support" },
+  { to: "/main/withdrawal", icon: Wallet, label: "Withdraw Funds" },
 ];
 
-export function ProfileQuickLinksCard() {
+export function SettingsQuickLinksCard() {
   return (
     <div className="glass-card p-5 md:p-7">
       <div className="mb-5 flex items-center gap-2">

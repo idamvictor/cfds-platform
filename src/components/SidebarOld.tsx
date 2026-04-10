@@ -37,7 +37,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
     { title: "Dashboard", icon: LayoutDashboard, path: "/main/dashboard" },
     { title: "Personal Information", icon: User, path: "/main/personal" },
     { title: "Withdrawal", icon: ArrowUpDown, path: "/main/withdrawal" },
-    { title: "Verification", icon: FileCheck, path: "/main/verification" },
+    { title: "Verification", icon: FileCheck, path: "/main/kyc" },
     { title: "Accounts", icon: Folders, path: "/main/accounts" },
     { title: "Live Chat", icon: MessageSquare, path: "/main/chat" },
     { title: "Savings", icon: PiggyBank, path: "/main/savings" },

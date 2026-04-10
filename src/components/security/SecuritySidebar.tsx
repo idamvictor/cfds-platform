@@ -9,7 +9,7 @@ interface SecuritySidebarProps {
 const items = [
   { label: "Profile", icon: User, href: "/main/personal" },
   { label: "Security", icon: Lock, href: "/main/security" },
-  { label: "KYC Verification", icon: IdCard, href: "/main/verification" },
+  { label: "KYC Verification", icon: IdCard, href: "/main/kyc" },
   { label: "Preferences", icon: Sliders, href: "/main/settings" },
   { label: "Notifications", icon: Bell, href: "/main/settings" },
 ];

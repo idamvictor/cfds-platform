@@ -25,7 +25,7 @@ const navTop = [
 
 const navMid = [
   { title: "Trading Plans", icon: Clock, href: "/main/accounts" },
-  { title: "Fund Protection", icon: ShieldCheck, href: "/main/verification" },
+  { title: "Fund Protection", icon: ShieldCheck, href: "/main/kyc" },
   { title: "Fund Managers", icon: Users, href: "/main/kyc-partners" },
   { title: "Welcome Bonus", icon: Gift, href: "/main/savings" },
 ];

@@ -54,7 +54,7 @@ export function KYCDialog({ open, onOpenChange, onClose }: KYCDialogProps) {
   const handleStartVerification = () => {
     onOpenChange(false);
     onClose?.();
-    navigate("/main/verification");
+    navigate("/main/kyc");
   };
 
   return (

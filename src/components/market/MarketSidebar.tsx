@@ -37,7 +37,7 @@ const topNav: NavItem[] = [
 
 const midNav: NavItem[] = [
   { label: "Trading Plans", icon: Clock, href: "/main/accounts" },
-  { label: "Fund Protection", icon: ShieldCheck, href: "/main/verification" },
+  { label: "Fund Protection", icon: ShieldCheck, href: "/main/kyc" },
   { label: "Fund Managers", icon: Users, href: "/main/kyc-partners" },
 ];
 

@@ -1,206 +1,178 @@
-import * as React from "react";
-import {
-  Settings,
-  Coins,
-  Languages,
-  User,
-  ArrowRight,
-  UserCircle,
-  ShieldCheck,
-  Wallet,
-} from "lucide-react";
+import { useEffect, useState } from "react";
+import { Settings, Lock, Coins, Languages } from "lucide-react";
+import { WalletNav } from "@/components/wallet/WalletNav";
+import { SecuritySidebar } from "@/components/security/SecuritySidebar";
 import { CurrencySelector } from "@/components/settings/currency-selector";
 import { LanguageSelector } from "@/components/settings/language-selector";
 import { PasswordChangeCard } from "@/components/security/PasswordChangeCard";
+import { SettingsHeroCard } from "@/components/settings/SettingsHeroCard";
+import { AccountSnapshotCard } from "@/components/settings/AccountSnapshotCard";
+import { SettingsQuickLinksCard } from "@/components/settings/SettingsQuickLinksCard";
+import { SettingsTipsCard } from "@/components/settings/SettingsTipsCard";
+import { HelpSupportCard } from "@/components/settings/HelpSupportCard";
 import useUserStore from "@/store/userStore";
-import { Link } from "react-router-dom";
 
 // ── Main component ─────────────────────────────────────────────────
 export default function SettingsPage() {
-  // ── Read-only user data for Account Snapshot ──
+  // Read user once at the page level; pass slices down as props.
   const user = useUserStore((state) => state.user);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Hide MainLayout chrome while this page is mounted (matches security/personal)
+  useEffect(() => {
+    document.body.classList.add("settings-active");
+    return () => {
+      document.body.classList.remove("settings-active");
+    };
+  }, []);
 
   return (
-    <div className="flex flex-col gap-6 p-4 md:p-8 max-w-6xl mx-auto w-full">
-      {/* ── Page Header ── */}
-      <div className="flex items-center gap-3 mb-1">
-        <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-[#00dfa2]/10">
-          <Settings className="h-5 w-5 text-[#00dfa2]" />
-        </div>
-        <div>
-          <h1 className="text-lg font-extrabold tracking-tight text-[#eef2f7]">
-            Settings
-          </h1>
-          <p className="text-[11px] text-[#4a5468] font-semibold">
-            Manage your password, currency, and language preferences
-          </p>
-        </div>
-      </div>
+    <>
+      <style>{`
+        body.settings-active .fixed.top-0.left-0.right-0.z-20,
+        body.settings-active .fixed.top-\\[60px\\].left-0.bottom-0 {
+          display: none !important;
+        }
+        body.settings-active .flex.flex-1.pt-\\[90px\\] {
+          padding-top: 0 !important;
+        }
+        body.settings-active .flex-1.md\\:ml-\\[80px\\] {
+          margin-left: 0 !important;
+        }
+      `}</style>
 
-      {/* ── Two-column layout ── */}
-      <div className="grid items-start gap-5 xl:grid-cols-[1fr_340px]">
-        {/* ── LEFT COLUMN: main settings ── */}
-        <div className="flex flex-col gap-5">
-          {/* ── Password Section (extracted shared component) ── */}
-          <PasswordChangeCard />
-
-          {/* ── Currency Section ── */}
-          <div className="glass-card p-5 md:p-7">
-            <div className="flex items-center gap-2 mb-6">
-              <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#00dfa2]">
-                Dashboard Currency
-              </span>
-              <div className="flex-1 h-px bg-white/[0.06]" />
-              <Coins className="h-4 w-4 text-[#4a5468]" />
-            </div>
-            <CurrencySelector />
-          </div>
-
-          {/* ── Language Section ── */}
-          <div className="glass-card p-5 md:p-7">
-            <div className="flex items-center gap-2 mb-6">
-              <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#00dfa2]">
-                Dashboard Language
-              </span>
-              <div className="flex-1 h-px bg-white/[0.06]" />
-              <Languages className="h-4 w-4 text-[#4a5468]" />
-            </div>
-            <LanguageSelector />
-          </div>
-        </div>
-
-        {/* ── RIGHT COLUMN: sidebar ── */}
-        <div className="flex flex-col gap-5">
-          {/* ── Account Snapshot ── */}
-          <div className="glass-card p-5 md:p-7">
-            <div className="flex items-center gap-2 mb-5">
-              <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#00dfa2]">
-                Account Snapshot
-              </span>
-              <div className="flex-1 h-px bg-white/[0.06]" />
-            </div>
-
-            <div className="flex items-center gap-3 mb-5">
-              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/[0.04] border border-white/[0.08] overflow-hidden">
-                {user?.avatar ? (
-                  <img
-                    src={user.avatar}
-                    alt="Avatar"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <User className="h-5 w-5 text-[#4a5468]" />
-                )}
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-extrabold text-[#eef2f7] truncate">
-                  {user?.first_name} {user?.last_name}
-                </p>
-                <p className="text-[10px] text-[#4a5468] font-medium truncate">
-                  {user?.email}
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <SnapshotRow
-                label="Account ID"
-                value={user?.account_id || "—"}
-              />
-              <SnapshotRow
-                label="Plan"
-                value={user?.account_type?.title || "Basic"}
-              />
-              <SnapshotRow
-                label="Verification"
-                value={user?.verification_status || "—"}
-                highlight={
-                  user?.verification_status === "verified"
-                    ? "#00dfa2"
-                    : "#FF9800"
-                }
-              />
-            </div>
-          </div>
-
-          {/* ── Quick Links ── */}
-          <div className="glass-card p-5 md:p-7">
-            <div className="flex items-center gap-2 mb-5">
-              <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#00dfa2]">
-                Quick Links
-              </span>
-              <div className="flex-1 h-px bg-white/[0.06]" />
-            </div>
-
-            <div className="space-y-2">
-              <QuickLink
-                to="/main/personal"
-                icon={<UserCircle className="h-4 w-4" />}
-                label="Personal Information"
-              />
-              <QuickLink
-                to="/main/verification"
-                icon={<ShieldCheck className="h-4 w-4" />}
-                label="Verification"
-              />
-              <QuickLink
-                to="/main/withdrawal"
-                icon={<Wallet className="h-4 w-4" />}
-                label="Withdraw Funds"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Snapshot Row (presentational) ── */
-function SnapshotRow({
-  label,
-  value,
-  highlight,
-}: {
-  label: string;
-  value: string;
-  highlight?: string;
-}) {
-  return (
-    <div className="flex items-center justify-between py-2 border-b border-white/[0.04] last:border-0">
-      <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
-        {label}
-      </span>
-      <span
-        className="text-xs font-bold capitalize"
-        style={{ color: highlight || "#eef2f7" }}
+      <div
+        className="fixed inset-0 z-30 flex flex-col font-[Inter,-apple-system,sans-serif]"
+        style={{
+          background: "linear-gradient(135deg,#07080c 0%,#0a0d15 100%)",
+          color: "#eef2f7",
+        }}
       >
-        {value}
-      </span>
-    </div>
-  );
-}
+        {/* Top nav (reused) */}
+        <WalletNav onToggleSidebar={() => setIsSidebarOpen(true)} />
 
-/* ── Quick Link (presentational) ── */
-function QuickLink({
-  to,
-  icon,
-  label,
-}: {
-  to: string;
-  icon: React.ReactNode;
-  label: string;
-}) {
-  return (
-    <Link
-      to={to}
-      className="flex items-center gap-3 rounded-lg px-3 py-2.5 border border-white/[0.04] bg-white/[0.02] text-[#8b97a8] hover:bg-white/[0.05] hover:text-[#eef2f7] hover:border-white/[0.1] transition-all group"
-    >
-      <span className="text-[#4a5468] group-hover:text-[#00dfa2] transition-colors">
-        {icon}
-      </span>
-      <span className="text-xs font-bold flex-1">{label}</span>
-      <ArrowRight className="h-3.5 w-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-    </Link>
+        {/* Layout: secondary sidebar + main */}
+        <div className="grid flex-1 grid-cols-1 md:grid-cols-[260px_1fr] min-h-0">
+          <SecuritySidebar
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+          />
+
+          <main
+            className="overflow-y-auto p-5 md:p-9"
+            style={{ maxHeight: "100%" }}
+          >
+            {/* Page header */}
+            <div className="mb-7 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#00dfa2]/10">
+                <Settings className="h-5 w-5 text-[#00dfa2]" />
+              </div>
+              <div>
+                <h1 className="font-[Outfit,sans-serif] text-[1.65rem] font-extrabold tracking-[-0.03em] text-[#eef2f7]">
+                  Settings
+                </h1>
+                <p className="mt-0.5 text-[0.87rem] text-[#4a5468]">
+                  Manage your password, currency, and language preferences
+                </p>
+              </div>
+            </div>
+
+            {/* Two-column content */}
+            <div className="grid items-start gap-5 xl:grid-cols-[1fr_340px]">
+              {/* ── LEFT COLUMN ── */}
+              <div className="flex flex-col gap-5">
+                <SettingsHeroCard
+                  firstName={user?.first_name}
+                  lastName={user?.last_name}
+                  email={user?.email}
+                  avatar={user?.avatar}
+                  planTitle={user?.account_type?.title}
+                />
+
+                {/* Security & Login */}
+                <section>
+                  <div className="mb-4 flex items-center gap-2.5">
+                    <div
+                      className="flex h-9 w-9 items-center justify-center rounded-[10px]"
+                      style={{
+                        background: "rgba(0,223,162,0.1)",
+                        color: "#00dfa2",
+                      }}
+                    >
+                      <Lock className="h-[0.88rem] w-[0.88rem]" />
+                    </div>
+                    <h2 className="text-[1.05rem] font-extrabold text-[#eef2f7]">
+                      Password &amp; Login
+                    </h2>
+                  </div>
+                  {/* Existing component — UNCHANGED */}
+                  <PasswordChangeCard />
+                </section>
+
+                {/* Localization */}
+                <section>
+                  <div className="mb-4 flex items-center gap-2.5">
+                    <div
+                      className="flex h-9 w-9 items-center justify-center rounded-[10px]"
+                      style={{
+                        background: "rgba(0,223,162,0.1)",
+                        color: "#00dfa2",
+                      }}
+                    >
+                      <Languages className="h-[0.88rem] w-[0.88rem]" />
+                    </div>
+                    <h2 className="text-[1.05rem] font-extrabold text-[#eef2f7]">
+                      Localization
+                    </h2>
+                  </div>
+
+                  {/* Currency */}
+                  <div className="glass-card p-5 md:p-7 mb-5">
+                    <div className="flex items-center gap-2 mb-6">
+                      <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#00dfa2]">
+                        Dashboard Currency
+                      </span>
+                      <div className="flex-1 h-px bg-white/[0.06]" />
+                      <Coins className="h-4 w-4 text-[#4a5468]" />
+                    </div>
+                    {/* Existing component — UNCHANGED */}
+                    <CurrencySelector />
+                  </div>
+
+                  {/* Language */}
+                  <div className="glass-card p-5 md:p-7">
+                    <div className="flex items-center gap-2 mb-6">
+                      <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#00dfa2]">
+                        Dashboard Language
+                      </span>
+                      <div className="flex-1 h-px bg-white/[0.06]" />
+                      <Languages className="h-4 w-4 text-[#4a5468]" />
+                    </div>
+                    {/* Existing component — UNCHANGED */}
+                    <LanguageSelector />
+                  </div>
+                </section>
+              </div>
+
+              {/* ── RIGHT COLUMN ── */}
+              <div className="flex flex-col gap-5">
+                <AccountSnapshotCard
+                  firstName={user?.first_name}
+                  lastName={user?.last_name}
+                  email={user?.email}
+                  avatar={user?.avatar}
+                  accountId={user?.account_id}
+                  planTitle={user?.account_type?.title}
+                  verificationStatus={user?.verification_status}
+                />
+                <SettingsQuickLinksCard />
+                <SettingsTipsCard />
+                <HelpSupportCard />
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    </>
   );
 }
