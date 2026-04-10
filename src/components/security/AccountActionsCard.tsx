@@ -1,7 +1,7 @@
 import { CircleAlert, Snowflake, Ban, Download } from "lucide-react";
 
 interface ActionRowProps {
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
   iconColor: string;
   title: string;
   description: string;
