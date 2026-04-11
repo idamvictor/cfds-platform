@@ -247,7 +247,7 @@ export default function WithdrawalForm() {
         <WalletNav onToggleSidebar={() => setIsSidebarOpen(true)} />
 
         {/* Layout: sidebar + main */}
-        <div className="grid flex-1 grid-cols-1 md:grid-cols-[260px_1fr] min-h-0">
+        <div className="grid flex-1 grid-cols-1 lg:grid-cols-[260px_1fr] min-h-0">
           <WalletSidebar
             currentView={viewMode}
             onChangeView={setViewMode}

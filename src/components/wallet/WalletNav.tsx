@@ -30,7 +30,7 @@ export function WalletNav({ onToggleSidebar }: WalletNavProps) {
 
   return (
     <nav
-      className="sticky top-0 z-[300] flex h-16 items-center justify-between border-b border-[rgba(255,255,255,0.06)] px-4 backdrop-blur-[40px] md:px-8"
+      className="sticky top-0 z-[300] flex h-16 items-center justify-between border-b border-[rgba(255,255,255,0.06)] px-4 backdrop-blur-[40px] lg:px-8"
       style={{
         background:
           "linear-gradient(145deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))",
@@ -41,7 +41,7 @@ export function WalletNav({ onToggleSidebar }: WalletNavProps) {
           <button
             onClick={onToggleSidebar}
             aria-label="Toggle sidebar"
-            className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.03)] text-[#8b97a8] transition-colors hover:bg-[rgba(255,255,255,0.06)] hover:text-[#eef2f7] md:hidden"
+            className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.03)] text-[#8b97a8] transition-colors hover:bg-[rgba(255,255,255,0.06)] hover:text-[#eef2f7] lg:hidden"
           >
             <Menu className="h-[1.1rem] w-[1.1rem]" />
           </button>
@@ -62,7 +62,7 @@ export function WalletNav({ onToggleSidebar }: WalletNavProps) {
         </Link>
       </div>
 
-      <div className="hidden gap-1 md:flex">
+      <div className="hidden gap-1 lg:flex">
         {navLinks.map((link) => {
           const isActive = location.pathname === link.href;
           return (

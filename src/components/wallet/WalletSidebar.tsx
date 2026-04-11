@@ -58,14 +58,14 @@ export function WalletSidebar({
       {/* Mobile backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm lg:hidden"
           onClick={onClose}
         />
       )}
 
       <aside
-        className={`fixed left-0 top-16 bottom-0 z-[250] w-[260px] flex-col gap-0.5 overflow-y-auto border-r border-[rgba(255,255,255,0.06)] p-4 backdrop-blur-[40px] transition-transform duration-200 md:static md:top-0 md:flex md:translate-x-0 ${
-          isOpen ? "flex translate-x-0" : "-translate-x-full md:translate-x-0"
+        className={`fixed left-0 top-16 bottom-0 z-[250] w-[260px] flex-col gap-0.5 overflow-y-auto border-r border-[rgba(255,255,255,0.06)] p-4 backdrop-blur-[40px] transition-transform duration-200 lg:static lg:top-0 lg:flex lg:translate-x-0 ${
+          isOpen ? "flex translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
         style={{
           background:

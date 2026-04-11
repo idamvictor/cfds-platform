@@ -49,7 +49,7 @@ export default function SecurityPage() {
         <WalletNav onToggleSidebar={() => setIsSidebarOpen(true)} />
 
         {/* Layout: secondary sidebar + main */}
-        <div className="grid flex-1 grid-cols-1 md:grid-cols-[260px_1fr] min-h-0">
+        <div className="grid flex-1 grid-cols-1 lg:grid-cols-[260px_1fr] min-h-0">
           <SecuritySidebar
             isOpen={isSidebarOpen}
             onClose={() => setIsSidebarOpen(false)}
