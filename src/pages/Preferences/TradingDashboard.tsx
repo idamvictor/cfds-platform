@@ -79,7 +79,7 @@ export default function Dashboard() {
   }, []);
 
   const dashboardCardFallback = (
-    <div className="min-h-[240px] animate-pulse rounded-2xl border-[1.5px] border-white/[0.06] bg-[linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))]" />
+    <div className="min-h-[240px] animate-pulse rounded-2xl border-[1.5px] border-white/[0.06] bg-[#111319]" />
   );
 
   return (
@@ -95,6 +95,30 @@ export default function Dashboard() {
         }
         body.dashboard-active .flex-1.md\\:ml-\\[80px\\] {
           margin-left: 0 !important;
+        }
+
+        /* Top Stories widget — dashboard only: mute to match page palette */
+        body.dashboard-active .top-stories-widget {
+          opacity: 0.7;
+          filter: brightness(0.85) saturate(0.6);
+          font-family: Inter, -apple-system, sans-serif !important;
+          text-transform: uppercase;
+          letter-spacing: 0.16em;
+          font-size: 0.75rem;
+          font-weight: 600;
+        }
+        body.dashboard-active .top-stories-widget * {
+          font-family: inherit !important;
+          text-transform: inherit !important;
+          letter-spacing: inherit !important;
+          font-size: inherit !important;
+          font-weight: inherit !important;
+        }
+        body.dashboard-active .top-stories-widget .tradingview-widget-copyright,
+        body.dashboard-active .top-stories-widget .tradingview-widget-copyright a,
+        body.dashboard-active .top-stories-widget .tradingview-widget-copyright span {
+          color: #5f6b82 !important;
+          font-size: 0.75rem !important;
         }
       `}</style>
 
@@ -170,7 +194,7 @@ export default function Dashboard() {
             {/* ═══ STAT CARDS ═══ */}
             <div className="mb-6 grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-[1.2fr_1fr_1fr_0.9fr]">
               {/* Account Balance — special card */}
-              <div className="scard relative overflow-hidden rounded-2xl border-[1.5px] border-white/[0.06] bg-[linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-[22px_24px] shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]">
+              <div className="scard relative overflow-hidden rounded-2xl border-[1.5px] border-white/[0.06] bg-[#111319] p-[22px_24px] shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]">
                 <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[linear-gradient(175deg,rgba(255,255,255,0.03),transparent_40%)]" />
                 <div className="relative">
                   <div className="mb-4 flex items-center justify-between">
@@ -212,7 +236,7 @@ export default function Dashboard() {
                   </div>
 
                   <Button
-                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-[10px] border-none bg-[linear-gradient(135deg,#00dfa2,#00b881)] py-3 text-[0.82rem] font-extrabold tracking-[0.02em] text-[#07080c] shadow-[0_4px_16px_rgba(0,223,162,0.2)] transition-all hover:-translate-y-px hover:shadow-[0_6px_24px_rgba(0,223,162,0.3)]"
+                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-[10px] border-none bg-[linear-gradient(135deg,#00dfa2,#00b881)] py-3 text-[0.82rem] font-bold tracking-[0.02em] text-[#07080c] shadow-[0_4px_16px_rgba(0,223,162,0.2)] transition-all hover:-translate-y-px hover:shadow-[0_6px_24px_rgba(0,223,162,0.3)]"
                     onClick={() => navigate("/trading")}
                   >
                     Open Trade Room
@@ -252,7 +276,7 @@ export default function Dashboard() {
               {marketTickers.map((ticker) => (
                 <div
                   key={ticker.symbol}
-                  className="rounded-xl border border-white/6 bg-[#0d131d] px-3 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]"
+                  className="rounded-xl border border-white/6 bg-[#111319] px-3 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <div>
@@ -290,7 +314,7 @@ export default function Dashboard() {
             {/* ═══ BOTTOM GRID: Chart + Success Rate ═══ */}
             <div className="mb-6 grid gap-5 grid-cols-1 lg:grid-cols-[1fr_340px]">
               {/* Trading Results */}
-              <div className="gcard relative overflow-hidden rounded-2xl border-[1.5px] border-white/[0.06] bg-[linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]">
+              <div className="gcard relative overflow-hidden rounded-2xl border-[1.5px] border-white/[0.06] bg-[#111319] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]">
                 <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[linear-gradient(175deg,rgba(255,255,255,0.03),transparent_40%)]" />
                 <div className="relative">
                   <Suspense fallback={dashboardCardFallback}>
@@ -300,7 +324,7 @@ export default function Dashboard() {
               </div>
 
               {/* Success Rate */}
-              <div className="gcard relative overflow-hidden rounded-2xl border-[1.5px] border-white/[0.06] bg-[linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]">
+              <div className="gcard relative overflow-hidden rounded-2xl border-[1.5px] border-white/[0.06] bg-[#111319] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]">
                 <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[linear-gradient(175deg,rgba(255,255,255,0.03),transparent_40%)]" />
                 <div className="relative">
                   <Suspense fallback={dashboardCardFallback}>
@@ -311,18 +335,18 @@ export default function Dashboard() {
             </div>
 
             {/* ═══ TOP STORIES ═══ */}
-            <div className="gcard relative overflow-hidden rounded-2xl border-[1.5px] border-white/[0.06] bg-[linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]">
+            <div className="gcard relative overflow-hidden rounded-2xl border-[1.5px] border-white/[0.06] bg-[#111319] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]">
               <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[linear-gradient(175deg,rgba(255,255,255,0.03),transparent_40%)]" />
               <div className="relative">
                 <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <h2 className="text-[0.88rem] font-bold text-[#eef2f7]">
+                  <h2 className="text-xs font-semibold uppercase tracking-[0.16em] text-[#5f6b82]">
                     Top Market Stories
                   </h2>
                   <a
                     href="https://www.tradingview.com/"
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-[#00dfa2] transition hover:text-[#00ffc3]"
+                    className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#5f6b82] transition hover:text-[#eef2f7]"
                   >
                     Track all markets on TradingView
                     <ArrowRight className="h-4 w-4" />

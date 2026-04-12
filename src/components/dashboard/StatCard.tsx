@@ -30,7 +30,7 @@ export function StatCard({
   iconTone = "green",
 }: StatCardProps) {
   return (
-    <div className="scard relative overflow-hidden rounded-2xl border-[1.5px] border-white/[0.06] bg-[linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-[22px_24px] shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]">
+    <div className="scard relative overflow-hidden rounded-2xl border-[1.5px] border-white/[0.06] bg-[#111319] p-[22px_24px] shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]">
       <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[linear-gradient(175deg,rgba(255,255,255,0.03),transparent_40%)]" />
       <div className="relative">
         <div className="mb-4 flex items-center justify-between">
