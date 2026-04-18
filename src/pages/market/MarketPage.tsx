@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Landmark, Flame, Newspaper } from "lucide-react";
 import useAssetStore, { type Asset } from "@/store/assetStore";
 import { useMarketWatchSyntheticTicker } from "@/hooks/useMarketWatchSyntheticTicker";
+import { useAssetWebSocket } from "@/hooks/useAssetWebsocket";
 
 import { TickerBar } from "@/components/dashboard/TickerBar";
 import { MarketSidebar } from "@/components/market/MarketSidebar";
@@ -96,10 +97,21 @@ export default function MarketPage() {
   const assets = useAssetStore((s) => s.assets);
   const setActiveAsset = useAssetStore((s) => s.setActiveAsset);
   const isLoading = useAssetStore((s) => s.isLoading);
+  const fetchAssets = useAssetStore((s) => s.fetchAssets);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<TabKey>("all");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Fetch assets from API on mount (mirrors AssetInitializer pattern)
+  useEffect(() => {
+    fetchAssets().catch((err) => {
+      console.error("MarketPage - Error fetching assets:", err);
+    });
+  }, [fetchAssets]);
+
+  // Subscribe to WebSocket price stream (mirrors AssetPriceStreamInitializer)
+  useAssetWebSocket();
 
   // Synthetic ticker for live price updates (UNCHANGED)
   const { getDisplayQuote } = useMarketWatchSyntheticTicker(assets);
@@ -112,7 +124,18 @@ export default function MarketPage() {
     };
   }, []);
 
-  // ------ Filtered & sorted assets for heatmap + table (UNCHANGED) ------
+  // Resolve a change% for an asset, preferring live quote, falling back to REST payload
+  const getChangePercent = useCallback(
+    (a: Asset) => {
+      const live = getDisplayQuote(a).changePercent;
+      if (Number.isFinite(live) && live !== 0) return live;
+      const rest = Number(a.change_percent);
+      return Number.isFinite(rest) ? rest : 0;
+    },
+    [getDisplayQuote]
+  );
+
+  // ------ Filtered & sorted assets for heatmap + table ------
   const filteredAssets = useMemo(() => {
     let list = [...assets];
 
@@ -130,23 +153,23 @@ export default function MarketPage() {
 
     // Tab filter
     if (activeTab === "gainers") {
-      list = list.filter((a) => Number(a.change_percent || 0) > 0);
-      list.sort((a, b) => Number(b.change_percent || 0) - Number(a.change_percent || 0));
+      list = list.filter((a) => getChangePercent(a) > 0);
+      list.sort((a, b) => getChangePercent(b) - getChangePercent(a));
     } else if (activeTab === "losers") {
-      list = list.filter((a) => Number(a.change_percent || 0) < 0);
-      list.sort((a, b) => Number(a.change_percent || 0) - Number(b.change_percent || 0));
+      list = list.filter((a) => getChangePercent(a) < 0);
+      list.sort((a, b) => getChangePercent(a) - getChangePercent(b));
     } else if (activeTab !== "all") {
       list = list.filter((a) => a.type === activeTab);
     }
 
     return list;
-  }, [assets, searchTerm, activeTab]);
+  }, [assets, searchTerm, activeTab, getChangePercent]);
 
-  // Top crypto assets for the heatmap (UNCHANGED)
+  // Top crypto assets for the heatmap (falls back to any assets if no crypto present)
   const heatmapAssets = useMemo(() => {
-    return assets
-      .filter((a) => a.type === "crypto")
-      .slice(0, 18);
+    const crypto = assets.filter((a) => a.type === "crypto");
+    const list = crypto.length > 0 ? crypto : assets;
+    return list.slice(0, 18);
   }, [assets]);
 
   const handleTradeClick = useCallback(
@@ -216,16 +239,18 @@ export default function MarketPage() {
                 <MarketStatsStrip stats={MARKET_STATS} />
 
                 {/* Heatmap */}
-                {heatmapAssets.length > 0 && (
-                  <>
-                    <MarketSection icon={<Flame className="h-3.5 w-3.5" />} title="Market Heatmap" />
-                    <MarketHeatmap
-                      assets={heatmapAssets}
-                      getQuote={getDisplayQuote}
-                      onAssetClick={handleTradeClick}
-                      formatPrice={formatPrice}
-                    />
-                  </>
+                <MarketSection icon={<Flame className="h-3.5 w-3.5" />} title="Market Heatmap" />
+                {heatmapAssets.length > 0 ? (
+                  <MarketHeatmap
+                    assets={heatmapAssets}
+                    getQuote={getDisplayQuote}
+                    onAssetClick={handleTradeClick}
+                    formatPrice={formatPrice}
+                  />
+                ) : (
+                  <div className="mb-7 rounded-[10px] border border-white/[0.04] bg-white/[0.02] px-4 py-6 text-center text-[0.72rem] text-[#4a5468]">
+                    No assets available for heatmap.
+                  </div>
                 )}
 
                 {/* Market Table */}

@@ -161,13 +161,14 @@ export function ExchangePartners({ onBack }: ExchangePartnersProps) {
   ];
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0f1220] p-5 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)] sm:p-6">
-      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.02] to-transparent" />
+    <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0f1220]/70 p-5 shadow-[0_12px_40px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl sm:p-6">
+      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.04] via-transparent to-transparent" />
+      <div className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-[#00dfa2]/[0.05] blur-3xl" />
 
       <div className="relative">
         {/* Step header */}
         <div className="mb-5 flex items-start gap-3">
-          <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-[#00dfa2] text-xs font-extrabold text-[#07080c]">
+          <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#00ffc3] to-[#00dfa2] text-xs font-extrabold text-[#07080c] shadow-[0_4px_12px_rgba(0,223,162,0.35),inset_0_1px_0_rgba(255,255,255,0.3)]">
             2
           </div>
           <div>
@@ -188,10 +189,10 @@ export function ExchangePartners({ onBack }: ExchangePartnersProps) {
               key={mode}
               type="button"
               onClick={() => setSortMode(mode)}
-              className={`rounded-lg border px-3.5 py-1.5 text-xs font-bold transition-all duration-150 ${
+              className={`rounded-lg border px-3.5 py-1.5 text-xs font-bold backdrop-blur-md transition-all duration-200 ${
                 sortMode === mode
-                  ? "border-[#00dfa2]/40 bg-[#00dfa2]/10 text-[#00dfa2]"
-                  : "border-white/[0.06] bg-[#0a0d15] text-[#4a5468] hover:border-white/[0.12] hover:text-[#8b97a8]"
+                  ? "border-[#00dfa2]/40 bg-[#00dfa2]/10 text-[#00dfa2] shadow-[0_0_0_1px_rgba(0,223,162,0.08),inset_0_1px_0_rgba(255,255,255,0.05)]"
+                  : "border-white/[0.06] bg-white/[0.02] text-[#4a5468] hover:border-white/[0.12] hover:bg-white/[0.04] hover:text-[#8b97a8]"
               }`}
             >
               {label}
@@ -205,7 +206,7 @@ export function ExchangePartners({ onBack }: ExchangePartnersProps) {
             <button
               type="button"
               onClick={onBack}
-              className="flex items-center gap-1.5 rounded-lg border border-white/[0.06] bg-[#0a0d15] px-3 py-1.5 text-xs font-bold text-[#8b97a8] transition-all duration-150 hover:border-white/[0.12] hover:text-white"
+              className="flex items-center gap-1.5 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-1.5 text-xs font-bold text-[#8b97a8] backdrop-blur-md transition-all duration-200 hover:border-white/[0.12] hover:bg-white/[0.04] hover:text-white"
             >
               <ArrowLeft className="h-3 w-3" />
               Change Method
@@ -214,24 +215,24 @@ export function ExchangePartners({ onBack }: ExchangePartnersProps) {
         )}
 
         {/* Exchange cards grid */}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {sorted.map((p) => (
             <div
               key={p.name}
-              className="group relative flex cursor-pointer flex-col overflow-hidden rounded-xl border-[1.5px] border-white/[0.08] bg-[#0a0d15] transition-all duration-200 hover:-translate-y-0.5 hover:border-white/[0.14] hover:shadow-[0_4px_12px_rgba(0,0,0,0.4)]"
+              className="group relative flex cursor-pointer flex-col overflow-hidden rounded-xl border border-white/[0.07] bg-[#0a0d15]/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.14] hover:bg-[#0a0d15]/80 hover:shadow-[0_8px_24px_rgba(0,0,0,0.45),0_0_0_1px_rgba(0,223,162,0.08),inset_0_1px_0_rgba(255,255,255,0.05)]"
             >
               {/* Hover accent bar */}
-              <div className="absolute inset-x-0 top-0 h-[3px] bg-transparent transition-all duration-200 group-hover:bg-gradient-to-r group-hover:from-[#00dfa2] group-hover:to-[#00ffc3]" />
+              <div className="absolute inset-x-0 top-0 h-[2px] bg-transparent transition-all duration-300 group-hover:bg-gradient-to-r group-hover:from-transparent group-hover:via-[#00dfa2] group-hover:to-transparent" />
 
               {/* Card top */}
               <div
-                className="flex items-center gap-2.5 border-b border-white/[0.04] px-4 py-3"
+                className="flex items-center gap-2.5 border-b border-white/[0.05] px-4 py-3"
                 style={{
-                  background: `linear-gradient(135deg, ${p.color}11, ${p.color}08)`,
+                  background: `linear-gradient(135deg, ${p.color}14, ${p.color}06 55%, transparent)`,
                 }}
               >
                 <div
-                  className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg text-[13px] font-black tracking-tight"
+                  className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg text-[13px] font-black tracking-tight shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_4px_10px_rgba(0,0,0,0.3)]"
                   style={{ background: p.color, color: p.textColor }}
                 >
                   {p.abbr}
@@ -243,7 +244,7 @@ export function ExchangePartners({ onBack }: ExchangePartnersProps) {
                   <div className="text-[11px] text-[#4a5468]">{p.via}</div>
                 </div>
                 <span
-                  className="flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold"
+                  className="flex items-center gap-1 rounded-full border border-white/[0.04] px-2 py-0.5 text-[10px] font-bold backdrop-blur-sm"
                   style={{
                     background: p.badgeBg,
                     color: p.badgeColor,
@@ -264,7 +265,11 @@ export function ExchangePartners({ onBack }: ExchangePartnersProps) {
                   ].map((item) => (
                     <div
                       key={item.label}
-                      className="rounded-md bg-[#0f1220] px-1 py-2 text-center"
+                      className={`rounded-md border px-1 py-2 text-center backdrop-blur-sm ${
+                        item.highlight
+                          ? "border-[#c8e64e]/15 bg-[#c8e64e]/[0.04]"
+                          : "border-white/[0.04] bg-white/[0.02]"
+                      }`}
                     >
                       <div className="mb-0.5 text-[9px] font-bold uppercase tracking-[0.06em] text-[#4a5468]">
                         {item.label}
@@ -281,7 +286,7 @@ export function ExchangePartners({ onBack }: ExchangePartnersProps) {
                 </div>
 
                 {/* Total cost row */}
-                <div className="mb-2.5 flex items-center justify-between border-y border-white/[0.04] py-2">
+                <div className="mb-2.5 flex items-center justify-between border-y border-white/[0.05] py-2">
                   <span className="text-[11px] text-[#4a5468]">
                     Total Est. Cost
                   </span>
@@ -301,14 +306,15 @@ export function ExchangePartners({ onBack }: ExchangePartnersProps) {
               <div className="px-4 pb-4">
                 <button
                   type="button"
-                  className="flex w-full items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 text-xs font-bold transition-all duration-150 hover:brightness-110"
+                  className="relative flex w-full items-center justify-center gap-1.5 overflow-hidden rounded-lg px-4 py-2.5 text-xs font-bold shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_4px_14px_rgba(0,0,0,0.25)] transition-all duration-200 hover:brightness-110 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_6px_18px_rgba(0,0,0,0.35)]"
                   style={{
-                    background: p.color,
+                    background: `linear-gradient(180deg, ${p.color}, ${p.color}e6)`,
                     color: p.textColor,
                   }}
                 >
-                  <ArrowRight className="h-3.5 w-3.5" />
-                  Buy via {p.name}
+                  <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/15 to-transparent" />
+                  <ArrowRight className="relative h-3.5 w-3.5" />
+                  <span className="relative">Buy via {p.name}</span>
                 </button>
               </div>
             </div>
