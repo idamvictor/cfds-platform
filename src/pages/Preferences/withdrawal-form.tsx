@@ -41,8 +41,9 @@ import { StakedWithdrawalPanel } from "@/components/withdrawal/StakedWithdrawalP
 import { WithdrawalFAQ } from "@/components/withdrawal/WithdrawalFAQ";
 import { ContributePanel } from "@/components/deposit/ContributePanel";
 import DepositHistory from "@/components/deposit-history";
-import { WalletNav } from "@/components/wallet/WalletNav";
-import { WalletSidebar, type WalletView } from "@/components/wallet/WalletSidebar";
+import type { WalletView } from "@/components/wallet/WalletSidebar";
+import { MarketSidebar } from "@/components/market/MarketSidebar";
+import { TickerBar } from "@/components/dashboard/TickerBar";
 import { WalletOverviewPanel } from "@/components/wallet/WalletOverviewPanel";
 import { WalletAssetsPanel } from "@/components/wallet/WalletAssetsPanel";
 import { WalletGoldPanel } from "@/components/wallet/WalletGoldPanel";
@@ -243,19 +244,17 @@ export default function WithdrawalForm() {
           color: "#eef2f7",
         }}
       >
-        {/* Top nav */}
-        <WalletNav onToggleSidebar={() => setIsSidebarOpen(true)} />
+        {/* Top scrolling ticker bar (Markets page pattern) */}
+        <TickerBar />
 
         {/* Layout: sidebar + main */}
-        <div className="grid flex-1 grid-cols-1 lg:grid-cols-[260px_1fr] min-h-0">
-          <WalletSidebar
-            currentView={viewMode}
-            onChangeView={setViewMode}
+        <div className="grid flex-1 grid-cols-1 md:grid-cols-[60px_1fr] min-h-0">
+          <MarketSidebar
             isOpen={isSidebarOpen}
             onClose={() => setIsSidebarOpen(false)}
           />
 
-          <main className="overflow-y-auto p-5 md:p-9" style={{ maxHeight: "100%" }}>
+          <main className="overflow-y-auto px-4 py-7 md:px-8" style={{ maxHeight: "100%" }}>
             {/* Page Head */}
             <div className="mb-7">
               <h1 className="flex items-center gap-2.5 font-[Outfit,sans-serif] text-[1.65rem] font-extrabold tracking-[-0.03em] text-[#eef2f7]">
