@@ -45,6 +45,7 @@ import type { WalletView } from "@/components/wallet/WalletSidebar";
 import { MarketSidebar } from "@/components/market/MarketSidebar";
 import { TickerBar } from "@/components/dashboard/TickerBar";
 import { WalletOverviewPanel } from "@/components/wallet/WalletOverviewPanel";
+import { WalletOverviewExtras } from "@/components/wallet/WalletOverviewExtras";
 import { WalletAssetsPanel } from "@/components/wallet/WalletAssetsPanel";
 import { WalletGoldPanel } from "@/components/wallet/WalletGoldPanel";
 import { GoldTierBanner } from "@/components/wallet/GoldTierBanner";
@@ -314,7 +315,12 @@ export default function WithdrawalForm() {
             <GoldTierBanner />
 
             {/* ═══ OVERVIEW VIEW ═══ */}
-            {viewMode === "overview" && <WalletOverviewPanel />}
+            {viewMode === "overview" && (
+              <>
+                <WalletOverviewPanel />
+                <WalletOverviewExtras />
+              </>
+            )}
 
             {/* ═══ ASSETS VIEW ═══ */}
             {viewMode === "assets" && <WalletAssetsPanel />}
