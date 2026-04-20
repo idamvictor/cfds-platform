@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { UserCircle } from "lucide-react";
+import { UserCircle, Menu } from "lucide-react";
 import { PersonalInfoForm } from "@/components/personal/PersonalInfoForm";
-import { WalletNav } from "@/components/wallet/WalletNav";
-import { SecuritySidebar } from "@/components/security/SecuritySidebar";
+import { TickerBar } from "@/components/dashboard/TickerBar";
+import { AccountsSidebar } from "@/components/accounts/AccountsSidebar";
 import { ProfileHeroCard } from "@/components/personal/ProfileHeroCard";
 import { ProfileCompletionCard } from "@/components/personal/ProfileCompletionCard";
 import { ProfileIdentityCard } from "@/components/personal/ProfileIdentityCard";
@@ -46,12 +46,23 @@ export default function PersonalInformation() {
           color: "#eef2f7",
         }}
       >
-        {/* Top nav (reused) */}
-        <WalletNav onToggleSidebar={() => setIsSidebarOpen(true)} />
+        {/* Top scrolling ticker bar (reused from Markets) */}
+        <TickerBar />
 
-        {/* Layout: secondary sidebar + main */}
-        <div className="grid flex-1 grid-cols-1 lg:grid-cols-[260px_1fr] min-h-0">
-          <SecuritySidebar
+        {/* Mobile-only sidebar trigger — mirrors MarketHeader's trigger */}
+        <div className="flex items-center border-b border-[rgba(255,255,255,0.06)] bg-[rgba(7,8,12,0.75)] px-3 py-1.5 md:hidden">
+          <button
+            onClick={() => setIsSidebarOpen(true)}
+            aria-label="Toggle navigation"
+            className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.03)] text-[#8b97a8] transition-colors hover:bg-[rgba(255,255,255,0.06)] hover:text-[#eef2f7]"
+          >
+            <Menu className="h-[1.05rem] w-[1.05rem]" />
+          </button>
+        </div>
+
+        {/* Layout: icon-only sidebar + main */}
+        <div className="grid flex-1 grid-cols-1 md:grid-cols-[60px_1fr] min-h-0">
+          <AccountsSidebar
             isOpen={isSidebarOpen}
             onClose={() => setIsSidebarOpen(false)}
           />
