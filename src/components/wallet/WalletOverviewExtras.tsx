@@ -9,26 +9,25 @@ const STRENGTH_STATS = [
   { label: "Streak", value: "+5", color: "#00dfa2" },
 ];
 
+const scardBg =
+  "linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04),rgba(0,223,162,0.02))";
+const scardHighlight =
+  "linear-gradient(175deg,rgba(255,255,255,0.04),transparent 40%)";
+
 export function WalletOverviewExtras() {
   return (
-    <div className="mb-7 flex flex-col gap-[14px]">
+    <div className="flex flex-col gap-[14px]">
       {/* Trading Strength */}
       <div
-        className="relative overflow-hidden rounded-2xl border-[1.5px] border-[rgba(255,255,255,0.08)] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)]"
-        style={{
-          background:
-            "linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))",
-        }}
+        className="relative overflow-hidden rounded-2xl border-[1.5px] border-[rgba(255,255,255,0.08)] p-7 shadow-[0_8px_32px_rgba(0,0,0,0.4),0_2px_8px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-[40px]"
+        style={{ background: scardBg }}
       >
         <div
           className="pointer-events-none absolute inset-0 rounded-2xl"
-          style={{
-            background:
-              "linear-gradient(175deg,rgba(255,255,255,0.04),transparent 40%)",
-          }}
+          style={{ background: scardHighlight }}
         />
         <div className="relative">
-          <div className="mb-4 flex items-center gap-2.5 text-[0.95rem] font-extrabold text-[#eef2f7]">
+          <div className="mb-5 flex items-center gap-2.5 border-b border-[rgba(255,255,255,0.06)] pb-4 text-[0.95rem] font-extrabold text-[#eef2f7]">
             <Zap className="h-4 w-4 text-[#00dfa2]" />
             Trading Strength
           </div>
@@ -54,7 +53,7 @@ export function WalletOverviewExtras() {
                 className="rounded-lg p-2 text-center"
                 style={{ background: "rgba(255,255,255,0.03)" }}
               >
-                <div className="mb-[3px] text-[0.6rem] font-bold uppercase tracking-[0.08em] text-[#3a4556]">
+                <div className="mb-[3px] text-[0.6rem] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
                   {s.label}
                 </div>
                 <div
@@ -72,22 +71,16 @@ export function WalletOverviewExtras() {
       {/* Realised / Unrealised P&L */}
       <div className="grid grid-cols-1 gap-[14px] sm:grid-cols-2">
         <div
-          className="relative overflow-hidden rounded-2xl border-[1.5px] border-[rgba(255,255,255,0.08)] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)]"
-          style={{
-            background:
-              "linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))",
-          }}
+          className="relative overflow-hidden rounded-2xl border-[1.5px] border-[rgba(255,255,255,0.08)] p-7 shadow-[0_8px_32px_rgba(0,0,0,0.4),0_2px_8px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-[40px]"
+          style={{ background: scardBg }}
         >
           <div
             className="pointer-events-none absolute inset-0 rounded-2xl"
-            style={{
-              background:
-                "linear-gradient(175deg,rgba(255,255,255,0.04),transparent 40%)",
-            }}
+            style={{ background: scardHighlight }}
           />
           <div className="relative">
-            <div className="mb-3 flex items-center gap-2 text-[0.82rem] font-extrabold text-[#eef2f7]">
-              <ChartLine className="h-[0.82rem] w-[0.82rem] text-[#00dfa2]" />
+            <div className="mb-5 flex items-center gap-2.5 border-b border-[rgba(255,255,255,0.06)] pb-4 text-[0.95rem] font-extrabold text-[#eef2f7]">
+              <ChartLine className="h-4 w-4 text-[#00dfa2]" />
               Realised P&amp;L
             </div>
             <div className="font-mono text-[1.6rem] font-extrabold leading-none text-[#00dfa2]">
@@ -97,22 +90,16 @@ export function WalletOverviewExtras() {
           </div>
         </div>
         <div
-          className="relative overflow-hidden rounded-2xl border-[1.5px] border-[rgba(255,255,255,0.08)] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)]"
-          style={{
-            background:
-              "linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))",
-          }}
+          className="relative overflow-hidden rounded-2xl border-[1.5px] border-[rgba(255,255,255,0.08)] p-7 shadow-[0_8px_32px_rgba(0,0,0,0.4),0_2px_8px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-[40px]"
+          style={{ background: scardBg }}
         >
           <div
             className="pointer-events-none absolute inset-0 rounded-2xl"
-            style={{
-              background:
-                "linear-gradient(175deg,rgba(255,255,255,0.04),transparent 40%)",
-            }}
+            style={{ background: scardHighlight }}
           />
           <div className="relative">
-            <div className="mb-3 flex items-center gap-2 text-[0.82rem] font-extrabold text-[#eef2f7]">
-              <ChartBar className="h-[0.82rem] w-[0.82rem] text-[#00dfa2]" />
+            <div className="mb-5 flex items-center gap-2.5 border-b border-[rgba(255,255,255,0.06)] pb-4 text-[0.95rem] font-extrabold text-[#eef2f7]">
+              <ChartBar className="h-4 w-4 text-[#00dfa2]" />
               Unrealised P&amp;L
             </div>
             <div className="font-mono text-[1.6rem] font-extrabold leading-none text-[#00dfa2]">

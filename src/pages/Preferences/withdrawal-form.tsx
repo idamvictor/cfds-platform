@@ -31,6 +31,7 @@ import {
   TriangleAlert,
   ChartPie,
   Coins,
+  History,
 } from "lucide-react";
 import { WithdrawalModeBar } from "@/components/withdrawal/WithdrawalModeBar";
 import { CoinGrid } from "@/components/withdrawal/CoinGrid";
@@ -258,8 +259,8 @@ export default function WithdrawalForm() {
           <main className="overflow-y-auto px-4 py-7 md:px-8" style={{ maxHeight: "100%" }}>
             {/* Page Head */}
             <div className="mb-7">
-              <h1 className="flex items-center gap-2.5 font-[Outfit,sans-serif] text-[1.65rem] font-extrabold tracking-[-0.03em] text-[#eef2f7]">
-                <ChartPie className="h-5 w-5 text-[#00dfa2]" />
+              <h1 className="flex items-center gap-2.5 font-[Outfit,sans-serif] text-[1.65rem] font-extrabold leading-tight tracking-[-0.03em] text-[#eef2f7]">
+                <ChartPie className="h-[1.4rem] w-[1.4rem] text-[#00dfa2]" />
                 My Wallet
               </h1>
               <p className="mt-1 text-[0.87rem] text-[#4a5468]">
@@ -763,8 +764,15 @@ export default function WithdrawalForm() {
                   {activeMode === "withdraw" && <PenaltySchedule />}
 
                   {/* Transaction History */}
-                  <div className="rounded-2xl border border-white/[0.06] bg-[#0f1220] p-5">
-                    <div className="mb-4 text-sm font-extrabold text-white">
+                  <div
+                    className="rounded-[14px] border border-[rgba(255,255,255,0.06)] p-[22px]"
+                    style={{
+                      background:
+                        "linear-gradient(145deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))",
+                    }}
+                  >
+                    <div className="mb-3.5 flex items-center gap-2 border-b border-[rgba(255,255,255,0.06)] pb-3 text-[0.85rem] font-extrabold text-[#eef2f7]">
+                      <History className="h-[0.95rem] w-[0.95rem] text-[#00dfa2]" />
                       Transaction History
                     </div>
                     {activeMode === "deposit" ? (
