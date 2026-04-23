@@ -22,7 +22,13 @@ export function ProfileHeroCard({
   const isVerified = verificationStatus === "verified";
 
   return (
-    <div className="glass-card p-5 md:p-7">
+    <div
+      className="relative rounded-2xl border border-white/[0.06] p-5 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)] md:p-7"
+      style={{
+        background:
+          "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+      }}
+    >
       <div className="flex items-center gap-4">
         {/* Avatar */}
         <div

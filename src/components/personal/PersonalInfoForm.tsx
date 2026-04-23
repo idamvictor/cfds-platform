@@ -181,7 +181,13 @@ export function PersonalInfoForm({
       className="flex flex-col gap-6 w-full"
     >
       {/* Personal Details Card */}
-      <div className="glass-card p-5 md:p-7">
+      <div
+        className="relative rounded-2xl border border-white/[0.06] p-5 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)] md:p-7"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+        }}
+      >
         {/* Section header with accent top border */}
         <div className="flex items-center gap-2 mb-6">
           <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#00dfa2]">
@@ -200,7 +206,7 @@ export function PersonalInfoForm({
             <Input
               id="first_name"
               {...register("first_name")}
-              className="h-10 bg-white/[0.03] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] placeholder:text-[#3a4556] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all"
+              className="h-10 !bg-[#14161c] border-[1.5px] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] placeholder:text-[#3a4556] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all"
             />
           </FieldGroup>
 
@@ -213,7 +219,7 @@ export function PersonalInfoForm({
             <Input
               id="last_name"
               {...register("last_name")}
-              className="h-10 bg-white/[0.03] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] placeholder:text-[#3a4556] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all"
+              className="h-10 !bg-[#14161c] border-[1.5px] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] placeholder:text-[#3a4556] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all"
             />
           </FieldGroup>
 
@@ -226,7 +232,7 @@ export function PersonalInfoForm({
             <Input
               id="address"
               {...register("address")}
-              className="h-10 bg-white/[0.03] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] placeholder:text-[#3a4556] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all"
+              className="h-10 !bg-[#14161c] border-[1.5px] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] placeholder:text-[#3a4556] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all"
             />
           </FieldGroup>
 
@@ -240,7 +246,7 @@ export function PersonalInfoForm({
               defaultValue={user?.country || "maldives"}
               onValueChange={(value) => setValue("country", value)}
             >
-              <SelectTrigger className="h-10 bg-white/[0.03] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all">
+              <SelectTrigger className="h-10 !bg-[#14161c] border-[1.5px] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all">
                 <SelectValue placeholder="Select a country" />
               </SelectTrigger>
               <SelectContent className="bg-[#0f1220] border-white/[0.08]">
@@ -263,7 +269,7 @@ export function PersonalInfoForm({
               id="birth_date"
               type="date"
               {...register("birth_date")}
-              className="h-10 bg-white/[0.03] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] placeholder:text-[#3a4556] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all [color-scheme:dark]"
+              className="h-10 !bg-[#14161c] border-[1.5px] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] placeholder:text-[#3a4556] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all [color-scheme:dark]"
             />
           </FieldGroup>
 
@@ -277,7 +283,7 @@ export function PersonalInfoForm({
               id="email"
               type="email"
               {...register("email")}
-              className="h-10 bg-white/[0.03] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] placeholder:text-[#3a4556] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all"
+              className="h-10 !bg-[#14161c] border-[1.5px] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] placeholder:text-[#3a4556] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all"
             />
           </FieldGroup>
 
@@ -291,7 +297,7 @@ export function PersonalInfoForm({
               id="phone"
               type="tel"
               {...register("phone")}
-              className="h-10 bg-white/[0.03] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] placeholder:text-[#3a4556] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all"
+              className="h-10 !bg-[#14161c] border-[1.5px] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] placeholder:text-[#3a4556] focus:border-[#00dfa2]/50 focus:ring-1 focus:ring-[#00dfa2]/10 transition-all"
             />
           </FieldGroup>
 
@@ -305,7 +311,7 @@ export function PersonalInfoForm({
               id="account_type"
               value={user?.account_type?.title || "Basic Plan"}
               disabled
-              className="h-10 bg-white/[0.02] border-white/[0.06] rounded-lg text-sm text-[#8b97a8] cursor-not-allowed transition-all"
+              className="h-10 !bg-[#14161c] border-[1.5px] border-white/[0.08] rounded-lg text-sm text-[#eef2f7] cursor-not-allowed transition-all"
             />
           </FieldGroup>
         </div>
@@ -315,7 +321,7 @@ export function PersonalInfoForm({
           <Button
             type="submit"
             disabled={isLoading}
-            className="bg-gradient-to-br from-[#00dfa2] to-[#00b881] text-[#07080c] font-extrabold text-xs px-6 py-2.5 rounded-lg shadow-[0_4px_16px_rgba(0,223,162,0.2)] hover:shadow-[0_6px_24px_rgba(0,223,162,0.3)] hover:-translate-y-px transition-all active:scale-[0.98] disabled:opacity-50"
+            className="!bg-[#00dfa2] text-[#07080c] font-extrabold text-xs px-6 py-2.5 rounded-lg shadow-[0_4px_16px_rgba(0,223,162,0.2)] hover:shadow-[0_6px_24px_rgba(0,223,162,0.3)] hover:-translate-y-px transition-all active:scale-[0.98] disabled:opacity-50"
           >
             {isLoading ? "Submitting..." : submitLabel}
           </Button>
@@ -337,7 +343,13 @@ export function PersonalInfoForm({
 
       {/* Profile Photo Card (optional — hidden inside KYC flow) */}
       {showProfilePhoto && (
-        <div className="glass-card p-5 md:p-7">
+        <div
+          className="relative rounded-2xl border border-white/[0.06] p-5 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)] md:p-7"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+          }}
+        >
           <div className="flex items-center gap-2 mb-6">
             <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#00dfa2]">
               Profile Photo
