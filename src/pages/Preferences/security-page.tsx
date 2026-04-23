@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Lock } from "lucide-react";
-import { WalletNav } from "@/components/wallet/WalletNav";
+import { Lock, Menu } from "lucide-react";
+import { TickerBar } from "@/components/dashboard/TickerBar";
 import { SecuritySidebar } from "@/components/security/SecuritySidebar";
 import { SecurityScoreCard } from "@/components/security/SecurityScoreCard";
 import { TwoFactorSection } from "@/components/security/TwoFactorSection";
@@ -45,11 +45,11 @@ export default function SecurityPage() {
           color: "#eef2f7",
         }}
       >
-        {/* Top nav (reused) */}
-        <WalletNav onToggleSidebar={() => setIsSidebarOpen(true)} />
+        {/* Top scrolling ticker bar (matches Market page) */}
+        <TickerBar />
 
         {/* Layout: secondary sidebar + main */}
-        <div className="grid flex-1 grid-cols-1 lg:grid-cols-[260px_1fr] min-h-0">
+        <div className="grid flex-1 grid-cols-1 md:grid-cols-[60px_1fr] min-h-0">
           <SecuritySidebar
             isOpen={isSidebarOpen}
             onClose={() => setIsSidebarOpen(false)}
@@ -60,13 +60,22 @@ export default function SecurityPage() {
             style={{ maxHeight: "100%" }}
           >
             {/* Page header */}
-            <div className="mb-7">
-              <h1 className="font-[Outfit,sans-serif] text-[1.65rem] font-extrabold tracking-[-0.03em] text-[#eef2f7]">
-                Security Settings
-              </h1>
-              <p className="mt-1 text-[0.87rem] text-[#4a5468]">
-                Protect your account with advanced security features
-              </p>
+            <div className="mb-7 flex items-start gap-3">
+              <button
+                onClick={() => setIsSidebarOpen(true)}
+                aria-label="Toggle navigation"
+                className="md:hidden flex h-9 w-9 items-center justify-center rounded-[10px] border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.03)] text-[#8b97a8] transition-colors hover:bg-[rgba(255,255,255,0.06)] hover:text-[#eef2f7]"
+              >
+                <Menu className="h-[1.05rem] w-[1.05rem]" />
+              </button>
+              <div>
+                <h1 className="font-[Outfit,sans-serif] text-[1.65rem] font-extrabold tracking-[-0.03em] text-[#eef2f7]">
+                  Security Settings
+                </h1>
+                <p className="mt-1 text-[0.87rem] text-[#4a5468]">
+                  Protect your account with advanced security features
+                </p>
+              </div>
             </div>
 
             {/* Security Score */}

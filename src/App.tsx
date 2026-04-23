@@ -61,6 +61,12 @@ const DepositHistoryPage = lazy(
   () => import("./pages/Preferences/deposit-history-page"),
 );
 const KYCPartners = lazy(() => import("./pages/Preferences/KYCPartners"));
+const TradingPlansPage = lazy(
+  () => import("./pages/Preferences/trading-plans-page"),
+);
+const TradeAccessPage = lazy(
+  () => import("./pages/Preferences/trade-access-page"),
+);
 const TradingPlatformLight = lazy(() =>
   import("./components/mt4-light/trading-platform-light").then((module) => ({
     default: module.TradingPlatformLight,
@@ -202,6 +208,14 @@ const App = () => {
                     <Route path="/main/kyc" element={<KYCWelcomePage />} />
                     <Route path="/main/kyc/flow" element={<KYCFlowPage />} />
                     <Route path="/main/kyc/awaiting" element={<KYCAwaitingPage />} />
+                    <Route
+                      path="/main/trading-plans"
+                      element={<TradingPlansPage />}
+                    />
+                    <Route
+                      path="/main/trade-access"
+                      element={<TradeAccessPage />}
+                    />
                     <Route path="/main/test" element={<Test />} />
                   </Route>
 
