@@ -139,7 +139,7 @@ export function PasswordChangeCard() {
                         type={showCurrentPassword ? "text" : "password"}
                         placeholder="Enter current password"
                         {...field}
-                        className="input-focus-glow h-10 rounded-lg pr-10 text-sm placeholder:text-[#3a4556] bg-[#14161c]"
+                        className="input-focus-glow h-10 rounded-lg pr-10 text-sm placeholder:text-[#3a4556] !bg-[#14161c]"
                       />
                       <button
                         type="button"
@@ -182,7 +182,7 @@ export function PasswordChangeCard() {
                         type={showNewPassword ? "text" : "password"}
                         placeholder="Min. 8 characters"
                         {...field}
-                        className="input-focus-glow h-10 rounded-lg pr-10 text-sm placeholder:text-[#3a4556] bg-[#14161c]"
+                        className="input-focus-glow h-10 rounded-lg pr-10 text-sm placeholder:text-[#3a4556] !bg-[#14161c]"
                       />
                       <button
                         type="button"
@@ -222,7 +222,7 @@ export function PasswordChangeCard() {
                         type={showConfirmPassword ? "text" : "password"}
                         placeholder="Re-enter new password"
                         {...field}
-                        className="input-focus-glow h-10 rounded-lg pr-10 text-sm placeholder:text-[#3a4556] bg-[#14161c] md:max-w-[calc(50%-0.625rem)]"
+                        className="input-focus-glow h-10 rounded-lg pr-10 text-sm placeholder:text-[#3a4556] !bg-[#14161c] md:max-w-[calc(50%-0.625rem)]"
                       />
                       <button
                         type="button"
@@ -255,7 +255,7 @@ export function PasswordChangeCard() {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="gradient-btn-green text-xs font-extrabold px-6 py-2.5 active:scale-[0.98] disabled:opacity-50"
+              className="bg-[#061f1d] text-xs font-extrabold px-6 py-2.5 active:scale-[0.98] disabled:opacity-50"
             >
               {isSubmitting ? "Changing Password..." : "Change Password"}
             </Button>
