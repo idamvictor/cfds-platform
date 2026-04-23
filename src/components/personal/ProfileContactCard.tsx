@@ -32,11 +32,11 @@ export function ProfileContactCard({ email, phone }: ProfileContactCardProps) {
 
 function Item({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <div className="flex items-center gap-3 rounded-lg border-[1.5px] border-white/[0.08] bg-[#14161c] px-3 py-2.5 text-[#eef2f7]">
+    <div className="flex items-center gap-3 rounded-lg border-[1.5px] border-white/[0.08] bg-[#14161c] px-3 py-2.5 text-[#d7dde5]">
       <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#00dfa2]/[0.08] text-[#00dfa2]">
         {icon}
       </span>
-      <span className="flex-1 truncate text-xs font-semibold text-[#eef2f7]">
+      <span className="flex-1 truncate text-xs font-semibold text-[#d7dde5]">
         {label}
       </span>
       <span className="rounded-full border border-[#00dfa2]/20 bg-[#00dfa2]/[0.08] px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.06em] text-[#00dfa2]">

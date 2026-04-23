@@ -54,12 +54,12 @@ function Row({
 }) {
   return (
     <div className="flex items-center justify-between gap-3 border-b border-white/[0.04] py-2 last:border-0">
-      <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4a5468]">
+      <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#8b97a8]">
         {label}
       </span>
       <span
         className="truncate text-xs font-bold capitalize"
-        style={{ color: highlight || "#eef2f7" }}
+        style={{ color: highlight || "#d7dde5" }}
       >
         {value}
       </span>

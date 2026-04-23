@@ -35,9 +35,9 @@ export function ProfileQuickLinksCard() {
           <Link
             key={to}
             to={to}
-            className="group flex items-center gap-3 rounded-lg border-[1.5px] border-white/[0.08] bg-[#14161c] px-3 py-2.5 text-[#eef2f7] transition-all hover:border-white/[0.14] hover:bg-[#191c23]"
+            className="group flex items-center gap-3 rounded-lg border-[1.5px] border-white/[0.08] bg-[#14161c] px-3 py-2.5 text-[#d7dde5] transition-all hover:border-white/[0.14] hover:bg-[#191c23]"
           >
-            <span className="text-[#4a5468] transition-colors group-hover:text-[#00dfa2]">
+            <span className="text-[#8b97a8] transition-colors group-hover:text-[#00dfa2]">
               <Icon className="h-4 w-4" />
             </span>
             <span className="flex-1 text-xs font-bold">{label}</span>

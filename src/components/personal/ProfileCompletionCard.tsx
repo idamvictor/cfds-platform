@@ -66,7 +66,7 @@ export function ProfileCompletionCard({ fields }: ProfileCompletionCardProps) {
           return (
             <div
               key={key}
-              className="flex items-center gap-2 rounded-lg border-[1.5px] border-white/[0.08] bg-[#14161c] px-3 py-2 text-[#eef2f7]"
+              className="flex items-center gap-2 rounded-lg border-[1.5px] border-white/[0.08] bg-[#14161c] px-3 py-2 text-[#d7dde5]"
             >
               {filled ? (
                 <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-[#00dfa2]" />
@@ -75,7 +75,7 @@ export function ProfileCompletionCard({ fields }: ProfileCompletionCardProps) {
               )}
               <span
                 className={`text-[11px] font-bold uppercase tracking-[0.06em] ${
-                  filled ? "text-[#eef2f7]" : "text-[#4a5468]"
+                  filled ? "text-[#d7dde5]" : "text-[#8b97a8]"
                 }`}
               >
                 {label}

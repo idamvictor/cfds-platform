@@ -114,7 +114,7 @@ export function PasswordChangeCard() {
       className="rounded-[14px] border border-[rgba(255,255,255,0.06)] p-5"
       style={{
         background:
-          "linear-gradient(145deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))",
+          "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
       }}
     >
       <Form {...form}>
