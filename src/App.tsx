@@ -67,6 +67,9 @@ const TradingPlansPage = lazy(
 const TradeAccessPage = lazy(
   () => import("./pages/Preferences/trade-access-page"),
 );
+const FundManagersPage = lazy(
+  () => import("./pages/Preferences/fund-managers-page"),
+);
 const TradingPlatformLight = lazy(() =>
   import("./components/mt4-light/trading-platform-light").then((module) => ({
     default: module.TradingPlatformLight,
@@ -215,6 +218,10 @@ const App = () => {
                     <Route
                       path="/main/trade-access"
                       element={<TradeAccessPage />}
+                    />
+                    <Route
+                      path="/main/fund-managers"
+                      element={<FundManagersPage />}
                     />
                     <Route path="/main/test" element={<Test />} />
                   </Route>

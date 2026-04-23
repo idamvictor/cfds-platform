@@ -1014,7 +1014,7 @@ export default function TradingPlansPage() {
               { label: "Markets", href: "/main/market" },
               { label: "Trade", href: "/main/dashboard" },
               { label: "Wallet", href: "/main/wallet" },
-              { label: "Fund Managers", href: null },
+              { label: "Fund Managers", href: "/main/fund-managers" },
               { label: "Staking", href: null },
               { label: "Trade Access", href: "/main/trade-access" },
               { label: "Trading Plans", href: "/main/trading-plans" },
