@@ -24,6 +24,7 @@ import {
   HelpCircle,
   TriangleAlert,
   X,
+  Menu,
 } from "lucide-react";
 import useUserStore from "@/store/userStore";
 import useSiteSettingsStore from "@/store/siteSettingStore";
@@ -878,6 +879,7 @@ export default function TradingPlansPage() {
 
   const currentPlanTitle = user?.account_type?.title || "";
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const initials =
     [user?.first_name?.[0], user?.last_name?.[0]]
@@ -969,6 +971,14 @@ export default function TradingPlansPage() {
           font-size: 0.65rem !important;
         }
 
+        /* Responsive navbar: switch to hamburger/mobile-nav below lg (1024px). */
+        @media (max-width: 1023px) {
+          .tp-nav-links { display: none !important; }
+          .tp-mobile-toggle { display: inline-flex !important; }
+        }
+        @media (min-width: 1024px) {
+          .tp-mobile-menu { display: none !important; }
+        }
         @media (max-width: 768px) {
           .tp-nav { padding-left: 12px !important; padding-right: 12px !important; gap: 12px !important; }
           .tp-nav-link { font-size: 0.72rem !important; padding: 5px 8px !important; }
@@ -1008,7 +1018,7 @@ export default function TradingPlansPage() {
             </div>
           </Link>
 
-          <div className="flex flex-1 gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="tp-nav-links flex flex-1 gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {[
               { label: "Dashboard", href: "/main/dashboard" },
               { label: "Markets", href: "/main/market" },
@@ -1046,7 +1056,26 @@ export default function TradingPlansPage() {
             })}
           </div>
 
-          <div className="flex shrink-0 items-center gap-2.5">
+          {/* Right cluster. `ml-auto` keeps it pinned right when .tp-nav-links
+              is hidden below lg (since the links' flex-1 no longer spans). */}
+          <div className="ml-auto flex shrink-0 items-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen((v) => !v)}
+              aria-label="Toggle navigation"
+              aria-expanded={mobileMenuOpen}
+              className="tp-mobile-toggle hidden h-[34px] w-[34px] items-center justify-center rounded-[8px] text-[#8b97a8] transition-colors hover:text-[#eef2f7]"
+              style={{
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(255,255,255,0.08)",
+              }}
+            >
+              {mobileMenuOpen ? (
+                <X className="h-[1rem] w-[1rem]" />
+              ) : (
+                <Menu className="h-[1rem] w-[1rem]" />
+              )}
+            </button>
             <div
               className="flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full border-[1.5px] border-[rgba(255,255,255,0.12)] text-[0.65rem] font-bold text-white"
               style={{ background: "linear-gradient(135deg,#00dfa2,#00b881)" }}
@@ -1056,6 +1085,55 @@ export default function TradingPlansPage() {
             </div>
           </div>
         </nav>
+
+        {/* Mobile dropdown — only when open; hidden ≥ lg by CSS */}
+        {mobileMenuOpen && (
+          <div
+            className="tp-mobile-menu sticky top-[60px] z-[150] flex flex-col gap-1 border-b border-[rgba(255,255,255,0.08)] px-4 py-3 backdrop-blur-[40px]"
+            style={{ background: "rgba(10,13,21,0.96)" }}
+          >
+            {[
+              { label: "Dashboard", href: "/main/dashboard" },
+              { label: "Markets", href: "/main/market" },
+              { label: "Trade", href: "/main/dashboard" },
+              { label: "Wallet", href: "/main/wallet" },
+              { label: "Fund Managers", href: "/main/fund-managers" },
+              { label: "Staking", href: null as string | null },
+              { label: "Trade Access", href: "/main/trade-access" },
+              { label: "Trading Plans", href: "/main/trading-plans" },
+              { label: "Fund Protection", href: null as string | null },
+            ].map((link) => {
+              const isActive = link.href === "/main/trading-plans";
+              const cls = `rounded-[8px] px-3 py-2.5 text-[0.85rem] font-medium transition-colors duration-150 ${
+                isActive
+                  ? "bg-[rgba(0,223,162,0.1)] font-semibold text-[#00dfa2]"
+                  : "text-[#8b97a8] hover:bg-[rgba(255,255,255,0.04)] hover:text-[#eef2f7]"
+              }`;
+              if (link.href) {
+                return (
+                  <Link
+                    key={link.label}
+                    to={link.href}
+                    className={cls}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              }
+              return (
+                <span
+                  key={link.label}
+                  className={`${cls} cursor-pointer`}
+                  role="link"
+                  aria-disabled="true"
+                >
+                  {link.label}
+                </span>
+              );
+            })}
+          </div>
+        )}
 
         {/* HERO */}
         <section

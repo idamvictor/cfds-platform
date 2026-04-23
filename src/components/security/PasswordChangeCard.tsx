@@ -110,14 +110,13 @@ export function PasswordChangeCard() {
   };
 
   return (
-    <div className="glass-card p-5 md:p-7">
-      <div className="flex items-center gap-2 mb-6">
-        <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#00dfa2]">
-          Security
-        </span>
-        <div className="flex-1 h-px bg-white/[0.06]" />
-      </div>
-
+    <div
+      className="rounded-[14px] border border-[rgba(255,255,255,0.06)] p-5"
+      style={{
+        background:
+          "linear-gradient(145deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))",
+      }}
+    >
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleChangePassword)}
@@ -140,7 +139,7 @@ export function PasswordChangeCard() {
                         type={showCurrentPassword ? "text" : "password"}
                         placeholder="Enter current password"
                         {...field}
-                        className="input-focus-glow h-10 rounded-lg pr-10 text-sm placeholder:text-[#3a4556]"
+                        className="input-focus-glow h-10 rounded-lg pr-10 text-sm placeholder:text-[#3a4556] bg-[#14161c]"
                       />
                       <button
                         type="button"
@@ -183,7 +182,7 @@ export function PasswordChangeCard() {
                         type={showNewPassword ? "text" : "password"}
                         placeholder="Min. 8 characters"
                         {...field}
-                        className="input-focus-glow h-10 rounded-lg pr-10 text-sm placeholder:text-[#3a4556]"
+                        className="input-focus-glow h-10 rounded-lg pr-10 text-sm placeholder:text-[#3a4556] bg-[#14161c]"
                       />
                       <button
                         type="button"
@@ -223,7 +222,7 @@ export function PasswordChangeCard() {
                         type={showConfirmPassword ? "text" : "password"}
                         placeholder="Re-enter new password"
                         {...field}
-                        className="input-focus-glow h-10 rounded-lg pr-10 text-sm placeholder:text-[#3a4556] md:max-w-[calc(50%-0.625rem)]"
+                        className="input-focus-glow h-10 rounded-lg pr-10 text-sm placeholder:text-[#3a4556] bg-[#14161c] md:max-w-[calc(50%-0.625rem)]"
                       />
                       <button
                         type="button"
