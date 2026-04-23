@@ -6,7 +6,7 @@ export function WalletAssetsPanel() {
       className="relative overflow-hidden rounded-2xl border-[1.5px] border-[rgba(255,255,255,0.08)] p-7 shadow-[0_8px_32px_rgba(0,0,0,0.4),0_2px_8px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-[40px]"
       style={{
         background:
-          "linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04),rgba(0,223,162,0.02))",
+          "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
       }}
     >
       <div

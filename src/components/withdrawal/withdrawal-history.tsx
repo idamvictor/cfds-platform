@@ -79,7 +79,13 @@ export function WithdrawalHistory({
 
   if (isLoading) {
     return (
-      <div className="glass-card overflow-hidden">
+      <div
+        className="overflow-hidden rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+        }}
+      >
         <Table>
           <TableHeader>
             <TableRow className="bg-[#0a0d15] hover:bg-[#0a0d15] border-b border-white/[0.04]">
@@ -111,12 +117,28 @@ export function WithdrawalHistory({
   }
 
   if (error) {
-    return <div className="glass-card p-6 text-center text-sm text-[#ff5876]">{error}</div>;
+    return (
+      <div
+        className="rounded-2xl border border-white/[0.06] p-6 text-center text-sm text-[#ff5876] shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+        }}
+      >
+        {error}
+      </div>
+    );
   }
 
   return (
     <>
-      <div className="glass-card overflow-hidden">
+      <div
+        className="overflow-hidden rounded-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+        }}
+      >
         <Table>
           <TableHeader>
             <TableRow className="bg-[#0a0d15] hover:bg-[#0a0d15] border-b border-white/[0.04]">

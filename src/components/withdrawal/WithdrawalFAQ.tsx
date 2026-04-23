@@ -49,7 +49,13 @@ export function WithdrawalFAQ() {
   };
 
   return (
-    <div className="rounded-2xl border border-white/[0.06] bg-[#0f1220] p-5">
+    <div
+      className="rounded-2xl border border-white/[0.06] p-5"
+      style={{
+        background:
+          "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+      }}
+    >
       <div className="mb-4 flex items-center gap-2 text-sm font-extrabold text-white">
         <HelpCircle className="h-4 w-4 text-[#c8e64e]" />
         Withdrawal FAQ

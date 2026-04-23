@@ -59,7 +59,13 @@ export function ContributePanel({ onDepositSuccess }: ContributePanelProps) {
     }
 
     return (
-      <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0f1220] p-5 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)] sm:p-6">
+      <div
+      className="relative overflow-hidden rounded-2xl border border-white/[0.06] p-5 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)] sm:p-6"
+      style={{
+        background:
+          "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+      }}
+    >
         <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.02] to-transparent" />
         <div className="relative">
           {selectedMethod === "crypto" ? (
@@ -83,7 +89,13 @@ export function ContributePanel({ onDepositSuccess }: ContributePanelProps) {
 
   // Method-selection view (matches HTML reference design)
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0f1220] p-5 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)] sm:p-6">
+    <div
+      className="relative overflow-hidden rounded-2xl border border-white/[0.06] p-5 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)] sm:p-6"
+      style={{
+        background:
+          "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+      }}
+    >
       <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.02] to-transparent" />
 
       <div className="relative">
@@ -108,7 +120,7 @@ export function ContributePanel({ onDepositSuccess }: ContributePanelProps) {
               className={`flex w-full items-center gap-4 rounded-xl border p-4 text-left transition-all duration-200 ${
                 selectedMethod === "crypto"
                   ? "border-[#00dfa2]/40 bg-[#00dfa2]/[0.06] shadow-[0_0_16px_rgba(0,223,162,0.08)]"
-                  : "border-white/[0.06] bg-[#0a0d15] hover:border-white/[0.12] hover:bg-[#0a0d15]/80"
+                  : "border-white/[0.06] bg-transparent hover:border-white/[0.12] hover:bg-white/[0.04]"
               }`}
             >
               <div
@@ -142,7 +154,7 @@ export function ContributePanel({ onDepositSuccess }: ContributePanelProps) {
             className={`flex w-full items-center gap-4 rounded-xl border p-4 text-left transition-all duration-200 ${
               selectedMethod === "bank-wire"
                 ? "border-[#4A90E2]/40 bg-[#4A90E2]/[0.06] shadow-[0_0_16px_rgba(74,144,226,0.08)]"
-                : "border-white/[0.06] bg-[#0a0d15] hover:border-white/[0.12] hover:bg-[#0a0d15]/80"
+                : "border-white/[0.06] bg-transparent hover:border-white/[0.12] hover:bg-white/[0.04]"
             }`}
           >
             <div
@@ -176,7 +188,7 @@ export function ContributePanel({ onDepositSuccess }: ContributePanelProps) {
               className={`flex w-full items-center gap-4 rounded-xl border p-4 text-left transition-all duration-200 ${
                 selectedMethod === "card"
                   ? "border-[#4A90E2]/40 bg-[#4A90E2]/[0.06] shadow-[0_0_16px_rgba(74,144,226,0.08)]"
-                  : "border-white/[0.06] bg-[#0a0d15] hover:border-white/[0.12] hover:bg-[#0a0d15]/80"
+                  : "border-white/[0.06] bg-transparent hover:border-white/[0.12] hover:bg-white/[0.04]"
               }`}
             >
               <div

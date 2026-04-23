@@ -48,7 +48,7 @@ export function WalletOverviewPanel() {
             className="relative overflow-hidden rounded-[14px] border-[1.5px] border-[rgba(255,255,255,0.08)] px-5 py-[18px] shadow-[0_8px_32px_rgba(0,0,0,0.4),0_2px_8px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.06)]"
             style={{
               background:
-                "linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))",
+                "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
             }}
           >
             {/* inner highlight overlay */}

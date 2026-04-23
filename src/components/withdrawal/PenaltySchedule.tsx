@@ -55,7 +55,13 @@ export function PenaltySchedule() {
   return (
     <div className="flex flex-col gap-4">
       {/* Penalty Tiers */}
-      <div className="rounded-2xl border border-white/[0.06] bg-[#0f1220] p-5">
+      <div
+        className="rounded-2xl border border-white/[0.06] p-5"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+        }}
+      >
         <div className="mb-4 flex items-center gap-2 text-sm font-extrabold text-white">
           <Scale className="h-4 w-4 text-[#FF9800]" />
           Penalty Schedule
@@ -89,7 +95,13 @@ export function PenaltySchedule() {
       </div>
 
       {/* Hold Milestones */}
-      <div className="rounded-2xl border border-white/[0.06] bg-[#0f1220] p-5">
+      <div
+        className="rounded-2xl border border-white/[0.06] p-5"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+        }}
+      >
         <div className="mb-4 flex items-center gap-2 text-sm font-extrabold text-white">
           <Flag className="h-4 w-4 text-[#c8e64e]" />
           Hold Period Milestones

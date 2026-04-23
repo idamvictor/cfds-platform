@@ -10,7 +10,7 @@ const STRENGTH_STATS = [
 ];
 
 const scardBg =
-  "linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04),rgba(0,223,162,0.02))";
+  "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))";
 const scardHighlight =
   "linear-gradient(175deg,rgba(255,255,255,0.04),transparent 40%)";
 

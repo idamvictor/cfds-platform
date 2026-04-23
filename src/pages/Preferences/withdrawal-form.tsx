@@ -273,7 +273,7 @@ export default function WithdrawalForm() {
               className="mb-7 inline-flex rounded-[12px] border-[1.5px] border-[rgba(255,255,255,0.08)] p-[5px] backdrop-blur-[40px]"
               style={{
                 background:
-                  "linear-gradient(145deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))",
+                  "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
               }}
             >
               {tabs.map((tab) => {
@@ -343,42 +343,11 @@ export default function WithdrawalForm() {
                   )}
 
                   {activeMode === "deposit" ? (
-                    <>
-                      {/* Deposit Header */}
-                      <div
-                        className="relative overflow-hidden rounded-2xl border-[1.5px] border-[rgba(255,255,255,0.08)] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)]"
-                        style={{
-                          background:
-                            "linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04),rgba(0,223,162,0.02))",
-                        }}
-                      >
-                        <div
-                          className="pointer-events-none absolute inset-0 rounded-2xl"
-                          style={{
-                            background:
-                              "linear-gradient(175deg,rgba(255,255,255,0.04),transparent 40%)",
-                          }}
-                        />
-                        <div className="relative">
-                          <div className="mb-5 flex items-center gap-2.5 border-b border-[rgba(255,255,255,0.06)] pb-4">
-                            <ArrowDownToLine className="h-4 w-4 text-[#00dfa2]" />
-                            <div>
-                              <div className="text-[1.05rem] font-extrabold text-[#eef2f7]">
-                                Deposit Funds
-                              </div>
-                              <div className="text-[0.78rem] text-[#4a5468]">
-                                Choose how you want to add funds to your account
-                              </div>
-                            </div>
-                          </div>
-                          <ContributePanel
-                            onDepositSuccess={() =>
-                              setRefreshTrigger((p) => p + 1)
-                            }
-                          />
-                        </div>
-                      </div>
-                    </>
+                    <ContributePanel
+                      onDepositSuccess={() =>
+                        setRefreshTrigger((p) => p + 1)
+                      }
+                    />
                   ) : (
                     <>
                       {clientMode === "fresh" ? (
@@ -388,7 +357,7 @@ export default function WithdrawalForm() {
                             className="relative overflow-hidden rounded-2xl border-[1.5px] border-[rgba(255,255,255,0.08)] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)]"
                             style={{
                               background:
-                                "linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04),rgba(0,223,162,0.02))",
+                                "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
                             }}
                           >
                             <div
@@ -765,10 +734,10 @@ export default function WithdrawalForm() {
 
                   {/* Transaction History */}
                   <div
-                    className="rounded-[14px] border border-[rgba(255,255,255,0.06)] p-[22px]"
+                    className="rounded-[14px] border border-[rgba(255,255,255,0.06)] p-[22px] [&_tr]:!bg-transparent [&_tr]:hover:!bg-white/[0.04] [&_.border-border\/40]:!border-white/[0.06]"
                     style={{
                       background:
-                        "linear-gradient(145deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))",
+                        "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
                     }}
                   >
                     <div className="mb-3.5 flex items-center gap-2 border-b border-[rgba(255,255,255,0.06)] pb-3 text-[0.85rem] font-extrabold text-[#eef2f7]">

@@ -19,7 +19,13 @@ export function WithdrawalSummary({
   const feeEstimate = usdVal > 0 ? "~$4.20" : "$0.00";
 
   return (
-    <div className="rounded-xl border-[1.5px] border-white/[0.06] bg-[#131a28] p-5">
+    <div
+      className="rounded-xl border-[1.5px] border-white/[0.06] p-5"
+      style={{
+        background:
+          "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+      }}
+    >
       <div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.1em] text-[#00dfa2]">
         <Receipt className="h-3.5 w-3.5" />
         Withdrawal Summary
