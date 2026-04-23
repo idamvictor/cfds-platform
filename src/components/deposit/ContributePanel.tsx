@@ -67,7 +67,7 @@ export function ContributePanel({ onDepositSuccess }: ContributePanelProps) {
       }}
     >
         <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.02] to-transparent" />
-        <div className="relative">
+        <div className='relative [&_[class*="bg-card"]]:!bg-transparent [&_[class*="bg-muted"]]:!bg-white/[0.04]'>
           {selectedMethod === "crypto" ? (
             <CryptoFunding
               onChangeMethod={handleBack}
