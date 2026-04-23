@@ -15,10 +15,10 @@ interface AccountsTableProps {
 
 export function AccountsTable({ accounts }: AccountsTableProps) {
   return (
-    <div className="rounded-md border border-border/40 overflow-hidden">
+    <div className="rounded-md border border-white/[0.06] overflow-hidden">
       <Table>
         <TableHeader>
-          <TableRow className="bg-card hover:bg-card">
+          <TableRow className="bg-transparent hover:bg-transparent">
             <TableHead className="text-foreground font-bold">ACCOUNT</TableHead>
             <TableHead className="text-foreground font-bold">TYPE</TableHead>
             <TableHead className="text-foreground font-bold">BALANCE</TableHead>
@@ -30,7 +30,7 @@ export function AccountsTable({ accounts }: AccountsTableProps) {
         </TableHeader>
         <TableBody>
           {accounts.map((account) => (
-            <TableRow key={account.type} className="bg-card/50 hover:bg-card">
+            <TableRow key={account.type} className="bg-transparent hover:bg-white/[0.03]">
               <TableCell>{account.title}</TableCell>
               <TableCell className="capitalize">{account.type}</TableCell>
               <TableCell>${account.balance}</TableCell>

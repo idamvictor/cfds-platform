@@ -21,7 +21,13 @@ export function AccountsHeroCard({
   const isVerified = verificationStatus === "approved";
 
   return (
-    <div className="glass-card p-5 md:p-7">
+    <div
+      className="relative rounded-2xl border border-white/[0.06] p-5 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)] md:p-7"
+      style={{
+        background:
+          "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+      }}
+    >
       <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
         {/* Identity / intro */}
         <div className="flex items-center gap-4">
@@ -32,7 +38,7 @@ export function AccountsHeroCard({
                 "radial-gradient(circle, rgba(0,223,162,0.18) 0%, rgba(0,223,162,0.02) 60%, transparent 80%)",
             }}
           >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-white/[0.08] bg-[#0a0d15]">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-white/[0.08] bg-[#00dfa2]/10">
               <Wallet className="h-6 w-6 text-[#00dfa2]" />
             </div>
           </div>

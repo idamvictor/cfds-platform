@@ -27,7 +27,13 @@ export function YourWalletsCard({ accounts }: YourWalletsCardProps) {
         </span>
       </div>
 
-      <div className="glass-card p-3 md:p-4">
+      <div
+        className="relative rounded-2xl border border-white/[0.06] p-3 shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)] md:p-4"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+        }}
+      >
         {accounts.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
             <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.06] bg-white/[0.03] text-[#4a5468]">

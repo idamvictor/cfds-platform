@@ -91,7 +91,7 @@ export function TransferForm({ accounts }: TransferFormProps) {
             onValueChange={setFromAccount}
             disabled={fromAccounts.length === 0}
           >
-            <SelectTrigger className="bg-card border-card-foreground/10 w-full">
+            <SelectTrigger className="!bg-white/[0.02] border-card-foreground/10 w-full">
               <SelectValue>
                 {fromAccounts.find(
                   (acc) => acc.type === fromAccount.split("_")[0]
@@ -126,7 +126,7 @@ export function TransferForm({ accounts }: TransferFormProps) {
             onValueChange={setToAccount}
             disabled={toAccounts.length === 0}
           >
-            <SelectTrigger className="bg-card border-card-foreground/10 w-full">
+            <SelectTrigger className="!bg-white/[0.02] border-card-foreground/10 w-full">
               <SelectValue>
                 {toAccounts.find((acc) => acc.type === toAccount.split("_")[0])
                   ?.title || "Select account"}{" "}
@@ -157,7 +157,7 @@ export function TransferForm({ accounts }: TransferFormProps) {
             id="amount"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="bg-card border-card-foreground/10"
+            className="!bg-white/[0.02] border-card-foreground/10"
             placeholder="0.00"
             type="number"
             step="0.01"
