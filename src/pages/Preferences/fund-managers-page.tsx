@@ -130,52 +130,55 @@ interface LbTrader {
   addr: string;
 }
 
-// Demo leaderboard data — same shape as the reference's lbDemoData().
-const LB_DEMO_NAMES = [
-  "CryptoWhale_BSC",
-  "AlphaTrader",
-  "BullRunKing",
-  "SatoshiPro",
-  "DeFi_Master",
-  "BSC_Legend",
-  "HodlGod",
-  "MoonSniper",
-  "WhaleAlert",
-  "GreenCandle",
-  "PolyBull",
-  "NightTrader",
-  "LayerZero_X",
-  "PumpKing",
-  "SolFlash",
-  "ArbMaster",
-  "BTCMaxi",
-  "ETHGhost",
-  "ChainBreaker",
-  "ZeroDelta",
-];
-
 type Period = "7d" | "30d" | "90d" | "all";
 
-// Deterministic, per-period presentational leaderboard datasets.
-// Each period gets its own baseline so the tabs visibly change content, but
-// NO network fetching, NO store, NO service. Reference behavior is "swap
-// visible data on period change"; we honor that with local constants.
+// Distinct trader rosters per period — so switching tabs visibly changes
+// WHO appears, not just the numbers. Pure presentational constants.
+const NAMES_BY_PERIOD: Record<Period, string[]> = {
+  "7d": [
+    "CryptoWhale_BSC", "AlphaTrader", "BullRunKing", "SatoshiPro", "DeFi_Master",
+    "BSC_Legend", "HodlGod", "MoonSniper", "WhaleAlert", "GreenCandle",
+    "PolyBull", "NightTrader", "LayerZero_X", "PumpKing", "SolFlash",
+    "ArbMaster", "BTCMaxi", "ETHGhost", "ChainBreaker", "ZeroDelta",
+  ],
+  "30d": [
+    "DiamondHands", "StableYield", "ApeInPro", "TokenHunter", "ChartWizard",
+    "SignalKing", "FundFlow", "RiskOracle", "MarketMaker", "QuantEdge",
+    "VortexFund", "SilverBull", "RocketCap", "BullBazaar", "CryptoSage",
+    "GammaGuard", "MidnightTrader", "SwapMaster", "LiquidLynx", "HexSniper",
+  ],
+  "90d": [
+    "TitanFund", "Nebula_Q", "OmegaAlpha", "ProphetVision", "GreenForest",
+    "BlackSwanLabs", "CipherOx", "VolaticFox", "AstroCrypto", "OrbitalYield",
+    "SolarisCap", "RedwoodFund", "PhoenixQuant", "FrostFunds", "SteadyAlpha",
+    "ArcticMoon", "HelioDesk", "NovaFirm", "CobaltPro", "AzureDelta",
+  ],
+  "all": [
+    "LegendFund", "EverBull", "GoldenHodl", "CenturionCap", "AtlasFund",
+    "EpochTrader", "KronosCap", "HelixMoon", "PrimeLineage", "EternalBull",
+    "ZeroLoss", "GranitePro", "SteelMoon", "ObsidianFund", "TitanAlpha",
+    "VanguardQ", "PatriotBull", "SenateCap", "PinnacleX", "GalaxyHodl",
+  ],
+};
+
+// Deterministic per-period numeric profile. Scales are intentionally
+// broad so each tab produces clearly different magnitudes.
 function buildLeaderboardFor(period: Period): LbTrader[] {
-  // Per-period scaling + offset so each tab renders a distinct dataset.
   const profile = {
-    "7d":  { roiBase: 380, roiStep: 17, pnlBase: 2_800_000, pnlStep: 120_000, winBase: 91, txBase: 820, txStep: 35, folBase: 12_400, folStep: 520 },
-    "30d": { roiBase: 520, roiStep: 22, pnlBase: 4_100_000, pnlStep: 175_000, winBase: 89, txBase: 2_640, txStep: 118, folBase: 13_200, folStep: 540 },
-    "90d": { roiBase: 710, roiStep: 31, pnlBase: 6_900_000, pnlStep: 285_000, winBase: 87, txBase: 6_800, txStep: 310, folBase: 14_050, folStep: 580 },
-    "all": { roiBase: 980, roiStep: 42, pnlBase: 11_500_000, pnlStep: 470_000, winBase: 85, txBase: 18_400, txStep: 860, folBase: 14_980, folStep: 610 },
+    "7d":  { roiBase:  240, roiStep: 11, pnlBase:  1_400_000, pnlStep:  60_000, winBase: 93, txBase:   820, txStep:  35, folBase:  6_400, folStep: 260 },
+    "30d": { roiBase:  560, roiStep: 24, pnlBase:  4_100_000, pnlStep: 175_000, winBase: 89, txBase:  2_640, txStep: 118, folBase: 11_200, folStep: 440 },
+    "90d": { roiBase:  980, roiStep: 42, pnlBase:  9_600_000, pnlStep: 395_000, winBase: 86, txBase:  6_800, txStep: 310, folBase: 18_050, folStep: 720 },
+    "all": { roiBase: 1650, roiStep: 72, pnlBase: 24_000_000, pnlStep: 970_000, winBase: 82, txBase: 22_400, txStep: 990, folBase: 28_980, folStep:1180 },
   }[period];
 
-  return LB_DEMO_NAMES.map((n, i) => ({
+  const names = NAMES_BY_PERIOD[period];
+  return names.map((n, i) => ({
     rank: i + 1,
     uid: `${period}-${i}`,
     name: n,
     initials: n.slice(0, 2).toUpperCase(),
-    roi: Math.round((profile.roiBase - i * profile.roiStep + (i % 3) * 5) * 10) / 10,
-    pnl: Math.round(profile.pnlBase - i * profile.pnlStep + (i % 4) * 30000),
+    roi: Math.round((profile.roiBase - i * profile.roiStep + (i % 3) * 7) * 10) / 10,
+    pnl: Math.round(profile.pnlBase - i * profile.pnlStep + (i % 4) * 30_000),
     winRate: Math.round((profile.winBase - i * 1.8 + (i % 3)) * 10) / 10,
     txCount: Math.round(profile.txBase - i * profile.txStep + (i % 5) * 12),
     followers: Math.round(profile.folBase - i * profile.folStep + (i % 4) * 80),
@@ -197,10 +200,15 @@ const LEADERBOARDS: Record<Period, LbTrader[]> = {
   "all": buildLeaderboardFor("all"),
 };
 
-const SUMMARY_STATS = {
-  activeTraders: "12,847",
-  totalAum: "$2.1B",
-  avgWinRate: "87.3%",
+// Summary stats also swap per period so the banner feels period-scoped.
+const SUMMARY_BY_PERIOD: Record<
+  Period,
+  { activeTraders: string; totalAum: string; avgWinRate: string }
+> = {
+  "7d":  { activeTraders: "12,847", totalAum: "$2.1B",  avgWinRate: "87.3%" },
+  "30d": { activeTraders: "18,204", totalAum: "$4.6B",  avgWinRate: "84.1%" },
+  "90d": { activeTraders: "24,571", totalAum: "$8.9B",  avgWinRate: "81.5%" },
+  "all": { activeTraders: "41,362", totalAum: "$19.7B", avgWinRate: "78.2%" },
 };
 
 /* ──────────────────────────────────────────────────────────────
@@ -329,6 +337,7 @@ export default function FundManagersPage() {
   const activeLeaderboard = LEADERBOARDS[period];
   const top3 = useMemo(() => activeLeaderboard.slice(0, 3), [activeLeaderboard]);
   const rest = useMemo(() => activeLeaderboard.slice(3, 20), [activeLeaderboard]);
+  const summary = SUMMARY_BY_PERIOD[period];
 
   return (
     <>
@@ -646,7 +655,7 @@ export default function FundManagersPage() {
                 Active Traders:
               </span>
               <span className="font-[JetBrains_Mono,monospace] text-[14px] font-bold text-[#eef2f7]">
-                {SUMMARY_STATS.activeTraders}
+                {summary.activeTraders}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -654,7 +663,7 @@ export default function FundManagersPage() {
                 Total AUM:
               </span>
               <span className="font-[JetBrains_Mono,monospace] text-[14px] font-bold text-[#eef2f7]">
-                {SUMMARY_STATS.totalAum}
+                {summary.totalAum}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -662,7 +671,7 @@ export default function FundManagersPage() {
                 Avg Win Rate:
               </span>
               <span className="font-[JetBrains_Mono,monospace] text-[14px] font-bold text-[#eef2f7]">
-                {SUMMARY_STATS.avgWinRate}
+                {summary.avgWinRate}
               </span>
             </div>
           </div>
