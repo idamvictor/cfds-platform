@@ -324,7 +324,7 @@ const FOOTER_COMPANY = [
 const FOOTER_PRODUCTS = [
   { label: "Trading Plans", to: "/main/trading-plans" },
   { label: "Fund Managers", to: "/main/fund-managers" },
-  { label: "Welcome Bonus", to: "/main/savings" },
+  { label: "Welcome Bonus", to: "/main/welcome-bonus" },
 ];
 
 // CSR programs in the reference are "#" placeholders — rendered as plain text,
