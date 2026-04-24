@@ -76,6 +76,9 @@ const FundProtectionPage = lazy(
 const SocialResponsibilityPage = lazy(
   () => import("./pages/Preferences/social-responsibility-page"),
 );
+const WelcomeBonusPage = lazy(
+  () => import("./pages/Preferences/welcome-bonus-page"),
+);
 const TradingPlatformLight = lazy(() =>
   import("./components/mt4-light/trading-platform-light").then((module) => ({
     default: module.TradingPlatformLight,
@@ -236,6 +239,10 @@ const App = () => {
                     <Route
                       path="/main/social-responsibility"
                       element={<SocialResponsibilityPage />}
+                    />
+                    <Route
+                      path="/main/welcome-bonus"
+                      element={<WelcomeBonusPage />}
                     />
                     <Route path="/main/test" element={<Test />} />
                   </Route>
