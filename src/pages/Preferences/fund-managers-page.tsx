@@ -213,8 +213,8 @@ const SUMMARY_BY_PERIOD: Record<
 
 /* ──────────────────────────────────────────────────────────────
    NAV LINKS — only items with real existing routes in the workspace.
-   (Reference lines 1133–1143 contain 9 items; "Fund Protection" and
-   "Retirement Staking™" have no route in this app and are removed.)
+   (Reference lines 1133–1143 contain 9 items; "Retirement Staking™"
+   has no route in this app and is removed.)
    ────────────────────────────────────────────────────────────── */
 const NAV_LINKS: { label: string; href: string }[] = [
   { label: "Dashboard", href: "/main/dashboard" },
@@ -224,6 +224,7 @@ const NAV_LINKS: { label: string; href: string }[] = [
   { label: "Trading Plans", href: "/main/trading-plans" },
   { label: "Fund Managers", href: "/main/fund-managers" },
   { label: "Trade Access", href: "/main/trade-access" },
+  { label: "Fund Protection", href: "/main/fund-protection" },
 ];
 
 /* ──────────────────────────────────────────────────────────────

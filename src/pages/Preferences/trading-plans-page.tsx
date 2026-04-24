@@ -1028,7 +1028,7 @@ export default function TradingPlansPage() {
               { label: "Staking", href: null },
               { label: "Trade Access", href: "/main/trade-access" },
               { label: "Trading Plans", href: "/main/trading-plans" },
-              { label: "Fund Protection", href: null },
+              { label: "Fund Protection", href: "/main/fund-protection" },
             ].map((link) => {
               const isActive = link.href === "/main/trading-plans";
               const className = `tp-nav-link whitespace-nowrap rounded-md px-2.5 py-1.5 text-[0.78rem] font-medium transition-all duration-200 ${
@@ -1101,7 +1101,7 @@ export default function TradingPlansPage() {
               { label: "Staking", href: null as string | null },
               { label: "Trade Access", href: "/main/trade-access" },
               { label: "Trading Plans", href: "/main/trading-plans" },
-              { label: "Fund Protection", href: null as string | null },
+              { label: "Fund Protection", href: "/main/fund-protection" as string | null },
             ].map((link) => {
               const isActive = link.href === "/main/trading-plans";
               const cls = `rounded-[8px] px-3 py-2.5 text-[0.85rem] font-medium transition-colors duration-150 ${

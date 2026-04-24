@@ -36,9 +36,9 @@ const topNav: NavItem[] = [
 ];
 
 const midNav: NavItem[] = [
-  { label: "Trading Plans", icon: Clock, href: "/main/accounts" },
-  { label: "Fund Protection", icon: ShieldCheck, href: "/main/kyc" },
-  { label: "Fund Managers", icon: Users, href: "/main/kyc-partners" },
+  { label: "Trading Plans", icon: Clock, href: "/main/trading-plans" },
+  { label: "Fund Protection", icon: ShieldCheck, href: "/main/fund-protection" },
+  { label: "Fund Managers", icon: Users, href: "/main/fund-managers" },
 ];
 
 function SbIcon({
