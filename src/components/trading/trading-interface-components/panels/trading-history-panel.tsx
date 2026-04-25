@@ -46,10 +46,10 @@ export default function TradingHistoryPanel() {
   }, [lastElementRef, closedTrades]);
 
   return (
-    <div className="h-full bg-background flex flex-col">
-      <div className="flex items-center justify-between p-4 border-b border-border">
-        <h2 className="text-sm font-medium">Trading History</h2>
-        <button className="text-muted-foreground hover:text-foreground">
+    <div className="h-full flex flex-col text-[#eef2f7]" style={{ background: "linear-gradient(135deg,#07080c 0%,#0a0d15 100%)" }}>
+      <div className="flex items-center justify-between p-4 border-b border-[rgba(255,255,255,0.06)]">
+        <h2 className="text-sm font-medium text-[#eef2f7]">Trading History</h2>
+        <button className="text-[#8b97a8] hover:text-[#eef2f7]">
           <X className="h-4 w-4" />
         </button>
       </div>
@@ -60,7 +60,7 @@ export default function TradingHistoryPanel() {
         )}
 
         {closedTrades.length === 0 && !isLoadingClosed ? (
-          <div className="text-center text-muted-foreground py-4">
+          <div className="text-center text-[#8b97a8] py-4">
             No trading history found
           </div>
         ) : (
@@ -73,7 +73,7 @@ export default function TradingHistoryPanel() {
             <div ref={loadMoreRef} className="py-2 text-center">
               {isLoadingClosed && (
                 <div className="flex justify-center items-center py-2">
-                  <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                  <Loader2 className="h-5 w-5 animate-spin text-[#8b97a8]" />
                 </div>
               )}
             </div>
@@ -101,16 +101,15 @@ function TradeHistoryItem({ trade }: { trade: Trade }) {
 
 
   return (
-    <div className="p-3 border-b border-slate-700 hover:bg-muted/30">
+    <div className="p-3 border-b border-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.04)] text-[#eef2f7]">
       <div className="flex justify-between items-start">
         <div>
           <div className="flex items-center gap-1">
             <span className="text-xs font-medium">{trade?.open_time}</span>
-            {/*<span className="text-xs text-muted-foreground">{date}</span>*/}
           </div>
           <Button
             variant="ghost"
-            className="flex items-center gap-2 mt-1 pl-0"
+            className="flex items-center gap-2 mt-1 pl-0 text-[#eef2f7] hover:bg-[rgba(255,255,255,0.06)]"
             onClick={() => handleAssetClick(trade.asset_symbol)}
           >
             <CurrencyFlag
@@ -119,11 +118,11 @@ function TradeHistoryItem({ trade }: { trade: Trade }) {
             />
             <span className="text-xs">{trade.asset_symbol}</span>
           </Button>
-          <div className="text-xs text-muted-foreground mt-1">
+          <div className="text-xs text-[#8b97a8] mt-1">
             {trade.asset_id.split("-")[0].toUpperCase()}
           </div>
           <button
-            className="text-xs text-muted-foreground flex items-center mt-1"
+            className="text-xs text-[#8b97a8] flex items-center mt-1"
             onClick={() => setIsExpanded(!isExpanded)}
           >
             More{" "}
@@ -138,74 +137,74 @@ function TradeHistoryItem({ trade }: { trade: Trade }) {
         <div className="text-right">
           <div
             className={`text-xs font-medium ${
-              isPnlPositive ? "text-green-500" : "text-red-500"
+              isPnlPositive ? "text-emerald-500" : "text-red-500"
             }`}
           >
             {isPnlPositive
               ? `+$${formattedPnl}`
               : `-$${Math.abs(Number.parseFloat(formattedPnl))}`}
           </div>
-          <div className="text-xs text-muted-foreground mt-1">
+          <div className="text-xs text-[#8b97a8] mt-1">
             {trade.volume.toFixed(2)} {trade.asset_name}
           </div>
-          <div className="text-xs text-muted-foreground mt-1">
+          <div className="text-xs text-[#8b97a8] mt-1">
             {trade.opening_price} → {trade.closing_price}
           </div>
         </div>
       </div>
 
       {isExpanded && (
-        <div className="mt-2 pt-2 border-t border-border/50 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+        <div className="mt-2 pt-2 border-t border-[rgba(255,255,255,0.06)] grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
           <div className="flex justify-between">
-            <span className="text-muted-foreground">ID:</span>
+            <span className="text-[#8b97a8]">ID:</span>
             <span className="font-mono">{trade.trade_id}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Type:</span>
+            <span className="text-[#8b97a8]">Type:</span>
             <span
               className={
-                trade.trade_type === "buy" ? "text-green-500" : "text-red-500"
+                trade.trade_type === "buy" ? "text-emerald-500" : "text-red-500"
               }
             >
               {trade.trade_type.toUpperCase()}
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Open Time : </span>
+            <span className="text-[#8b97a8]">Open Time : </span>
             <span className="font-mono">{trade.open_time}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Close Time :</span>
+            <span className="text-[#8b97a8]">Close Time :</span>
             <span className="font-mono">{trade.close_time}</span>
           </div>
 
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Margin:</span>
+            <span className="text-[#8b97a8]">Margin:</span>
             <span>${trade.margin.toFixed(2)}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Leverage:</span>
+            <span className="text-[#8b97a8]">Leverage:</span>
             <span>x{trade.leverage}</span>
           </div>
 
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Open Price:</span>
+            <span className="text-[#8b97a8]">Open Price:</span>
             <span>{trade.opening_price}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Closed Price:</span>
+            <span className="text-[#8b97a8]">Closed Price:</span>
             <span>{trade.closing_price}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Take Profit:</span>
+            <span className="text-[#8b97a8]">Take Profit:</span>
             <span>{trade.take_profit > 0 ? trade.take_profit : "-"}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Stop Loss:</span>
+            <span className="text-[#8b97a8]">Stop Loss:</span>
             <span>{trade.stop_loss > 0 ? trade.stop_loss : "-"}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Volume:</span>
+            <span className="text-[#8b97a8]">Volume:</span>
             <span>${trade.volume.toFixed(2)}</span>
           </div>
         </div>

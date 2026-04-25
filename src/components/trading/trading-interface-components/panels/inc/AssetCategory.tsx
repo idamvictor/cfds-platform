@@ -110,21 +110,21 @@ const AssetCategory = memo(({
         <div className="mb-px">
             {/* Category header */}
             <button
-                className="flex items-center justify-between w-full py-1.5 px-3 bg-slate-700 text-white"
+                className="flex items-center justify-between w-full py-1.5 px-3 bg-[rgba(255,255,255,0.03)] border-b border-[rgba(255,255,255,0.06)] text-[#eef2f7] hover:bg-[rgba(255,255,255,0.06)] transition-colors"
                 onClick={toggleCategory}
             >
                 <div className="flex items-center">
-          <span className="w-8 flex items-center justify-start text-slate-400">
+          <span className="w-8 flex items-center justify-start text-[#8b97a8]">
             {getCategoryIcon(category)}
           </span>
                     <span className="text-xs font-light">{category.charAt(0).toUpperCase() + category.slice(1)}</span>
                 </div>
                 <div className="flex items-center">
-                    <span className="mr-2 text-slate-400 text-xs">{assets.length}</span>
+                    <span className="mr-2 text-[#8b97a8] text-xs">{assets.length}</span>
                     {isExpanded ? (
-                        <ChevronUp className="h-4 w-4 text-slate-400" />
+                        <ChevronUp className="h-4 w-4 text-[#8b97a8]" />
                     ) : (
-                        <ChevronDown className="h-4 w-4 text-slate-400" />
+                        <ChevronDown className="h-4 w-4 text-[#8b97a8]" />
                     )}
                 </div>
             </button>

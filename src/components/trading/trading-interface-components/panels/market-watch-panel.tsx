@@ -72,21 +72,21 @@ const MarketWatchPanel = ({ addCurrencyPair }: MarketWatchPanelProps) => {
 
     if (isLoading) {
         return (
-            <div className="h-full bg-background flex items-center justify-center">
-                <div className="text-muted-foreground">Loading assets...</div>
+            <div className="h-full flex items-center justify-center text-[#eef2f7]" style={{ background: "linear-gradient(135deg,#07080c 0%,#0a0d15 100%)" }}>
+                <div className="text-[#8b97a8]">Loading assets...</div>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="h-full bg-background flex items-center justify-center p-4">
-                <div className="text-destructive text-center">
+            <div className="h-full flex items-center justify-center p-4 text-[#eef2f7]" style={{ background: "linear-gradient(135deg,#07080c 0%,#0a0d15 100%)" }}>
+                <div className="text-red-500 text-center">
                     <p className="mb-2 font-medium">Failed to load assets</p>
-                    <p className="text-sm text-muted-foreground">{error}</p>
+                    <p className="text-sm text-[#8b97a8]">{error}</p>
                     <Button
                         variant="outline"
-                        className="mt-4"
+                        className="mt-4 border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.03)] text-[#eef2f7] hover:bg-[rgba(255,255,255,0.06)] hover:text-[#eef2f7]"
                         onClick={() => useAssetStore.getState().fetchAssets()}
                     >
                         Retry
@@ -97,16 +97,16 @@ const MarketWatchPanel = ({ addCurrencyPair }: MarketWatchPanelProps) => {
     }
 
     return (
-        <div className="h-full bg-background">
-            <div className="p-2 border-b border-border">
+        <div className="h-full text-[#eef2f7]" style={{ background: "linear-gradient(135deg,#07080c 0%,#0a0d15 100%)" }}>
+            <div className="p-2 border-b border-[rgba(255,255,255,0.06)]">
                 <div className="mb-4 ml-4 mt-2">
-                    <h2 className="text-sm font-medium ">Market Watch</h2>
+                    <h2 className="text-sm font-medium text-[#eef2f7]">Market Watch</h2>
                 </div>
                 <div className="relative">
-                    <Search className="absolute left-2  top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Search className="absolute left-2  top-2.5 h-4 w-4 text-[#8b97a8]" />
                     <Input
                         placeholder="Search..."
-                        className="pl-8"
+                        className="pl-8 bg-[rgba(255,255,255,0.03)] border-[rgba(255,255,255,0.06)] text-[#eef2f7] placeholder:text-[#4a5468] focus-visible:border-[#00dfa2] focus-visible:ring-[rgba(0,223,162,0.15)]"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -115,7 +115,7 @@ const MarketWatchPanel = ({ addCurrencyPair }: MarketWatchPanelProps) => {
 
             <div className="p-2 overflow-y-auto h-[calc(100%-80px)]">
                 {!hasResults ? (
-                    <div className="text-center text-muted-foreground py-4">
+                    <div className="text-center text-[#8b97a8] py-4">
                         No assets found
                     </div>
                 ) : (

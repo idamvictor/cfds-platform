@@ -39,15 +39,22 @@ export function MobileSheet({
         <Button
           variant="ghost"
           size="sm"
-          className="text-xs text-muted-foreground flex items-center gap-1"
+          className="text-xs text-[#8b97a8] hover:text-[#eef2f7] hover:bg-[rgba(255,255,255,0.06)] flex items-center gap-1"
         >
           View all <ChevronRight className="h-3 w-3" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="bottom" className="h-[80vh] p-0">
+      <SheetContent
+        side="bottom"
+        className="h-[80vh] p-0"
+        style={{
+          background: "linear-gradient(135deg,#07080c 0%,#0a0d15 100%)",
+          color: "#eef2f7",
+        }}
+      >
         <div className="flex flex-col h-full">
-          <div className="p-4 border-b border-border flex justify-between items-center">
-            <h3 className="font-medium">
+          <div className="p-4 border-b border-[rgba(255,255,255,0.06)] flex justify-between items-center">
+            <h3 className="font-medium text-[#eef2f7]">
               {activeTab === "active" ? "Active Orders" : "Order History"}
             </h3>
             <div className="flex items-center gap-2">
@@ -61,13 +68,13 @@ export function MobileSheet({
                             </Button> */}
             </div>
           </div>
-          <div className="flex border-b border-border">
+          <div className="flex border-b border-[rgba(255,255,255,0.06)]">
             <button
               className={cn(
                 "flex-1 py-2 text-center text-sm",
                 activeTab === "active"
-                  ? "border-b-2 border-primary text-primary"
-                  : "text-muted-foreground"
+                  ? "border-b-2 border-[#00dfa2] text-[#00dfa2]"
+                  : "text-[#8b97a8]"
               )}
               onClick={() => setActiveTab("active")}
             >
@@ -77,8 +84,8 @@ export function MobileSheet({
               className={cn(
                 "flex-1 py-2 text-center text-sm",
                 activeTab === "history"
-                  ? "border-b-2 border-primary text-primary"
-                  : "text-muted-foreground"
+                  ? "border-b-2 border-[#00dfa2] text-[#00dfa2]"
+                  : "text-[#8b97a8]"
               )}
               onClick={() => setActiveTab("history")}
             >
@@ -105,7 +112,7 @@ export function MobileSheet({
             <div ref={loadMoreRef} className="py-2 text-center">
               {(activeTab === "active" ? isLoadingOpen : isLoadingClosed) && (
                 <div className="flex justify-center items-center py-2">
-                  <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                  <Loader2 className="h-5 w-5 animate-spin text-[#8b97a8]" />
                 </div>
               )}
             </div>

@@ -130,14 +130,14 @@ export default function Header({
   return (
     <>
       {/* ─── TOP BAR ─── */}
-      <header className="flex items-center h-11 px-3 gap-2 border-b border-border/40 bg-background/95 backdrop-blur-sm shrink-0">
+      <header className="flex items-center h-11 px-3 gap-2 border-b border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.03)] backdrop-blur-sm shrink-0">
         {/* Logo / Brand */}
         <div className="flex items-center gap-2 shrink-0">
           <Logo />
         </div>
 
         {/* Separator */}
-        <div className="w-px h-5 bg-border/40 hidden sm:block" />
+        <div className="w-px h-5 bg-[rgba(255,255,255,0.06)] hidden sm:block" />
 
         {/* Mobile menu */}
         {isMobile && (
@@ -151,18 +151,22 @@ export default function Header({
               <SheetContent
                 side="left"
                 className="w-[280px] sm:w-[350px] p-0"
+                style={{
+                  background: "linear-gradient(135deg,#07080c 0%,#0a0d15 100%)",
+                  color: "#eef2f7",
+                }}
               >
                 <div className="flex flex-col h-full">
-                  <div className="p-4 border-b border-border">
+                  <div className="p-4 border-b border-[rgba(255,255,255,0.06)]">
                     <h2 className="text-lg font-bold">Menu</h2>
                   </div>
 
                   {/* Account info in mobile menu */}
-                  <div className="bg-muted/30 rounded-lg p-3 mx-3 mb-4">
+                  <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.06)] rounded-lg p-3 mx-3 mb-4">
                     <div className="flex items-center gap-2 mb-2">
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Avatar className="h-8 w-8 border border-border cursor-pointer">
+                          <Avatar className="h-8 w-8 border border-[rgba(255,255,255,0.08)] cursor-pointer">
                             <AvatarImage src={user?.avatar} alt="avatar" />
                             <AvatarFallback>
                               {user
@@ -180,10 +184,10 @@ export default function Header({
                         </DialogContent>
                       </Dialog>
                       <div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-xs text-[#8b97a8]">
                           {user?.account_type?.title || "STANDARD"}
                         </div>
-                        <div className="text-green-500 font-bold">
+                        <div className="text-[#00dfa2] font-bold">
                           {formatCurrency(user?.balance || 0)}
                         </div>
                       </div>
@@ -259,7 +263,7 @@ export default function Header({
                       </div>
                     </div>
 
-                    <div className="border-t border-border mt-2 px-3 py-2">
+                    <div className="border-t border-[rgba(255,255,255,0.06)] mt-2 px-3 py-2">
                       <div className="space-y-2">
                         <AutoTraderModal />
                         <Link to="/main/wallet">
@@ -304,7 +308,7 @@ export default function Header({
                       </div>
                     )}
 
-                    <div className="border-t border-border mt-2 px-3 py-2">
+                    <div className="border-t border-[rgba(255,255,255,0.06)] mt-2 px-3 py-2">
                       <h3 className="text-sm font-medium mb-2">
                         Currency Pairs
                       </h3>
@@ -314,8 +318,8 @@ export default function Header({
                             key={index}
                             className={`flex items-center justify-between p-2 rounded-md ${
                               activePair === pair
-                                ? "bg-primary/10"
-                                : "hover:bg-muted/50"
+                                ? "bg-[rgba(0,223,162,0.1)]"
+                                : "hover:bg-[rgba(255,255,255,0.06)]"
                             }`}
                             onClick={() => handlePairClick(pair)}
                           >
@@ -325,7 +329,7 @@ export default function Header({
                             </div>
                             {activePairs.length > 1 && (
                               <button
-                                className="rounded-full hover:bg-muted p-0.5"
+                                className="rounded-full hover:bg-[rgba(255,255,255,0.08)] p-0.5"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   removeCurrencyPair(pair);
@@ -349,7 +353,7 @@ export default function Header({
                   </div>
 
                   {/* Logout button */}
-                  <div className="border-t border-border p-3">
+                  <div className="border-t border-[rgba(255,255,255,0.06)] p-3">
                     <Button
                       variant="ghost"
                       className="w-full justify-start text-red-500"
@@ -371,9 +375,9 @@ export default function Header({
         {/* Pair Selector */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-muted/50 transition-colors font-mono text-sm font-extrabold">
+            <button className="flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-[rgba(255,255,255,0.06)] transition-colors font-mono text-sm font-extrabold text-[#eef2f7]">
               {activeAsset?.symbol_display || activePair}
-              <ChevronDown className="h-3 w-3 text-muted-foreground" />
+              <ChevronDown className="h-3 w-3 text-[#8b97a8]" />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-[240px]">
@@ -386,13 +390,13 @@ export default function Header({
                 <div className="flex items-center gap-2">
                   <CurrencyFlag pair={pair} />
                   <span className="text-sm">{pair}</span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs text-[#8b97a8]">
                     {getAssetCategory(pair)}
                   </span>
                 </div>
                 {activePairs.length > 1 && (
                   <button
-                    className="rounded-full hover:bg-muted p-0.5"
+                    className="rounded-full hover:bg-[rgba(255,255,255,0.08)] p-0.5"
                     onClick={(e) => {
                       e.stopPropagation();
                       removeCurrencyPair(pair);
@@ -442,26 +446,26 @@ export default function Header({
         </div>
 
         {/* Separator */}
-        <div className="w-px h-5 bg-border/40 hidden md:block" />
+        <div className="w-px h-5 bg-[rgba(255,255,255,0.06)] hidden md:block" />
 
         {/* Nav Links (desktop) */}
         <div className="hidden md:flex items-center gap-1">
           <Link
             to="/main/dashboard"
-            className="text-xs font-semibold text-muted-foreground hover:text-foreground px-2 py-1 rounded-md hover:bg-muted/50 transition-colors"
+            className="text-xs font-semibold text-[#8b97a8] hover:text-[#eef2f7] px-2 py-1 rounded-md hover:bg-[rgba(255,255,255,0.06)] transition-colors"
           >
             Dashboard
           </Link>
           <Link
             to="/main/wallet"
-            className="text-xs font-semibold text-muted-foreground hover:text-foreground px-2 py-1 rounded-md hover:bg-muted/50 transition-colors"
+            className="text-xs font-semibold text-[#8b97a8] hover:text-[#eef2f7] px-2 py-1 rounded-md hover:bg-[rgba(255,255,255,0.06)] transition-colors"
           >
             Wallet
           </Link>
         </div>
 
         {/* Live Clock */}
-        <span className="hidden sm:block font-mono text-[11px] text-muted-foreground">
+        <span className="hidden sm:block font-mono text-[11px] text-[#8b97a8]">
           {clockTime}
         </span>
 
@@ -474,7 +478,7 @@ export default function Header({
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="link"
-                  className="h-auto p-0 text-primary font-bold text-xs"
+                  className="h-auto p-0 text-[#00dfa2] font-bold text-xs"
                 >
                   {formatCurrency(user?.balance || 0)}
                   <ChevronDown className="h-3.5 w-3.5 ml-1" />
@@ -482,7 +486,7 @@ export default function Header({
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
-                className="p-5 text-base text-muted-foreground"
+                className="p-5 text-base text-[#8b97a8]"
               >
                 <div className="space-y-4">
                   {/* Account selection */}
@@ -492,7 +496,7 @@ export default function Header({
                       {user?.accounts.map((account, index) => (
                         <div
                           key={index}
-                          className="flex justify-between items-center p-2 rounded hover:bg-slate-500 hover:text-muted"
+                          className="flex justify-between items-center p-2 rounded hover:bg-[rgba(255,255,255,0.06)] hover:text-[#eef2f7]"
                         >
                           <span className="text-xs">{account.title}</span>
                           <span className="text-xs">
@@ -619,13 +623,19 @@ export default function Header({
 
       {/* Mobile search dropdown */}
       {isMobile && isSearchOpen && (
-        <div className="absolute top-16 left-0 right-0 bg-background border-b border-border p-3 z-50">
+        <div
+          className="absolute top-16 left-0 right-0 border-b border-[rgba(255,255,255,0.06)] p-3 z-50"
+          style={{
+            background: "linear-gradient(135deg,#07080c 0%,#0a0d15 100%)",
+            color: "#eef2f7",
+          }}
+        >
           <div className="mt-2 max-h-[300px] overflow-y-auto">
             {activePairs.map((pair) => (
               <div
                 key={pair}
                 className={`flex items-center justify-between p-2 rounded-md ${
-                  activePair === pair ? "bg-primary/10" : "hover:bg-muted/50"
+                  activePair === pair ? "bg-[rgba(0,223,162,0.1)]" : "hover:bg-[rgba(255,255,255,0.06)]"
                 }`}
                 onClick={() => {
                   handlePairClick(pair);
@@ -638,7 +648,7 @@ export default function Header({
                 </div>
                 {activePairs.length > 1 && (
                   <button
-                    className="rounded-full hover:bg-muted p-0.5"
+                    className="rounded-full hover:bg-[rgba(255,255,255,0.08)] p-0.5"
                     onClick={(e) => {
                       e.stopPropagation();
                       removeCurrencyPair(pair);
@@ -674,7 +684,7 @@ function StatCell({
 }) {
   return (
     <div className="flex flex-col">
-      <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
+      <span className="text-[9px] font-semibold uppercase tracking-wider text-[#4a5468]">
         {label}
       </span>
       <span
@@ -683,7 +693,7 @@ function StatCell({
             ? "text-emerald-500"
             : positive === false
             ? "text-red-500"
-            : "text-muted-foreground"
+            : "text-[#eef2f7]"
         }`}
       >
         {value}
@@ -696,7 +706,7 @@ function StatCell({
 export function CurrencyFlag({ pair }: { pair?: string }) {
   if (!pair || !pair.includes("/")) {
     return (
-      <div className="h-5 w-5 rounded-full bg-muted flex items-center justify-center text-xs text-muted-foreground">
+      <div className="h-5 w-5 rounded-full bg-[rgba(255,255,255,0.06)] flex items-center justify-center text-xs text-[#8b97a8]">
         {pair ? pair.charAt(0) : "?"}
       </div>
     );

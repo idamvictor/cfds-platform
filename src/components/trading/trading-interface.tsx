@@ -475,8 +475,15 @@ export function TradingInterface() {
 
   return (
     <div
-      className="w-full bg-background rounded-lg text-foreground"
-      style={{ maxHeight: "500px", overflowY: "auto", overflowX: "hidden" }}
+      className="w-full rounded-lg"
+      style={{
+        maxHeight: "500px",
+        overflowY: "auto",
+        overflowX: "hidden",
+        background: "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+        color: "#eef2f7",
+        border: "1px solid rgba(255,255,255,0.06)",
+      }}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="md:space-y-2">
@@ -489,24 +496,24 @@ export function TradingInterface() {
                 <div className="col-span-1 p-2">
                   <div className="grid gap-y-[2px] text-[10px]">
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Contract:</span>
-                      <span className="text-primary">
+                      <span className="text-[#8b97a8]">Contract:</span>
+                      <span className="text-[#eef2f7]">
                         {tradingInfo.contractSize.toLocaleString()}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Position:</span>
-                      <span className="text-primary">
+                      <span className="text-[#8b97a8]">Position:</span>
+                      <span className="text-[#eef2f7]">
                         {tradingInfo.position.toLocaleString()}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Margin:</span>
+                      <span className="text-[#8b97a8]">Margin:</span>
                       <span
                         className={cn(
                           tradingInfo.margin > accountSummary.freeMargin
                             ? "text-red-500"
-                            : "text-primary"
+                            : "text-[#eef2f7]"
                         )}
                       >
                         {formatCurrencyValue(
@@ -515,14 +522,14 @@ export function TradingInterface() {
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">
+                      <span className="text-[#8b97a8]">
                         Free Margin:
                       </span>
                       <span
                         className={
                           accountSummary.freeMargin < 0
                             ? "text-red-500"
-                            : "text-primary"
+                            : "text-[#eef2f7]"
                         }
                       >
                         {formatCurrencyValue(
@@ -531,14 +538,14 @@ export function TradingInterface() {
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Spread:</span>
-                      <span className="text-primary">
+                      <span className="text-[#8b97a8]">Spread:</span>
+                      <span className="text-[#eef2f7]">
                         {tradingInfo.spread.toFixed(5)}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Leverage:</span>
-                      <span className="text-primary">
+                      <span className="text-[#8b97a8]">Leverage:</span>
+                      <span className="text-[#eef2f7]">
                         1:{tradingInfo.leverage}
                       </span>
                     </div>
@@ -550,15 +557,15 @@ export function TradingInterface() {
                   <div className="space-y-1">
                     <Button
                       type="button"
-                      className="flex items-center justify-start py-1 w-full h-auto bg-secondary hover:bg-secondary/50"
+                      className="flex items-center justify-start py-1 w-full h-auto bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.06)] text-[#eef2f7]"
                       onClick={() => setIsProfitCalculatorOpen(true)}
                     >
                       <BarChart2 className="h-3 w-3 mr-1 " />
                       <div className="flex flex-col items-start justify-start">
-                        <span className="text-[10px] font-medium text-foreground">
+                        <span className="text-[10px] font-medium text-[#eef2f7]">
                           Profit{" "}
                         </span>
-                        <span className="text-[10px] font-medium text-foreground">
+                        <span className="text-[10px] font-medium text-[#eef2f7]">
                           Calculator
                         </span>
                       </div>
@@ -567,13 +574,13 @@ export function TradingInterface() {
                     <div>
                       <Button
                         type="button"
-                        className="flex flex-col items-start justify-center w-full h-auto bg-secondary hover:bg-secondary/50"
+                        className="flex flex-col items-start justify-center w-full h-auto bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.06)] text-[#eef2f7]"
                         onClick={() => setIsTpSlModalOpen(true)}
                       >
-                        <div className="text-[8px] text-muted-foreground">
+                        <div className="text-[8px] text-[#8b97a8]">
                           TP & SL
                         </div>
-                        <div className="text-[10px] text-foreground">
+                        <div className="text-[10px] text-[#eef2f7]">
                           {getTpSlText()}
                         </div>
                       </Button>
@@ -582,13 +589,13 @@ export function TradingInterface() {
                     <div>
                       <Button
                         type="button"
-                        className="flex flex-col items-start justify-center w-full h-auto bg-secondary hover:bg-secondary/50"
+                        className="flex flex-col items-start justify-center w-full h-auto bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.06)] text-[#eef2f7]"
                         onClick={() => setIsPendingModalOpen(true)}
                       >
-                        <div className="text-[8px] text-muted-foreground">
+                        <div className="text-[8px] text-[#8b97a8]">
                           Pending
                         </div>
-                        <div className="text-[10px] text-foreground">
+                        <div className="text-[10px] text-[#eef2f7]">
                           Market
                         </div>
                       </Button>
@@ -664,7 +671,7 @@ export function TradingInterface() {
                                 onChange={(e) => {
                                   handleInputChange(e);
                                 }}
-                                className="h-6 bg-muted border-0 text-foreground text-sm font-medium p-1"
+                                className="h-6 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.06)] text-[#eef2f7] text-sm font-medium p-1"
                               />
                             </FormControl>
                           </FormItem>
@@ -676,7 +683,7 @@ export function TradingInterface() {
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="h-4 w-4 text-muted-foreground bg-secondary hover:text-foreground p-0"
+                        className="h-4 w-4 text-[#8b97a8] bg-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.1)] hover:text-[#eef2f7] p-0"
                         onClick={() => handleVolumeChange(true)}
                       >
                         <ChevronUp className="h-3 w-3" />
@@ -685,7 +692,7 @@ export function TradingInterface() {
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="h-4 w-4 text-muted-foreground bg-secondary hover:text-foreground p-0"
+                        className="h-4 w-4 text-[#8b97a8] bg-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.1)] hover:text-[#eef2f7] p-0"
                         onClick={() => handleVolumeChange(false)}
                       >
                         <ChevronDown className="h-3 w-3" />
@@ -699,7 +706,7 @@ export function TradingInterface() {
                     onValueChange={handleTabChange}
                     className="w-full"
                   >
-                    <TabsList className="grid grid-cols-3 h-6 bg-muted">
+                    <TabsList className="grid grid-cols-3 h-6 bg-[rgba(255,255,255,0.04)]">
                       <TabsTrigger
                         value="lots"
                         className="text-[10px] h-5 px-1"
@@ -783,7 +790,7 @@ export function TradingInterface() {
                               {...field}
                               value={displayVolume}
                               onChange={handleInputChange}
-                              className="h-7 bg-muted border-0 text-foreground text-sm w-24"
+                              className="h-7 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.06)] text-[#eef2f7] text-sm w-24"
                             />
                           </FormControl>
                         </FormItem>
@@ -794,7 +801,7 @@ export function TradingInterface() {
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="h-3.5 w-3.5 bg-secondary p-0"
+                        className="h-3.5 w-3.5 bg-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.1)] p-0 text-[#eef2f7]"
                         onClick={() => handleVolumeChange(true)}
                       >
                         <ChevronUp className="h-2.5 w-2.5" />
@@ -803,7 +810,7 @@ export function TradingInterface() {
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="h-3.5 w-3.5 bg-secondary p-0"
+                        className="h-3.5 w-3.5 bg-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.1)] p-0 text-[#eef2f7]"
                         onClick={() => handleVolumeChange(false)}
                       >
                         <ChevronDown className="h-2.5 w-2.5" />
@@ -816,7 +823,7 @@ export function TradingInterface() {
                     onValueChange={handleTabChange}
                     className="w-[180px]"
                   >
-                    <TabsList className="grid grid-cols-3 h-7 bg-muted">
+                    <TabsList className="grid grid-cols-3 h-7 bg-[rgba(255,255,255,0.04)]">
                       <TabsTrigger value="lots" className="text-xs px-2">
                         lots
                       </TabsTrigger>
@@ -875,7 +882,7 @@ export function TradingInterface() {
             <div className="p-3">
               <div className="flex items-center">
                 <div className="flex-1">
-                  <label className="text-xs text-muted-foreground">
+                  <label className="text-xs text-[#8b97a8]">
                     Volume
                   </label>
                   <FormField
@@ -891,7 +898,7 @@ export function TradingInterface() {
                               field.onChange(e);
                               handleInputChange(e);
                             }}
-                            className="h-8 bg-muted border-0 text-foreground text-lg font-medium"
+                            className="h-8 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.06)] text-[#eef2f7] text-lg font-medium"
                           />
                         </FormControl>
                       </FormItem>
@@ -903,7 +910,7 @@ export function TradingInterface() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-6 w-6 text-muted-foreground bg-secondary hover:text-foreground"
+                    className="h-6 w-6 text-[#8b97a8] bg-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.1)] hover:text-[#eef2f7]"
                     onClick={() => handleVolumeChange(true)}
                   >
                     <ChevronUp className="h-4 w-4" />
@@ -912,7 +919,7 @@ export function TradingInterface() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-6 w-6 text-muted-foreground bg-secondary hover:text-foreground"
+                    className="h-6 w-6 text-[#8b97a8] bg-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.1)] hover:text-[#eef2f7]"
                     onClick={() => handleVolumeChange(false)}
                   >
                     <ChevronDown className="h-4 w-4" />
@@ -926,7 +933,7 @@ export function TradingInterface() {
                 onValueChange={handleTabChange}
                 className="w-full mt-3"
               >
-                <TabsList className="grid grid-cols-3 h-8 bg-muted">
+                <TabsList className="grid grid-cols-3 h-8 bg-[rgba(255,255,255,0.04)]">
                   <TabsTrigger value="lots" className="text-xs">
                     lots
                   </TabsTrigger>
@@ -940,30 +947,30 @@ export function TradingInterface() {
               </Tabs>
             </div>
 
-            <Separator className="bg-muted" />
+            <Separator className="bg-[rgba(255,255,255,0.04)]" />
 
             {/* Section 2: Trading Info */}
             <div className="p-3">
               <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Contract size:</span>
-                  <span className="text-primary">
+                  <span className="text-[#8b97a8]">Contract size:</span>
+                  <span className="text-[#eef2f7]">
                     {activeAsset?.contract_size}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Position:</span>
-                  <span className="text-primary">
+                  <span className="text-[#8b97a8]">Position:</span>
+                  <span className="text-[#eef2f7]">
                     {activeAsset?.position}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Margin:</span>
+                  <span className="text-[#8b97a8]">Margin:</span>
                   <span
                     className={cn(
                       tradingInfo.margin > accountSummary.freeMargin
                         ? "text-red-500"
-                        : "text-primary"
+                        : "text-[#eef2f7]"
                     )}
                   >
                     {formatCurrencyValue(
@@ -972,37 +979,37 @@ export function TradingInterface() {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Free Margin:</span>
-                  <span className="text-primary">
+                  <span className="text-[#8b97a8]">Free Margin:</span>
+                  <span className="text-[#eef2f7]">
                     {formatCurrencyValue(
                       parseFloat(accountSummary.freeMargin.toFixed(2))
                     )}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Spread:</span>
-                  <span className="text-primary">
+                  <span className="text-[#8b97a8]">Spread:</span>
+                  <span className="text-[#eef2f7]">
                     {tradingInfo.spread.toFixed(5)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Leverage:</span>
-                  <span className="text-primary">1:{tradingInfo.leverage}</span>
+                  <span className="text-[#8b97a8]">Leverage:</span>
+                  <span className="text-[#eef2f7]">1:{tradingInfo.leverage}</span>
                 </div>
               </div>
             </div>
 
-            <Separator className="bg-muted" />
+            <Separator className="bg-[rgba(255,255,255,0.04)]" />
 
             {/* Section 3: Profit Calculator and Buttons */}
             <div className="p-3 space-y-2">
               <Button
                 type="button"
-                className="flex items-center justify-center py-1 w-full h-auto bg-secondary hover:bg-secondary/50"
+                className="flex items-center justify-center py-1 w-full h-auto bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.06)] text-[#eef2f7]"
                 onClick={() => setIsProfitCalculatorOpen(true)}
               >
                 <BarChart2 className="h-4 w-4 mr-2" />
-                <span className="text-sm font-medium text-foreground">
+                <span className="text-sm font-medium text-[#eef2f7]">
                   Profit Calculator
                 </span>
               </Button>
@@ -1011,13 +1018,13 @@ export function TradingInterface() {
                 <div className="space-y-1 flex-1">
                   <Button
                     type="button"
-                    className="flex flex-col items-start justify-center w-full h-auto bg-secondary hover:bg-secondary/50"
+                    className="flex flex-col items-start justify-center w-full h-auto bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.06)] text-[#eef2f7]"
                     onClick={() => setIsTpSlModalOpen(true)}
                   >
-                    <div className="text-xs text-muted-foreground items-center">
+                    <div className="text-xs text-[#8b97a8] items-center">
                       TP & SL
                     </div>
-                    <div className="text-xs text-foreground">
+                    <div className="text-xs text-[#eef2f7]">
                       {getTpSlText()}
                     </div>
                   </Button>
@@ -1026,11 +1033,11 @@ export function TradingInterface() {
                 <div className="space-y-1 flex-1">
                   <Button
                     type="button"
-                    className="flex flex-col items-start justify-center w-full h-auto bg-secondary hover:bg-secondary/50"
+                    className="flex flex-col items-start justify-center w-full h-auto bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.06)] text-[#eef2f7]"
                     onClick={() => setIsPendingModalOpen(true)}
                   >
-                    <div className="text-xs text-muted-foreground">Pending</div>
-                    <div className="text-xs text-foreground">Market</div>
+                    <div className="text-xs text-[#8b97a8]">Pending</div>
+                    <div className="text-xs text-[#eef2f7]">Market</div>
                   </Button>
                 </div>
               </div>

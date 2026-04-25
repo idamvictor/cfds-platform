@@ -66,9 +66,9 @@ export default function CalendarPanel() {
   }, []);
 
   return (
-    <div className="h-full bg-background">
-      <div className="p-4 border-b border-border">
-        <h2 className="text-sm font-medium">Economic Calendar</h2>
+    <div className="h-full text-[#eef2f7]" style={{ background: "linear-gradient(135deg,#07080c 0%,#0a0d15 100%)" }}>
+      <div className="p-4 border-b border-[rgba(255,255,255,0.06)]">
+        <h2 className="text-sm font-medium text-[#eef2f7]">Economic Calendar</h2>
       </div>
       <div ref={containerRef} className="h-[calc(100%-56px)]"></div>
     </div>

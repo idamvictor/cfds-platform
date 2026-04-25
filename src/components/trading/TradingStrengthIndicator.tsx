@@ -37,12 +37,12 @@ export default function TradingStrengthIndicator({ onClick }: TradingStrengthInd
       onClick={onClick}
       className={cn(
         "flex items-center gap-2 px-2.5 py-1 rounded-lg",
-        "bg-muted/30 border border-border/30 hover:bg-muted/50 transition-colors cursor-pointer"
+        "bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.06)] transition-colors cursor-pointer"
       )}
       title="Trading Strength"
     >
       <Zap className={cn("h-3 w-3", colors.text)} />
-      <div className="w-10 h-1 bg-muted rounded-full overflow-hidden">
+      <div className="w-10 h-1 bg-[rgba(255,255,255,0.06)] rounded-full overflow-hidden">
         <div
           className={cn("h-full rounded-full transition-all duration-400", colors.fill)}
           style={{ width: `${pct}%` }}

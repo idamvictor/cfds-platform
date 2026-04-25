@@ -37,7 +37,7 @@ export default function ChartToolbar({
   const [activeChartType, setActiveChartType] = useState<"candle" | "line">("candle");
 
   return (
-    <div className="flex items-center gap-1 px-3 py-1.5 border-b border-border/20 bg-muted/30 shrink-0">
+    <div className="flex items-center gap-1 px-3 py-1.5 border-b border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.03)] shrink-0">
       {/* Timeframe buttons */}
       {TIMEFRAMES.map((tf) => (
         <button
@@ -45,8 +45,8 @@ export default function ChartToolbar({
           className={cn(
             "px-2 py-0.5 rounded text-[10px] font-bold transition-colors",
             activeTimeframe === tf
-              ? "bg-emerald-500/10 text-emerald-500"
-              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              ? "bg-[rgba(0,223,162,0.1)] text-[#00dfa2]"
+              : "text-[#8b97a8] hover:text-[#eef2f7] hover:bg-[rgba(255,255,255,0.06)]"
           )}
           onClick={() => setActiveTimeframe(tf)}
         >
@@ -55,15 +55,15 @@ export default function ChartToolbar({
       ))}
 
       {/* Separator */}
-      <div className="w-px h-3.5 bg-border/40 mx-1" />
+      <div className="w-px h-3.5 bg-[rgba(255,255,255,0.06)] mx-1" />
 
       {/* Chart type */}
       <button
         className={cn(
           "p-1 rounded transition-colors",
           activeChartType === "candle"
-            ? "bg-emerald-500/10 text-emerald-500"
-            : "text-muted-foreground hover:text-foreground"
+            ? "bg-[rgba(0,223,162,0.1)] text-[#00dfa2]"
+            : "text-[#8b97a8] hover:text-[#eef2f7]"
         )}
         onClick={() => setActiveChartType("candle")}
       >
@@ -73,8 +73,8 @@ export default function ChartToolbar({
         className={cn(
           "p-1 rounded transition-colors",
           activeChartType === "line"
-            ? "bg-emerald-500/10 text-emerald-500"
-            : "text-muted-foreground hover:text-foreground"
+            ? "bg-[rgba(0,223,162,0.1)] text-[#00dfa2]"
+            : "text-[#8b97a8] hover:text-[#eef2f7]"
         )}
         onClick={() => setActiveChartType("line")}
       >
@@ -82,13 +82,13 @@ export default function ChartToolbar({
       </button>
 
       {/* Separator */}
-      <div className="w-px h-3.5 bg-border/40 mx-1" />
+      <div className="w-px h-3.5 bg-[rgba(255,255,255,0.06)] mx-1" />
 
       {/* Indicators */}
       {INDICATORS.map((ind) => (
         <button
           key={ind}
-          className="px-2 py-0.5 rounded text-[10px] font-bold text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+          className="px-2 py-0.5 rounded text-[10px] font-bold text-[#8b97a8] hover:text-[#eef2f7] hover:bg-[rgba(255,255,255,0.06)] transition-colors"
         >
           {ind}
         </button>
@@ -97,13 +97,13 @@ export default function ChartToolbar({
       {/* Separator — panels group */}
       {onToggleView && (
         <>
-          <div className="w-px h-3.5 bg-border/40 mx-1 ml-auto" />
+          <div className="w-px h-3.5 bg-[rgba(255,255,255,0.06)] mx-1 ml-auto" />
 
           {/* Market Watch — navigates to /main/market instead of toggling a panel */}
           <Tooltip>
             <TooltipTrigger asChild>
               <button
-                className="p-1 rounded transition-colors text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                className="p-1 rounded transition-colors text-[#8b97a8] hover:text-[#eef2f7] hover:bg-[rgba(255,255,255,0.06)]"
                 onClick={() => navigate("/main/market")}
               >
                 <LineChart className="h-3.5 w-3.5" />
@@ -119,8 +119,8 @@ export default function ChartToolbar({
                   className={cn(
                     "p-1 rounded transition-colors",
                     activeView === view
-                      ? "bg-emerald-500/10 text-emerald-500"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                      ? "bg-[rgba(0,223,162,0.1)] text-[#00dfa2]"
+                      : "text-[#8b97a8] hover:text-[#eef2f7] hover:bg-[rgba(255,255,255,0.06)]"
                   )}
                   onClick={() => onToggleView(view)}
                 >

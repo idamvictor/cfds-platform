@@ -8,13 +8,13 @@ export default function OrderBookPanel() {
   return (
     <div className="flex flex-col h-full">
       {/* Tabs */}
-      <div className="flex border-b border-border/20 bg-muted/20 shrink-0">
+      <div className="flex border-b border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.03)] shrink-0">
         <button
           className={cn(
             "flex-1 py-2 text-center text-[11px] font-bold transition-colors border-b-2 border-transparent",
             activeTab === "book"
-              ? "text-emerald-500 border-emerald-500"
-              : "text-muted-foreground hover:text-foreground"
+              ? "text-[#00dfa2] border-[#00dfa2]"
+              : "text-[#8b97a8] hover:text-[#eef2f7]"
           )}
           onClick={() => setActiveTab("book")}
         >
@@ -24,8 +24,8 @@ export default function OrderBookPanel() {
           className={cn(
             "flex-1 py-2 text-center text-[11px] font-bold transition-colors border-b-2 border-transparent",
             activeTab === "trades"
-              ? "text-emerald-500 border-emerald-500"
-              : "text-muted-foreground hover:text-foreground"
+              ? "text-[#00dfa2] border-[#00dfa2]"
+              : "text-[#8b97a8] hover:text-[#eef2f7]"
           )}
           onClick={() => setActiveTab("trades")}
         >
@@ -38,7 +38,7 @@ export default function OrderBookPanel() {
         {activeTab === "book" ? (
           <OrderBook />
         ) : (
-          <div className="flex items-center justify-center h-full text-xs text-muted-foreground p-4">
+          <div className="flex items-center justify-center h-full text-xs text-[#4a5468] p-4">
             No recent trades
           </div>
         )}

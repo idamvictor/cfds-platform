@@ -59,10 +59,10 @@ export default function ActiveOrdersPanel() {
   );
 
   return (
-    <div className="h-full bg-background flex flex-col">
-      <div className="flex items-center justify-between p-4 border-b border-border">
-        <h2 className="text-sm font-medium">Active Orders</h2>
-        <button className="text-muted-foreground hover:text-foreground">
+    <div className="h-full flex flex-col text-[#eef2f7]" style={{ background: "linear-gradient(135deg,#07080c 0%,#0a0d15 100%)" }}>
+      <div className="flex items-center justify-between p-4 border-b border-[rgba(255,255,255,0.06)]">
+        <h2 className="text-sm font-medium text-[#eef2f7]">Active Orders</h2>
+        <button className="text-[#8b97a8] hover:text-[#eef2f7]">
           <X className="h-4 w-4" />
         </button>
       </div>
@@ -72,16 +72,16 @@ export default function ActiveOrdersPanel() {
         onValueChange={setActiveTab}
         className="flex-1 flex flex-col"
       >
-        <TabsList className="bg-transparent h-10 p-0 border-b border-border rounded-none">
+        <TabsList className="bg-transparent h-10 p-0 border-b border-[rgba(255,255,255,0.06)] rounded-none">
           <TabsTrigger
             value="active"
-            className="flex-1 rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent h-full"
+            className="flex-1 rounded-none data-[state=active]:border-b-2 data-[state=active]:border-[#00dfa2] data-[state=active]:text-[#00dfa2] data-[state=active]:shadow-none data-[state=active]:bg-transparent h-full"
           >
             <span
               className={`text-xs font-medium w-full ${
                 activeTab === "active"
                   ? ""
-                  : "text-muted-foreground"
+                  : "text-[#8b97a8]"
               }`}
             >
               ACTIVE
@@ -111,15 +111,15 @@ export default function ActiveOrdersPanel() {
               )}
 
               {Object.entries(groupedTrades).length === 0 && !isLoadingOpen && (
-                <div className="text-center text-muted-foreground py-4">
+                <div className="text-center text-[#8b97a8] py-4">
                   No active orders found
                 </div>
               )}
 
               {Object.entries(groupedTrades).map(([assetSymbol, trades]) => (
                 <div key={assetSymbol} className="mb-1">
-                  <div className="bg-slate-700 p-1 mb-2">
-                    <span className="text-xs font-medium">{assetSymbol}</span>
+                  <div className="bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.06)] rounded-md px-2 py-1 mb-2">
+                    <span className="text-xs font-medium text-[#eef2f7]">{assetSymbol}</span>
                   </div>
 
                   <div className="space-y-1">
@@ -134,13 +134,13 @@ export default function ActiveOrdersPanel() {
               <div ref={loadMoreRef} className="py-2 text-center">
                 {isLoadingOpen && (
                   <div className="flex justify-center items-center py-2">
-                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                    <Loader2 className="h-5 w-5 animate-spin text-[#8b97a8]" />
                   </div>
                 )}
               </div>
             </div>
           ) : (
-            <div className="text-center text-muted-foreground py-4">
+            <div className="text-center text-[#8b97a8] py-4">
               No pending orders available
             </div>
           )}
@@ -166,11 +166,11 @@ function TradeItem({ trade }: { trade: Trade }) {
   };
 
   return (
-    <div className="border-b border-border pb-3 text-xs">
+    <div className="border-b border-[rgba(255,255,255,0.06)] pb-3 text-xs text-[#eef2f7]">
       <div className="flex items-center justify-between">
         <Button
           variant="ghost"
-          className="flex items-center gap-2 pl-0"
+          className="flex items-center gap-2 pl-0 text-[#eef2f7] hover:bg-[rgba(255,255,255,0.06)]"
           onClick={() => handleAssetClick(trade.asset_symbol)}
         >
           <CryptoIcon type={trade.asset_id} />
@@ -178,7 +178,7 @@ function TradeItem({ trade }: { trade: Trade }) {
         </Button>
         <span
           className={`font-medium ${
-            isPnlPositive ? "text-green-500" : "text-red-500"
+            isPnlPositive ? "text-emerald-500" : "text-red-500"
           }`}
         >
           {isPnlPositive
@@ -189,7 +189,7 @@ function TradeItem({ trade }: { trade: Trade }) {
 
       <div className="flex items-center justify-between mt-1">
         <button
-          className=" text-muted-foreground flex items-center"
+          className="text-[#8b97a8] flex items-center"
           onClick={() => setIsExpanded(!isExpanded)}
         >
           Show more{" "}
@@ -199,51 +199,51 @@ function TradeItem({ trade }: { trade: Trade }) {
             }`}
           />
         </button>
-        <span className="text-xs text-muted-foreground">{trade.open_time}</span>
+        <span className="text-xs text-[#8b97a8]">{trade.open_time}</span>
       </div>
 
       {isExpanded && (
-        <div className="mt-2 pt-2 border-t border-border/50 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+        <div className="mt-2 pt-2 border-t border-[rgba(255,255,255,0.06)] grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
           <div className="flex justify-between">
-            <span className="text-muted-foreground">ID:</span>
+            <span className="text-[#8b97a8]">ID:</span>
             <span className="font-mono">{trade.trade_id}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Type:</span>
+            <span className="text-[#8b97a8]">Type:</span>
             <span
               className={
-                trade.trade_type === "buy" ? "text-green-500" : "text-red-500"
+                trade.trade_type === "buy" ? "text-emerald-500" : "text-red-500"
               }
             >
               {trade.trade_type.toUpperCase()}
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Margin:</span>
+            <span className="text-[#8b97a8]">Margin:</span>
             <span>${trade.margin.toFixed(2)}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Volume:</span>
+            <span className="text-[#8b97a8]">Volume:</span>
             <span>{trade.volume.toFixed(3)}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Open Price:</span>
+            <span className="text-[#8b97a8]">Open Price:</span>
             <span>{trade.opening_price}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Current Price:</span>
+            <span className="text-[#8b97a8]">Current Price:</span>
             <span>{trade.closing_price}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Leverage:</span>
+            <span className="text-[#8b97a8]">Leverage:</span>
             <span>x{trade.leverage}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Take Profit:</span>
+            <span className="text-[#8b97a8]">Take Profit:</span>
             <span>{trade.take_profit > 0 ? trade.take_profit : "-"}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Stop Loss:</span>
+            <span className="text-[#8b97a8]">Stop Loss:</span>
             <span>{trade.stop_loss > 0 ? trade.stop_loss : "-"}</span>
           </div>
         </div>

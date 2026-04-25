@@ -141,17 +141,17 @@ export default function OrderTable() {
   };
 
   return (
-    <div className="flex flex-col bg-background text-foreground w-full">
+    <div className="flex flex-col text-[#eef2f7] w-full">
       {!isCollapsed && !isMobile && (
         <div className="flex-1">
-          <div className="border-b border-border/30 flex justify-between items-center sticky top-0 z-20 bg-background/95 px-3">
+          <div className="border-b border-[rgba(255,255,255,0.06)] flex justify-between items-center sticky top-0 z-20 bg-[rgba(255,255,255,0.03)] px-3 backdrop-blur-sm">
             <div className="flex overflow-x-auto scrollbar-hide gap-0">
               <button
                 className={cn(
                   "border-b-2 border-transparent px-3.5 py-1.5 whitespace-nowrap text-[11px] font-bold transition-colors",
                   activeTab === "active"
-                    ? "border-emerald-500 text-emerald-500"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "border-[#00dfa2] text-[#00dfa2]"
+                    : "text-[#8b97a8] hover:text-[#eef2f7]"
                 )}
                 onClick={() => setActiveTab("active")}
               >
@@ -161,8 +161,8 @@ export default function OrderTable() {
                 className={cn(
                   "border-b-2 border-transparent px-3.5 py-1.5 whitespace-nowrap text-[11px] font-bold transition-colors",
                   activeTab === "history"
-                    ? "border-emerald-500 text-emerald-500"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "border-[#00dfa2] text-[#00dfa2]"
+                    : "text-[#8b97a8] hover:text-[#eef2f7]"
                 )}
                 onClick={() => setActiveTab("history")}
               >
@@ -173,7 +173,7 @@ export default function OrderTable() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-6 w-6"
+                className="h-6 w-6 text-[#8b97a8] hover:text-[#eef2f7] hover:bg-[rgba(255,255,255,0.06)]"
                 onClick={() => setIsCollapsed(true)}
               >
                 <ChevronDown className="h-3.5 w-3.5" />
@@ -195,7 +195,7 @@ export default function OrderTable() {
       )}
 
       {/* Account summary section */}
-      <div className="sticky bottom-0 z-20 bg-background">
+      <div className="sticky bottom-0 z-20 bg-[rgba(255,255,255,0.03)] backdrop-blur-sm border-t border-[rgba(255,255,255,0.06)]">
         {isMobile
           ? activeAsset && (
               <AccountSummary

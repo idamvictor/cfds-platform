@@ -39,22 +39,22 @@ export function MobileOrderCard({
 
   return (
     <div
-      className="mb-1 border border-muted rounded-sm overflow-hidden"
+      className="mb-1 border border-[rgba(255,255,255,0.06)] rounded-sm overflow-hidden text-[#eef2f7]"
       onClick={() => toggleOrderExpand(order.id)}
     >
-      <div className="p-2 bg-muted/30 flex justify-between items-center">
+      <div className="p-2 bg-[rgba(255,255,255,0.03)] flex justify-between items-center">
         <div className="flex items-center gap-1">
           <Badge
             variant={order.trade_type === "buy" ? "default" : "secondary"}
             className={cn(
               "text-xs px-1.5 py-0.5",
-              order.trade_type === "buy" ? "bg-green-500" : "bg-red-500"
+              order.trade_type === "buy" ? "bg-emerald-500 text-white" : "bg-red-500 text-white"
             )}
           >
             {order.trade_type.toUpperCase()}
           </Badge>
           <Button
-            className="text-sm font-medium "
+            className="text-sm font-medium text-[#eef2f7] hover:bg-[rgba(255,255,255,0.06)]"
             variant="ghost"
             onClick={(e) => handleAssetClick(e, order.asset_symbol)}
           >
@@ -65,14 +65,14 @@ export function MobileOrderCard({
           <span
             className={cn(
               "text-sm font-medium",
-              order.pnl >= 0 ? "text-green-500" : "text-red-500"
+              order.pnl >= 0 ? "text-emerald-500" : "text-red-500"
             )}
           >
             {order.pnl >= 0
               ? `$${order.pnl.toFixed(2)}`
               : `-$${Math.abs(order.pnl).toFixed(2)}`}
           </span>
-          <Button variant="ghost" size="icon" className="h-6 w-6">
+          <Button variant="ghost" size="icon" className="h-6 w-6 text-[#8b97a8] hover:text-[#eef2f7] hover:bg-[rgba(255,255,255,0.06)]">
             <ChevronDown
               className={cn(
                 "h-3 w-3 transition-transform",
@@ -84,54 +84,54 @@ export function MobileOrderCard({
       </div>
 
       {isExpanded && (
-        <div className="p-2 space-y-1.5 bg-background">
+        <div className="p-2 space-y-1.5 bg-[rgba(255,255,255,0.02)]">
           <div className="grid grid-cols-2 gap-1.5">
             <div>
-              <div className="text-xs text-muted-foreground">ID</div>
+              <div className="text-xs text-[#8b97a8]">ID</div>
               <div className="text-sm">{order.trade_id}</div>
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Volume</div>
+              <div className="text-xs text-[#8b97a8]">Volume</div>
               <div className="text-sm">{order.volume.toFixed(2)}</div>
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Open Price</div>
+              <div className="text-xs text-[#8b97a8]">Open Price</div>
               <div className="text-sm">{order.opening_price}</div>
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">
+              <div className="text-xs text-[#8b97a8]">
                 {isHistory ? "Close Price" : "Current Price"}
               </div>
               <div className="text-sm">{order.closing_price}</div>
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Open Time</div>
+              <div className="text-xs text-[#8b97a8]">Open Time</div>
               <div className="text-sm">{order.open_time}</div>
             </div>
             {isHistory && (
               <div>
-                <div className="text-xs text-muted-foreground">Close Time</div>
+                <div className="text-xs text-[#8b97a8]">Close Time</div>
                 <div className="text-sm">{order.close_time || "-"}</div>
               </div>
             )}
             <div>
-              <div className="text-xs text-muted-foreground">Leverage</div>
+              <div className="text-xs text-[#8b97a8]">Leverage</div>
               <div className="text-sm">x{order.leverage}</div>
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Take Profit</div>
+              <div className="text-xs text-[#8b97a8]">Take Profit</div>
               <div className="text-sm">
                 {order.take_profit > 0 ? order.take_profit : "-"}
               </div>
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Stop Loss</div>
+              <div className="text-xs text-[#8b97a8]">Stop Loss</div>
               <div className="text-sm">
                 {order.stop_loss > 0 ? order.stop_loss : "-"}
               </div>
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Margin</div>
+              <div className="text-xs text-[#8b97a8]">Margin</div>
               <div className="text-sm">${order.margin}</div>
             </div>
           </div>

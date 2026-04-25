@@ -82,7 +82,13 @@ export default function TradingPlatform() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-background text-foreground overflow-hidden">
+    <div
+      className="flex flex-col h-screen overflow-hidden font-[Inter,-apple-system,sans-serif]"
+      style={{
+        background: "linear-gradient(135deg,#07080c 0%,#0a0d15 100%)",
+        color: "#eef2f7",
+      }}
+    >
       <AssetInitializer />
       <AssetPriceStreamInitializer />
 

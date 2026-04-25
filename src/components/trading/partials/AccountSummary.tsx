@@ -41,46 +41,46 @@ export function AccountSummary({
 
   if (isDesktop) {
     return (
-      <div className="w-full bg-muted/30 border-t border-muted p-2">
+      <div className="w-full bg-[rgba(255,255,255,0.03)] border-t border-[rgba(255,255,255,0.06)] p-2 text-[#eef2f7]">
         <div className="flex flex-wrap gap-4 justify-between">
           <div className="flex gap-4">
             <div className="flex items-center gap-2">
-              <span className="text-muted-foreground text-xs">Balance:</span>
+              <span className="text-[#8b97a8] text-xs">Balance:</span>
               <span className="text-xs">
                 {formatCurrency(accountData.balance)}
               </span>
             </div>
 
             {/*<div className="flex items-center gap-2">*/}
-            {/*  <span className="text-muted-foreground text-xs">Credit:</span>*/}
+            {/*  <span className="text-[#8b97a8] text-xs">Credit:</span>*/}
             {/*  <span className="text-xs">*/}
             {/*    {formatCurrency(accountData.credit)}*/}
             {/*  </span>*/}
             {/*</div>*/}
 
             <div className="flex items-center gap-2">
-              <span className="text-muted-foreground text-xs">Equity:</span>
+              <span className="text-[#8b97a8] text-xs">Equity:</span>
               <span className="text-xs">
                 {formatCurrency(accountData.equity)}
               </span>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-muted-foreground text-xs">Margin:</span>
+              <span className="text-[#8b97a8] text-xs">Margin:</span>
               <span className="text-xs">
                 {formatCurrency(accountData.margin)}
               </span>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-muted-foreground text-xs">
+              <span className="text-[#8b97a8] text-xs">
                 Margin level:
               </span>
               <span className="text-xs">{accountData.marginLevel}</span>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-muted-foreground text-xs">
+              <span className="text-[#8b97a8] text-xs">
                 Free Margin:
               </span>
               <span className="text-xs">
@@ -90,11 +90,11 @@ export function AccountSummary({
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-muted-foreground text-xs">PnL:</span>
+            <span className="text-[#8b97a8] text-xs">PnL:</span>
             <span
               className={cn(
                 "text-xs",
-                  accountData.pnl >= 0 ? "text-green-500" : "text-red-500"
+                  accountData.pnl >= 0 ? "text-emerald-500" : "text-red-500"
               )}
             >
               {accountData.pnl >= 0 ? "" : "-"}
@@ -106,7 +106,7 @@ export function AccountSummary({
             <Button
               variant="ghost"
               size="icon"
-              className="h-6 w-6"
+              className="h-6 w-6 text-[#8b97a8] hover:text-[#eef2f7] hover:bg-[rgba(255,255,255,0.06)]"
               onClick={() => setIsCollapsed(false)}
             >
               <ChevronUp className="h-4 w-4" />
@@ -119,21 +119,21 @@ export function AccountSummary({
 
   // Mobile layout
   return (
-    <div className="p-2 bg-muted/30 border-t border-muted">
+    <div className="p-2 bg-[rgba(255,255,255,0.03)] border-t border-[rgba(255,255,255,0.06)] text-[#eef2f7]">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
-            <span className="text-xs text-muted-foreground">Bal:</span>
+            <span className="text-xs text-[#8b97a8]">Bal:</span>
             <span className="text-xs font-medium">
               {formatCurrency(parseFloat(accountData.balance.toFixed(2)))}
             </span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="text-xs text-muted-foreground">PnL:</span>
+            <span className="text-xs text-[#8b97a8]">PnL:</span>
             <span
               className={cn(
                 "text-xs font-medium",
-                accountData.pnl >= 0 ? "text-green-500" : "text-red-500"
+                accountData.pnl >= 0 ? "text-emerald-500" : "text-red-500"
               )}
             >
               {accountData.pnl >= 0 ? "" : "-"}
@@ -147,7 +147,7 @@ export function AccountSummary({
           <Button
             variant="ghost"
             size="icon"
-            className="h-6 w-6 rounded-full"
+            className="h-6 w-6 rounded-full text-[#8b97a8] hover:text-[#eef2f7] hover:bg-[rgba(255,255,255,0.06)]"
             onClick={() => setShowAccountDetails(true)}
           >
             <Wallet className="h-3.5 w-3.5" />
@@ -155,7 +155,7 @@ export function AccountSummary({
           <Button
             variant="ghost"
             size="icon"
-            className="h-6 w-6 rounded-full"
+            className="h-6 w-6 rounded-full text-[#8b97a8] hover:text-[#eef2f7] hover:bg-[rgba(255,255,255,0.06)]"
             onClick={() => setIsModalOpen(true)}
           >
             <Info className="h-3.5 w-3.5" />
@@ -215,7 +215,7 @@ export function AccountSummary({
                   <span
                     className={cn(
                       "font-medium",
-                      accountData.pnl >= 0 ? "text-green-500" : "text-red-500"
+                      accountData.pnl >= 0 ? "text-emerald-500" : "text-red-500"
                     )}
                   >
                     {accountData.pnl >= 0 ? "" : "-"}

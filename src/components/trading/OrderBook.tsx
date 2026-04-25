@@ -71,7 +71,7 @@ export default function OrderBook() {
 
   if (basePrice <= 0) {
     return (
-      <div className="flex items-center justify-center h-full text-xs text-muted-foreground p-4">
+      <div className="flex items-center justify-center h-full text-xs text-[#4a5468] p-4">
         Select an asset to view order book
       </div>
     );
@@ -80,7 +80,7 @@ export default function OrderBook() {
   return (
     <div className="px-2.5 py-2 text-xs">
       {/* Header */}
-      <div className="grid grid-cols-3 gap-1 px-0.5 pb-1.5 text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
+      <div className="grid grid-cols-3 gap-1 px-0.5 pb-1.5 text-[9px] font-bold uppercase tracking-wider text-[#4a5468]">
         <span>Price</span>
         <span>Size</span>
         <span>Total</span>
@@ -94,14 +94,14 @@ export default function OrderBook() {
             style={{ width: `${row.depthPct}%` }}
           />
           <span className="text-red-500 relative z-10">{row.price}</span>
-          <span className="text-muted-foreground relative z-10">{row.size}</span>
-          <span className="text-muted-foreground relative z-10">{row.total}</span>
+          <span className="text-[#8b97a8] relative z-10">{row.size}</span>
+          <span className="text-[#8b97a8] relative z-10">{row.total}</span>
         </div>
       ))}
 
       {/* Spread */}
-      <div className="text-center py-1.5 text-[10px] text-muted-foreground font-semibold border-y border-border/20 my-1">
-        Spread: <span className="font-mono font-bold text-foreground">{data.spread}</span>
+      <div className="text-center py-1.5 text-[10px] text-[#8b97a8] font-semibold border-y border-[rgba(255,255,255,0.06)] my-1">
+        Spread: <span className="font-mono font-bold text-[#eef2f7]">{data.spread}</span>
       </div>
 
       {/* Bid side (green) */}
@@ -112,8 +112,8 @@ export default function OrderBook() {
             style={{ width: `${row.depthPct}%` }}
           />
           <span className="text-emerald-500 relative z-10">{row.price}</span>
-          <span className="text-muted-foreground relative z-10">{row.size}</span>
-          <span className="text-muted-foreground relative z-10">{row.total}</span>
+          <span className="text-[#8b97a8] relative z-10">{row.size}</span>
+          <span className="text-[#8b97a8] relative z-10">{row.total}</span>
         </div>
       ))}
     </div>

@@ -43,33 +43,33 @@ export default function MainContent({
       {/* Main grid: Chart + Right Panel */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_280px] min-h-0 overflow-hidden">
         {/* Left: Chart Panel */}
-        <div className="flex flex-col min-w-0 min-h-0 border-r border-border/30">
+        <div className="flex flex-col min-w-0 min-h-0 border-r border-[rgba(255,255,255,0.06)]">
           <ChartToolbar activeView={activeView} onToggleView={onToggleView} />
-          <div className="flex-1 min-h-0 bg-background">
+          <div className="flex-1 min-h-0">
             <TradingViewWidget />
           </div>
         </div>
 
         {/* Right: Order Book + Order Form (desktop only) */}
-        <div className="hidden lg:flex flex-col min-h-0 overflow-hidden bg-background/50">
+        <div className="hidden lg:flex flex-col min-h-0 overflow-hidden bg-[rgba(255,255,255,0.02)]">
           {/* Order Book */}
-          <div className="flex-1 min-h-0 overflow-y-auto border-b border-border/30">
+          <div className="flex-1 min-h-0 overflow-y-auto border-b border-[rgba(255,255,255,0.06)]">
             <OrderBookPanel />
           </div>
           {/* Order Form */}
-          <div className="border-t border-border/30 overflow-y-auto" style={{ maxHeight: "50%" }}>
+          <div className="border-t border-[rgba(255,255,255,0.06)] overflow-y-auto" style={{ maxHeight: "50%" }}>
             <TradingInterface />
           </div>
         </div>
       </div>
 
       {/* Mobile Order Form */}
-      <div className="lg:hidden border-t border-border/30">
+      <div className="lg:hidden border-t border-[rgba(255,255,255,0.06)]">
         <TradingInterface />
       </div>
 
       {/* Bottom Panel: Orders Table */}
-      <div className="border-t border-border/30 max-h-[180px] overflow-hidden">
+      <div className="border-t border-[rgba(255,255,255,0.06)] max-h-[180px] overflow-hidden">
         <OrderTable />
       </div>
 
@@ -95,16 +95,20 @@ function SidePanelOverlay({
   onClose: () => void;
 }) {
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="absolute left-0 top-0 h-full w-[320px] bg-background border-r border-border shadow-xl overflow-y-auto"
+        className="absolute left-0 top-0 h-full w-[320px] border-r border-[rgba(255,255,255,0.06)] shadow-xl overflow-y-auto"
+        style={{
+          background: "linear-gradient(135deg,#07080c 0%,#0a0d15 100%)",
+          color: "#eef2f7",
+        }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between p-3 border-b border-border">
-          <span className="text-sm font-semibold capitalize">
+        <div className="flex items-center justify-between p-3 border-b border-[rgba(255,255,255,0.06)]">
+          <span className="text-sm font-semibold capitalize text-[#eef2f7]">
             {activeView.replace("-", " ")}
           </span>
-          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}>
+          <Button variant="ghost" size="icon" className="h-7 w-7 text-[#8b97a8] hover:text-[#eef2f7] hover:bg-[rgba(255,255,255,0.06)]" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
         </div>

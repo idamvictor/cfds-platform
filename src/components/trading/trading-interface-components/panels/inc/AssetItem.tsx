@@ -34,7 +34,7 @@ const AssetItem = memo(({
         (isPositiveChange ? "+" : "") + changePercent.toFixed(percentPrecision) + "%";
 
     // Determine text color for percent change
-    const percentColor = isPositiveChange ? "text-green-500" : "text-red-500";
+    const percentColor = isPositiveChange ? "text-emerald-500" : "text-red-500";
 
     // Check price changes and apply flash effect
     useEffect(() => {
@@ -44,7 +44,7 @@ const AssetItem = memo(({
         if (prevPrice !== currentPrice) {
             // Set color based on price change
             if (currentPrice > prevPrice) {
-                setPriceColor("text-green-500");
+                setPriceColor("text-emerald-500");
             } else if (currentPrice < prevPrice) {
                 setPriceColor("text-red-500");
             }
@@ -68,8 +68,8 @@ const AssetItem = memo(({
         <>
             <div
                 className={cn(
-                    "grid grid-cols-[auto_minmax(0,1fr)_auto] items-center py-2 px-2 hover:bg-slate-700/50 border-b border-slate-700 cursor-pointer gap-2",
-                    isActive ? "bg-slate-700/50" : ""
+                    "grid grid-cols-[auto_minmax(0,1fr)_auto] items-center py-2 px-2 hover:bg-[rgba(255,255,255,0.06)] border-b border-[rgba(255,255,255,0.04)] cursor-pointer gap-2 text-[#eef2f7]",
+                    isActive ? "bg-[rgba(0,223,162,0.08)]" : ""
                 )}
                 onClick={onClick}
             >
@@ -108,12 +108,12 @@ const AssetItem = memo(({
                         {formattedPercent}
                     </span>
                     <button
-                        className="text-slate-400  hover:text-slate-300 w-3 flex items-center justify-center"
+                        className="text-[#8b97a8] hover:text-[#eef2f7] w-3 flex items-center justify-center"
                     >
                         <Plus className="h-3.5 w-3.5" />
                     </button>
                     <button
-                        className="text-slate-400 hover:text-slate-300 w-3 flex items-center justify-center cursor-pointer"
+                        className="text-[#8b97a8] hover:text-[#eef2f7] w-3 flex items-center justify-center cursor-pointer"
                         onClick={handleInfoClick}
                         aria-label="View asset information"
                         title="Asset Information"
