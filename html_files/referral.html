@@ -1,0 +1,2085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Referral Program — 1 Trade Market</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --accent: #00dfa2;
+      --accent-light: #00ffc3;
+      --accent-dark: #00b881;
+      --bg: #07080c;
+      --bg2: #0a0d15;
+      --t1: #eef2f7;
+      --t2: #8b97a8;
+      --t3: #4a5468;
+      --t4: #3a4556;
+      --glass-bg: rgba(255, 255, 255, 0.04);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-highlight: rgba(255, 255, 255, 0.12);
+      --bonus-accent: #c8e64e;
+      --green: #1ED760;
+      --green-dim: rgba(30, 215, 96, 0.1);
+      --red: #f43f5e;
+      --orange: #FF9800;
+      --blue: #5b8def;
+      --amber: #F0B429;
+      --purple: #8B5CF6;
+      --color-blue: #3b82f6;
+      --color-gold: #f0b429;
+      --color-pink: #ec4899;
+      --color-purple: #a855f7;
+      --sans: 'Inter', -apple-system, sans-serif;
+      --heading: 'Outfit', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+      --radius: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--t1);
+      font-family: var(--sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Glass Card Base */
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(40px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, var(--glass-highlight) 0%, transparent 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .glass-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: inset 0 1px 0 var(--glass-highlight);
+      pointer-events: none;
+    }
+
+    /* Navigation */
+    nav {
+      background: var(--glass-bg);
+      backdrop-filter: blur(40px);
+      border-bottom: 1px solid var(--glass-border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      padding: 16px 40px;
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--t1);
+      font-weight: 900;
+      font-size: 1.1rem;
+    }
+
+    .nav-logo-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 0.9rem;
+      color: #000;
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-menu a {
+      color: var(--t2);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.3s ease;
+    }
+
+    .nav-menu a:hover {
+      color: var(--accent);
+    }
+
+    /* Ticker */
+    #ticker-container {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--glass-border);
+      overflow: hidden;
+      padding: 12px 0;
+    }
+
+    .ticker {
+      display: flex;
+      gap: 40px;
+      white-space: nowrap;
+      animation: scroll 30s linear infinite;
+    }
+
+    .ticker-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .ticker-symbol {
+      color: var(--t2);
+    }
+
+    .ticker-price {
+      color: var(--t1);
+      font-family: var(--mono);
+    }
+
+    .ticker-change {
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .ticker-change.up {
+      background: rgba(30, 215, 96, 0.2);
+      color: var(--green);
+    }
+
+    .ticker-change.down {
+      background: rgba(244, 63, 94, 0.2);
+      color: var(--red);
+    }
+
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Section Base */
+    .sec {
+      padding: 80px 0;
+    }
+
+    .sec-dark {
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    .sec-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    .sec-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .sec-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px 6px 6px;
+      background: rgba(0, 223, 162, 0.1);
+      border: 1px solid rgba(0, 223, 162, 0.2);
+      border-radius: 50px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent-light);
+      margin-bottom: 20px;
+    }
+
+    .sec-label i {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+    }
+
+    .sec-title {
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 900;
+      font-family: var(--heading);
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .sec-desc {
+      font-size: 1rem;
+      color: var(--t2);
+      max-width: 640px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 64px 0 48px;
+      position: relative;
+      overflow: hidden;
+      min-height: 700px;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 20%, rgba(0, 223, 162, 0.1), transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(rgba(0, 223, 162, 0.01) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(0, 223, 162, 0.01) 1px, transparent 1px);
+      background-size: 64px 64px;
+      pointer-events: none;
+    }
+
+    .hero-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-left h1 {
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      font-family: var(--heading);
+      font-weight: 900;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .hero-left h1 .gradient-text {
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-left .subtitle {
+      font-size: 1.1rem;
+      color: var(--t2);
+      margin-bottom: 32px;
+      line-height: 1.8;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(0, 223, 162, 0.1);
+      border: 1px solid rgba(0, 223, 162, 0.25);
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-box {
+      padding: 20px;
+      text-align: center;
+      background: var(--glass-bg);
+      backdrop-filter: blur(40px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, var(--glass-highlight) 0%, transparent 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .stat-box::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: inset 0 1px 0 var(--glass-highlight);
+      pointer-events: none;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--accent);
+      font-family: var(--mono);
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--t2);
+      font-weight: 600;
+    }
+
+    .referral-input-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .referral-input-group input {
+      flex: 1;
+      padding: 14px 16px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      color: var(--t1);
+      font-family: var(--mono);
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .referral-input-group input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(0, 223, 162, 0.3);
+    }
+
+    .btn {
+      padding: 12px 28px;
+      border: none;
+      border-radius: var(--radius-lg);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: var(--sans);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0, 223, 162, 0.3);
+    }
+
+    .btn-secondary {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--t1);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      background: rgba(0, 223, 162, 0.1);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .btn-group .btn {
+      flex: 1;
+    }
+
+    .social-buttons {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .social-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-lg);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--t1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1.2rem;
+    }
+
+    .social-btn:hover {
+      background: rgba(0, 223, 162, 0.1);
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .commission-card {
+      padding: 32px;
+      height: 100%;
+    }
+
+    .commission-title {
+      font-size: 1.3rem;
+      font-weight: 900;
+      margin-bottom: 24px;
+      font-family: var(--heading);
+    }
+
+    .tier-item {
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .tier-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .tier-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .tier-label {
+      font-weight: 700;
+      color: var(--t1);
+    }
+
+    .tier-percentage {
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--accent);
+      font-family: var(--mono);
+    }
+
+    .tier-progress {
+      width: 100%;
+      height: 6px;
+      background: var(--glass-bg);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .tier-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      border-radius: 3px;
+    }
+
+    .tier-desc {
+      font-size: 0.85rem;
+      color: var(--t2);
+    }
+
+    .recent-activity {
+      margin-top: 28px;
+      padding-top: 28px;
+      border-top: 1px solid var(--glass-border);
+    }
+
+    .activity-title {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--t2);
+      margin-bottom: 16px;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .activity-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: #000;
+      font-weight: 900;
+    }
+
+    .activity-text {
+      flex: 1;
+      font-size: 0.85rem;
+    }
+
+    .activity-user {
+      color: var(--t1);
+      font-weight: 600;
+    }
+
+    .activity-amount {
+      color: var(--accent);
+      font-weight: 700;
+      font-family: var(--mono);
+    }
+
+    /* How It Works Grid */
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .how-card {
+      padding: 32px 24px;
+      text-align: center;
+      position: relative;
+      background: var(--glass-bg);
+      backdrop-filter: blur(40px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+
+    .how-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, var(--glass-highlight) 0%, transparent 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .how-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: inset 0 1px 0 var(--glass-highlight);
+      pointer-events: none;
+    }
+
+    .how-step-number {
+      font-size: 3rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+      font-family: var(--heading);
+    }
+
+    .how-icon {
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+      color: var(--accent);
+    }
+
+    .how-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      font-family: var(--heading);
+    }
+
+    .how-desc {
+      font-size: 0.9rem;
+      color: var(--t2);
+      line-height: 1.6;
+    }
+
+    .how-connector {
+      position: absolute;
+      right: -12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+
+    .how-card:last-child .how-connector {
+      display: none;
+    }
+
+    /* Commission Table */
+    .terms-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 32px;
+    }
+
+    .terms-table thead {
+      background: var(--glass-bg);
+      border-top: 1px solid var(--glass-border);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .terms-table th {
+      padding: 16px;
+      text-align: left;
+      font-weight: 700;
+      color: var(--t1);
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .terms-table td {
+      padding: 16px;
+      border-bottom: 1px solid var(--glass-border);
+      color: var(--t2);
+      font-size: 0.95rem;
+    }
+
+    .terms-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tier-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(0, 223, 162, 0.1);
+      border: 1px solid rgba(0, 223, 162, 0.2);
+      border-radius: 6px;
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 0.85rem;
+    }
+
+    .tier-badge.silver {
+      background: rgba(168, 85, 247, 0.1);
+      border-color: rgba(168, 85, 247, 0.2);
+      color: var(--color-purple);
+    }
+
+    .tier-badge.gold {
+      background: rgba(240, 180, 41, 0.1);
+      border-color: rgba(240, 180, 41, 0.2);
+      color: var(--color-gold);
+    }
+
+    .tier-badge.platinum {
+      background: rgba(59, 130, 246, 0.1);
+      border-color: rgba(59, 130, 246, 0.2);
+      color: var(--color-blue);
+    }
+
+    .tier-badge.diamond {
+      background: rgba(236, 72, 153, 0.1);
+      border-color: rgba(236, 72, 153, 0.2);
+      color: var(--color-pink);
+    }
+
+    /* Zero Layout (2-column) */
+    .zero-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .zero-content h3 {
+      font-size: 1.8rem;
+      font-weight: 900;
+      margin-bottom: 24px;
+      font-family: var(--heading);
+    }
+
+    .feature-list {
+      list-style: none;
+      margin-bottom: 32px;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      font-size: 1rem;
+      color: var(--t1);
+    }
+
+    .feature-list i {
+      color: var(--accent);
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .partner-visual {
+      padding: 32px;
+      position: relative;
+      background: var(--glass-bg);
+      backdrop-filter: blur(40px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+
+    .partner-visual::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, var(--glass-highlight) 0%, transparent 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .partner-visual::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: inset 0 1px 0 var(--glass-highlight);
+      pointer-events: none;
+    }
+
+    .partner-benefit {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .partner-benefit-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: rgba(0, 223, 162, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .partner-benefit-text h4 {
+      font-weight: 700;
+      color: var(--t1);
+      margin-bottom: 4px;
+    }
+
+    .partner-benefit-text p {
+      font-size: 0.85rem;
+      color: var(--t2);
+    }
+
+    /* Reward Cards */
+    .reward-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .reward-card {
+      padding: 40px;
+      text-align: center;
+      transition: all 0.3s ease;
+      background: var(--glass-bg);
+      backdrop-filter: blur(40px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .reward-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, var(--glass-highlight) 0%, transparent 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .reward-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: inset 0 1px 0 var(--glass-highlight);
+      pointer-events: none;
+    }
+
+    .reward-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(0, 223, 162, 0.4);
+    }
+
+    .pillar-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin: 0 auto 20px;
+    }
+
+    .pillar-icon.green {
+      background: rgba(0, 223, 162, 0.1);
+      color: var(--accent);
+      border: 1px solid rgba(0, 223, 162, 0.25);
+    }
+
+    .pillar-icon.blue {
+      background: rgba(168, 85, 247, 0.1);
+      color: var(--color-purple);
+      border: 1px solid rgba(168, 85, 247, 0.25);
+    }
+
+    .pillar-icon.gold {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--color-blue);
+      border: 1px solid rgba(59, 130, 246, 0.25);
+    }
+
+    .reward-stat {
+      font-size: 2.4rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+      font-family: var(--heading);
+    }
+
+    .reward-stat.green {
+      color: var(--accent);
+    }
+
+    .reward-stat.blue {
+      color: var(--color-purple);
+    }
+
+    .reward-stat.gold {
+      color: var(--color-blue);
+    }
+
+    .reward-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      font-family: var(--heading);
+    }
+
+    .reward-desc {
+      font-size: 0.9rem;
+      color: var(--t2);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .requirement-tag {
+      display: inline-block;
+      padding: 6px 12px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--t2);
+    }
+
+    /* Leaderboard */
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 32px;
+    }
+
+    .leaderboard-table thead {
+      background: var(--glass-bg);
+      border-top: 1px solid var(--glass-border);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .leaderboard-table th {
+      padding: 18px 16px;
+      text-align: left;
+      font-weight: 700;
+      color: var(--t1);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .leaderboard-table td {
+      padding: 18px 16px;
+      border-bottom: 1px solid var(--glass-border);
+      color: var(--t2);
+      font-size: 0.95rem;
+    }
+
+    .leaderboard-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      color: #000;
+      font-weight: 900;
+      font-size: 0.9rem;
+    }
+
+    .rank-badge.silver {
+      background: linear-gradient(135deg, var(--color-purple), #c084fc);
+    }
+
+    .rank-badge.gold {
+      background: linear-gradient(135deg, var(--color-gold), #fcd34d);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--t1);
+      font-size: 0.85rem;
+    }
+
+    .user-name {
+      color: var(--t1);
+      font-weight: 600;
+    }
+
+    .earned-amount {
+      color: var(--accent);
+      font-weight: 700;
+      font-family: var(--mono);
+    }
+
+    /* FAQ */
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .faq-item {
+      padding: 0;
+      overflow: hidden;
+      background: var(--glass-bg);
+      backdrop-filter: blur(40px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      position: relative;
+    }
+
+    .faq-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, var(--glass-highlight) 0%, transparent 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .faq-item::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: inset 0 1px 0 var(--glass-highlight);
+      pointer-events: none;
+    }
+
+    .faq-question {
+      padding: 24px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .faq-question:hover {
+      background: rgba(0, 223, 162, 0.05);
+    }
+
+    .faq-question h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--t1);
+      margin: 0;
+    }
+
+    .faq-toggle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(0, 223, 162, 0.1);
+      border: 1px solid rgba(0, 223, 162, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    .faq-item.active .faq-toggle {
+      background: var(--accent);
+      color: #000;
+      transform: rotate(180deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      border-top: 1px solid var(--glass-border);
+    }
+
+    .faq-item.active .faq-answer {
+      max-height: 300px;
+    }
+
+    .faq-answer p {
+      padding: 24px;
+      color: var(--t2);
+      line-height: 1.8;
+      font-size: 0.95rem;
+    }
+
+    /* CTA Banner */
+    .cta-banner {
+      padding: 80px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 100% 80% at 50% 50%, rgba(0, 223, 162, 0.15), transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-banner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(rgba(0, 223, 162, 0.01) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(0, 223, 162, 0.01) 1px, transparent 1px);
+      background-size: 64px 64px;
+      pointer-events: none;
+    }
+
+    .cta-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .cta-banner h2 {
+      font-size: 2.8rem;
+      font-weight: 900;
+      margin-bottom: 24px;
+      font-family: var(--heading);
+    }
+
+    .cta-input-group {
+      display: flex;
+      gap: 12px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .cta-input-group input {
+      flex: 1;
+      padding: 14px 20px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      color: var(--t1);
+      font-size: 0.95rem;
+    }
+
+    .cta-input-group input::placeholder {
+      color: var(--t3);
+    }
+
+    .cta-input-group input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(0, 223, 162, 0.3);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--glass-border);
+      padding: 40px;
+    }
+
+    .footer-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--t1);
+      text-decoration: none;
+      font-weight: 900;
+    }
+
+    .footer-logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: #000;
+      font-weight: 900;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 32px;
+    }
+
+    .footer-links a {
+      color: var(--t2);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .hero-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .stats-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .how-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .how-connector {
+        display: none;
+      }
+
+      .reward-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .zero-layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sec-container {
+        padding: 0 20px;
+      }
+
+      .hero-container {
+        padding: 0 20px;
+      }
+
+      .nav-container {
+        padding: 0 20px;
+      }
+
+      .nav-menu {
+        display: none;
+      }
+
+      .stats-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .how-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .reward-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-input-group {
+        flex-direction: column;
+      }
+
+      .footer-container {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+
+      .footer-links {
+        flex-direction: column;
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Ticker -->
+  <div id="ticker-container">
+    <div class="ticker" id="ticker">
+      <!-- Populated by JavaScript -->
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-container">
+      <a href="#" class="nav-logo">
+        <div class="nav-logo-icon">1T</div>
+        <span>1 Trade Market</span>
+      </a>
+      <div class="nav-menu">
+        <a href="#how-it-works">How It Works</a>
+        <a href="#commission-tiers">Tiers</a>
+        <a href="#partner">Partner Program</a>
+        <a href="#faq">FAQ</a>
+        <a href="#" class="btn btn-primary" style="margin: 0;">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-container">
+      <div class="hero-left">
+        <div class="hero-badge">
+          <i class="fas fa-gift"></i>
+          Referral Program
+        </div>
+        <h1>Earn up to <span class="gradient-text">$5,000</span> Per Referral</h1>
+        <p class="subtitle">Share your unique referral link and earn competitive commissions every time your friends trade. The more referrals you bring, the higher your earning tier and rewards.</p>
+
+        <!-- Stats Strip -->
+        <div class="stats-strip">
+          <div class="stat-box">
+            <div class="stat-value">$0.00</div>
+            <div class="stat-label">Available to Withdraw</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">$0.00</div>
+            <div class="stat-label">Total Earned</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">0</div>
+            <div class="stat-label">Users Invited</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">0%</div>
+            <div class="stat-label">Conversion Rate</div>
+          </div>
+        </div>
+
+        <!-- Referral Input -->
+        <div class="referral-input-group">
+          <input type="text" placeholder="https://1trade.com/ref/yourcode" readonly>
+          <button class="btn btn-primary">
+            <i class="fas fa-copy"></i> Copy
+          </button>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" style="flex: 1;">Send Gift Link</button>
+        </div>
+
+        <!-- Social Share -->
+        <div class="social-buttons">
+          <button class="social-btn" title="Share on Twitter">
+            <i class="fab fa-twitter"></i>
+          </button>
+          <button class="social-btn" title="Share on Facebook">
+            <i class="fab fa-facebook"></i>
+          </button>
+          <button class="social-btn" title="Share on LinkedIn">
+            <i class="fab fa-linkedin"></i>
+          </button>
+          <button class="social-btn" title="Share via Telegram">
+            <i class="fab fa-telegram"></i>
+          </button>
+          <button class="social-btn" title="Share via Discord">
+            <i class="fab fa-discord"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="commission-card glass-card">
+          <div class="commission-title">Commission Structure</div>
+
+          <div class="tier-item">
+            <div class="tier-header">
+              <span class="tier-label">Tier 1</span>
+              <span class="tier-percentage">30%</span>
+            </div>
+            <div class="tier-progress">
+              <div class="tier-progress-bar" style="width: 30%"></div>
+            </div>
+            <div class="tier-desc">of trading fees</div>
+          </div>
+
+          <div class="tier-item">
+            <div class="tier-header">
+              <span class="tier-label">Tier 2</span>
+              <span class="tier-percentage">15%</span>
+            </div>
+            <div class="tier-progress">
+              <div class="tier-progress-bar" style="width: 15%"></div>
+            </div>
+            <div class="tier-desc">of trading fees</div>
+          </div>
+
+          <div class="tier-item">
+            <div class="tier-header">
+              <span class="tier-label">Tier 3</span>
+              <span class="tier-percentage">5%</span>
+            </div>
+            <div class="tier-progress">
+              <div class="tier-progress-bar" style="width: 5%"></div>
+            </div>
+            <div class="tier-desc">of trading fees</div>
+          </div>
+
+          <div class="recent-activity">
+            <div class="activity-title">RECENT ACTIVITY</div>
+            <div class="activity-item">
+              <div class="activity-avatar">AC</div>
+              <div class="activity-text">
+                <span class="activity-user">@alex_crypto</span> just traded
+              </div>
+              <div class="activity-amount">+$24.50</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-avatar">JD</div>
+              <div class="activity-text">
+                <span class="activity-user">@jordan_dev</span> just traded
+              </div>
+              <div class="activity-amount">+$18.75</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-avatar">MK</div>
+              <div class="activity-text">
+                <span class="activity-user">@mike_trader</span> just traded
+              </div>
+              <div class="activity-amount">+$31.20</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-avatar">SR</div>
+              <div class="activity-text">
+                <span class="activity-user">@sarah_invest</span> just traded
+              </div>
+              <div class="activity-amount">+$12.90</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="sec sec-dark" id="how-it-works">
+    <div class="sec-container">
+      <div class="sec-header">
+        <div class="sec-label">
+          <i class="fas fa-play"></i>
+          Process
+        </div>
+        <h2 class="sec-title">How It Works</h2>
+        <p class="sec-desc">Four simple steps to start earning money with 1 Trade Market referrals.</p>
+      </div>
+
+      <div class="how-grid">
+        <div class="how-card">
+          <div class="how-step-number">01</div>
+          <div class="how-icon">
+            <i class="fas fa-link"></i>
+          </div>
+          <h3 class="how-title">Share Your Link</h3>
+          <p class="how-desc">Copy your unique referral link and share it with friends via email, social media, or chat.</p>
+          <div class="how-connector"></div>
+        </div>
+
+        <div class="how-card">
+          <div class="how-step-number">02</div>
+          <div class="how-icon">
+            <i class="fas fa-user-plus"></i>
+          </div>
+          <h3 class="how-title">Friend Signs Up</h3>
+          <p class="how-desc">Your friends click your link and create a new 1 Trade Market account using your referral code.</p>
+          <div class="how-connector"></div>
+        </div>
+
+        <div class="how-card">
+          <div class="how-step-number">03</div>
+          <div class="how-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3 class="how-title">Friend Trades</h3>
+          <p class="how-desc">Your referred user starts trading crypto and generating transaction fees on the platform.</p>
+          <div class="how-connector"></div>
+        </div>
+
+        <div class="how-card">
+          <div class="how-step-number">04</div>
+          <div class="how-icon">
+            <i class="fas fa-wallet"></i>
+          </div>
+          <h3 class="how-title">You Earn</h3>
+          <p class="how-desc">Earn commissions instantly on every trade your referrals make. Withdraw to your wallet anytime.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Commission Tiers -->
+  <section class="sec" id="commission-tiers">
+    <div class="sec-container">
+      <div class="sec-header">
+        <div class="sec-label">
+          <i class="fas fa-layer-group"></i>
+          Levels
+        </div>
+        <h2 class="sec-title">Commission Tiers</h2>
+        <p class="sec-desc">Unlock higher commissions and exclusive bonuses as you bring more referrals to the platform.</p>
+      </div>
+
+      <table class="terms-table">
+        <thead>
+          <tr>
+            <th>Tier</th>
+            <th>Referral Volume</th>
+            <th>Commission Rate</th>
+            <th>Bonus Per Referral</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tier-badge">Bronze</span></td>
+            <td>0 - 9 referrals</td>
+            <td><strong style="color: var(--t1);">25%</strong></td>
+            <td>—</td>
+            <td><span style="color: var(--accent);">Current</span></td>
+          </tr>
+          <tr>
+            <td><span class="tier-badge silver">Silver</span></td>
+            <td>10 - 49 referrals</td>
+            <td><strong style="color: var(--t1);">30%</strong></td>
+            <td><strong style="color: var(--t1);">+$50</strong></td>
+            <td>10 more referrals</td>
+          </tr>
+          <tr>
+            <td><span class="tier-badge gold">Gold</span></td>
+            <td>50 - 199 referrals</td>
+            <td><strong style="color: var(--t1);">35%</strong></td>
+            <td><strong style="color: var(--t1);">+$100</strong></td>
+            <td>50 more referrals</td>
+          </tr>
+          <tr>
+            <td><span class="tier-badge platinum">Platinum</span></td>
+            <td>200 - 499 referrals</td>
+            <td><strong style="color: var(--t1);">40%</strong></td>
+            <td><strong style="color: var(--t1);">+$200</strong></td>
+            <td>200 more referrals</td>
+          </tr>
+          <tr>
+            <td><span class="tier-badge diamond">Diamond</span></td>
+            <td>500+ referrals</td>
+            <td><strong style="color: var(--t1);">50%</strong></td>
+            <td><strong style="color: var(--t1);">+$500</strong></td>
+            <td>500+ achieved</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Partner Program -->
+  <section class="sec sec-dark" id="partner">
+    <div class="sec-container">
+      <div class="sec-header">
+        <div class="sec-label">
+          <i class="fas fa-handshake"></i>
+          Partnership
+        </div>
+        <h2 class="sec-title">Partner Program</h2>
+        <p class="sec-desc">For influencers, content creators, and large-scale operators looking for dedicated support.</p>
+      </div>
+
+      <div class="zero-layout">
+        <div class="zero-content">
+          <h3>Influencer & Creator Benefits</h3>
+          <ul class="feature-list">
+            <li>
+              <i class="fas fa-check"></i>
+              Dedicated partnership manager available 24/7
+            </li>
+            <li>
+              <i class="fas fa-check"></i>
+              Custom landing pages and branding options
+            </li>
+            <li>
+              <i class="fas fa-check"></i>
+              Real-time dashboard with advanced analytics
+            </li>
+            <li>
+              <i class="fas fa-check"></i>
+              Co-marketing campaigns and promotional materials
+            </li>
+            <li>
+              <i class="fas fa-check"></i>
+              Priority API access and custom integrations
+            </li>
+            <li>
+              <i class="fas fa-check"></i>
+              Higher commission tiers (up to 60%)
+            </li>
+            <li>
+              <i class="fas fa-check"></i>
+              Monthly performance bonuses
+            </li>
+            <li>
+              <i class="fas fa-check"></i>
+              Exclusive events and networking opportunities
+            </li>
+          </ul>
+          <button class="btn btn-primary">
+            <i class="fas fa-arrow-right"></i> Apply for Partner Program
+          </button>
+        </div>
+
+        <div class="partner-visual">
+          <div class="partner-benefit">
+            <div class="partner-benefit-icon">
+              <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="partner-benefit-text">
+              <h4>Minimum $10K Monthly</h4>
+              <p>Earn at least $10,000 per month with dedicated support</p>
+            </div>
+          </div>
+
+          <div class="partner-benefit">
+            <div class="partner-benefit-icon">
+              <i class="fas fa-user-tie"></i>
+            </div>
+            <div class="partner-benefit-text">
+              <h4>Dedicated Manager</h4>
+              <p>Personal account manager for strategy and optimization</p>
+            </div>
+          </div>
+
+          <div class="partner-benefit">
+            <div class="partner-benefit-icon">
+              <i class="fas fa-globe"></i>
+            </div>
+            <div class="partner-benefit-text">
+              <h4>Custom Landing Pages</h4>
+              <p>Create branded pages to increase conversion rates</p>
+            </div>
+          </div>
+
+          <div class="partner-benefit">
+            <div class="partner-benefit-icon">
+              <i class="fas fa-chart-bar"></i>
+            </div>
+            <div class="partner-benefit-text">
+              <h4>Real-Time Dashboard</h4>
+              <p>Advanced analytics and performance tracking</p>
+            </div>
+          </div>
+
+          <div class="partner-benefit">
+            <div class="partner-benefit-icon">
+              <i class="fas fa-zap"></i>
+            </div>
+            <div class="partner-benefit-text">
+              <h4>Priority Support</h4>
+              <p>24/7 dedicated support for your campaigns</p>
+            </div>
+          </div>
+
+          <div class="partner-benefit">
+            <div class="partner-benefit-icon">
+              <i class="fas fa-gift"></i>
+            </div>
+            <div class="partner-benefit-text">
+              <h4>Monthly Bonuses</h4>
+              <p>Earn additional bonuses for hitting targets</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Refer -->
+  <section class="sec">
+    <div class="sec-container">
+      <div class="sec-header">
+        <div class="sec-label">
+          <i class="fas fa-star"></i>
+          Benefits
+        </div>
+        <h2 class="sec-title">Why Refer with 1 Trade</h2>
+        <p class="sec-desc">Discover the advantages of our referral program compared to other platforms.</p>
+      </div>
+
+      <div class="reward-cards">
+        <div class="reward-card">
+          <div class="pillar-icon green">
+            <i class="fas fa-infinity"></i>
+          </div>
+          <div class="reward-stat green">∞</div>
+          <h3 class="reward-title">Lifetime Commissions</h3>
+          <p class="reward-desc">Earn commissions on every trade your referrals make forever. No expiration dates or limits.</p>
+          <span class="requirement-tag">No time limit</span>
+        </div>
+
+        <div class="reward-card">
+          <div class="pillar-icon blue">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <div class="reward-stat blue">⚡</div>
+          <h3 class="reward-title">Instant Payouts</h3>
+          <p class="reward-desc">Get paid instantly. Withdraw your earnings to your wallet anytime, anywhere, with no fees.</p>
+          <span class="requirement-tag">Zero withdrawal fee</span>
+        </div>
+
+        <div class="reward-card">
+          <div class="pillar-icon gold">
+            <i class="fas fa-bullhorn"></i>
+          </div>
+          <div class="reward-stat gold">📢</div>
+          <h3 class="reward-title">Marketing Materials</h3>
+          <p class="reward-desc">Access a suite of professionally designed marketing materials, videos, and graphics.</p>
+          <span class="requirement-tag">Always updated</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Top Earners -->
+  <section class="sec sec-dark">
+    <div class="sec-container">
+      <div class="sec-header">
+        <div class="sec-label">
+          <i class="fas fa-trophy"></i>
+          Rankings
+        </div>
+        <h2 class="sec-title">Top Earners This Month</h2>
+        <p class="sec-desc">See who's earning the most with the 1 Trade referral program. Will you be next?</p>
+      </div>
+
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>User</th>
+            <th>Referrals</th>
+            <th>Earned (Monthly)</th>
+            <th>Earned (Total)</th>
+            <th>Tier</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="rank-badge">1</span></td>
+            <td>
+              <div class="user-info">
+                <div class="user-avatar">CR</div>
+                <span class="user-name">@crypto_royale</span>
+              </div>
+            </td>
+            <td>847</td>
+            <td><span class="earned-amount">$12,450.80</span></td>
+            <td><span class="earned-amount">$187,240.50</span></td>
+            <td><span class="tier-badge diamond">Diamond</span></td>
+          </tr>
+          <tr>
+            <td><span class="rank-badge silver">2</span></td>
+            <td>
+              <div class="user-info">
+                <div class="user-avatar">TM</div>
+                <span class="user-name">@trading_mind</span>
+              </div>
+            </td>
+            <td>634</td>
+            <td><span class="earned-amount">$8,920.30</span></td>
+            <td><span class="earned-amount">$145,670.20</span></td>
+            <td><span class="tier-badge diamond">Diamond</span></td>
+          </tr>
+          <tr>
+            <td><span class="rank-badge gold">3</span></td>
+            <td>
+              <div class="user-info">
+                <div class="user-avatar">BC</div>
+                <span class="user-name">@blockchain_guru</span>
+              </div>
+            </td>
+            <td>521</td>
+            <td><span class="earned-amount">$7,240.50</span></td>
+            <td><span class="earned-amount">$98,450.75</span></td>
+            <td><span class="tier-badge diamond">Diamond</span></td>
+          </tr>
+          <tr>
+            <td><span class="rank-badge">4</span></td>
+            <td>
+              <div class="user-info">
+                <div class="user-avatar">ML</div>
+                <span class="user-name">@market_leader</span>
+              </div>
+            </td>
+            <td>412</td>
+            <td><span class="earned-amount">$5,680.90</span></td>
+            <td><span class="earned-amount">$76,230.40</span></td>
+            <td><span class="tier-badge platinum">Platinum</span></td>
+          </tr>
+          <tr>
+            <td><span class="rank-badge">5</span></td>
+            <td>
+              <div class="user-info">
+                <div class="user-avatar">DT</div>
+                <span class="user-name">@digital_trader</span>
+              </div>
+            </td>
+            <td>368</td>
+            <td><span class="earned-amount">$4,920.20</span></td>
+            <td><span class="earned-amount">$62,850.60</span></td>
+            <td><span class="tier-badge platinum">Platinum</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec">
+    <div class="sec-container">
+      <div class="sec-header">
+        <div class="sec-label">
+          <i class="fas fa-question"></i>
+          Questions
+        </div>
+        <h2 class="sec-title">Frequently Asked Questions</h2>
+        <p class="sec-desc">Everything you need to know about the 1 Trade referral program and earning commissions.</p>
+      </div>
+
+      <div class="faq-list" id="faq">
+        <div class="faq-item">
+          <div class="faq-question">
+            <h4>How do I get my referral link and start earning?</h4>
+            <div class="faq-toggle">
+              <i class="fas fa-chevron-down"></i>
+            </div>
+          </div>
+          <div class="faq-answer">
+            <p>It's simple! Sign up for a 1 Trade Market account, go to your dashboard, and navigate to the Referral section. Your unique referral link will be generated automatically. Copy it and start sharing it with your network. You'll begin earning commissions as soon as your referrals sign up and start trading.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <h4>When do I receive my referral earnings?</h4>
+            <div class="faq-toggle">
+              <i class="fas fa-chevron-down"></i>
+            </div>
+          </div>
+          <div class="faq-answer">
+            <p>Referral earnings are calculated and available in your account in real-time. You can withdraw your earnings instantly to your wallet at any time. There's no minimum withdrawal amount, and we don't charge any fees for withdrawals. Your earnings are always yours to keep.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <h4>What happens if my referral stops trading?</h4>
+            <div class="faq-toggle">
+              <i class="fas fa-chevron-down"></i>
+            </div>
+          </div>
+          <div class="faq-answer">
+            <p>You only earn commissions when your referrals are actively trading. If they stop trading, your commissions stop as well. However, all commissions you've already earned remain in your account. We recommend keeping your referrals engaged with market insights and trading tips to maximize your earning potential.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <h4>Can I upgrade my tier status?</h4>
+            <div class="faq-toggle">
+              <i class="fas fa-chevron-down"></i>
+            </div>
+          </div>
+          <div class="faq-answer">
+            <p>Absolutely! Your tier status is automatically updated as you bring more referrals to the platform. Every milestone unlocks higher commission rates and exclusive bonuses. Track your progress in your dashboard to see exactly how many more referrals you need to reach the next tier.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <h4>Is there a limit to how much I can earn?</h4>
+            <div class="faq-toggle">
+              <i class="fas fa-chevron-down"></i>
+            </div>
+          </div>
+          <div class="faq-answer">
+            <p>No! There's no cap on your earnings. The more referrals you bring and the more they trade, the more you earn. With lifetime commissions, you can continue earning from your referrals indefinitely. Our top earners make thousands of dollars every month through our referral program.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section class="cta-banner sec-dark">
+    <div class="cta-content">
+      <h2>Start Earning Today</h2>
+      <p style="color: var(--t2); margin-bottom: 28px; font-size: 1.1rem;">Join thousands of referrers earning passive income. Get your unique link and start sharing now.</p>
+      <div class="cta-input-group">
+        <input type="email" placeholder="your@email.com">
+        <button class="btn btn-primary">Claim Your Link</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <a href="#" class="footer-logo">
+        <div class="footer-logo-icon">1T</div>
+        <span>1 Trade Market © 2026</span>
+      </a>
+      <div class="footer-links">
+        <a href="#">Referral Terms</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Contact Support</a>
+        <a href="#">Partner Program</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Ticker data
+    const TICKER_COINS = [
+      { symbol: 'BTC', name: 'Bitcoin', price: 67543.20, change: 2.45 },
+      { symbol: 'ETH', name: 'Ethereum', price: 3456.78, change: 1.82 },
+      { symbol: 'SOL', name: 'Solana', price: 142.56, change: 3.21 },
+      { symbol: 'XRP', name: 'Ripple', price: 2.45, change: -0.89 },
+      { symbol: 'ADA', name: 'Cardano', price: 0.98, change: 1.12 },
+      { symbol: 'DOGE', name: 'Dogecoin', price: 0.32, change: 2.67 },
+      { symbol: 'AVAX', name: 'Avalanche', price: 34.56, change: 4.23 },
+      { symbol: 'MATIC', name: 'Polygon', price: 0.78, change: 1.34 }
+    ];
+
+    function buildTicker() {
+      const ticker = document.getElementById('ticker');
+      ticker.innerHTML = '';
+
+      // Duplicate coins for seamless loop
+      const coins = [...TICKER_COINS, ...TICKER_COINS];
+
+      coins.forEach(coin => {
+        const item = document.createElement('div');
+        item.className = 'ticker-item';
+
+        const changeClass = coin.change >= 0 ? 'up' : 'down';
+        const changeSign = coin.change >= 0 ? '+' : '';
+
+        item.innerHTML = `
+          <span class="ticker-symbol">${coin.symbol}</span>
+          <span class="ticker-price">$${coin.price.toFixed(2)}</span>
+          <span class="ticker-change ${changeClass}">${changeSign}${coin.change.toFixed(2)}%</span>
+        `;
+
+        ticker.appendChild(item);
+      });
+    }
+
+    function fluctuatePrices() {
+      TICKER_COINS.forEach(coin => {
+        coin.price *= (1 + (Math.random() - 0.5) * 0.02);
+        coin.change += (Math.random() - 0.5) * 0.5;
+      });
+      buildTicker();
+    }
+
+    // Initialize ticker
+    buildTicker();
+    setInterval(fluctuatePrices, 2500);
+
+    // FAQ Toggle
+    document.querySelectorAll('.faq-question').forEach(question => {
+      question.addEventListener('click', function() {
+        const faqItem = this.parentElement;
+        faqItem.classList.toggle('active');
+      });
+    });
+
+    // Copy referral link
+    document.querySelectorAll('.btn').forEach(btn => {
+      if (btn.textContent.includes('Copy')) {
+        btn.addEventListener('click', function() {
+          const input = document.querySelector('.referral-input-group input');
+          navigator.clipboard.writeText(input.value);
+          const originalText = this.innerHTML;
+          this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+          setTimeout(() => {
+            this.innerHTML = originalText;
+          }, 2000);
+        });
+      }
+    });
+
+    // Smooth scroll for nav links
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href === '#') {
+          e.preventDefault();
+          return;
+        }
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

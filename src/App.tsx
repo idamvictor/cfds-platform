@@ -71,6 +71,9 @@ const SocialResponsibilityPage = lazy(
 const WelcomeBonusPage = lazy(
   () => import("./pages/Preferences/welcome-bonus-page"),
 );
+const ReferralPage = lazy(
+  () => import("./pages/Preferences/referral-page"),
+);
 const TradingPlatformLight = lazy(() =>
   import("./components/mt4-light/trading-platform-light").then((module) => ({
     default: module.TradingPlatformLight,
@@ -209,6 +212,10 @@ const App = () => {
                     <Route
                       path="/main/welcome-bonus"
                       element={<WelcomeBonusPage />}
+                    />
+                    <Route
+                      path="/main/referral"
+                      element={<ReferralPage />}
                     />
                     <Route path="/main/test" element={<Test />} />
                   </Route>

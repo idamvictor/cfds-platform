@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rewards Center — 1 Trade Market</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --accent:#00dfa2;--accent-light:#00ffc3;--accent-dark:#00b881;
+      --bg:#07080c;--bg2:#0a0d15;
+      --t1:#eef2f7;--t2:#8b97a8;--t3:#4a5468;--t4:#3a4556;
+      --glass-bg:rgba(255,255,255,0.04);--glass-border:rgba(255,255,255,0.08);--glass-highlight:rgba(255,255,255,0.12);
+      --bonus-accent:#c8e64e;
+      --green:#1ED760;--green-dim:rgba(30,215,96,.1);
+      --red:#f43f5e;--orange:#FF9800;
+      --blue:#5b8def;--amber:#F0B429;--purple:#8B5CF6;
+      --sans:'Inter',-apple-system,sans-serif;--heading:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;
+      --radius:8px;--radius-lg:12px;--radius-xl:16px;
+    }
+    html{-webkit-font-smoothing:antialiased;}
+    body{font-family:var(--sans);background:linear-gradient(135deg,var(--bg) 0%,var(--bg2) 100%);color:var(--t1);min-height:100vh;line-height:1.6;overflow-x:hidden;}
+    a{color:inherit;text-decoration:none;}
+
+    /* NAV */
+    nav{background:linear-gradient(145deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));backdrop-filter:blur(40px);border-bottom:1px solid rgba(255,255,255,0.06);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:300;}
+    .nav-brand{display:flex;align-items:center;gap:10px;}
+    .cross{width:40px;height:40px;background:linear-gradient(135deg,#00ffc3,#00dfa2,#00b881);border-radius:11px;position:relative;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.75rem;color:#07080c;font-family:var(--heading);}
+    .cross::before{content:'1TM';}
+    .cross::after{display:none;}
+    .brand-name{font-size:.95rem;font-weight:800;}.brand-name em{font-style:normal;color:var(--accent);}
+    .nav-links{display:flex;gap:4px;}
+    .nlink{font-size:.83rem;font-weight:500;color:var(--t3);padding:7px 14px;border-radius:8px;transition:all .15s;}
+    .nlink:hover{color:var(--t1);background:rgba(255,255,255,0.06);}
+    .nlink.active{color:var(--accent);}
+    .nav-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.78rem;cursor:pointer;}
+
+    /* LAYOUT */
+    .layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 64px);}
+    @media(max-width:900px){.layout{grid-template-columns:1fr;}}
+
+    /* SIDEBAR */
+    .sidebar{background:linear-gradient(145deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));backdrop-filter:blur(40px);border-right:1px solid rgba(255,255,255,0.06);padding:24px 16px;display:flex;flex-direction:column;gap:2px;overflow-y:auto;}
+    @media(max-width:900px){.sidebar{display:none;}}
+    .sb-sect{font-size:.68rem;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.1em;padding:14px 12px 6px;}
+    .sb-sect:first-child{padding-top:0;}
+    .sb-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:.85rem;font-weight:500;color:var(--t3);transition:all .15s;}
+    .sb-row:hover{background:rgba(255,255,255,0.06);color:var(--t1);}
+    .sb-row.on{background:rgba(0,223,162,0.1);color:var(--accent);font-weight:600;}
+    .sb-row i{width:16px;text-align:center;font-size:.82rem;}
+    .sb-divider{height:1px;background:rgba(255,255,255,0.06);margin:12px 4px;}
+    .mini-card{background:linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;margin-bottom:12px;}
+    .mc-label{font-size:.68rem;color:var(--t4);text-transform:uppercase;letter-spacing:.05em;font-weight:700;margin-bottom:8px;}
+    .mc-val{font-family:var(--mono);font-size:1.3rem;font-weight:800;color:var(--t1);margin-bottom:6px;}
+    .mc-sub{font-size:.7rem;color:var(--t3);margin-bottom:10px;}
+    .mc-btn{width:100%;padding:8px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border:none;border-radius:8px;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .15s;}
+    .mc-btn:hover{box-shadow:0 4px 12px rgba(0,223,162,.3);}
+    .mc-progress{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+    .mc-progress-bar{flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+    .mc-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-light));}
+    .mc-progress-text{font-size:.65rem;color:var(--t3);font-weight:600;}
+
+    /* MAIN */
+    .main{padding:32px 36px;overflow-y:auto;}
+    @media(max-width:768px){.main{padding:20px 16px;}}
+
+    /* PAGE HEAD */
+    .pg-head{margin-bottom:36px;display:flex;align-items:flex-start;justify-content:space-between;}
+    .pg-head-left h1{font-size:1.8rem;font-weight:800;letter-spacing:-.03em;margin-bottom:6px;}
+    .pg-head-left p{font-size:.87rem;color:var(--t2);}
+    .pg-head-right{text-align:right;}
+    .ph-link{font-size:.82rem;color:var(--accent);font-weight:600;display:inline-flex;align-items:center;gap:6px;margin-bottom:12px;}
+    .ph-total{font-family:var(--mono);font-size:1.4rem;font-weight:800;color:var(--accent-light);}
+    .ph-label{font-size:.65rem;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;}
+
+    /* GLASS CARD */
+    .glass-card{background:var(--glass-bg);backdrop-filter:blur(40px);border:1px solid var(--glass-border);border-radius:var(--radius-xl);position:relative;overflow:hidden;}
+    .glass-card::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,var(--glass-highlight) 0%,transparent 100%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;pointer-events:none;}
+    .glass-card::after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 1px 0 var(--glass-highlight);pointer-events:none;}
+
+    /* BALANCE STRIP */
+    .bal-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+    @media(max-width:1100px){.bal-row{grid-template-columns:1fr 1fr;}}
+    @media(max-width:500px){.bal-row{grid-template-columns:1fr;}}
+    .bal-card{background:linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1.5px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden;}
+    .bal-card::before{content:'';position:absolute;top:0;left:0;right:0;height:100%;background:linear-gradient(175deg,rgba(255,255,255,0.04),transparent 40%);border-radius:14px;pointer-events:none;}
+    .bal-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:14px 14px 0 0;}
+    .bc-g::after{background:linear-gradient(90deg,var(--accent),var(--accent-light));}
+    .bc-a::after{background:linear-gradient(90deg,var(--amber),#FFB84D);}
+    .bc-o::after{background:linear-gradient(90deg,var(--orange),#FFB84D);}
+    .bc-bl::after{background:linear-gradient(90deg,var(--blue),#7B9EEF);}
+    .bci{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.82rem;background:rgba(0,223,162,0.1);color:var(--accent);}
+    .bc-lbl{font-size:.68rem;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px;}
+    .bc-num{font-family:var(--mono);font-size:1.4rem;font-weight:700;line-height:1;margin-bottom:3px;}
+    .bc-sub{font-size:.72rem;color:var(--t3);}
+
+    /* PROGRESS BAR */
+    .prog-wrap{background:linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1.5px solid rgba(255,255,255,0.08);border-radius:14px;padding:20px;margin-bottom:28px;position:relative;overflow:hidden;}
+    .prog-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:100%;background:linear-gradient(175deg,rgba(255,255,255,0.04),transparent 40%);border-radius:14px;pointer-events:none;}
+    .pw-label{font-size:.68rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;}
+    .pw-track{height:12px;background:rgba(255,255,255,0.06);border-radius:6px;overflow:hidden;margin-bottom:8px;display:flex;gap:2px;}
+    .pw-seg{flex:1;background:rgba(0,223,162,0.3);border-radius:4px;transition:all .3s;}
+    .pw-seg.done{background:linear-gradient(90deg,var(--accent),var(--accent-light));}
+    .pw-info{display:flex;align-items:center;justify-content:space-between;}
+    .pw-text{font-size:.78rem;color:var(--t2);font-weight:600;}
+    .pw-badge{font-size:.75rem;font-weight:700;padding:4px 12px;background:rgba(0,223,162,0.1);color:var(--accent);border:1px solid rgba(0,223,162,0.3);border-radius:20px;}
+
+    /* TABS */
+    .tabs{display:flex;gap:0;margin-bottom:28px;border-bottom:1px solid rgba(255,255,255,0.06);}
+    .tab{padding:12px 20px;font-size:.85rem;font-weight:600;color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;}
+    .tab:hover{color:var(--t2);}
+    .tab.on{color:var(--accent);border-bottom-color:var(--accent);}
+
+    /* TAB PANEL */
+    .tab-pnl{display:none;}
+    .tab-pnl.on{display:block;}
+
+    /* STEP SECTION */
+    .step-sec{margin-bottom:32px;}
+    .step-hdr{display:flex;align-items:center;gap:12px;padding:16px;background:linear-gradient(145deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.08);border-radius:12px;cursor:pointer;user-select:none;transition:all .2s;}
+    .step-hdr:hover{background:linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));}
+    .step-hdr.locked{opacity:.6;cursor:default;}
+    .step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.8rem;color:#fff;flex-shrink:0;}
+    .step-num.locked{background:rgba(255,255,255,0.1);color:var(--t4);}
+    .step-title{font-size:.95rem;font-weight:700;color:var(--t1);}
+    .step-sub{font-size:.75rem;color:var(--t3);margin-top:2px;}
+    .step-chevron{margin-left:auto;color:var(--t4);transition:transform .3s;}
+    .step-chevron.open{transform:rotate(180deg);}
+    .step-lock{color:var(--t4);font-size:.75rem;margin-left:auto;display:flex;align-items:center;gap:4px;}
+
+    /* TASK GRID */
+    .task-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:16px;padding:16px;background:rgba(255,255,255,0.01);border-radius:12px;}
+    @media(max-width:900px){.task-grid{grid-template-columns:1fr;}}
+    .task-card{background:var(--glass-bg);backdrop-filter:blur(40px);border:1.5px solid var(--glass-border);border-radius:var(--radius-xl);padding:20px;position:relative;overflow:hidden;transition:all .2s;}
+    .task-card::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,var(--glass-highlight) 0%,transparent 100%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;pointer-events:none;}
+    .task-card::after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 1px 0 var(--glass-highlight);pointer-events:none;}
+    .task-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,0.12);}
+    .tc-left-border{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:var(--radius-xl) 0 0 var(--radius-xl);}
+    .tc-green{background:linear-gradient(90deg,var(--accent),var(--accent-light));}
+    .tc-amber{background:linear-gradient(90deg,var(--amber),#FFB84D);}
+    .tc-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px;padding-right:60px;}
+    .tc-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+    .tci-green{background:rgba(0,223,162,0.1);color:var(--accent);border:1px solid rgba(0,223,162,0.25);}
+    .tci-amber{background:rgba(240,180,41,0.1);color:var(--amber);border:1px solid rgba(240,180,41,0.25);}
+    .tc-info{}
+    .tc-title{font-size:.95rem;font-weight:800;color:var(--t1);margin-bottom:3px;}
+    .tc-desc{font-size:.78rem;color:var(--t3);line-height:1.5;}
+    .tc-body{margin-bottom:12px;}
+    .tc-progress{font-size:.72rem;color:var(--t3);font-family:var(--mono);margin-bottom:12px;}
+    .tc-btn{width:100%;padding:10px;border:none;border-radius:10px;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+    .tc-btn-green{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;box-shadow:0 4px 12px rgba(0,223,162,.25);}
+    .tc-btn-green:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,223,162,.35);}
+    .tc-btn-amber{background:linear-gradient(135deg,var(--amber),#F0A324);color:#fff;box-shadow:0 4px 12px rgba(240,180,41,.25);}
+    .tc-btn-amber:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(240,180,41,.35);}
+    .tc-decor{position:absolute;top:-20px;right:-20px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(0,223,162,0.1),transparent 70%);pointer-events:none;}
+    .tc-decor2{position:absolute;bottom:10px;right:10px;width:60px;height:60px;border-radius:50%;background:radial-gradient(circle,rgba(0,223,162,0.05),transparent 70%);pointer-events:none;}
+
+    /* LOCKED OVERLAY */
+    .locked-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,0.4),rgba(0,0,0,0.2));backdrop-filter:blur(2px);border-radius:var(--radius-xl);display:flex;align-items:center;justify-content:center;z-index:10;}
+    .lo-badge{background:rgba(0,0,0,0.6);padding:12px 20px;border-radius:20px;text-align:center;border:1px solid rgba(255,255,255,0.2);}
+    .lo-icon{font-size:1.3rem;margin-bottom:8px;color:var(--t3);}
+    .lo-text{font-size:.75rem;color:var(--t2);font-weight:600;}
+
+    /* TASK GRID 3-COLUMN */
+    .task-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px;padding:16px;background:rgba(255,255,255,0.01);border-radius:12px;}
+    @media(max-width:1200px){.task-grid-3{grid-template-columns:1fr 1fr;}}
+    @media(max-width:700px){.task-grid-3{grid-template-columns:1fr;}}
+    .task-card-sm{background:var(--glass-bg);backdrop-filter:blur(40px);border:1.5px solid var(--glass-border);border-radius:var(--radius-xl);padding:18px;position:relative;overflow:hidden;text-align:center;}
+    .task-card-sm::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,var(--glass-highlight) 0%,transparent 100%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;pointer-events:none;}
+    .task-card-sm::after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 1px 0 var(--glass-highlight);pointer-events:none;}
+    .tcs-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin:0 auto 10px;background:rgba(0,223,162,0.1);color:var(--accent);border:1px solid rgba(0,223,162,0.25);}
+    .tcs-title{font-size:.85rem;font-weight:800;color:var(--t1);margin-bottom:6px;}
+    .tcs-bonus{font-family:var(--mono);font-size:.95rem;font-weight:800;color:var(--accent-light);margin-bottom:8px;}
+    .tcs-desc{font-size:.72rem;color:var(--t3);line-height:1.4;margin-bottom:10px;min-height:2.5rem;}
+    .tcs-progress{font-size:.7rem;color:var(--t3);margin-bottom:8px;font-weight:600;}
+
+    /* WIDE CARD GRID */
+    .wide-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:40px;}
+    @media(max-width:1000px){.wide-grid{grid-template-columns:1fr;}}
+    .wide-card{background:var(--glass-bg);backdrop-filter:blur(40px);border:1.5px solid var(--glass-border);border-radius:var(--radius-xl);padding:28px;position:relative;overflow:hidden;}
+    .wide-card::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,var(--glass-highlight) 0%,transparent 100%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;pointer-events:none;}
+    .wide-card::after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 1px 0 var(--glass-highlight);pointer-events:none;}
+    .wc-icon{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:16px;}
+    .wc-green{background:rgba(0,223,162,0.15);color:var(--accent);}
+    .wc-purple{background:rgba(139,92,246,0.15);color:var(--purple);}
+    .wc-title{font-size:1.2rem;font-weight:800;color:var(--t1);margin-bottom:8px;}
+    .wc-desc{font-size:.88rem;color:var(--t2);line-height:1.7;margin-bottom:18px;}
+    .wc-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 24px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border:none;border-radius:10px;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .2s;}
+    .wc-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,223,162,.3);}
+    .wc-decor{position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(0,223,162,0.15),transparent 70%);pointer-events:none;}
+    .wc-decor-purple{top:-80px;right:-80px;background:radial-gradient(circle,rgba(139,92,246,0.1),transparent 70%);}
+
+    /* FAQ GRID */
+    .faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+    @media(max-width:900px){.faq-grid{grid-template-columns:1fr;}}
+    .faq-card{background:var(--glass-bg);backdrop-filter:blur(40px);border:1.5px solid var(--glass-border);border-radius:var(--radius-xl);padding:20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+    .faq-card::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,var(--glass-highlight) 0%,transparent 100%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;pointer-events:none;}
+    .faq-card::after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 1px 0 var(--glass-highlight);pointer-events:none;}
+    .faq-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,0.12);}
+    .faq-q{font-size:.95rem;font-weight:700;color:var(--t1);display:flex;align-items:flex-start;gap:12px;margin-bottom:0;}
+    .faq-q i{color:var(--accent);margin-top:2px;flex-shrink:0;transition:transform .3s;}
+    .faq-a{font-size:.8rem;color:var(--t3);line-height:1.6;display:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06);}
+    .faq-a.show{display:block;}
+
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <div class="cross"></div>
+    <span class="brand-name">1 Trade <em>Market</em></span>
+  </div>
+  <div class="nav-links">
+    <a href="#" class="nlink">Dashboard</a>
+    <a href="#" class="nlink">Markets</a>
+    <a href="#" class="nlink">Trade Room</a>
+    <a href="#" class="nlink">Wallet</a>
+    <a href="#" class="nlink active">Rewards</a>
+  </div>
+  <div class="nav-avatar">A</div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-sect">Rewards</div>
+    <div class="sb-row on">
+      <i class="fas fa-tasks"></i>
+      <span>Trader Tasks</span>
+    </div>
+    <div class="sb-row">
+      <i class="fas fa-chart-line"></i>
+      <span>Trade & Earn</span>
+    </div>
+    <div class="sb-row">
+      <i class="fas fa-gift"></i>
+      <span>My Promo</span>
+    </div>
+    <div class="sb-row">
+      <i class="fas fa-history"></i>
+      <span>History</span>
+    </div>
+
+    <div class="sb-sect" style="margin-top:20px;">Account</div>
+    <div class="sb-row">
+      <i class="fas fa-wallet"></i>
+      <span>Wallet</span>
+    </div>
+    <div class="sb-row">
+      <i class="fas fa-cog"></i>
+      <span>Settings</span>
+    </div>
+    <div class="sb-row">
+      <i class="fas fa-headset"></i>
+      <span>Support</span>
+    </div>
+
+    <div class="sb-divider" style="margin-top:20px;"></div>
+
+    <!-- YOUR REWARDS CARD -->
+    <div class="mini-card">
+      <div class="mc-label">Your Rewards</div>
+      <div class="mc-val">$0.00</div>
+      <div class="mc-sub">USD</div>
+      <button class="mc-btn">Redeem</button>
+    </div>
+
+    <!-- VIP LEVEL CARD -->
+    <div class="mini-card">
+      <div class="mc-label">VIP Level</div>
+      <div class="mc-val" style="font-size:1.1rem;">Bronze</div>
+      <div class="mc-progress">
+        <div class="mc-progress-bar">
+          <div class="mc-progress-fill" style="width:25%;"></div>
+        </div>
+        <div class="mc-progress-text">25%</div>
+      </div>
+      <div class="mc-sub">Next: Silver at $5,000</div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <!-- PAGE HEADER -->
+    <div class="pg-head">
+      <div class="pg-head-left">
+        <h1>Rewards Center</h1>
+        <p>Complete tasks, earn rewards, level up your trading</p>
+      </div>
+      <div class="pg-head-right">
+        <a href="#" class="ph-link"><i class="fas fa-question-circle"></i> How to use rewards?</a>
+        <div class="ph-total">$0.00</div>
+        <div class="ph-label">TOTAL EARNED</div>
+      </div>
+    </div>
+
+    <!-- BALANCE STRIP -->
+    <div class="bal-row">
+      <div class="bal-card bc-g">
+        <i class="bci fas fa-coins"></i>
+        <div class="bc-lbl">Total Earned</div>
+        <div class="bc-num">$0.00</div>
+        <div class="bc-sub">All time</div>
+      </div>
+      <div class="bal-card bc-a">
+        <i class="bci" style="background:rgba(240,180,41,0.1);color:var(--amber);"><i class="fas fa-check"></i></i>
+        <div class="bc-lbl">Available</div>
+        <div class="bc-num">$0.00</div>
+        <div class="bc-sub">Ready to redeem</div>
+      </div>
+      <div class="bal-card bc-o">
+        <i class="bci" style="background:rgba(255,152,0,0.1);color:var(--orange);"><i class="fas fa-hourglass-half"></i></i>
+        <div class="bc-lbl">Pending</div>
+        <div class="bc-num">$0.00</div>
+        <div class="bc-sub">In progress</div>
+      </div>
+      <div class="bal-card bc-bl">
+        <i class="bci" style="background:rgba(91,141,239,0.1);color:var(--blue);"><i class="fas fa-check"></i></i>
+        <div class="bc-lbl">Tasks Completed</div>
+        <div class="bc-num">0/11</div>
+        <div class="bc-sub">Progress</div>
+      </div>
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div class="prog-wrap">
+      <div class="pw-label">Complete tasks — earn more than $2,000</div>
+      <div class="pw-track">
+        <div class="pw-seg done"></div>
+        <div class="pw-seg"></div>
+        <div class="pw-seg"></div>
+        <div class="pw-seg"></div>
+        <div class="pw-seg"></div>
+        <div class="pw-seg"></div>
+        <div class="pw-seg"></div>
+        <div class="pw-seg"></div>
+        <div class="pw-seg"></div>
+        <div class="pw-seg"></div>
+        <div class="pw-seg"></div>
+      </div>
+      <div class="pw-info">
+        <span class="pw-text">11 tasks unlock higher rewards</span>
+        <span class="pw-badge">Tasks completed 0/11</span>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <div class="tab on" onclick="switchTab(event, 'tab1')">Trader Tasks</div>
+      <div class="tab" onclick="switchTab(event, 'tab2')">Trade & Earn</div>
+      <div class="tab" onclick="switchTab(event, 'tab3')">My Promo</div>
+    </div>
+
+    <!-- TAB 1: TRADER TASKS -->
+    <div id="tab1" class="tab-pnl on">
+
+      <!-- STEP 1 -->
+      <div class="step-sec">
+        <div class="step-hdr" onclick="toggleStep(event)">
+          <div class="step-num">1</div>
+          <div>
+            <div class="step-title">Step 1: Get Started</div>
+            <div class="step-sub">Unlock your first rewards</div>
+          </div>
+          <i class="step-chevron open fas fa-chevron-down"></i>
+        </div>
+
+        <div class="task-grid" style="display:grid;">
+          <!-- TASK CARD 1 -->
+          <div class="task-card">
+            <div class="tc-left-border tc-green"></div>
+            <div class="tc-decor"></div>
+            <div class="tc-decor2"></div>
+            <div class="tc-header">
+              <div class="tc-icon tci-green">
+                <i class="fas fa-arrow-down"></i>
+              </div>
+              <div class="tc-info">
+                <div class="tc-title">+$10 Deposit Bonus</div>
+                <div class="tc-desc">Make your first deposit of $30 USD or more</div>
+              </div>
+            </div>
+            <div class="tc-body">
+              <div class="tc-progress"><span style="font-family:var(--mono);">0</span> / $30 deposited</div>
+            </div>
+            <button class="tc-btn tc-btn-green">
+              <i class="fas fa-arrow-down"></i> Deposit Now
+            </button>
+          </div>
+
+          <!-- TASK CARD 2 -->
+          <div class="task-card">
+            <div class="tc-left-border tc-amber"></div>
+            <div class="tc-decor" style="background:radial-gradient(circle,rgba(240,180,41,0.1),transparent 70%);"></div>
+            <div class="tc-decor2" style="background:radial-gradient(circle,rgba(240,180,41,0.05),transparent 70%);"></div>
+            <div class="tc-header">
+              <div class="tc-icon tci-amber">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <div class="tc-info">
+                <div class="tc-title">+$20 Trading Bonus</div>
+                <div class="tc-desc">Execute at least one spot or futures trade</div>
+              </div>
+            </div>
+            <div class="tc-body">
+              <div class="tc-progress"><span style="font-family:var(--mono);">0</span> / 1 trade completed</div>
+            </div>
+            <button class="tc-btn tc-btn-amber">
+              <i class="fas fa-chart-line"></i> Trade Now
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step-sec">
+        <div class="step-hdr locked" onclick="toggleStep(event)">
+          <div class="step-num locked">2</div>
+          <div>
+            <div class="step-title">Step 2: Build Momentum</div>
+            <div class="step-sub">Increase trading activity</div>
+          </div>
+          <div class="step-lock">
+            <i class="fas fa-lock"></i> Complete Step 1
+          </div>
+        </div>
+
+        <div class="task-grid-3" style="display:none;opacity:.4;pointer-events:none;filter:blur(1px);">
+          <!-- TASK CARD 3 -->
+          <div class="task-card-sm">
+            <div class="locked-overlay">
+              <div class="lo-badge">
+                <div class="lo-icon"><i class="fas fa-lock"></i></div>
+                <div class="lo-text">Locked</div>
+              </div>
+            </div>
+            <div class="tcs-icon"><i class="fas fa-chart-bar"></i></div>
+            <div class="tcs-title">Reach $1,000 Volume</div>
+            <div class="tcs-bonus">+$50</div>
+            <div class="tcs-desc">Trade $1,000 USD worth in value</div>
+            <div class="tcs-progress">$0 / $1,000</div>
+          </div>
+
+          <!-- TASK CARD 4 -->
+          <div class="task-card-sm">
+            <div class="locked-overlay">
+              <div class="lo-badge">
+                <div class="lo-icon"><i class="fas fa-lock"></i></div>
+                <div class="lo-text">Locked</div>
+              </div>
+            </div>
+            <div class="tcs-icon"><i class="fas fa-coins"></i></div>
+            <div class="tcs-title">Trade 3 Different Pairs</div>
+            <div class="tcs-bonus">+$30</div>
+            <div class="tcs-desc">Trade at least 3 different trading pairs</div>
+            <div class="tcs-progress">0 / 3 pairs</div>
+          </div>
+
+          <!-- TASK CARD 5 -->
+          <div class="task-card-sm">
+            <div class="locked-overlay">
+              <div class="lo-badge">
+                <div class="lo-icon"><i class="fas fa-lock"></i></div>
+                <div class="lo-text">Locked</div>
+              </div>
+            </div>
+            <div class="tcs-icon"><i class="fas fa-shield-alt"></i></div>
+            <div class="tcs-title">Enable 2FA Security</div>
+            <div class="tcs-bonus">+$20</div>
+            <div class="tcs-desc">Secure your account with two-factor authentication</div>
+            <div class="tcs-progress">0 / 1</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step-sec">
+        <div class="step-hdr locked" onclick="toggleStep(event)">
+          <div class="step-num locked">3</div>
+          <div>
+            <div class="step-title">Step 3: Master Trading</div>
+            <div class="step-sub">Advanced trading milestones</div>
+          </div>
+          <div class="step-lock">
+            <i class="fas fa-lock"></i> Complete Step 2
+          </div>
+        </div>
+
+        <div class="task-grid-3" style="display:none;opacity:.4;pointer-events:none;filter:blur(1px);">
+          <!-- TASK CARD 6 -->
+          <div class="task-card-sm">
+            <div class="locked-overlay">
+              <div class="lo-badge">
+                <div class="lo-icon"><i class="fas fa-lock"></i></div>
+                <div class="lo-text">Locked</div>
+              </div>
+            </div>
+            <div class="tcs-icon"><i class="fas fa-mountain"></i></div>
+            <div class="tcs-title">Reach $10,000 Volume</div>
+            <div class="tcs-bonus">+$100</div>
+            <div class="tcs-desc">Trade $10,000 USD worth in value</div>
+            <div class="tcs-progress">$0 / $10,000</div>
+          </div>
+
+          <!-- TASK CARD 7 -->
+          <div class="task-card-sm">
+            <div class="locked-overlay">
+              <div class="lo-badge">
+                <div class="lo-icon"><i class="fas fa-lock"></i></div>
+                <div class="lo-text">Locked</div>
+              </div>
+            </div>
+            <div class="tcs-icon"><i class="fas fa-user-friends"></i></div>
+            <div class="tcs-title">Refer a Friend</div>
+            <div class="tcs-bonus">+$75</div>
+            <div class="tcs-desc">Invite someone to join 1 Trade Market</div>
+            <div class="tcs-progress">0 / 1 referral</div>
+          </div>
+
+          <!-- TASK CARD 8 -->
+          <div class="task-card-sm">
+            <div class="locked-overlay">
+              <div class="lo-badge">
+                <div class="lo-icon"><i class="fas fa-lock"></i></div>
+                <div class="lo-text">Locked</div>
+              </div>
+            </div>
+            <div class="tcs-icon"><i class="fas fa-id-card"></i></div>
+            <div class="tcs-title">Complete Advanced KYC</div>
+            <div class="tcs-bonus">+$50</div>
+            <div class="tcs-desc">Verify your identity with advanced verification</div>
+            <div class="tcs-progress">0 / 1</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="step-sec">
+        <div class="step-hdr locked" onclick="toggleStep(event)">
+          <div class="step-num locked">4</div>
+          <div>
+            <div class="step-title">Step 4: Pro Trader</div>
+            <div class="step-sub">Reach elite trading status</div>
+          </div>
+          <div class="step-lock">
+            <i class="fas fa-lock"></i> Complete Step 3
+          </div>
+        </div>
+
+        <div class="task-grid-3" style="display:none;opacity:.4;pointer-events:none;filter:blur(1px);">
+          <!-- TASK CARD 9 -->
+          <div class="task-card-sm">
+            <div class="locked-overlay">
+              <div class="lo-badge">
+                <div class="lo-icon"><i class="fas fa-lock"></i></div>
+                <div class="lo-text">Locked</div>
+              </div>
+            </div>
+            <div class="tcs-icon"><i class="fas fa-rocket"></i></div>
+            <div class="tcs-title">Reach $100,000 Volume</div>
+            <div class="tcs-bonus">+$500</div>
+            <div class="tcs-desc">Trade $100,000 USD worth in value</div>
+            <div class="tcs-progress">$0 / $100,000</div>
+          </div>
+
+          <!-- TASK CARD 10 -->
+          <div class="task-card-sm">
+            <div class="locked-overlay">
+              <div class="lo-badge">
+                <div class="lo-icon"><i class="fas fa-lock"></i></div>
+                <div class="lo-text">Locked</div>
+              </div>
+            </div>
+            <div class="tcs-icon"><i class="fas fa-calendar-check"></i></div>
+            <div class="tcs-title">Trade 30 Consecutive Days</div>
+            <div class="tcs-bonus">+$200</div>
+            <div class="tcs-desc">Trade every day for 30 days straight</div>
+            <div class="tcs-progress">0 / 30 days</div>
+          </div>
+
+          <!-- TASK CARD 11 -->
+          <div class="task-card-sm">
+            <div class="locked-overlay">
+              <div class="lo-badge">
+                <div class="lo-icon"><i class="fas fa-lock"></i></div>
+                <div class="lo-text">Locked</div>
+              </div>
+            </div>
+            <div class="tcs-icon"><i class="fas fa-crown"></i></div>
+            <div class="tcs-title">Reach VIP Silver Tier</div>
+            <div class="tcs-bonus">+$300</div>
+            <div class="tcs-desc">Achieve Silver VIP status</div>
+            <div class="tcs-progress">0 / 1</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 2: TRADE & EARN -->
+    <div id="tab2" class="tab-pnl">
+      <div class="glass-card" style="padding:28px;margin-bottom:28px;">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
+          <div style="width:52px;height:52px;border-radius:14px;background:rgba(0,223,162,0.15);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.3rem;"><i class="fas fa-percent"></i></div>
+          <div>
+            <div style="font-size:1.1rem;font-weight:800;color:var(--t1);margin-bottom:3px;">Earn Cashback on Trades</div>
+            <div style="font-size:.8rem;color:var(--t3);">Get up to 0.5% cashback on every trade based on your volume tier</div>
+          </div>
+        </div>
+
+        <table style="width:100%;border-collapse:collapse;">
+          <thead>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+              <th style="text-align:left;padding:12px 0;font-size:.7rem;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.05em;">Trading Volume Tier</th>
+              <th style="text-align:right;padding:12px 0;font-size:.7rem;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.05em;">Cashback Rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+              <td style="padding:14px 0;font-size:.85rem;color:var(--t2);">$0 - $10,000</td>
+              <td style="text-align:right;padding:14px 0;font-size:.85rem;font-weight:700;color:var(--accent);font-family:var(--mono);">0.1%</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+              <td style="padding:14px 0;font-size:.85rem;color:var(--t2);">$10,001 - $50,000</td>
+              <td style="text-align:right;padding:14px 0;font-size:.85rem;font-weight:700;color:var(--accent);font-family:var(--mono);">0.2%</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+              <td style="padding:14px 0;font-size:.85rem;color:var(--t2);">$50,001 - $250,000</td>
+              <td style="text-align:right;padding:14px 0;font-size:.85rem;font-weight:700;color:var(--accent);font-family:var(--mono);">0.35%</td>
+            </tr>
+            <tr>
+              <td style="padding:14px 0;font-size:.85rem;color:var(--t2);">$250,000+</td>
+              <td style="text-align:right;padding:14px 0;font-size:.85rem;font-weight:700;color:var(--accent-light);font-family:var(--mono);">0.5%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="glass-card" style="padding:28px;">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.06);">
+          <div style="width:52px;height:52px;border-radius:14px;background:rgba(91,141,239,0.15);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:1.3rem;"><i class="fas fa-trophy"></i></div>
+          <div>
+            <div style="font-size:1.1rem;font-weight:800;color:var(--t1);">Top Traders This Week</div>
+            <div style="font-size:.8rem;color:var(--t3);">Leaderboard of highest earners</div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div style="display:flex;align-items:center;gap:12px;padding:14px;background:rgba(0,223,162,0.05);border-radius:10px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--amber),#FFB84D);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:.85rem;">1</div>
+            <div style="flex:1;">
+              <div style="font-size:.9rem;font-weight:700;color:var(--t1);">Sarah Chen</div>
+              <div style="font-size:.7rem;color:var(--t3);">Trading volume: $125,400</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:.95rem;font-weight:800;color:var(--accent-light);font-family:var(--mono);">$627.00</div>
+              <div style="font-size:.65rem;color:var(--t4);">earned</div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:12px;padding:14px;background:rgba(255,255,255,0.01);border-radius:10px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--blue),#7B9EEF);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:.85rem;">2</div>
+            <div style="flex:1;">
+              <div style="font-size:.9rem;font-weight:700;color:var(--t1);">Marcus Johnson</div>
+              <div style="font-size:.7rem;color:var(--t3);">Trading volume: $98,200</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:.95rem;font-weight:800;color:var(--t2);font-family:var(--mono);">$491.00</div>
+              <div style="font-size:.65rem;color:var(--t4);">earned</div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:12px;padding:14px;background:rgba(255,255,255,0.01);border-radius:10px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--orange),#FFB84D);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:.85rem;">3</div>
+            <div style="flex:1;">
+              <div style="font-size:.9rem;font-weight:700;color:var(--t1);">Emily Rodriguez</div>
+              <div style="font-size:.7rem;color:var(--t3);">Trading volume: $87,600</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:.95rem;font-weight:800;color:var(--t2);font-family:var(--mono);">$438.00</div>
+              <div style="font-size:.65rem;color:var(--t4);">earned</div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:12px;padding:14px;background:rgba(255,255,255,0.01);border-radius:10px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--purple),#A78BFA);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:.85rem;">4</div>
+            <div style="flex:1;">
+              <div style="font-size:.9rem;font-weight:700;color:var(--t1);">David Kim</div>
+              <div style="font-size:.7rem;color:var(--t3);">Trading volume: $72,300</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:.95rem;font-weight:800;color:var(--t2);font-family:var(--mono);">$361.50</div>
+              <div style="font-size:.65rem;color:var(--t4);">earned</div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:12px;padding:14px;background:rgba(255,255,255,0.01);border-radius:10px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-light));display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:.85rem;">5</div>
+            <div style="flex:1;">
+              <div style="font-size:.9rem;font-weight:700;color:var(--t1);">Jessica Wong</div>
+              <div style="font-size:.7rem;color:var(--t3);">Trading volume: $65,800</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:.95rem;font-weight:800;color:var(--t2);font-family:var(--mono);">$329.00</div>
+              <div style="font-size:.65rem;color:var(--t4);">earned</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: MY PROMO -->
+    <div id="tab3" class="tab-pnl">
+      <div class="glass-card" style="padding:48px;text-align:center;">
+        <i style="font-size:3rem;color:var(--t4);display:block;margin-bottom:16px;"><i class="fas fa-inbox"></i></i>
+        <div style="font-size:1.1rem;font-weight:800;color:var(--t1);margin-bottom:6px;">No Active Promotions</div>
+        <div style="font-size:.85rem;color:var(--t3);margin-bottom:24px;">Check back soon for exciting promotional offers</div>
+        <div style="display:flex;align-items:center;gap:8px;padding:12px 14px;background:rgba(0,223,162,0.08);border:1px solid rgba(0,223,162,0.2);border-radius:10px;margin-bottom:24px;">
+          <input type="text" placeholder="Enter promo code" style="flex:1;background:transparent;border:none;outline:none;font-size:.85rem;color:var(--t1);font-family:var(--mono);font-weight:700;" />
+          <button style="padding:6px 12px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border:none;border-radius:8px;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;">Apply Code</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPLORE MORE SECTION -->
+    <div style="margin-top:60px;margin-bottom:40px;">
+      <h2 style="font-size:1.5rem;font-weight:800;color:var(--t1);margin-bottom:24px;">Explore More Opportunities</h2>
+
+      <div class="wide-grid">
+        <!-- INVITE CARD -->
+        <div class="wide-card">
+          <div class="wc-decor"></div>
+          <div class="wc-icon wc-green">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="wc-title">Invite Friends & Earn</div>
+          <div class="wc-desc">Share your referral link and earn $50 USD for each friend who signs up and completes their first deposit. Build your network and watch rewards grow!</div>
+          <button class="wc-btn">
+            <i class="fas fa-share-alt"></i> Start Inviting
+          </button>
+        </div>
+
+        <!-- COMPETITIONS CARD -->
+        <div class="wide-card">
+          <div class="wc-decor wc-decor-purple"></div>
+          <div class="wc-icon wc-purple">
+            <i class="fas fa-fire"></i>
+          </div>
+          <div class="wc-title">Trading Competitions</div>
+          <div class="wc-desc">Compete with traders worldwide in monthly trading contests. Win up to $10,000 in prizes based on highest volume, fastest growth, and most consistent profits!</div>
+          <button class="wc-btn" style="background:linear-gradient(135deg,var(--purple),#A78BFA);border:none;color:#fff;">
+            <i class="fas fa-trophy"></i> Join Contest
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ SECTION -->
+    <div style="margin-top:60px;margin-bottom:40px;">
+      <div style="text-align:center;margin-bottom:40px;">
+        <h2 style="font-size:1.5rem;font-weight:800;color:var(--t1);margin-bottom:8px;">Frequently Asked Questions</h2>
+        <p style="font-size:.95rem;color:var(--t2);">Everything you need to know about our rewards program</p>
+      </div>
+
+      <div class="faq-grid">
+        <div class="faq-card" onclick="toggleFaq(this)">
+          <div class="faq-q">
+            <i class="fas fa-circle"></i>
+            <span>What is the Reward Center?</span>
+          </div>
+          <div class="faq-a">The Reward Center is your hub for earning bonuses and cashback through trading. Complete tasks, trade consistently, and unlock higher rewards. Every action brings you closer to bigger payouts!</div>
+        </div>
+
+        <div class="faq-card" onclick="toggleFaq(this)">
+          <div class="faq-q">
+            <i class="fas fa-circle"></i>
+            <span>What is Trading Bonus?</span>
+          </div>
+          <div class="faq-a">Trading Bonuses are rewards given when you complete specific trading milestones like your first trade, reaching certain volumes, or trading consecutive days. These bonuses are credited to your account as USD.</div>
+        </div>
+
+        <div class="faq-card" onclick="toggleFaq(this)">
+          <div class="faq-q">
+            <i class="fas fa-circle"></i>
+            <span>What is Cashback?</span>
+          </div>
+          <div class="faq-a">Cashback is a percentage of your trading fees returned to you based on your volume tier. The more you trade, the higher your tier and the more cashback you earn. It's automatically added to your account daily.</div>
+        </div>
+
+        <div class="faq-card" onclick="toggleFaq(this)">
+          <div class="faq-q">
+            <i class="fas fa-circle"></i>
+            <span>How to redeem rewards?</span>
+          </div>
+          <div class="faq-a">Redeeming rewards is simple. Go to your Wallet, click "Redeem Rewards", select your preferred withdrawal method, and confirm. Most withdrawals process within 24-48 hours to your chosen account.</div>
+        </div>
+
+        <div class="faq-card" onclick="toggleFaq(this)">
+          <div class="faq-q">
+            <i class="fas fa-circle"></i>
+            <span>Are there any terms and conditions?</span>
+          </div>
+          <div class="faq-a">Yes. All rewards are subject to our Terms of Service. Some bonuses may have holding periods, trading requirements, or expiration dates. Check the specific task details for complete terms applicable to that reward.</div>
+        </div>
+
+        <div class="faq-card" onclick="toggleFaq(this)">
+          <div class="faq-q">
+            <i class="fas fa-circle"></i>
+            <span>Can I combine multiple rewards?</span>
+          </div>
+          <div class="faq-a">Absolutely! You can stack bonuses, cashback, and promotions. Complete trader tasks for bonuses, trade regularly for cashback, and apply promo codes for extra rewards. They all add up in your account!</div>
+        </div>
+
+        <div class="faq-card" onclick="toggleFaq(this)">
+          <div class="faq-q">
+            <i class="fas fa-circle"></i>
+            <span>What are VIP tiers?</span>
+          </div>
+          <div class="faq-a">VIP tiers unlock exclusive rewards and higher cashback rates. Start at Bronze and progress through Silver, Gold, Platinum, and Diamond. Each tier requires higher trading volumes but offers better rates and exclusive perks.</div>
+        </div>
+
+        <div class="faq-card" onclick="toggleFaq(this)">
+          <div class="faq-q">
+            <i class="fas fa-circle"></i>
+            <span>How often is cashback credited?</span>
+          </div>
+          <div class="faq-a">Cashback is calculated daily based on your trading activity from the previous day. It's automatically added to your available rewards balance by 2 AM UTC each day. You can check your earnings in the Rewards Center.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+function switchTab(e, tabId) {
+  document.querySelectorAll('.tab-pnl').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  document.getElementById(tabId).classList.add('on');
+  e.target.classList.add('on');
+}
+
+function toggleStep(e) {
+  const header = e.currentTarget;
+  if (header.classList.contains('locked')) return;
+
+  const chevron = header.querySelector('.step-chevron');
+  const nextElement = header.nextElementSibling;
+
+  if (chevron) chevron.classList.toggle('open');
+  if (nextElement && (nextElement.classList.contains('task-grid') || nextElement.classList.contains('task-grid-3'))) {
+    nextElement.style.display = nextElement.style.display === 'none' ? 'grid' : 'none';
+  }
+}
+
+function toggleFaq(card) {
+  const answer = card.querySelector('.faq-a');
+  const icon = card.querySelector('.faq-q i');
+
+  if (answer) answer.classList.toggle('show');
+  if (icon) icon.style.transform = answer?.classList.contains('show') ? 'rotate(90deg)' : 'rotate(0)';
+}
+</script>
+
+</body>
+</html>
