@@ -6,6 +6,7 @@ import { useMarketWatchSyntheticTicker } from "@/hooks/useMarketWatchSyntheticTi
 import { useAssetWebSocket } from "@/hooks/useAssetWebsocket";
 
 import { TickerBar } from "@/components/dashboard/TickerBar";
+import DashboardNavbar from "@/components/nav/DashboardNavbar";
 import { MarketSidebar } from "@/components/market/MarketSidebar";
 import { MarketHeader } from "@/components/market/MarketHeader";
 import { MarketSection } from "@/components/market/MarketSection";
@@ -209,6 +210,9 @@ export default function MarketPage() {
       >
         {/* Top scrolling ticker bar */}
         <TickerBar />
+
+        {/* Dashboard navbar */}
+        <DashboardNavbar />
 
         {/* Page wrap: market sidebar + main */}
         <div className="grid flex-1 grid-cols-1 md:grid-cols-[60px_1fr] min-h-0">

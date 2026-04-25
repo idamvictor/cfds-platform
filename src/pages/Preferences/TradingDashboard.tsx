@@ -12,6 +12,7 @@ import {
 import { StatCard } from "@/components/dashboard/StatCard";
 import { TopStoriesWidget } from "@/components/dashboard/TopStoriesWidget";
 import { TickerBar } from "@/components/dashboard/TickerBar";
+import DashboardNavbar from "@/components/nav/DashboardNavbar";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { useCurrency } from "@/hooks/useCurrency";
 import useUserStore from "@/store/userStore";
@@ -132,6 +133,9 @@ export default function Dashboard() {
       >
         {/* ═══ TICKER BAR ═══ */}
         <TickerBar />
+
+        {/* ═══ DASHBOARD NAVBAR ═══ */}
+        <DashboardNavbar />
 
         {/* ═══ PAGE WRAP: sidebar + main ═══ */}
         <div className="grid flex-1 grid-cols-1 md:grid-cols-[60px_1fr] min-h-0">

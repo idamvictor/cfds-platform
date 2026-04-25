@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Lock, Menu } from "lucide-react";
 import { TickerBar } from "@/components/dashboard/TickerBar";
+import DashboardNavbar from "@/components/nav/DashboardNavbar";
 import { SecuritySidebar } from "@/components/security/SecuritySidebar";
 import { SecurityScoreCard } from "@/components/security/SecurityScoreCard";
 import { TwoFactorSection } from "@/components/security/TwoFactorSection";
@@ -47,6 +48,9 @@ export default function SecurityPage() {
       >
         {/* Top scrolling ticker bar (matches Market page) */}
         <TickerBar />
+
+        {/* Dashboard navbar */}
+        <DashboardNavbar />
 
         {/* Layout: secondary sidebar + main */}
         <div className="grid flex-1 grid-cols-1 md:grid-cols-[60px_1fr] min-h-0">

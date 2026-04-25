@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Settings, Lock, Coins, Languages, Menu } from "lucide-react";
 import { TickerBar } from "@/components/dashboard/TickerBar";
+import DashboardNavbar from "@/components/nav/DashboardNavbar";
 import { AccountsSidebar } from "@/components/accounts/AccountsSidebar";
 import { CurrencySelector } from "@/components/settings/currency-selector";
 import { LanguageSelector } from "@/components/settings/language-selector";
@@ -50,6 +51,9 @@ export default function SettingsPage() {
       >
         {/* Top scrolling ticker bar (reused from Markets) */}
         <TickerBar />
+
+        {/* Dashboard navbar */}
+        <DashboardNavbar />
 
         {/* Mobile-only sidebar trigger — mirrors MarketHeader's trigger */}
         <div className="flex items-center border-b border-[rgba(255,255,255,0.06)] bg-[rgba(7,8,12,0.75)] px-3 py-1.5 md:hidden">

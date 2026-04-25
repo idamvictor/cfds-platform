@@ -46,6 +46,7 @@ import DepositHistory from "@/components/deposit-history";
 import type { WalletView } from "@/components/wallet/WalletSidebar";
 import { MarketSidebar } from "@/components/market/MarketSidebar";
 import { TickerBar } from "@/components/dashboard/TickerBar";
+import DashboardNavbar from "@/components/nav/DashboardNavbar";
 import { WalletOverviewPanel } from "@/components/wallet/WalletOverviewPanel";
 import { WalletOverviewExtras } from "@/components/wallet/WalletOverviewExtras";
 import { WalletAssetsPanel } from "@/components/wallet/WalletAssetsPanel";
@@ -259,6 +260,9 @@ export default function WithdrawalForm() {
       >
         {/* Top scrolling ticker bar (Markets page pattern) */}
         <TickerBar />
+
+        {/* Dashboard navbar */}
+        <DashboardNavbar />
 
         {/* Layout: sidebar + main */}
         <div className="grid flex-1 grid-cols-1 md:grid-cols-[60px_1fr] min-h-0">
