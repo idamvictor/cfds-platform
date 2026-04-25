@@ -51,6 +51,7 @@ import { WalletOverviewPanel } from "@/components/wallet/WalletOverviewPanel";
 import { WalletOverviewExtras } from "@/components/wallet/WalletOverviewExtras";
 import { WalletAssetsPanel } from "@/components/wallet/WalletAssetsPanel";
 import { WalletGoldPanel } from "@/components/wallet/WalletGoldPanel";
+import { WalletTransactionHistory } from "@/components/wallet/WalletTransactionHistory";
 import { GoldTierBanner } from "@/components/wallet/GoldTierBanner";
 
 // ── Schemas (unchanged) ──────────────────────────────────────────────
@@ -335,6 +336,7 @@ export default function WithdrawalForm() {
               <>
                 <WalletOverviewPanel />
                 <WalletOverviewExtras />
+                <WalletTransactionHistory />
               </>
             )}
 
