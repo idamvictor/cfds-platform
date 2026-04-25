@@ -22,6 +22,7 @@ import * as z from "zod";
 import { toast } from "sonner";
 import axiosInstance from "@/lib/axios";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import useDataStore from "@/store/dataStore";
 import useUserStore from "@/store/userStore";
 import { WireTransferConfirmationModal } from "@/components/withdrawal/WireTransferConfirmationModal.tsx";
@@ -107,7 +108,17 @@ export default function WithdrawalForm() {
   const [selectedCoinName, setSelectedCoinName] = useState("Bitcoin");
 
   // New UI-only view state for wallet panels (HTML match)
-  const [viewMode, setViewMode] = useState<WalletView>("overview");
+  const [searchParams] = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const initialView: WalletView =
+    tabParam === "deposit" || tabParam === "dep"
+      ? "dep"
+      : tabParam === "withdraw" || tabParam === "wit"
+        ? "wit"
+        : tabParam === "assets" || tabParam === "gold" || tabParam === "overview"
+          ? (tabParam as WalletView)
+          : "overview";
+  const [viewMode, setViewMode] = useState<WalletView>(initialView);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const form = useForm<WithdrawalFormData>({

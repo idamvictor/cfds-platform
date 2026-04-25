@@ -30,7 +30,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
 
   const handleLogout = () => {
     clearAuthenticatedSession();
-    navigate("/main/deposit");
+    navigate("/");
   };
 
   const navItems = [
@@ -92,7 +92,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLinkClick }) => {
           {user?.email || ""}
         </p>
         <div className="grid grid-cols-1 gap-2 w-full mt-4">
-          <Link to="/main/deposit">
+          <Link to="/main/withdrawal?tab=deposit">
             <Button onClick={onLinkClick}>Deposit</Button>
           </Link>
           {/* <Button variant="ghost" className="border border-border">

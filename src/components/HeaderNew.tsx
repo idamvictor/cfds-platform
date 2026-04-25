@@ -29,7 +29,7 @@ const Header: React.FC<HeaderProps> = () => {
 
         <Button
           className="header-action-button deposit-button"
-          onClick={() => navigate("/main/deposit")}
+          onClick={() => navigate("/main/withdrawal?tab=deposit")}
         >
           Deposit
         </Button>

@@ -28,16 +28,11 @@ const ProtectedRoute = lazy(() => import("./components/ProtectedRoute"));
 const MainLayout = lazy(() => import("./layouts/MainLayout"));
 const MarketplacePage = lazy(() => import("@/pages/marketplace/marketplace-page.tsx"));
 const MarketPage = lazy(() => import("@/pages/market/MarketPage"));
-const DepositLayout = lazy(() => import("./layouts/DepositLayout"));
 const MT4Layout = lazy(() => import("./layouts/MT4Layout"));
 const MainContent = lazy(() => import("./components/mt4/main-content"));
 const PersonalInformation = lazy(
   () => import("./pages/Preferences/PersonalInformation"),
 );
-// const BankDeposit = lazy(() => import("./pages/deposit/BankDeposit"));
-const CardDeposit = lazy(() => import("./pages/deposit/CardDeposit"));
-// const PaypalDeposit = lazy(() => import("./pages/deposit/PaypalDeposit"));
-// const OtherDeposit = lazy(() => import("./pages/deposit/OtherDeposit"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const TradingDashboard = lazy(
   () => import("./pages/Preferences/TradingDashboard"),
@@ -54,9 +49,6 @@ const KYCWelcomePage = lazy(() => import("./pages/Preferences/kyc-welcome-page")
 const KYCFlowPage = lazy(() => import("./pages/Preferences/kyc-flow-page"));
 const KYCAwaitingPage = lazy(() => import("./pages/Preferences/kyc-awaiting-page"));
 const SavingsPage = lazy(() => import("./pages/Preferences/savings-page"));
-const CryptoWalletDeposit = lazy(
-  () => import("./pages/deposit/CryptoWalletDeposit"),
-);
 const DepositHistoryPage = lazy(
   () => import("./pages/Preferences/deposit-history-page"),
 );
@@ -146,41 +138,15 @@ const App = () => {
                       element={<PersonalInformation />}
                     />
 
-                    <Route path="/main/deposit" element={<DepositLayout />}>
-                      <Route
-                        index
-                        element={
-                          <Navigate to="/main/deposit/:crypto" replace />
-                        }
-                      />
-                      {/*<Route*/}
-                      {/*  path="/main/deposit/bank"*/}
-                      {/*  element={<BankDeposit />}*/}
-                      {/*/>*/}
-                      <Route
-                        path="/main/deposit/card"
-                        element={<CardDeposit />}
-                      />
-
-                      {/* <Route
-                      path="/main/deposit/paypal"
-                      element={<PaypalDeposit />}
-                    />
                     <Route
-                      path="/main/deposit/other"
-                      element={<OtherDeposit />}
-                    /> */}
-
-                      {/* Crypto routes */}
-                      <Route
-                        path="/main/deposit/:crypto"
-                        element={<CryptoWalletDeposit />}
-                      />
-                      <Route
-                        path="/main/deposit/:crypto/:walletId"
-                        element={<CryptoWalletDeposit />}
-                      />
-                    </Route>
+                      path="/main/deposit/*"
+                      element={
+                        <Navigate
+                          to="/main/withdrawal?tab=deposit"
+                          replace
+                        />
+                      }
+                    />
 
                     <Route
                       path="/main/market"

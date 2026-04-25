@@ -56,7 +56,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
           onClick={() =>
             useDepositModal
               ? setIsDepositModalOpen(true)
-              : navigate("/main/deposit")
+              : navigate("/main/withdrawal?tab=deposit")
           }
           className="text-white flex items-center gap-2 p-2 lg:px-4"
           title="Deposit Funds"
@@ -151,7 +151,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
         onDeposit={() =>
           useDepositModal
             ? setIsDepositModalOpen(true)
-            : navigate("/main/deposit")
+            : navigate("/main/withdrawal?tab=deposit")
         } 
       />
     </header>
