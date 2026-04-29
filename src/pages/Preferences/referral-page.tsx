@@ -31,7 +31,7 @@ import {
   Zap,
   Infinity as InfinityIcon,
   Megaphone,
-  Plus,
+  // Plus,
   Menu,
   X as XIcon,
   ChevronDown,
